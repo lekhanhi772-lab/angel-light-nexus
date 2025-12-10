@@ -4,6 +4,7 @@ import SacredPillars from '@/components/SacredPillars';
 import VisionMission from '@/components/VisionMission';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
+import ChatInterface from '@/components/ChatInterface';
 
 const Index = () => {
   return (
@@ -19,6 +20,9 @@ const Index = () => {
         <CTASection />
         <Footer />
       </main>
+
+      {/* AI Chat */}
+      <ChatInterface />
     </div>
   );
 };

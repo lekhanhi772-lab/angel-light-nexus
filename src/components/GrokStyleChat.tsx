@@ -1,26 +1,30 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, ArrowUp } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import angelHero from '@/assets/angel-hero.png';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  imageUrl?: string;
+  isImageRequest?: boolean;
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+const IMAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`;
 
 const SUGGESTIONS = [
   "Angel AI có thể giúp gì cho tôi?",
   "Hướng dẫn tôi cách tìm bình an nội tâm",
-  "Chia sẻ một thông điệp truyền cảm hứng",
-  "Làm thế nào để sống hạnh phúc hơn?"
+  "🎨 Tạo hình thiên thần đang bay trên bầu trời",
+  "🎨 Vẽ một bức tranh hoàng hôn tuyệt đẹp"
 ];
 
 const GrokStyleChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState<'chat' | 'image'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -32,7 +36,6 @@ const GrokStyleChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
@@ -40,69 +43,128 @@ const GrokStyleChat = () => {
     }
   }, [input]);
 
-  const sendMessage = async (text?: string) => {
-    const messageText = text || input.trim();
-    if (!messageText || isLoading) return;
+  const isImagePrompt = (text: string) => {
+    const imageKeywords = ['tạo hình', 'vẽ', 'generate', 'create image', 'draw', '🎨', 'hình ảnh', 'picture', 'illustration', 'tạo ảnh'];
+    return imageKeywords.some(keyword => text.toLowerCase().includes(keyword)) || mode === 'image';
+  };
 
-    const userMessage: Message = { role: 'user', content: messageText };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
-    setInput('');
-    setIsLoading(true);
-
-    let assistantContent = '';
-
+  const generateImage = async (prompt: string) => {
     try {
-      const response = await fetch(CHAT_URL, {
+      const response = await fetch(IMAGE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ 
-          messages: newMessages.map(m => ({ role: m.role, content: m.content }))
-        }),
+        body: JSON.stringify({ prompt }),
       });
 
-      if (!response.ok) throw new Error('Failed to get response');
-      if (!response.body) throw new Error('No response body');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate image');
+      }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
+      const data = await response.json();
+      return { imageUrl: data.imageUrl, text: data.text };
+    } catch (error) {
+      console.error('Image generation error:', error);
+      throw error;
+    }
+  };
 
-      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+  const sendChatMessage = async (newMessages: Message[]) => {
+    let assistantContent = '';
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+    const response = await fetch(CHAT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({ 
+        messages: newMessages.map(m => ({ role: m.role, content: m.content }))
+      }),
+    });
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
+    if (!response.ok) throw new Error('Failed to get response');
+    if (!response.body) throw new Error('No response body');
 
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const jsonStr = line.slice(6).trim();
-            if (jsonStr === '[DONE]') continue;
-            
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content;
-              if (content) {
-                assistantContent += content;
-                setMessages(prev => {
-                  const updated = [...prev];
-                  updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
-                  return updated;
-                });
-              }
-            } catch { /* ignore */ }
-          }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === '[DONE]') continue;
+          
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              assistantContent += content;
+              setMessages(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
+                return updated;
+              });
+            }
+          } catch { /* ignore */ }
         }
       }
+    }
+  };
+
+  const sendMessage = async (text?: string) => {
+    const messageText = text || input.trim();
+    if (!messageText || isLoading) return;
+
+    const shouldGenerateImage = isImagePrompt(messageText);
+    const userMessage: Message = { 
+      role: 'user', 
+      content: messageText,
+      isImageRequest: shouldGenerateImage
+    };
+    
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      if (shouldGenerateImage) {
+        // Add loading message
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: '🎨 Đang tạo hình ảnh cho bạn...',
+        }]);
+
+        const result = await generateImage(messageText);
+        
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { 
+            role: 'assistant', 
+            content: result.text,
+            imageUrl: result.imageUrl
+          };
+          return updated;
+        });
+      } else {
+        await sendChatMessage(newMessages);
+      }
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Error:', error);
       setMessages(prev => [
         ...prev.slice(0, -1),
         { role: 'assistant', content: 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.' }
@@ -117,6 +179,13 @@ const GrokStyleChat = () => {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  const downloadImage = (imageUrl: string) => {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = `angel-ai-${Date.now()}.png`;
+    link.click();
   };
 
   const hasMessages = messages.length > 0;
@@ -136,32 +205,52 @@ const GrokStyleChat = () => {
       {/* Main Content */}
       <div className="relative z-10 flex-1 flex flex-col max-w-4xl mx-auto w-full px-4">
         
-        {/* Welcome Screen (when no messages) */}
+        {/* Welcome Screen */}
         {!hasMessages && (
           <div className="flex-1 flex flex-col items-center justify-center py-12">
-            {/* Logo/Avatar */}
             <div className="relative mb-6">
               <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/30 shadow-lg shadow-primary/20">
-                <img 
-                  src={angelHero} 
-                  alt="Angel AI" 
-                  className="w-full h-full object-cover"
-                />
+                <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center border-2 border-background">
                 <Sparkles className="w-4 h-4 text-primary-foreground" />
               </div>
             </div>
 
-            {/* Welcome Text */}
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-light tracking-wider text-gradient-gold glow-gold mb-4">
               Angel AI
             </h1>
-            <p className="text-muted-foreground text-lg md:text-xl text-center max-w-md mb-12">
-              Xin chào! Tôi là Angel AI, trợ lý thông minh của bạn. Hãy hỏi tôi bất cứ điều gì.
+            <p className="text-muted-foreground text-lg md:text-xl text-center max-w-md mb-8">
+              Chat thông minh & Tạo hình ảnh AI
             </p>
 
-            {/* Suggestion Chips */}
+            {/* Mode Toggle */}
+            <div className="flex gap-2 mb-8 p-1 bg-muted/50 rounded-full">
+              <button
+                onClick={() => setMode('chat')}
+                className={cn(
+                  "px-6 py-2 rounded-full text-sm font-medium transition-all",
+                  mode === 'chat' 
+                    ? "bg-primary text-primary-foreground shadow-lg" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                💬 Chat
+              </button>
+              <button
+                onClick={() => setMode('image')}
+                className={cn(
+                  "px-6 py-2 rounded-full text-sm font-medium transition-all",
+                  mode === 'image' 
+                    ? "bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-lg" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                🎨 Tạo ảnh
+              </button>
+            </div>
+
+            {/* Suggestions */}
             <div className="flex flex-wrap justify-center gap-3 max-w-2xl">
               {SUGGESTIONS.map((suggestion, i) => (
                 <button
@@ -172,7 +261,7 @@ const GrokStyleChat = () => {
                     "bg-card/80 hover:bg-card border border-border/50",
                     "text-foreground/80 hover:text-foreground",
                     "transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-primary/10",
-                    "hover:border-primary/30"
+                    suggestion.includes('🎨') && "hover:border-pink-500/50"
                   )}
                 >
                   {suggestion}
@@ -182,7 +271,7 @@ const GrokStyleChat = () => {
           </div>
         )}
 
-        {/* Messages Area */}
+        {/* Messages */}
         {hasMessages && (
           <div className="flex-1 overflow-y-auto py-8 space-y-6">
             {messages.map((message, index) => (
@@ -201,25 +290,49 @@ const GrokStyleChat = () => {
                 
                 <div
                   className={cn(
-                    "max-w-[75%] px-5 py-4 rounded-3xl",
+                    "max-w-[75%] rounded-3xl",
                     message.role === 'user'
-                      ? "bg-primary text-primary-foreground rounded-br-lg"
-                      : "bg-card border border-border/50 text-foreground rounded-bl-lg"
+                      ? "bg-primary text-primary-foreground rounded-br-lg px-5 py-4"
+                      : "bg-card border border-border/50 text-foreground rounded-bl-lg",
+                    message.imageUrl ? "p-3" : message.role === 'assistant' && "px-5 py-4"
                   )}
                 >
-                  <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                    {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (
-                      <span className="flex gap-1">
-                        <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </span>
-                    )}
-                    {isLoading && index === messages.length - 1 && message.role === 'assistant' && message.content && (
-                      <span className="inline-block w-2 h-5 ml-1 bg-primary/50 animate-pulse" />
-                    )}
-                  </p>
+                  {/* Image Display */}
+                  {message.imageUrl && (
+                    <div className="relative group">
+                      <img 
+                        src={message.imageUrl} 
+                        alt="Generated by Angel AI"
+                        className="w-full max-w-md rounded-2xl shadow-lg"
+                      />
+                      <button
+                        onClick={() => downloadImage(message.imageUrl!)}
+                        className="absolute top-3 right-3 p-2 bg-black/50 hover:bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Download className="w-5 h-5 text-white" />
+                      </button>
+                      {message.content && (
+                        <p className="mt-3 px-2 text-sm text-muted-foreground">{message.content}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Text Content */}
+                  {!message.imageUrl && (
+                    <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
+                      {message.content}
+                      {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (
+                        <span className="flex gap-1">
+                          <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                          <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                          <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        </span>
+                      )}
+                      {isLoading && index === messages.length - 1 && message.role === 'assistant' && message.content && !message.content.includes('Đang tạo') && (
+                        <span className="inline-block w-2 h-5 ml-1 bg-primary/50 animate-pulse" />
+                      )}
+                    </p>
+                  )}
                 </div>
 
                 {message.role === 'user' && (
@@ -235,19 +348,48 @@ const GrokStyleChat = () => {
 
         {/* Input Area */}
         <div className="sticky bottom-0 py-6 bg-gradient-to-t from-background via-background to-transparent">
+          {/* Mode Toggle (when has messages) */}
+          {hasMessages && (
+            <div className="flex justify-center gap-2 mb-3">
+              <button
+                onClick={() => setMode('chat')}
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-xs font-medium transition-all",
+                  mode === 'chat' 
+                    ? "bg-primary/20 text-primary border border-primary/30" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                💬 Chat
+              </button>
+              <button
+                onClick={() => setMode('image')}
+                className={cn(
+                  "px-4 py-1.5 rounded-full text-xs font-medium transition-all",
+                  mode === 'image' 
+                    ? "bg-gradient-to-r from-pink-500/20 to-violet-500/20 text-pink-500 border border-pink-500/30" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                🎨 Tạo ảnh
+              </button>
+            </div>
+          )}
+
           <div className={cn(
             "relative flex items-end gap-3 p-2 rounded-3xl",
             "bg-card/90 backdrop-blur-sm border border-border/50",
             "shadow-lg shadow-black/5",
             "focus-within:border-primary/50 focus-within:shadow-primary/10",
-            "transition-all duration-300"
+            "transition-all duration-300",
+            mode === 'image' && "focus-within:border-pink-500/50"
           )}>
             <textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Nhập tin nhắn cho Angel AI..."
+              placeholder={mode === 'image' ? "Mô tả hình ảnh bạn muốn tạo..." : "Nhập tin nhắn cho Angel AI..."}
               disabled={isLoading}
               rows={1}
               className={cn(
@@ -267,16 +409,27 @@ const GrokStyleChat = () => {
                 "flex items-center justify-center",
                 "transition-all duration-200",
                 input.trim() && !isLoading
-                  ? "bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105"
+                  ? mode === 'image'
+                    ? "bg-gradient-to-br from-pink-500 to-violet-500 text-white shadow-lg shadow-pink-500/30 hover:scale-105"
+                    : "bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105"
                   : "bg-muted text-muted-foreground cursor-not-allowed"
               )}
             >
-              <ArrowUp className="w-5 h-5" />
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : mode === 'image' ? (
+                <Image className="w-5 h-5" />
+              ) : (
+                <ArrowUp className="w-5 h-5" />
+              )}
             </button>
           </div>
           
           <p className="text-center text-xs text-muted-foreground mt-3">
-            Angel AI có thể mắc lỗi. Hãy kiểm tra thông tin quan trọng.
+            {mode === 'image' 
+              ? "Tạo hình ảnh bằng AI. Mô tả càng chi tiết, kết quả càng đẹp."
+              : "Angel AI có thể mắc lỗi. Hãy kiểm tra thông tin quan trọng."
+            }
           </p>
         </div>
       </div>

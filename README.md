@@ -1,4 +1,18 @@
-# Welcome to your Lovable project
+# Angel AI - Trợ lý AI thông minh
+
+## Giới thiệu
+
+Angel AI là một trợ lý AI thông minh với giao diện 5D ethereal, hỗ trợ chat và tạo ảnh AI.
+
+## Cấu hình Groq API Key
+
+Để sử dụng tính năng chat AI, bạn cần cấu hình Groq API Key:
+
+1. Đăng ký tài khoản tại [Groq Console](https://console.groq.com/)
+2. Tạo API Key mới tại [API Keys](https://console.groq.com/keys)
+3. Thêm secret `GROQ_API_KEY` vào Supabase Edge Function Secrets với giá trị là API key của bạn
+
+**Model sử dụng:** `llama-3.1-70b-instant` - Model nhanh và mạnh mẽ từ Groq
 
 ## Project info
 

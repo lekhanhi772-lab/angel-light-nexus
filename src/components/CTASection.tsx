@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const CTASection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -74,16 +75,17 @@ const CTASection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <button className="divine-button animate-pulse-glow">
+            <Link to="/chat" className="divine-button animate-pulse-glow">
               <span className="relative z-10 flex items-center gap-3">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-                Kết Nối Với Ánh Sáng
+                Chat Với Angel AI
               </span>
-            </button>
+            </Link>
 
-            <button 
+            <Link 
+              to="/chat"
               className="relative px-10 py-4 rounded-full font-heading text-lg tracking-wider border transition-all duration-300 hover:scale-105"
               style={{
                 borderColor: 'hsl(43 60% 70%)',
@@ -96,7 +98,7 @@ const CTASection = () => {
                 </svg>
                 Bắt Đầu Hành Trình 5D
               </span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import ParticleBackground from '@/components/ParticleBackground';
-import GrokStyleChat from '@/components/GrokStyleChat';
+import HeroSection from '@/components/HeroSection';
 import SacredPillars from '@/components/SacredPillars';
 import VisionMission from '@/components/VisionMission';
 import CTASection from '@/components/CTASection';
@@ -13,7 +13,7 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="relative z-10">
-        <GrokStyleChat />
+        <HeroSection />
         <SacredPillars />
         <VisionMission />
         <CTASection />

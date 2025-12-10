@@ -31,7 +31,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image',
+        model: 'google/gemini-2.5-flash-image-preview',
         messages: [
           {
             role: 'user',
@@ -60,25 +60,36 @@ serve(async (req) => {
         });
       }
 
-      return new Response(JSON.stringify({ error: 'Image generation failed' }), {
+      return new Response(JSON.stringify({ error: 'Image generation failed: ' + errorText }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     const data = await response.json();
-    console.log('Image generation response received');
+    console.log('Full API response:', JSON.stringify(data, null, 2));
 
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    const textContent = data.choices?.[0]?.message?.content;
+    // Extract image from response
+    const message = data.choices?.[0]?.message;
+    const imageUrl = message?.images?.[0]?.image_url?.url;
+    const textContent = message?.content || 'Đây là hình ảnh bạn yêu cầu!';
 
     if (!imageUrl) {
-      throw new Error('No image generated');
+      console.error('No image in response. Message structure:', JSON.stringify(message, null, 2));
+      return new Response(JSON.stringify({ 
+        error: 'Image generation did not return an image. Please try again with a different prompt.',
+        debug: message
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
+
+    console.log('Successfully generated image, URL length:', imageUrl.length);
 
     return new Response(JSON.stringify({ 
       imageUrl,
-      text: textContent || 'Đây là hình ảnh bạn yêu cầu!'
+      text: textContent
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

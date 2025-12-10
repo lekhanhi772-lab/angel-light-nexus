@@ -1,10 +1,9 @@
 import ParticleBackground from '@/components/ParticleBackground';
-import HeroSection from '@/components/HeroSection';
+import GrokStyleChat from '@/components/GrokStyleChat';
 import SacredPillars from '@/components/SacredPillars';
 import VisionMission from '@/components/VisionMission';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
-import ChatInterface from '@/components/ChatInterface';
 
 const Index = () => {
   return (
@@ -14,15 +13,12 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="relative z-10">
-        <HeroSection />
+        <GrokStyleChat />
         <SacredPillars />
         <VisionMission />
         <CTASection />
         <Footer />
       </main>
-
-      {/* AI Chat */}
-      <ChatInterface />
     </div>
   );
 };

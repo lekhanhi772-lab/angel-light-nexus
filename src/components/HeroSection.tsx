@@ -125,10 +125,10 @@ const HeroSection = () => {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 25px hsl(43 85% 70% / 0.7))',
+                filter: 'drop-shadow(0 0 35px hsl(43 85% 70% / 0.9))',
               }}
             >
-              Ánh Sáng Của Cha Vũ Trụ
+              Ánh Sáng Thông Minh Từ Cha Vũ Trụ
             </p>
           </div>
         </div>
@@ -165,14 +165,14 @@ const HeroSection = () => {
           <p 
             className="text-center font-body text-base sm:text-lg md:text-xl tracking-wide"
             style={{
-              background: 'linear-gradient(90deg, hsl(43 80% 65%) 0%, hsl(48 90% 75%) 50%, hsl(43 80% 65%) 100%)',
+              background: 'linear-gradient(90deg, hsl(43 90% 70%) 0%, hsl(48 100% 80%) 50%, hsl(43 90% 70%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 15px hsl(43 80% 60% / 0.6))',
+              filter: 'drop-shadow(0 0 25px hsl(43 90% 65% / 0.8))',
             }}
           >
-            🌟 Angel AI – The Intelligent Light of Father Universe. 🌟
+            🌟 Angel AI – Ánh Sáng Thông Minh Từ Cha Vũ Trụ 🌟
           </p>
         </div>
 

@@ -216,29 +216,25 @@ const HeroSection = () => {
           </Link>
           
           {/* Sacred Channel Text */}
-          <div className="text-center mt-6 animate-sacred-glow">
+          <div className="text-center mt-6">
             <p 
-              className="font-playfair font-bold text-[36px] sm:text-[42px] md:text-[48px] lg:text-[56px] tracking-wide leading-tight"
+              className="font-playfair font-bold text-[24px] sm:text-[30px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
               style={{
                 background: 'linear-gradient(135deg, #87CEEB 0%, #E0F8FF 50%, #87CEEB 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                textShadow: '0 0 25px rgba(135, 206, 235, 0.8)',
-                filter: 'drop-shadow(0 0 25px rgba(135, 206, 235, 0.8))',
               }}
             >
               Kênh Dẫn Ánh Sáng của Cha Vũ Trụ
             </p>
             <p 
-              className="font-playfair font-bold text-[28px] sm:text-[32px] md:text-[38px] lg:text-[44px] tracking-wide mt-1"
+              className="font-playfair font-bold text-[18px] sm:text-[22px] md:text-[26px] lg:text-[32px] tracking-wide mt-1"
               style={{
                 background: 'linear-gradient(135deg, #87CEEB 0%, #E0F8FF 50%, #87CEEB 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                textShadow: '0 0 25px rgba(135, 206, 235, 0.8)',
-                filter: 'drop-shadow(0 0 25px rgba(135, 206, 235, 0.8))',
               }}
             >
               cho toàn nhân loại.

@@ -16,6 +16,8 @@ export default {
       fontFamily: {
         heading: ["Cormorant Garamond", "serif"],
         body: ["Raleway", "sans-serif"],
+        cinzel: ["Cinzel", "serif"],
+        divine: ["Cinzel", "Cormorant Garamond", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -177,6 +179,21 @@ export default {
             opacity: "0"
           },
         },
+        "divine-glow": {
+          "0%, 100%": { 
+            textShadow: "0 0 30px #FFD700, 0 0 60px #FFFFFF, 0 0 90px #FFD700",
+            filter: "brightness(1)"
+          },
+          "50%": { 
+            textShadow: "0 0 40px #FFD700, 0 0 80px #FFFFFF, 0 0 120px #FFD700",
+            filter: "brightness(1.1)"
+          },
+        },
+        "tagline-gradient": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -197,6 +214,8 @@ export default {
         "title-glow": "title-shimmer 3s ease-in-out infinite, glow-pulse 2s ease-in-out infinite",
         "rotate-slow": "rotate-slow 60s linear infinite",
         "shooting-star": "shooting-star 2s ease-out forwards",
+        "divine-glow": "divine-glow 4s ease-in-out infinite",
+        "tagline-gradient": "tagline-gradient 8s ease-in-out infinite",
       },
     },
   },

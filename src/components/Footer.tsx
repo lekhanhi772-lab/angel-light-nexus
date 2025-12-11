@@ -29,28 +29,27 @@ const Footer = () => {
 
       <div className="container mx-auto px-4">
         <div className="text-center">
-          {/* Logo - Enhanced Glow */}
+          {/* Logo - Enhanced with Cinzel font */}
           <h3 
-            className="font-heading text-2xl md:text-3xl font-light tracking-[0.15em] mb-2"
+            className="font-cinzel text-3xl md:text-4xl font-bold tracking-[0.15em] mb-2"
             style={{
-              background: 'linear-gradient(135deg, hsl(43 100% 75%) 0%, hsl(45 100% 90%) 50%, hsl(43 100% 70%) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 30px hsl(43 100% 65% / 0.8)) drop-shadow(0 0 60px hsl(43 90% 70% / 0.5))',
+              color: '#FFD700',
+              WebkitTextStroke: '1px #B8860B',
+              textShadow: '0 0 20px #FFD700, 0 0 40px #FFFFFF, 0 0 60px #FFD700',
             }}
           >
             ANGEL AI
           </h3>
           
-          {/* NEW TAGLINE */}
+          {/* Tagline with stars and celestial color */}
           <p 
-            className="font-heading text-sm md:text-base tracking-[0.15em] text-divine-gold mb-4 font-light"
+            className="font-cinzel text-base md:text-lg tracking-[0.15em] mb-4 font-medium"
             style={{
-              filter: 'drop-shadow(0 0 15px hsl(43 85% 65% / 0.6))',
+              color: '#87CEEB',
+              textShadow: '0 0 15px #87CEEB',
             }}
           >
-            Ánh Sáng Thông Minh Từ Cha Vũ Trụ
+            ✨ Ánh Sáng Thông Minh Từ Cha Vũ Trụ ✨
           </p>
 
           {/* 12 Core Values Icons */}

@@ -81,6 +81,7 @@ const HeroSection = () => {
         <div className="text-center -mt-4 mb-8 animate-fade-in">
           {/* Multi-layer Glow */}
           <div className="relative">
+            {/* Background glow layer */}
             <div 
               className="absolute inset-0 blur-3xl opacity-80 -z-10"
               style={{
@@ -89,18 +90,24 @@ const HeroSection = () => {
               }}
             />
             
-            {/* Main Title with Elegant Typography */}
+            {/* Inner glow text layer (white 60% opacity behind) */}
             <h1 
-              className="relative font-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extralight tracking-[0.2em]"
+              className="absolute inset-0 font-cinzel text-[80px] sm:text-[100px] md:text-[140px] lg:text-[180px] font-bold tracking-[0.1em] opacity-60 -z-5"
               style={{
-                background: 'linear-gradient(135deg, hsl(43 100% 75%) 0%, hsl(45 100% 90%) 25%, hsl(43 100% 80%) 50%, hsl(45 100% 95%) 75%, hsl(43 100% 70%) 100%)',
-                backgroundSize: '200% 200%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                animation: 'title-shimmer 4s ease-in-out infinite',
-                filter: 'drop-shadow(0 0 60px hsl(43 100% 65% / 0.9)) drop-shadow(0 0 120px hsl(43 90% 70% / 0.6))',
-                textShadow: '0 0 80px hsl(43 100% 70% / 0.5)',
+                color: '#FFFFFF',
+                filter: 'blur(8px)',
+              }}
+            >
+              ANGEL AI
+            </h1>
+            
+            {/* Main Title with Divine Typography */}
+            <h1 
+              className="relative font-cinzel text-[80px] sm:text-[100px] md:text-[140px] lg:text-[180px] font-bold tracking-[0.1em] animate-divine-glow"
+              style={{
+                color: '#FFD700',
+                WebkitTextStroke: '2px #B8860B',
+                textShadow: '0 0 30px #FFD700, 0 0 60px #FFFFFF, 0 0 90px #FFD700',
               }}
             >
               ANGEL AI
@@ -117,15 +124,18 @@ const HeroSection = () => {
               <div className="h-px w-20 sm:w-32 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
             </div>
             
-            {/* Subtitle */}
+            {/* Tagline with Gradient Animation */}
             <p 
-              className="mt-4 font-heading text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-[0.15em] font-light"
+              className="mt-6 font-cinzel text-[28px] sm:text-[36px] md:text-[42px] lg:text-[56px] tracking-[0.1em] font-medium animate-tagline-gradient"
               style={{
-                background: 'linear-gradient(90deg, hsl(280 50% 75%) 0%, hsl(43 80% 70%) 30%, hsl(45 90% 85%) 50%, hsl(43 80% 70%) 70%, hsl(200 60% 75%) 100%)',
+                background: 'linear-gradient(90deg, #E0E8FF 0%, #A0D8EF 50%, #87CEEB 100%)',
+                backgroundSize: '200% 200%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 35px hsl(43 85% 70% / 0.9))',
+                WebkitTextStroke: '0.5px rgba(255,255,255,0.6)',
+                textShadow: '0 0 20px rgba(135, 206, 235, 0.8)',
+                filter: 'drop-shadow(0 0 20px rgba(135, 206, 235, 0.8))',
               }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
@@ -135,25 +145,25 @@ const HeroSection = () => {
 
         {/* CTA Section */}
         <div className="flex flex-col items-center gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {/* CTA Button - Luxurious Design */}
+          {/* CTA Button - Divine Golden Design */}
           <Link
             to="/chat"
-            className="group relative px-10 py-5 rounded-full overflow-hidden transition-all duration-500 hover:scale-105 z-30"
+            className="group relative px-10 py-5 rounded-full overflow-hidden transition-all duration-500 hover:scale-110 z-30"
             style={{
-              background: 'linear-gradient(135deg, hsl(43 80% 65%) 0%, hsl(38 90% 60%) 50%, hsl(43 85% 70%) 100%)',
-              boxShadow: '0 20px 60px -15px hsl(43 80% 50% / 0.5), 0 0 40px hsl(43 90% 70% / 0.3), inset 0 1px 0 hsl(45 100% 90% / 0.5)',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFD700 100%)',
+              boxShadow: '0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.5)',
             }}
           >
             {/* Button Shine Effect */}
             <div 
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               style={{
-                background: 'linear-gradient(135deg, transparent 0%, hsl(45 100% 95% / 0.4) 50%, transparent 100%)',
+                background: 'linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%)',
               }}
             />
             
-            <span className="relative flex items-center gap-4 text-lg font-medium"
-              style={{ color: 'hsl(30 50% 15%)' }}
+            <span className="relative flex items-center gap-4 text-lg font-bold font-cinzel tracking-wider"
+              style={{ color: '#1a1a1a' }}
             >
               <MessageCircle className="w-6 h-6" />
               Chat với Angel AI
@@ -163,16 +173,13 @@ const HeroSection = () => {
           
           {/* Tagline */}
           <p 
-            className="text-center font-body text-base sm:text-lg md:text-xl tracking-wide"
+            className="text-center font-cinzel text-base sm:text-lg md:text-xl tracking-wide"
             style={{
-              background: 'linear-gradient(90deg, hsl(43 90% 70%) 0%, hsl(48 100% 80%) 50%, hsl(43 90% 70%) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 25px hsl(43 90% 65% / 0.8))',
+              color: '#87CEEB',
+              textShadow: '0 0 15px #87CEEB',
             }}
           >
-            🌟 Angel AI – Ánh Sáng Thông Minh Từ Cha Vũ Trụ 🌟
+            ⭐ Angel AI – Ánh Sáng Thông Minh Từ Cha Vũ Trụ ⭐
           </p>
         </div>
 

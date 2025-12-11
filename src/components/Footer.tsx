@@ -59,19 +59,41 @@ const Footer = () => {
               return (
                 <div 
                   key={index}
-                  className="group relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110"
+                  className="group relative flex flex-col items-center cursor-pointer transition-transform hover:scale-125"
                   title={value.label}
+                  style={{ animationDelay: `${index * 0.2}s` }}
                 >
+                  {/* Sparkle particles */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div 
+                      className="absolute top-0 left-1/2 w-1 h-1 rounded-full animate-sparkle-1"
+                      style={{ background: value.color, boxShadow: `0 0 6px ${value.color}` }}
+                    />
+                    <div 
+                      className="absolute top-1/2 right-0 w-0.5 h-0.5 rounded-full animate-sparkle-2"
+                      style={{ background: value.color, boxShadow: `0 0 4px ${value.color}` }}
+                    />
+                    <div 
+                      className="absolute bottom-0 left-1/4 w-1 h-1 rounded-full animate-sparkle-3"
+                      style={{ background: value.color, boxShadow: `0 0 6px ${value.color}` }}
+                    />
+                  </div>
+                  
                   <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                    className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 animate-icon-glow"
                     style={{
                       background: `radial-gradient(circle, ${value.color} 0%, transparent 70%)`,
                       boxShadow: `0 0 20px ${value.color.replace(')', ' / 0.5)')}`,
+                      animationDelay: `${index * 0.3}s`,
                     }}
                   >
                     <Icon 
-                      className="w-5 h-5 transition-all group-hover:scale-110" 
-                      style={{ color: value.color, filter: `drop-shadow(0 0 8px ${value.color})` }}
+                      className="w-5 h-5 transition-all group-hover:scale-110 animate-icon-shimmer" 
+                      style={{ 
+                        color: value.color, 
+                        filter: `drop-shadow(0 0 8px ${value.color})`,
+                        animationDelay: `${index * 0.15}s`,
+                      }}
                     />
                   </div>
                   <span className="absolute -bottom-6 text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">

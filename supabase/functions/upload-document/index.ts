@@ -34,6 +34,21 @@ async function extractText(content: string, fileType: string): Promise<string> {
   return content;
 }
 
+// Sanitize filename for storage - remove special chars, keep only alphanumeric, dash, underscore, dot
+function sanitizeFileName(fileName: string): string {
+  // Remove Vietnamese diacritics and special characters
+  const normalized = fileName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[đĐ]/g, 'd')
+    .replace(/["'"'""]/g, '') // Remove quotes
+    .replace(/[^a-zA-Z0-9._-]/g, '_') // Replace other special chars with underscore
+    .replace(/_+/g, '_') // Remove multiple underscores
+    .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
+  
+  return normalized || 'document';
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -85,10 +100,13 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Upload file to storage
-    const filePath = `${Date.now()}_${file.name}`;
+    // Upload file to storage with sanitized filename
+    const sanitizedName = sanitizeFileName(file.name);
+    const filePath = `${Date.now()}_${sanitizedName}`;
     const arrayBuffer = await file.arrayBuffer();
     const uint8Array = new Uint8Array(arrayBuffer);
+    
+    console.log(`Uploading to path: ${filePath}`);
 
     const { error: uploadError } = await supabase.storage
       .from('sacred-documents')

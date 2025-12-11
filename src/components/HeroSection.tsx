@@ -4,7 +4,7 @@ import angelHero from '@/assets/angel-hero.png';
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-start pt-8 lg:pt-12 overflow-hidden">
       {/* Background Gradient */}
       <div 
         className="absolute inset-0"
@@ -14,28 +14,28 @@ const HeroSection = () => {
       />
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-4">
-        {/* Angel Image Container */}
+      <div className="relative z-10 flex flex-col items-center px-4 w-full">
+        {/* Angel Image Container - Smaller */}
         <div className="relative animate-float-slow">
           {/* Glow behind image */}
           <div 
             className="absolute inset-0 blur-3xl opacity-60"
             style={{
               background: 'radial-gradient(ellipse at center, hsl(43 85% 70% / 0.6) 0%, transparent 70%)',
-              transform: 'scale(1.5)',
+              transform: 'scale(1.3)',
             }}
           />
           
-          {/* Angel Image */}
+          {/* Angel Image - Smaller size */}
           <img
             src={angelHero}
             alt="Angel AI - Divine Light Being"
-            className="relative z-10 w-full max-w-2xl lg:max-w-4xl h-auto object-contain drop-shadow-2xl"
+            className="relative z-10 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-auto object-contain drop-shadow-2xl"
           />
 
           {/* Title Overlay */}
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
-            <div className="relative mt-8 lg:mt-12">
+            <div className="relative mt-4 lg:mt-8">
               {/* Glow effect behind text */}
               <div 
                 className="absolute inset-0 blur-2xl opacity-80"
@@ -46,12 +46,12 @@ const HeroSection = () => {
               />
               
               {/* Main Title */}
-              <h1 className="relative font-heading text-5xl md:text-7xl lg:text-8xl font-light tracking-[0.2em] text-gradient-gold glow-gold animate-glow-pulse">
+              <h1 className="relative font-heading text-4xl md:text-5xl lg:text-6xl font-light tracking-[0.2em] text-gradient-gold glow-gold animate-glow-pulse">
                 ANGEL AI
               </h1>
               
               {/* Subtitle */}
-              <p className="relative mt-2 font-heading text-lg md:text-xl lg:text-2xl tracking-[0.15em] text-center opacity-90 font-light"
+              <p className="relative mt-1 font-heading text-base md:text-lg lg:text-xl tracking-[0.15em] text-center opacity-90 font-light"
                 style={{
                   color: 'hsl(40 30% 30%)',
                   textShadow: '0 0 20px hsl(43 85% 80% / 0.5)',
@@ -62,27 +62,36 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* CTA Button */}
-        <Link
-          to="/chat"
-          className="group relative mt-8 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 animate-fade-in z-30"
-        >
-          <span className="flex items-center gap-3">
-            <MessageCircle className="w-6 h-6" />
-            Chat với Angel AI
-            <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
-          </span>
+        {/* CTA Section - Moved up and more prominent */}
+        <div className="mt-6 lg:mt-8 flex flex-col items-center gap-4 animate-fade-in">
+          <div className="flex items-center gap-2 text-divine-gold">
+            <div className="w-8 h-px bg-gradient-to-r from-transparent to-divine-gold" />
+            <span className="font-body text-sm tracking-[0.2em] uppercase font-medium">Khám Phá</span>
+            <div className="w-8 h-px bg-gradient-to-l from-transparent to-divine-gold" />
+          </div>
           
-          {/* Button Glow */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300" />
-        </Link>
+          {/* CTA Button */}
+          <Link
+            to="/chat"
+            className="group relative px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105 z-30"
+          >
+            <span className="flex items-center gap-3">
+              <MessageCircle className="w-6 h-6" />
+              Chat với Angel AI
+              <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
+            </span>
+            
+            {/* Button Glow */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300" />
+          </Link>
+        </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-pulse">
+        {/* Scroll Indicator - Now below CTA */}
+        <div className="mt-12 lg:mt-16 animate-pulse">
           <div className="flex flex-col items-center gap-2">
-            <span className="font-body text-sm tracking-widest text-muted-foreground uppercase">Khám Phá</span>
+            <span className="font-body text-xs tracking-widest text-muted-foreground uppercase">Xem thêm</span>
             <svg 
-              className="w-6 h-6 text-divine-gold animate-bounce"
+              className="w-5 h-5 text-divine-gold animate-bounce"
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"

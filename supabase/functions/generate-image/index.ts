@@ -34,8 +34,12 @@ serve(async (req) => {
         model: 'google/gemini-2.5-flash-image-preview',
         messages: [
           {
+            role: 'system',
+            content: 'You are an image generation AI. You MUST always generate an image based on the user request. Never respond with only text - always create a visual image. If the request is unclear, interpret it creatively and generate a beautiful, artistic image.'
+          },
+          {
             role: 'user',
-            content: `Generate a high quality, beautiful image: ${prompt}`
+            content: `Create a stunning, high-quality image based on this description: "${prompt}". Generate the image now.`
           }
         ],
         modalities: ['image', 'text']

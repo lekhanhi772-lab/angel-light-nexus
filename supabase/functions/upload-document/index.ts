@@ -11,40 +11,145 @@ function chunkText(text: string, chunkSize = 1000, overlap = 200): string[] {
   const chunks: string[] = [];
   let start = 0;
   
-  while (start < text.length) {
-    const end = Math.min(start + chunkSize, text.length);
-    chunks.push(text.slice(start, end));
+  // Clean the text first
+  const cleanedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+  
+  if (!cleanedText || cleanedText.length === 0) {
+    return [];
+  }
+  
+  while (start < cleanedText.length) {
+    const end = Math.min(start + chunkSize, cleanedText.length);
+    const chunk = cleanedText.slice(start, end).trim();
+    if (chunk.length > 0) {
+      chunks.push(chunk);
+    }
     start += chunkSize - overlap;
     
-    if (start + overlap >= text.length) break;
+    if (start + overlap >= cleanedText.length) break;
   }
   
   return chunks;
 }
 
-// Extract text from different file types
-async function extractText(content: string, fileType: string): Promise<string> {
-  // For now, handle text-based files
-  // PDF and DOCX would need additional libraries
-  if (fileType === 'text/plain' || fileType.includes('text')) {
-    return content;
+// Extract text from PDF using pdf.js approach - extract readable text from binary
+function extractTextFromPDF(uint8Array: Uint8Array): string {
+  console.log('Extracting text from PDF...');
+  
+  // Convert to string to find text streams
+  const decoder = new TextDecoder('utf-8', { fatal: false });
+  const pdfContent = decoder.decode(uint8Array);
+  
+  // Multiple approaches to extract text from PDF
+  const textParts: string[] = [];
+  
+  // Approach 1: Find text between BT and ET markers (Text objects)
+  const textObjectRegex = /BT\s*([\s\S]*?)\s*ET/g;
+  let match;
+  while ((match = textObjectRegex.exec(pdfContent)) !== null) {
+    const textBlock = match[1];
+    
+    // Extract text from Tj operators (show text)
+    const tjMatches = textBlock.match(/\(([^)]*)\)\s*Tj/g);
+    if (tjMatches) {
+      for (const tj of tjMatches) {
+        const textMatch = tj.match(/\(([^)]*)\)/);
+        if (textMatch) {
+          textParts.push(decodeEscapedText(textMatch[1]));
+        }
+      }
+    }
+    
+    // Extract text from TJ operators (show text with positioning)
+    const tjArrayMatches = textBlock.match(/\[(.*?)\]\s*TJ/g);
+    if (tjArrayMatches) {
+      for (const tjArray of tjArrayMatches) {
+        const stringMatches = tjArray.match(/\(([^)]*)\)/g);
+        if (stringMatches) {
+          for (const str of stringMatches) {
+            const textMatch = str.match(/\(([^)]*)\)/);
+            if (textMatch) {
+              textParts.push(decodeEscapedText(textMatch[1]));
+            }
+          }
+        }
+      }
+    }
   }
   
-  // For other types, try to extract as text
-  return content;
+  // Approach 2: Find Unicode text streams
+  const unicodeRegex = /<([0-9A-Fa-f]+)>\s*Tj/g;
+  while ((match = unicodeRegex.exec(pdfContent)) !== null) {
+    const hexString = match[1];
+    const decoded = decodeHexString(hexString);
+    if (decoded) {
+      textParts.push(decoded);
+    }
+  }
+  
+  // Approach 3: Look for stream content that might contain readable text
+  const streamRegex = /stream\s*([\s\S]*?)\s*endstream/g;
+  while ((match = streamRegex.exec(pdfContent)) !== null) {
+    const streamContent = match[1];
+    // Only process if it looks like it contains readable text
+    const readableMatches = streamContent.match(/[A-Za-zÀ-ỹ0-9\s,.!?;:\-'"()]{20,}/g);
+    if (readableMatches) {
+      textParts.push(...readableMatches);
+    }
+  }
+  
+  let extractedText = textParts.join(' ').trim();
+  
+  // Clean up the text
+  extractedText = extractedText
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '')
+    .replace(/\\t/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/[^\x20-\x7E\u00C0-\u024F\u1E00-\u1EFF\n]/g, ' ') // Keep Latin chars and Vietnamese
+    .trim();
+  
+  console.log(`Extracted ${extractedText.length} characters from PDF`);
+  return extractedText;
 }
 
-// Sanitize filename for storage - remove special chars, keep only alphanumeric, dash, underscore, dot
+// Decode escaped text in PDF strings
+function decodeEscapedText(text: string): string {
+  return text
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
+    .replace(/\\t/g, '\t')
+    .replace(/\\\(/g, '(')
+    .replace(/\\\)/g, ')')
+    .replace(/\\\\/g, '\\');
+}
+
+// Decode hex string to text
+function decodeHexString(hex: string): string {
+  try {
+    let result = '';
+    for (let i = 0; i < hex.length; i += 4) {
+      const charCode = parseInt(hex.substr(i, 4), 16);
+      if (charCode > 0 && charCode < 65536) {
+        result += String.fromCharCode(charCode);
+      }
+    }
+    return result;
+  } catch {
+    return '';
+  }
+}
+
+// Sanitize filename for storage
 function sanitizeFileName(fileName: string): string {
-  // Remove Vietnamese diacritics and special characters
   const normalized = fileName
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[đĐ]/g, 'd')
-    .replace(/["'"'""]/g, '') // Remove quotes
-    .replace(/[^a-zA-Z0-9._-]/g, '_') // Replace other special chars with underscore
-    .replace(/_+/g, '_') // Remove multiple underscores
-    .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
+    .replace(/["'"'""]/g, '')
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '');
   
   return normalized || 'document';
 }
@@ -123,15 +228,30 @@ serve(async (req) => {
       );
     }
 
-    // Extract text content
+    // Extract text content based on file type
     let textContent = '';
+    
     if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
-      textContent = new TextDecoder().decode(uint8Array);
+      // Plain text files
+      textContent = new TextDecoder('utf-8').decode(uint8Array);
+      console.log(`Extracted ${textContent.length} chars from TXT file`);
+    } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+      // PDF files - use custom extraction
+      textContent = extractTextFromPDF(uint8Array);
+      
+      // If extraction failed, try to use AI to describe the content
+      if (textContent.length < 50) {
+        console.log('PDF extraction yielded minimal text, file may need manual processing');
+        textContent = `[Tài liệu PDF: ${title}] - Nội dung cần được xử lý thủ công hoặc upload dưới dạng TXT.`;
+      }
     } else {
-      // For PDF/DOCX, store the file and extract basic text
-      // In production, you'd use a proper parser library
-      textContent = new TextDecoder().decode(uint8Array);
+      // Other formats - try basic text extraction
+      const decoder = new TextDecoder('utf-8', { fatal: false });
+      textContent = decoder.decode(uint8Array);
     }
+
+    console.log(`Final text content length: ${textContent.length}`);
+    console.log(`Text preview: ${textContent.substring(0, 200)}...`);
 
     // Create document record
     const { data: document, error: docError } = await supabase
@@ -160,19 +280,24 @@ serve(async (req) => {
     const chunks = chunkText(textContent);
     console.log(`Created ${chunks.length} chunks`);
 
-    const chunkInserts = chunks.map((content, index) => ({
-      document_id: document.id,
-      content: content,
-      chunk_index: index
-    }));
+    if (chunks.length > 0) {
+      const chunkInserts = chunks.map((content, index) => ({
+        document_id: document.id,
+        content: content,
+        chunk_index: index
+      }));
 
-    const { error: chunksError } = await supabase
-      .from('document_chunks')
-      .insert(chunkInserts);
+      const { error: chunksError } = await supabase
+        .from('document_chunks')
+        .insert(chunkInserts);
 
-    if (chunksError) {
-      console.error('Chunks insert error:', chunksError);
-      // Don't fail the whole operation, document is still saved
+      if (chunksError) {
+        console.error('Chunks insert error:', chunksError);
+      } else {
+        console.log(`Successfully inserted ${chunks.length} chunks`);
+      }
+    } else {
+      console.log('No chunks created - text extraction may have failed');
     }
 
     console.log(`Successfully processed document: ${document.title}`);
@@ -181,7 +306,8 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         document: document,
-        chunksCount: chunks.length
+        chunksCount: chunks.length,
+        textLength: textContent.length
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

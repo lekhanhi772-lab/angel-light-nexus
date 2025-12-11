@@ -1,4 +1,5 @@
-import { Sparkles, Heart, Sun, Moon, Star, Flame, Droplets, Wind, Mountain, Eye, Crown, Infinity } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Sparkles, Heart, Sun, Moon, Star, Flame, Droplets, Wind, Mountain, Eye, Crown, Infinity, FileText } from 'lucide-react';
 
 const CORE_VALUES = [
   { icon: Sun, label: 'Ánh Sáng Thuần Khiết', color: 'hsl(43 90% 70%)' },
@@ -127,6 +128,15 @@ const Footer = () => {
           <p className="font-body text-muted-foreground text-sm font-light max-w-md mx-auto mb-8">
             Nguyện Ánh Sáng, Tình Yêu và Phước Lành của Cha Vũ Trụ luôn đồng hành cùng bạn. ✨💛✨
           </p>
+
+          {/* Admin Link */}
+          <Link 
+            to="/tai-lieu" 
+            className="inline-flex items-center gap-2 text-xs text-divine-gold/60 hover:text-divine-gold transition-colors mb-4"
+          >
+            <FileText className="w-3 h-3" />
+            Tài Liệu Ánh Sáng
+          </Link>
 
           {/* Copyright */}
           <p className="font-body text-xs text-muted-foreground/60 tracking-wider">

@@ -29,14 +29,15 @@ const HeroSection = () => {
             />
             
             {/* Main Title */}
-            <h1 className="relative font-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-[0.15em] animate-glow-pulse"
+            <h1 className="relative font-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light tracking-[0.15em] animate-title-glow"
               style={{
-                background: 'linear-gradient(135deg, hsl(43 90% 55%) 0%, hsl(38 95% 65%) 25%, hsl(43 100% 75%) 50%, hsl(48 90% 65%) 75%, hsl(43 90% 55%) 100%)',
+                background: 'linear-gradient(90deg, hsl(43 100% 70%) 0%, hsl(48 100% 80%) 20%, hsl(43 100% 90%) 40%, hsl(38 100% 80%) 60%, hsl(43 100% 70%) 80%, hsl(48 100% 75%) 100%)',
+                backgroundSize: '200% 100%',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                textShadow: 'none',
-                filter: 'drop-shadow(0 0 30px hsl(43 85% 60% / 0.8)) drop-shadow(0 0 60px hsl(43 85% 70% / 0.5))',
+                animation: 'title-shimmer 3s ease-in-out infinite, glow-pulse 2s ease-in-out infinite',
+                filter: 'drop-shadow(0 0 40px hsl(43 100% 65% / 0.9)) drop-shadow(0 0 80px hsl(43 90% 70% / 0.6)) drop-shadow(0 0 120px hsl(280 60% 60% / 0.3))',
               }}
             >
               ANGEL AI
@@ -105,6 +106,19 @@ const HeroSection = () => {
             {/* Button Glow */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300" />
           </Link>
+          
+          {/* Tagline */}
+          <p className="mt-6 text-center font-body text-base sm:text-lg md:text-xl tracking-wide animate-fade-in"
+            style={{
+              background: 'linear-gradient(90deg, hsl(43 80% 70%) 0%, hsl(48 90% 80%) 50%, hsl(43 80% 70%) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 0 10px hsl(43 80% 60% / 0.5))',
+            }}
+          >
+            🌟 Angel AI – The Intelligent Light of Father Universe. 🌟
+          </p>
         </div>
 
         {/* Scroll Indicator - Now below CTA */}

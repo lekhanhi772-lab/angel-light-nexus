@@ -17,63 +17,108 @@ interface RAGResult {
   }>;
 }
 
-// Search for relevant documents with STRICT similarity threshold
+// Search for relevant documents using direct keyword matching (works for Vietnamese)
 async function searchDocuments(supabase: any, query: string): Promise<RAGResult> {
-  const MIN_SIMILARITY = 0.85; // Ngưỡng tối thiểu để được trích dẫn
-  
   try {
     console.log('RAG Search: Tìm kiếm trong Bộ Nhớ Vĩnh Cửu với query:', query.substring(0, 100));
     
-    const { data, error } = await supabase.rpc('search_documents', {
-      search_query: query,
-      match_count: 10 // Lấy nhiều hơn để lọc theo similarity
-    });
+    // Extract keywords from query (remove common Vietnamese words)
+    const stopWords = ['là', 'và', 'của', 'có', 'được', 'trong', 'với', 'cho', 'về', 'này', 'đó', 'một', 'các', 'những', 'như', 'để', 'khi', 'thì', 'hay', 'hoặc', 'nếu', 'mà', 'cũng', 'đã', 'sẽ', 'đang', 'còn', 'rất', 'lắm', 'quá', 'ơi', 'ạ', 'nha', 'nhé', 'gì', 'sao', 'tại', 'vì', 'dạy', 'cha', 'con'];
+    const keywords = query
+      .toLowerCase()
+      .split(/[\s,.\?\!]+/)
+      .filter(word => word.length >= 2 && !stopWords.includes(word))
+      .slice(0, 5); // Top 5 keywords
+    
+    console.log('RAG Search: Keywords extracted:', keywords.join(', '));
+    
+    if (keywords.length === 0) {
+      console.log('RAG Search: Không có keywords hợp lệ');
+      return { context: '', hasResults: false, sources: [], chunks: [] };
+    }
+
+    // Query document_chunks directly with ILIKE for each keyword
+    const { data: chunks, error } = await supabase
+      .from('document_chunks')
+      .select(`
+        id,
+        content,
+        chunk_index,
+        document_id,
+        documents!inner(title)
+      `)
+      .order('chunk_index', { ascending: true });
 
     if (error) {
       console.error('RAG Search error:', error);
       return { context: '', hasResults: false, sources: [], chunks: [] };
     }
 
-    if (!data || data.length === 0) {
-      console.log('RAG Search: KHÔNG TÌM THẤY tài liệu nào trong database');
+    if (!chunks || chunks.length === 0) {
+      console.log('RAG Search: KHÔNG có chunk nào trong database');
       return { context: '', hasResults: false, sources: [], chunks: [] };
     }
 
-    console.log(`RAG Search: Tìm thấy ${data.length} đoạn, đang lọc theo similarity >= ${MIN_SIMILARITY}`);
-    
-    // Log all similarities for debugging
-    data.forEach((chunk: any, i: number) => {
-      console.log(`  Chunk ${i + 1}: similarity=${chunk.similarity?.toFixed(4) || 'N/A'}, title="${chunk.document_title}"`);
+    console.log(`RAG Search: Tìm thấy ${chunks.length} chunks trong database, đang tìm kiếm keywords...`);
+
+    // Score each chunk based on keyword matches
+    const scoredChunks = chunks.map((chunk: any) => {
+      const contentLower = chunk.content.toLowerCase();
+      let matchCount = 0;
+      let matchedKeywords: string[] = [];
+      
+      keywords.forEach(keyword => {
+        if (contentLower.includes(keyword)) {
+          matchCount++;
+          matchedKeywords.push(keyword);
+        }
+      });
+
+      // Calculate similarity as percentage of keywords matched
+      const similarity = matchCount / keywords.length;
+      
+      return {
+        ...chunk,
+        document_title: chunk.documents?.title || 'Unknown',
+        similarity,
+        matchCount,
+        matchedKeywords
+      };
     });
 
-    // CRITICAL: Filter chunks with similarity >= 0.85
-    const highQualityChunks = data.filter((chunk: any) => {
-      const similarity = chunk.similarity || 0;
-      return similarity >= MIN_SIMILARITY;
-    });
+    // Filter chunks with at least 40% keyword match (relaxed for Vietnamese)
+    const MIN_MATCH_RATIO = 0.4;
+    const matchedChunks = scoredChunks
+      .filter((chunk: any) => chunk.similarity >= MIN_MATCH_RATIO)
+      .sort((a: any, b: any) => b.similarity - a.similarity);
 
-    if (highQualityChunks.length === 0) {
-      console.log(`RAG Search: KHÔNG có chunk nào đạt ngưỡng similarity >= ${MIN_SIMILARITY}`);
-      console.log('RAG Search: Sẽ KHÔNG trích dẫn - chỉ dùng kiến thức chung');
+    console.log(`RAG Search: ${matchedChunks.length} chunks có >= ${MIN_MATCH_RATIO * 100}% keywords khớp`);
+
+    if (matchedChunks.length === 0) {
+      console.log('RAG Search: Không có chunk nào đạt ngưỡng keyword match');
       return { context: '', hasResults: false, sources: [], chunks: [] };
     }
 
-    console.log(`RAG Search: ${highQualityChunks.length} chunk đạt ngưỡng similarity >= ${MIN_SIMILARITY}`);
+    // Log matches for debugging
+    matchedChunks.slice(0, 5).forEach((chunk: any, i: number) => {
+      console.log(`  Match ${i + 1}: ${(chunk.similarity * 100).toFixed(0)}% match (${chunk.matchedKeywords.join(', ')}) - "${chunk.document_title}"`);
+    });
 
-    // Collect unique sources from high quality chunks only
+    // Collect unique sources
     const uniqueTitles = new Set<string>();
-    highQualityChunks.forEach((chunk: any) => {
+    matchedChunks.forEach((chunk: any) => {
       if (chunk.document_title) {
         uniqueTitles.add(String(chunk.document_title));
       }
     });
     const sources: string[] = Array.from(uniqueTitles);
 
-    // Format ONLY high quality results with EXACT content markers
-    const context = highQualityChunks.slice(0, 4).map((chunk: any, index: number) => 
+    // Format top results with EXACT content
+    const topChunks = matchedChunks.slice(0, 4);
+    const context = topChunks.map((chunk: any, index: number) => 
       `【TRÍCH DẪN CHÍNH XÁC ${index + 1}】
 Nguồn: "${chunk.document_title}"
-Độ tương đồng: ${(chunk.similarity * 100).toFixed(1)}%
+Độ khớp keywords: ${(chunk.similarity * 100).toFixed(0)}% (${chunk.matchedKeywords.join(', ')})
 Nội dung nguyên văn:
 ---
 ${chunk.content}
@@ -81,14 +126,14 @@ ${chunk.content}
 【KẾT THÚC TRÍCH DẪN ${index + 1}】`
     ).join('\n\n');
 
-    const chunks = highQualityChunks.slice(0, 4).map((chunk: any) => ({
+    const resultChunks = topChunks.map((chunk: any) => ({
       content: chunk.content,
       document_title: chunk.document_title,
       similarity: chunk.similarity
     }));
 
-    console.log('RAG Search: Trả về context với độ dài:', context.length);
-    return { context, hasResults: true, sources, chunks };
+    console.log('RAG Search: ✅ Trả về context với', topChunks.length, 'chunks');
+    return { context, hasResults: true, sources, chunks: resultChunks };
   } catch (e) {
     console.error('Search documents error:', e);
     return { context: '', hasResults: false, sources: [], chunks: [] };

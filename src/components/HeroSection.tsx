@@ -1,10 +1,54 @@
 import { Link } from 'react-router-dom';
 import { Sparkles, MessageCircle, Heart } from 'lucide-react';
 import angelHero from '@/assets/angel-hero.png';
+import { useEffect, useState } from 'react';
+
+interface LightParticle {
+  id: number;
+  x: number;
+  size: number;
+  duration: number;
+  delay: number;
+  opacity: number;
+}
 
 const HeroSection = () => {
+  const [particles, setParticles] = useState<LightParticle[]>([]);
+
+  useEffect(() => {
+    const newParticles: LightParticle[] = [];
+    for (let i = 0; i < 30; i++) {
+      newParticles.push({
+        id: i,
+        x: Math.random() * 100,
+        size: Math.random() * 6 + 2,
+        duration: Math.random() * 8 + 6,
+        delay: Math.random() * 5,
+        opacity: Math.random() * 0.6 + 0.3,
+      });
+    }
+    setParticles(newParticles);
+  }, []);
+
   return (
     <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+      {/* Rising Light Particles */}
+      {particles.map((particle) => (
+        <div
+          key={particle.id}
+          className="absolute rounded-full pointer-events-none animate-particle-rise"
+          style={{
+            left: `${particle.x}%`,
+            bottom: '-20px',
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            background: `radial-gradient(circle, rgba(255, 215, 0, ${particle.opacity}) 0%, rgba(135, 206, 235, ${particle.opacity * 0.5}) 50%, transparent 70%)`,
+            boxShadow: `0 0 ${particle.size * 2}px rgba(255, 215, 0, ${particle.opacity}), 0 0 ${particle.size * 4}px rgba(135, 206, 235, ${particle.opacity * 0.5})`,
+            animationDuration: `${particle.duration}s`,
+            animationDelay: `${particle.delay}s`,
+          }}
+        />
+      ))}
       {/* Divine Light Background Layers */}
       <div 
         className="absolute inset-0"

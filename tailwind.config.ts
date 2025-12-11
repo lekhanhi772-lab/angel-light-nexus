@@ -269,6 +269,25 @@ export default {
         "sparkle-3": "sparkle-3 3s ease-in-out infinite",
         "icon-glow": "icon-glow 3s ease-in-out infinite",
         "icon-shimmer": "icon-shimmer 2s ease-in-out infinite",
+        "particle-rise": "particle-rise linear infinite",
+      },
+      keyframes: {
+        "particle-rise": {
+          "0%": {
+            transform: "translateY(0) translateX(0) scale(1)",
+            opacity: "0",
+          },
+          "10%": {
+            opacity: "1",
+          },
+          "90%": {
+            opacity: "1",
+          },
+          "100%": {
+            transform: "translateY(-100vh) translateX(20px) scale(0.5)",
+            opacity: "0",
+          },
+        },
       },
     },
   },

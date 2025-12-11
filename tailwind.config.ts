@@ -164,6 +164,19 @@ export default {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
         },
+        "shooting-star": {
+          "0%": { 
+            transform: "translateX(0) translateY(0)",
+            opacity: "1"
+          },
+          "70%": { 
+            opacity: "1"
+          },
+          "100%": { 
+            transform: "translateX(300px) translateY(300px)",
+            opacity: "0"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -183,6 +196,7 @@ export default {
         "title-shimmer": "title-shimmer 3s ease-in-out infinite",
         "title-glow": "title-shimmer 3s ease-in-out infinite, glow-pulse 2s ease-in-out infinite",
         "rotate-slow": "rotate-slow 60s linear infinite",
+        "shooting-star": "shooting-star 2s ease-out forwards",
       },
     },
   },

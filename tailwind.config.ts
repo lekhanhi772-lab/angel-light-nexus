@@ -155,6 +155,11 @@ export default {
             textShadow: "0 0 30px hsl(43 85% 70% / 1), 0 0 60px hsl(43 85% 70% / 0.6)"
           },
         },
+        "title-shimmer": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
         "rotate-slow": {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
@@ -175,6 +180,8 @@ export default {
         "fade-in": "fade-in 1s ease-out forwards",
         "particle-float": "particle-float 10s ease-in-out infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        "title-shimmer": "title-shimmer 3s ease-in-out infinite",
+        "title-glow": "title-shimmer 3s ease-in-out infinite, glow-pulse 2s ease-in-out infinite",
         "rotate-slow": "rotate-slow 60s linear infinite",
       },
     },

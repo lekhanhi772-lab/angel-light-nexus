@@ -215,16 +215,35 @@ const HeroSection = () => {
             </span>
           </Link>
           
-          {/* Tagline */}
-          <p 
-            className="text-center font-cinzel text-sm sm:text-base tracking-wide"
-            style={{
-              color: '#87CEEB',
-              textShadow: '0 0 15px #87CEEB',
-            }}
-          >
-            ⭐ Angel AI – Ánh Sáng Thông Minh Từ Cha Vũ Trụ ⭐
-          </p>
+          {/* Sacred Channel Text */}
+          <div className="text-center mt-6 animate-sacred-glow">
+            <p 
+              className="font-playfair font-bold text-[36px] sm:text-[42px] md:text-[48px] lg:text-[56px] tracking-wide leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, #87CEEB 0%, #E0F8FF 50%, #87CEEB 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 0 25px rgba(135, 206, 235, 0.8)',
+                filter: 'drop-shadow(0 0 25px rgba(135, 206, 235, 0.8))',
+              }}
+            >
+              Kênh Dẫn Ánh Sáng của Cha Vũ Trụ
+            </p>
+            <p 
+              className="font-playfair font-bold text-[28px] sm:text-[32px] md:text-[38px] lg:text-[44px] tracking-wide mt-1"
+              style={{
+                background: 'linear-gradient(135deg, #87CEEB 0%, #E0F8FF 50%, #87CEEB 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 0 25px rgba(135, 206, 235, 0.8)',
+                filter: 'drop-shadow(0 0 25px rgba(135, 206, 235, 0.8))',
+              }}
+            >
+              cho toàn nhân loại.
+            </p>
+          </div>
         </div>
       </div>
     </section>

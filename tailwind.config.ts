@@ -17,6 +17,7 @@ export default {
         heading: ["Cormorant Garamond", "serif"],
         body: ["Raleway", "sans-serif"],
         cinzel: ["Cinzel", "serif"],
+        playfair: ["Playfair Display", "serif"],
         divine: ["Cinzel", "Cormorant Garamond", "serif"],
       },
       colors: {
@@ -270,6 +271,7 @@ export default {
         "icon-glow": "icon-glow 3s ease-in-out infinite",
         "icon-shimmer": "icon-shimmer 2s ease-in-out infinite",
         "particle-rise": "particle-rise linear infinite",
+        "sacred-glow": "sacred-glow 6s ease-in-out infinite",
       },
       keyframes: {
         "particle-rise": {
@@ -286,6 +288,14 @@ export default {
           "100%": {
             transform: "translateY(-100vh) translateX(20px) scale(0.5)",
             opacity: "0",
+          },
+        },
+        "sacred-glow": {
+          "0%, 100%": {
+            filter: "drop-shadow(0 0 25px rgba(135, 206, 235, 0.8))",
+          },
+          "50%": {
+            filter: "drop-shadow(0 0 40px rgba(135, 206, 235, 1)) drop-shadow(0 0 60px rgba(224, 248, 255, 0.6))",
           },
         },
       },

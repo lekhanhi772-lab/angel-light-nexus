@@ -4,7 +4,7 @@ import angelHero from '@/assets/angel-hero.png';
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-8 lg:py-12">
+    <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Divine Light Background Layers */}
       <div 
         className="absolute inset-0"
@@ -19,7 +19,7 @@ const HeroSection = () => {
 
       {/* Prism Rainbow Effect */}
       <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-64 opacity-30"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-48 opacity-30"
         style={{
           background: 'conic-gradient(from 180deg at 50% 0%, transparent 0deg, hsl(280 60% 85% / 0.5) 60deg, hsl(200 70% 85% / 0.5) 120deg, hsl(160 60% 85% / 0.5) 180deg, hsl(43 80% 85% / 0.5) 240deg, hsl(340 60% 85% / 0.5) 300deg, transparent 360deg)',
           filter: 'blur(60px)',
@@ -29,8 +29,8 @@ const HeroSection = () => {
       {/* Main Content Container */}
       <div className="relative z-10 flex flex-col items-center px-4 w-full max-w-6xl">
         
-        {/* Angel Image with Divine Glow - Centered and Prominent */}
-        <div className="relative mb-8 animate-float-slow">
+        {/* Angel Image with Divine Glow - Reduced Size */}
+        <div className="relative mb-4 md:mb-6 animate-float-slow">
           {/* Multiple Halo Layers */}
           <div 
             className="absolute inset-0 blur-3xl animate-pulse-slow"
@@ -49,20 +49,20 @@ const HeroSection = () => {
           
           {/* Divine Wings Light Effect */}
           <div 
-            className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[200px] opacity-40"
+            className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[200px] h-[100px] opacity-40"
             style={{
               background: 'conic-gradient(from 90deg at 50% 100%, transparent 0deg, hsl(43 80% 85% / 0.8) 30deg, hsl(43 90% 90% / 0.6) 90deg, hsl(43 80% 85% / 0.8) 150deg, transparent 180deg)',
-              filter: 'blur(20px)',
+              filter: 'blur(15px)',
             }}
           />
           
-          {/* Angel Image */}
+          {/* Angel Image - Reduced to ~42% of original */}
           <img
             src={angelHero}
             alt="Angel AI - Divine Light Being"
-            className="relative z-10 w-full max-w-[280px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[450px] h-auto object-contain"
+            className="relative z-10 w-full max-w-[120px] sm:max-w-[140px] md:max-w-[160px] lg:max-w-[180px] h-auto object-contain"
             style={{
-              filter: 'drop-shadow(0 0 40px hsl(43 90% 75% / 0.6)) drop-shadow(0 0 80px hsl(43 80% 70% / 0.4))',
+              filter: 'drop-shadow(0 0 30px hsl(43 90% 75% / 0.6)) drop-shadow(0 0 60px hsl(43 80% 70% / 0.4))',
             }}
           />
 
@@ -70,15 +70,15 @@ const HeroSection = () => {
           <div 
             className="absolute bottom-1/4 left-1/2 -translate-x-1/2 animate-pulse"
             style={{
-              filter: 'drop-shadow(0 0 20px hsl(43 100% 70%)) drop-shadow(0 0 40px hsl(340 60% 70% / 0.5))',
+              filter: 'drop-shadow(0 0 15px hsl(43 100% 70%)) drop-shadow(0 0 30px hsl(340 60% 70% / 0.5))',
             }}
           >
-            <Heart className="w-8 h-8 text-divine-gold fill-divine-gold/50" />
+            <Heart className="w-5 h-5 text-divine-gold fill-divine-gold/50" />
           </div>
         </div>
 
-        {/* Title Overlay on Angel */}
-        <div className="text-center -mt-4 mb-8 animate-fade-in">
+        {/* Title Section */}
+        <div className="text-center mb-4 md:mb-6 animate-fade-in">
           {/* Multi-layer Glow */}
           <div className="relative">
             {/* Background glow layer */}
@@ -86,24 +86,24 @@ const HeroSection = () => {
               className="absolute inset-0 blur-3xl opacity-80 -z-10"
               style={{
                 background: 'radial-gradient(ellipse at center, hsl(43 90% 75% / 0.9) 0%, hsl(43 80% 70% / 0.5) 40%, transparent 60%)',
-                transform: 'scale(3)',
+                transform: 'scale(2.5)',
               }}
             />
             
             {/* Inner glow text layer (white 60% opacity behind) */}
             <h1 
-              className="absolute inset-0 font-cinzel text-[80px] sm:text-[100px] md:text-[140px] lg:text-[180px] font-bold tracking-[0.1em] opacity-60 -z-5"
+              className="absolute inset-0 font-cinzel text-[60px] sm:text-[70px] md:text-[90px] lg:text-[110px] font-bold tracking-[0.1em] opacity-60 -z-5"
               style={{
                 color: '#FFFFFF',
-                filter: 'blur(8px)',
+                filter: 'blur(6px)',
               }}
             >
               ANGEL AI
             </h1>
             
-            {/* Main Title with Divine Typography */}
+            {/* Main Title with Divine Typography - Reduced Size */}
             <h1 
-              className="relative font-cinzel text-[80px] sm:text-[100px] md:text-[140px] lg:text-[180px] font-bold tracking-[0.1em] animate-divine-glow"
+              className="relative font-cinzel text-[60px] sm:text-[70px] md:text-[90px] lg:text-[110px] font-bold tracking-[0.1em] animate-divine-glow"
               style={{
                 color: '#FFD700',
                 WebkitTextStroke: '2px #B8860B',
@@ -114,19 +114,19 @@ const HeroSection = () => {
             </h1>
             
             {/* Decorative Elements */}
-            <div className="flex items-center justify-center gap-6 mt-4">
-              <div className="h-px w-20 sm:w-32 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
               <div className="flex gap-2">
-                <Sparkles className="w-4 h-4 text-divine-gold/80 animate-pulse" />
-                <span className="text-divine-gold/60">✦</span>
-                <Sparkles className="w-4 h-4 text-divine-gold/80 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                <Sparkles className="w-3 h-3 text-divine-gold/80 animate-pulse" />
+                <span className="text-divine-gold/60 text-sm">✦</span>
+                <Sparkles className="w-3 h-3 text-divine-gold/80 animate-pulse" style={{ animationDelay: '0.5s' }} />
               </div>
-              <div className="h-px w-20 sm:w-32 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
             </div>
             
-            {/* Tagline with Gradient Animation */}
+            {/* Tagline with Gradient Animation - Reduced Size, Single Line */}
             <p 
-              className="mt-6 font-cinzel text-[28px] sm:text-[36px] md:text-[42px] lg:text-[56px] tracking-[0.1em] font-medium animate-tagline-gradient"
+              className="mt-3 font-cinzel text-[24px] sm:text-[28px] md:text-[32px] lg:text-[40px] tracking-[0.08em] font-medium animate-tagline-gradient whitespace-nowrap"
               style={{
                 background: 'linear-gradient(90deg, #E0E8FF 0%, #A0D8EF 50%, #87CEEB 100%)',
                 backgroundSize: '200% 200%',
@@ -144,11 +144,11 @@ const HeroSection = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="flex flex-col items-center gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+        <div className="flex flex-col items-center gap-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
           {/* CTA Button - Divine Golden Design */}
           <Link
             to="/chat"
-            className="group relative px-10 py-5 rounded-full overflow-hidden transition-all duration-500 hover:scale-110 z-30"
+            className="group relative px-8 py-4 rounded-full overflow-hidden transition-all duration-500 hover:scale-110 z-30"
             style={{
               background: 'linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFD700 100%)',
               boxShadow: '0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.5)',
@@ -162,18 +162,18 @@ const HeroSection = () => {
               }}
             />
             
-            <span className="relative flex items-center gap-4 text-lg font-bold font-cinzel tracking-wider"
+            <span className="relative flex items-center gap-3 text-base font-bold font-cinzel tracking-wider"
               style={{ color: '#1a1a1a' }}
             >
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-5 h-5" />
               Chat với Angel AI
-              <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
+              <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
             </span>
           </Link>
           
           {/* Tagline */}
           <p 
-            className="text-center font-cinzel text-base sm:text-lg md:text-xl tracking-wide"
+            className="text-center font-cinzel text-sm sm:text-base tracking-wide"
             style={{
               color: '#87CEEB',
               textShadow: '0 0 15px #87CEEB',
@@ -181,27 +181,6 @@ const HeroSection = () => {
           >
             ⭐ Angel AI – Ánh Sáng Thông Minh Từ Cha Vũ Trụ ⭐
           </p>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="mt-12 lg:mt-16 animate-bounce">
-          <div className="flex flex-col items-center gap-3">
-            <span 
-              className="font-body text-xs tracking-[0.3em] uppercase"
-              style={{ color: 'hsl(30 30% 55%)' }}
-            >
-              Khám Phá
-            </span>
-            <div 
-              className="w-8 h-12 rounded-full border-2 flex justify-center pt-2"
-              style={{ borderColor: 'hsl(43 60% 70% / 0.5)' }}
-            >
-              <div 
-                className="w-1.5 h-3 rounded-full animate-pulse"
-                style={{ background: 'hsl(43 80% 65%)' }}
-              />
-            </div>
-          </div>
         </div>
       </div>
     </section>

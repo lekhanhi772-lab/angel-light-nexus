@@ -105,9 +105,21 @@ export default {
             transform: "scale(1.02)"
           },
         },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "0.8" },
+        },
         shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
+        twinkle: {
+          "0%, 100%": { opacity: "0.2", transform: "scale(0.8)" },
+          "50%": { opacity: "1", transform: "scale(1.2)" },
+        },
+        "sparkle-cluster": {
+          "0%, 100%": { opacity: "0.6", transform: "scale(1)" },
+          "50%": { opacity: "1", transform: "scale(1.1)" },
         },
         "fade-in-up": {
           "0%": { opacity: "0", transform: "translateY(30px)" },
@@ -155,7 +167,10 @@ export default {
         "float-slow": "float-slow 8s ease-in-out infinite",
         pulse: "pulse 3s ease-in-out infinite",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-        shimmer: "shimmer 3s linear infinite",
+        "pulse-slow": "pulse-slow 6s ease-in-out infinite",
+        shimmer: "shimmer 8s linear infinite",
+        twinkle: "twinkle 2s ease-in-out infinite",
+        "sparkle-cluster": "sparkle-cluster 4s ease-in-out infinite",
         "fade-in-up": "fade-in-up 0.8s ease-out forwards",
         "fade-in": "fade-in 1s ease-out forwards",
         "particle-float": "particle-float 10s ease-in-out infinite",

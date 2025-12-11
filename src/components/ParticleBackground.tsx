@@ -102,7 +102,47 @@ const ParticleBackground = () => {
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Shimmer Gradient Overlay - Warm Golden */}
+      {/* Ethereal Base Gradient */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `
+            linear-gradient(180deg, 
+              hsl(45 70% 97%) 0%, 
+              hsl(43 60% 95%) 30%, 
+              hsl(45 50% 96%) 60%, 
+              hsl(43 55% 94%) 100%
+            )
+          `,
+        }}
+      />
+
+      {/* Soft Celestial Orbs */}
+      <div 
+        className="absolute top-[10%] left-[20%] w-[40vw] h-[40vw] animate-pulse-slow"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(43 80% 90% / 0.5) 0%, transparent 60%)',
+          filter: 'blur(60px)',
+        }}
+      />
+      <div 
+        className="absolute top-[50%] right-[10%] w-[30vw] h-[30vw] animate-pulse-slow"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(200 60% 92% / 0.4) 0%, transparent 60%)',
+          filter: 'blur(50px)',
+          animationDelay: '2s',
+        }}
+      />
+      <div 
+        className="absolute bottom-[20%] left-[15%] w-[25vw] h-[25vw] animate-pulse-slow"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(280 50% 92% / 0.3) 0%, transparent 60%)',
+          filter: 'blur(40px)',
+          animationDelay: '4s',
+        }}
+      />
+
+      {/* Shimmer Gradient Overlay */}
       <div 
         className="absolute inset-0 animate-shimmer"
         style={{
@@ -110,9 +150,9 @@ const ParticleBackground = () => {
             linear-gradient(
               45deg,
               transparent 30%,
-              hsl(43 80% 85% / 0.08) 45%,
-              hsl(43 85% 90% / 0.12) 50%,
-              hsl(43 80% 85% / 0.08) 55%,
+              hsl(43 80% 90% / 0.15) 45%,
+              hsl(45 90% 95% / 0.2) 50%,
+              hsl(43 80% 90% / 0.15) 55%,
               transparent 70%
             )
           `,
@@ -120,14 +160,26 @@ const ParticleBackground = () => {
         }}
       />
 
-      {/* Sacred Geometry Background - Golden */}
-      <div className="absolute inset-0 opacity-[0.04]">
-        <svg className="w-full h-full animate-rotate-slow" viewBox="0 0 400 400">
-          <circle cx="200" cy="200" r="150" fill="none" stroke="hsl(43 80% 55%)" strokeWidth="0.5" />
-          <circle cx="200" cy="200" r="100" fill="none" stroke="hsl(43 80% 55%)" strokeWidth="0.5" />
-          <circle cx="200" cy="200" r="50" fill="none" stroke="hsl(43 80% 55%)" strokeWidth="0.5" />
-          <polygon points="200,50 350,200 200,350 50,200" fill="none" stroke="hsl(43 80% 55%)" strokeWidth="0.5" />
-          <polygon points="200,80 320,200 200,320 80,200" fill="none" stroke="hsl(43 80% 55%)" strokeWidth="0.5" />
+      {/* Sacred Geometry Background - Enhanced */}
+      <div className="absolute inset-0 opacity-[0.025]">
+        <svg className="w-full h-full animate-rotate-slow" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice">
+          {/* Outer circles */}
+          <circle cx="400" cy="400" r="380" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          <circle cx="400" cy="400" r="300" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          <circle cx="400" cy="400" r="220" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          <circle cx="400" cy="400" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          
+          {/* Diamond shapes */}
+          <polygon points="400,20 780,400 400,780 20,400" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          <polygon points="400,100 700,400 400,700 100,400" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          
+          {/* Flower of Life - 6 petals */}
+          <circle cx="400" cy="260" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
+          <circle cx="521" cy="330" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
+          <circle cx="521" cy="470" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
+          <circle cx="400" cy="540" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
+          <circle cx="279" cy="470" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
+          <circle cx="279" cy="330" r="140" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
         </svg>
       </div>
 
@@ -144,28 +196,26 @@ const ParticleBackground = () => {
             animationIterationCount: 'infinite',
           }}
         >
-          {/* Star head */}
           <div 
-            className="absolute w-2 h-2 rounded-full"
+            className="absolute w-3 h-3 rounded-full"
             style={{
-              background: 'radial-gradient(circle, hsl(43 90% 80%) 0%, hsl(43 85% 60%) 50%, transparent 100%)',
-              boxShadow: '0 0 10px hsl(43 85% 70%), 0 0 20px hsl(43 85% 65%), 0 0 30px hsl(43 80% 60%)',
+              background: 'radial-gradient(circle, hsl(45 100% 95%) 0%, hsl(43 90% 70%) 50%, transparent 100%)',
+              boxShadow: '0 0 15px hsl(43 90% 75%), 0 0 30px hsl(43 85% 70%), 0 0 45px hsl(43 80% 65%)',
             }}
           />
-          {/* Star tail */}
           <div 
             className="absolute top-1/2 right-full -translate-y-1/2"
             style={{
               width: `${star.length}px`,
-              height: '2px',
-              background: `linear-gradient(90deg, transparent 0%, hsl(43 85% 70% / 0.3) 30%, hsl(43 90% 80% / 0.8) 100%)`,
-              borderRadius: '0 2px 2px 0',
+              height: '3px',
+              background: `linear-gradient(90deg, transparent 0%, hsl(43 85% 80% / 0.4) 40%, hsl(45 100% 90% / 0.9) 100%)`,
+              borderRadius: '0 3px 3px 0',
             }}
           />
         </div>
       ))}
 
-      {/* Twinkling Stars - Golden */}
+      {/* Twinkling Stars */}
       {stars.map((star) => (
         <div
           key={`star-${star.id}`}
@@ -180,7 +230,7 @@ const ParticleBackground = () => {
             width={star.size * 4} 
             height={star.size * 4} 
             viewBox="0 0 24 24"
-            style={{ color: 'hsl(43 80% 55% / 0.5)' }}
+            style={{ color: 'hsl(43 70% 60% / 0.6)' }}
           >
             <path
               fill="currentColor"
@@ -190,7 +240,7 @@ const ParticleBackground = () => {
         </div>
       ))}
 
-      {/* Floating Particles - Warm Golden */}
+      {/* Floating Light Particles */}
       {particles.map((particle) => (
         <div
           key={particle.id}
@@ -203,13 +253,31 @@ const ParticleBackground = () => {
             background: `radial-gradient(circle, ${getParticleColor(particle.type)} 0%, transparent 70%)`,
             animationDelay: `${particle.delay}s`,
             animationDuration: `${particle.duration}s`,
-            boxShadow: `0 0 ${particle.size * 2}px ${getParticleColor(particle.type)}`,
+            boxShadow: `0 0 ${particle.size * 3}px ${getParticleColor(particle.type)}`,
           }}
         />
       ))}
 
-      {/* Sparkle Clusters - Golden */}
+      {/* Sparkle Clusters */}
       <div className="absolute top-1/4 left-1/4 animate-sparkle-cluster">
+        <div className="relative w-40 h-40">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1.5 h-1.5 rounded-full animate-twinkle"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 0.4}s`,
+                background: 'hsl(43 85% 75%)',
+                boxShadow: '0 0 8px 3px hsl(43 90% 80% / 0.8)',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="absolute top-2/3 right-1/4 animate-sparkle-cluster" style={{ animationDelay: '2s' }}>
         <div className="relative w-32 h-32">
           {[...Array(5)].map((_, i) => (
             <div
@@ -218,46 +286,20 @@ const ParticleBackground = () => {
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 0.5}s`,
-                background: 'hsl(43 80% 70%)',
-                boxShadow: '0 0 6px 2px hsl(43 85% 75% / 0.8)',
+                animationDelay: `${i * 0.6}s`,
+                background: 'hsl(45 80% 80%)',
+                boxShadow: '0 0 6px 2px hsl(43 85% 75% / 0.7)',
               }}
             />
           ))}
         </div>
       </div>
 
-      <div className="absolute top-2/3 right-1/4 animate-sparkle-cluster" style={{ animationDelay: '2s' }}>
-        <div className="relative w-24 h-24">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 rounded-full animate-twinkle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 0.7}s`,
-                background: 'hsl(40 70% 75%)',
-                boxShadow: '0 0 6px 2px hsl(43 80% 70% / 0.6)',
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Radial Glow - Warm Golden */}
+      {/* Rainbow Prism Edge Effect */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[150vh]"
+        className="absolute top-0 left-0 right-0 h-1 opacity-40"
         style={{
-          background: 'radial-gradient(ellipse at center, hsl(43 80% 85% / 0.2) 0%, transparent 50%)',
-        }}
-      />
-
-      {/* Secondary Glow - Soft Cream */}
-      <div 
-        className="absolute top-1/3 right-1/4 w-[50vw] h-[50vh] animate-pulse-slow"
-        style={{
-          background: 'radial-gradient(ellipse at center, hsl(45 60% 88% / 0.15) 0%, transparent 60%)',
+          background: 'linear-gradient(90deg, hsl(280 60% 75%) 0%, hsl(200 70% 75%) 25%, hsl(160 60% 70%) 50%, hsl(43 80% 70%) 75%, hsl(340 60% 75%) 100%)',
         }}
       />
     </div>

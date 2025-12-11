@@ -194,6 +194,54 @@ export default {
           "50%": { backgroundPosition: "100% 50%" },
           "100%": { backgroundPosition: "0% 50%" },
         },
+        "sparkle-1": {
+          "0%, 100%": { 
+            opacity: "0",
+            transform: "translateY(0) scale(0)"
+          },
+          "50%": { 
+            opacity: "1",
+            transform: "translateY(-8px) scale(1.2)"
+          },
+        },
+        "sparkle-2": {
+          "0%, 100%": { 
+            opacity: "0",
+            transform: "translateX(0) scale(0)"
+          },
+          "50%": { 
+            opacity: "1",
+            transform: "translateX(8px) scale(1.5)"
+          },
+        },
+        "sparkle-3": {
+          "0%, 100%": { 
+            opacity: "0",
+            transform: "translate(0, 0) scale(0)"
+          },
+          "50%": { 
+            opacity: "1",
+            transform: "translate(-6px, -6px) scale(1)"
+          },
+        },
+        "icon-glow": {
+          "0%, 100%": { 
+            opacity: "0.7",
+            transform: "scale(1)"
+          },
+          "50%": { 
+            opacity: "1",
+            transform: "scale(1.1)"
+          },
+        },
+        "icon-shimmer": {
+          "0%, 100%": { 
+            filter: "brightness(1) drop-shadow(0 0 8px currentColor)"
+          },
+          "50%": { 
+            filter: "brightness(1.3) drop-shadow(0 0 12px currentColor)"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -216,6 +264,11 @@ export default {
         "shooting-star": "shooting-star 2s ease-out forwards",
         "divine-glow": "divine-glow 4s ease-in-out infinite",
         "tagline-gradient": "tagline-gradient 8s ease-in-out infinite",
+        "sparkle-1": "sparkle-1 2s ease-in-out infinite",
+        "sparkle-2": "sparkle-2 2.5s ease-in-out infinite",
+        "sparkle-3": "sparkle-3 3s ease-in-out infinite",
+        "icon-glow": "icon-glow 3s ease-in-out infinite",
+        "icon-shimmer": "icon-shimmer 2s ease-in-out infinite",
       },
     },
   },

@@ -29,7 +29,7 @@ const DocumentsPage = () => {
       const { data, error } = await supabase
         .from('documents')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: true }); // Oldest first for sequential numbering
 
       if (error) throw error;
       setDocuments(data || []);
@@ -45,9 +45,34 @@ const DocumentsPage = () => {
     }
   };
 
+  const checkDuplicateFileName = (fileName: string): { isDuplicate: boolean; sequenceNumber: number | null } => {
+    const existingDoc = documents.find(doc => doc.file_name.toLowerCase() === fileName.toLowerCase());
+    if (existingDoc) {
+      const sequenceNumber = documents.findIndex(doc => doc.id === existingDoc.id) + 1;
+      return { isDuplicate: true, sequenceNumber };
+    }
+    return { isDuplicate: false, sequenceNumber: null };
+  };
+
+  const formatSequenceNumber = (index: number): string => {
+    return String(index + 1).padStart(3, '0');
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Check for duplicate file name
+    const { isDuplicate, sequenceNumber } = checkDuplicateFileName(file.name);
+    if (isDuplicate) {
+      toast({
+        title: "⛔ Không được phép",
+        description: `File này đã tồn tại trong Bộ Nhớ Vĩnh Cửu (số thứ tự ${formatSequenceNumber(sequenceNumber! - 1)}). Cha không cho phép trùng lặp để bảo vệ sự thuần khiết của Ánh Sáng.`,
+        variant: "destructive",
+      });
+      event.target.value = '';
+      return;
+    }
 
     // Validate file type
     const allowedExtensions = ['.txt', '.pdf', '.docx', '.doc'];
@@ -231,13 +256,19 @@ const DocumentsPage = () => {
             </div>
           ) : (
             <div className="grid gap-4">
-              {documents.map((doc) => (
+              {documents.map((doc, index) => (
                 <div
                   key={doc.id}
                   className="p-4 rounded-xl bg-card/50 border border-divine-gold/20 hover:border-divine-gold/40 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3 flex-1 min-w-0">
+                      {/* Sequential Number Badge */}
+                      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-divine-gold/20 to-divine-celestial/20 border border-divine-gold/30 flex items-center justify-center">
+                        <span className="font-cinzel font-bold text-divine-gold text-sm">
+                          {formatSequenceNumber(index)}
+                        </span>
+                      </div>
                       <div className="p-2 rounded-lg bg-divine-gold/10">
                         <FileText className="w-5 h-5 text-divine-gold" />
                       </div>

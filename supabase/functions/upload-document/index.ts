@@ -163,6 +163,7 @@ serve(async (req) => {
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const title = formData.get('title') as string || file?.name || 'Untitled';
+    const folderId = formData.get('folder_id') as string | null;
 
     if (!file) {
       return new Response(
@@ -261,7 +262,8 @@ serve(async (req) => {
         file_name: file.name,
         file_path: filePath,
         file_size: file.size,
-        file_type: file.type
+        file_type: file.type,
+        folder_id: folderId || null
       })
       .select()
       .single();

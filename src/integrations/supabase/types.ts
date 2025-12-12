@@ -112,6 +112,7 @@ export type Database = {
           file_path: string
           file_size: number
           file_type: string
+          folder_id: string | null
           id: string
           title: string
           updated_at: string
@@ -122,6 +123,7 @@ export type Database = {
           file_path: string
           file_size: number
           file_type: string
+          folder_id?: string | null
           id?: string
           title: string
           updated_at?: string
@@ -132,8 +134,38 @@ export type Database = {
           file_path?: string
           file_size?: number
           file_type?: string
+          folder_id?: string | null
           id?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "folders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folders: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
           updated_at?: string
         }
         Relationships: []

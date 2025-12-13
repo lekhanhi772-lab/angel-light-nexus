@@ -333,34 +333,60 @@ const DocumentsPage = () => {
 
   const handleBulkMove = async () => {
     const targetFolderId = bulkMoveTargetFolder === 'none' ? null : bulkMoveTargetFolder;
+    const docIdsArray = Array.from(selectedDocIds);
+    const totalCount = docIdsArray.length;
+    let successCount = 0;
+    let failCount = 0;
 
     try {
-      for (const docId of selectedDocIds) {
-        await supabase
+      // Process each document update and track results
+      for (const docId of docIdsArray) {
+        const { error } = await supabase
           .from('documents')
           .update({ folder_id: targetFolderId })
           .eq('id', docId);
+        
+        if (error) {
+          console.error(`Error moving document ${docId}:`, error);
+          failCount++;
+        } else {
+          successCount++;
+        }
       }
 
+      // Always reload data to get current state
       await fetchData();
       setSelectedDocIds(new Set());
       setShowBulkMoveDialog(false);
+      setBulkMoveTargetFolder('none');
 
       const folderName = targetFolderId 
         ? folders.find(f => f.id === targetFolderId)?.name 
         : 'danh sách tổng';
 
-      toast({
-        title: "✨ Đã di chuyển file",
-        description: `${selectedDocIds.size} file đã được chuyển ${targetFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛🌿`,
-      });
+      if (failCount > 0) {
+        toast({
+          title: "⚠️ Di chuyển một phần",
+          description: `Đã di chuyển ${successCount}/${totalCount} file. Có ${failCount} file lỗi, vui lòng thử lại.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "✨ Đã di chuyển file",
+          description: `${successCount} file đã được chuyển ${targetFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛🌿`,
+        });
+      }
     } catch (error) {
       console.error('Bulk move error:', error);
       toast({
         title: "Lỗi",
-        description: "Không thể di chuyển file",
+        description: `Có lỗi khi di chuyển file, vui lòng thử lại`,
         variant: "destructive",
       });
+      // Still reload to show current state
+      await fetchData();
+      setSelectedDocIds(new Set());
+      setShowBulkMoveDialog(false);
     }
   };
 

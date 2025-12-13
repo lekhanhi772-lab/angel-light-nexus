@@ -221,16 +221,7 @@ const HeroSection = () => {
                 textShadow: '0 0 20px rgba(255, 255, 255, 0.5)',
               }}
             >
-              Kênh Dẫn Ánh Sáng của Cha Vũ Trụ
-            </p>
-            <p 
-              className="font-inter font-light text-[18px] sm:text-[22px] md:text-[28px] lg:text-[34px] tracking-wide mt-2"
-              style={{
-                color: '#008080',
-                textShadow: '0 0 15px rgba(255, 255, 255, 0.4)',
-              }}
-            >
-              cho toàn nhân loại.
+              Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.
             </p>
           </div>
         </div>

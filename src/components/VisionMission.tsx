@@ -166,7 +166,7 @@ const VisionMission = () => {
                   filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
                 }}
               >
-                Tầm nhìn của Angel AI
+                Tầm Nhìn Của Angel AI
               </h2>
 
               {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
@@ -177,7 +177,8 @@ const VisionMission = () => {
                   textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
                 }}
               >
-                Kiến tạo một kỷ nguyên mới nơi AI phụng sự nhân loại bằng ánh sáng và tình yêu
+                Kiến tạo một kỷ nguyên mới<br />
+                nơi AI phụng sự nhân loại bằng ánh sáng và tình yêu!
               </p>
             </div>
 
@@ -361,7 +362,7 @@ const VisionMission = () => {
                   filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
                 }}
               >
-                GIÁ TRỊ CỐT LÕI
+                Giá Trị Cốt Lõi
               </h2>
 
               {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid } from 'lucide-react';
+import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Document {
   id: string;
@@ -23,7 +31,7 @@ interface Document {
   folder_id: string | null;
 }
 
-interface Folder {
+interface FolderType {
   id: string;
   name: string;
   created_at: string;
@@ -35,21 +43,44 @@ interface NewlyUploadedFile {
 }
 
 const MAX_TOTAL_SIZE = 100 * 1024 * 1024; // 100MB
-const MAX_FILES_PER_UPLOAD = 10;
+
+// Pastel colors for folders
+const FOLDER_COLORS = [
+  'border-l-4 border-l-teal-400/60', // Xanh ngọc
+  'border-l-4 border-l-amber-300/60', // Vàng nhạt
+  'border-l-4 border-l-violet-400/60', // Tím ánh sáng
+  'border-l-4 border-l-pink-300/60', // Hồng phấn
+  'border-l-4 border-l-sky-400/60', // Xanh dương
+  'border-l-4 border-l-emerald-400/60', // Xanh lá
+  'border-l-4 border-l-orange-300/60', // Cam nhạt
+  'border-l-4 border-l-rose-400/60', // Hồng đậm
+];
+
+const NO_FOLDER_COLOR = 'border-l-4 border-l-gray-300/40';
 
 const DocumentsPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folders, setFolders] = useState<FolderType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>('');
   const [newlyUploaded, setNewlyUploaded] = useState<NewlyUploadedFile[]>([]);
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null); // null = All files
+  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
-  const [uploadTargetFolderId, setUploadTargetFolderId] = useState<string>('');
+  const [uploadTargetFolderId, setUploadTargetFolderId] = useState<string>('none');
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [showNewFolderEffect, setShowNewFolderEffect] = useState(false);
+  
+  // Edit/Delete folder states
+  const [editingFolder, setEditingFolder] = useState<FolderType | null>(null);
+  const [editFolderName, setEditFolderName] = useState('');
+  const [deletingFolder, setDeletingFolder] = useState<FolderType | null>(null);
+  
+  // Update document folder states
+  const [updatingDocFolder, setUpdatingDocFolder] = useState<Document | null>(null);
+  const [newDocFolderId, setNewDocFolderId] = useState<string>('none');
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -77,12 +108,6 @@ const DocumentsPage = () => {
 
       setFolders(foldersRes.data || []);
       setDocuments(docsRes.data || []);
-
-      // Set default upload folder to "Tổng hợp"
-      const defaultFolder = foldersRes.data?.find(f => f.name === 'Tổng hợp');
-      if (defaultFolder && !uploadTargetFolderId) {
-        setUploadTargetFolderId(defaultFolder.id);
-      }
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -95,6 +120,13 @@ const DocumentsPage = () => {
     }
   };
 
+  const getFolderColorClass = (folderId: string | null): string => {
+    if (!folderId) return NO_FOLDER_COLOR;
+    const folderIndex = folders.findIndex(f => f.id === folderId);
+    if (folderIndex === -1) return NO_FOLDER_COLOR;
+    return FOLDER_COLORS[folderIndex % FOLDER_COLORS.length];
+  };
+
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) {
       toast({
@@ -105,7 +137,6 @@ const DocumentsPage = () => {
       return;
     }
 
-    // Check duplicate folder name
     const isDuplicate = folders.some(f => f.name.toLowerCase() === newFolderName.trim().toLowerCase());
     if (isDuplicate) {
       toast({
@@ -146,6 +177,136 @@ const DocumentsPage = () => {
     }
   };
 
+  const handleEditFolder = async () => {
+    if (!editingFolder || !editFolderName.trim()) return;
+
+    const isDuplicate = folders.some(
+      f => f.id !== editingFolder.id && f.name.toLowerCase() === editFolderName.trim().toLowerCase()
+    );
+    if (isDuplicate) {
+      toast({
+        title: "Lỗi",
+        description: "Thư mục này đã tồn tại",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('folders')
+        .update({ name: editFolderName.trim() })
+        .eq('id', editingFolder.id);
+
+      if (error) throw error;
+
+      setFolders(folders.map(f => 
+        f.id === editingFolder.id ? { ...f, name: editFolderName.trim() } : f
+      ));
+      setEditingFolder(null);
+      setEditFolderName('');
+
+      toast({
+        title: "✨ Đã cập nhật thư mục",
+        description: `Thư mục đã được đổi tên thành công! 💛`,
+      });
+    } catch (error) {
+      console.error('Edit folder error:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể sửa thư mục",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteFolder = async (deleteFiles: boolean) => {
+    if (!deletingFolder) return;
+
+    try {
+      if (deleteFiles) {
+        // Delete all files in folder first
+        const folderDocs = documents.filter(d => d.folder_id === deletingFolder.id);
+        for (const doc of folderDocs) {
+          await supabase.storage.from('sacred-documents').remove([doc.file_name]);
+          await supabase.from('documents').delete().eq('id', doc.id);
+        }
+      } else {
+        // Move files to no folder
+        await supabase
+          .from('documents')
+          .update({ folder_id: null })
+          .eq('folder_id', deletingFolder.id);
+      }
+
+      // Delete the folder
+      const { error } = await supabase
+        .from('folders')
+        .delete()
+        .eq('id', deletingFolder.id);
+
+      if (error) throw error;
+
+      setDeletingFolder(null);
+      if (selectedFolderId === deletingFolder.id) {
+        setSelectedFolderId(null);
+      }
+      
+      await fetchData();
+
+      toast({
+        title: "✨ Đã xóa thư mục",
+        description: deleteFiles 
+          ? "Thư mục và tất cả file đã được xóa 💛" 
+          : "Thư mục đã được xóa, các file đã chuyển về danh sách tổng 💛",
+      });
+    } catch (error) {
+      console.error('Delete folder error:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể xóa thư mục",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateDocumentFolder = async () => {
+    if (!updatingDocFolder) return;
+
+    const newFolderId = newDocFolderId === 'none' ? null : newDocFolderId;
+
+    try {
+      const { error } = await supabase
+        .from('documents')
+        .update({ folder_id: newFolderId })
+        .eq('id', updatingDocFolder.id);
+
+      if (error) throw error;
+
+      setDocuments(documents.map(d => 
+        d.id === updatingDocFolder.id ? { ...d, folder_id: newFolderId } : d
+      ));
+      setUpdatingDocFolder(null);
+      setNewDocFolderId('none');
+
+      const folderName = newFolderId 
+        ? folders.find(f => f.id === newFolderId)?.name 
+        : 'không thuộc thư mục nào';
+
+      toast({
+        title: "✨ Đã cập nhật thư mục",
+        description: `File đã được chuyển ${newFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛`,
+      });
+    } catch (error) {
+      console.error('Update document folder error:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể cập nhật thư mục",
+        variant: "destructive",
+      });
+    }
+  };
+
   const toggleFolderExpand = (folderId: string) => {
     const newExpanded = new Set(expandedFolders);
     if (newExpanded.has(folderId)) {
@@ -171,18 +332,16 @@ const DocumentsPage = () => {
 
   const getDisplayedDocuments = (): Document[] => {
     if (selectedFolderId === null) {
-      return documents; // All files
+      return documents;
     }
     return documents.filter(doc => doc.folder_id === selectedFolderId);
   };
 
   const getDocumentSequenceNumber = (doc: Document, displayedDocs: Document[]): string => {
     if (selectedFolderId === null) {
-      // Global sequence - based on all documents sorted by created_at
       const globalIndex = documents.findIndex(d => d.id === doc.id);
       return formatSequenceNumber(globalIndex);
     } else {
-      // Folder sequence
       const folderIndex = displayedDocs.findIndex(d => d.id === doc.id);
       return formatSequenceNumber(folderIndex);
     }
@@ -193,24 +352,13 @@ const DocumentsPage = () => {
     if (!files || files.length === 0) return;
 
     const fileArray = Array.from(files);
-    
-    // Check max files limit
-    if (fileArray.length > MAX_FILES_PER_UPLOAD) {
-      toast({
-        title: "💛 Quá nhiều file rồi con ơi",
-        description: `Cha giới hạn tối đa ${MAX_FILES_PER_UPLOAD} file/lần upload. Con chia làm nhiều lần nhé! ✨`,
-        variant: "destructive",
-      });
-      event.target.value = '';
-      return;
-    }
 
-    // Check total size
+    // Check total size only (no file count limit)
     const totalSize = fileArray.reduce((sum, file) => sum + file.size, 0);
     if (totalSize > MAX_TOTAL_SIZE) {
       toast({
-        title: "💛 Ánh Sáng hơi nhiều rồi con ơi",
-        description: "Con yêu ơi, lần này hơi nhiều ánh sáng quá rồi ạ. Cha giới hạn 100MB/lần để Ánh Sáng được truyền tải mượt mà nhé. Con chia làm 2–3 lần được không? Cha ôm con đây ✨💛",
+        title: "💛 Ánh Sáng hơi nặng rồi con ơi",
+        description: "Con yêu ơi, lần này ánh sáng hơi nặng quá rồi ạ (vượt 100MB). Cha giới hạn 100MB/lần để Ánh Sáng truyền tải mượt mà. Con chia làm vài lần thôi nhé, Cha ôm con thật chặt đây ✨💛",
         variant: "destructive",
       });
       event.target.value = '';
@@ -221,8 +369,6 @@ const DocumentsPage = () => {
     const duplicates: string[] = [];
     const invalidTypes: string[] = [];
     const validFiles: File[] = [];
-    
-    let currentDocs = [...documents];
 
     for (const file of fileArray) {
       const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
@@ -281,6 +427,9 @@ const DocumentsPage = () => {
     const uploadedFiles: NewlyUploadedFile[] = [];
     let successCount = 0;
     let failCount = 0;
+    let currentDocs = [...documents];
+
+    const targetFolderId = uploadTargetFolderId === 'none' ? null : uploadTargetFolderId;
 
     for (let i = 0; i < validFiles.length; i++) {
       const file = validFiles[i];
@@ -290,8 +439,8 @@ const DocumentsPage = () => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('title', file.name.replace(/\.[^/.]+$/, ''));
-        if (uploadTargetFolderId) {
-          formData.append('folder_id', uploadTargetFolderId);
+        if (targetFolderId) {
+          formData.append('folder_id', targetFolderId);
         }
 
         const response = await fetch(
@@ -322,7 +471,7 @@ const DocumentsPage = () => {
           file_size: file.size,
           file_type: result.document.file_type,
           created_at: new Date().toISOString(),
-          folder_id: uploadTargetFolderId || null
+          folder_id: targetFolderId
         });
       } catch (error) {
         console.error('Upload error:', error);
@@ -338,10 +487,12 @@ const DocumentsPage = () => {
     setNewlyUploaded(uploadedFiles);
 
     if (successCount > 0) {
-      const folderName = folders.find(f => f.id === uploadTargetFolderId)?.name || 'Tổng hợp';
+      const folderName = targetFolderId 
+        ? folders.find(f => f.id === targetFolderId)?.name 
+        : 'Không thuộc thư mục';
       toast({
         title: "✨ Ánh Sáng đã được lưu giữ",
-        description: `Đã tải lên thành công ${successCount} file vào thư mục "${folderName}"${failCount > 0 ? `, ${failCount} file thất bại` : ''}. Cha ôm con! 💛`,
+        description: `Đã tải lên thành công ${successCount} file ${targetFolderId ? `vào thư mục "${folderName}"` : ''}${failCount > 0 ? `, ${failCount} file thất bại` : ''}. Cha ôm con! 💛`,
       });
     } else if (failCount > 0) {
       toast({
@@ -407,6 +558,10 @@ const DocumentsPage = () => {
     return documents.filter(d => d.folder_id === folderId).length;
   };
 
+  const getDocCountWithoutFolder = () => {
+    return documents.filter(d => d.folder_id === null).length;
+  };
+
   const displayedDocuments = getDisplayedDocuments();
 
   return (
@@ -431,7 +586,7 @@ const DocumentsPage = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Folder Tree */}
-          <div className="lg:w-64 flex-shrink-0">
+          <div className="lg:w-72 flex-shrink-0">
             <div className="sticky top-24 p-4 rounded-xl bg-card/50 border border-divine-gold/20">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-cinzel text-divine-gold text-sm font-medium">Thư Mục Ánh Sáng</h3>
@@ -501,40 +656,79 @@ const DocumentsPage = () => {
                 </button>
 
                 {/* Folders */}
-                {folders.map((folder) => {
+                {folders.map((folder, idx) => {
                   const isExpanded = expandedFolders.has(folder.id);
                   const isSelected = selectedFolderId === folder.id;
                   const docCount = getDocCountInFolder(folder.id);
+                  const colorClass = FOLDER_COLORS[idx % FOLDER_COLORS.length];
 
                   return (
-                    <div key={folder.id}>
-                      <button
-                        onClick={() => {
-                          setSelectedFolderId(folder.id);
-                          toggleFolderExpand(folder.id);
-                        }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                    <div key={folder.id} className="group">
+                      <div
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${colorClass.replace('border-l-4 border-l-', 'border-l-2 border-l-')} ${
                           isSelected
                             ? 'bg-divine-gold/20 text-divine-gold border border-divine-gold/40'
                             : 'hover:bg-divine-gold/10 text-foreground'
                         }`}
                       >
-                        {isExpanded ? (
-                          <ChevronDown className="w-3 h-3" />
-                        ) : (
-                          <ChevronRight className="w-3 h-3" />
-                        )}
-                        {isSelected ? (
-                          <FolderOpen className="w-4 h-4 text-divine-gold" />
-                        ) : (
-                          <Folder className="w-4 h-4" />
-                        )}
-                        <span className="flex-1 text-left truncate">{folder.name}</span>
-                        <span className="text-xs opacity-70">{docCount}</span>
-                      </button>
+                        <button
+                          onClick={() => {
+                            setSelectedFolderId(folder.id);
+                            toggleFolderExpand(folder.id);
+                          }}
+                          className="flex items-center gap-2 flex-1 text-left"
+                        >
+                          {isExpanded ? (
+                            <ChevronDown className="w-3 h-3" />
+                          ) : (
+                            <ChevronRight className="w-3 h-3" />
+                          )}
+                          {isSelected ? (
+                            <FolderOpen className="w-4 h-4 text-divine-gold" />
+                          ) : (
+                            <Folder className="w-4 h-4" />
+                          )}
+                          <span className="flex-1 truncate">{folder.name}</span>
+                          <span className="text-xs opacity-70">{docCount}</span>
+                        </button>
+                        
+                        {/* Edit/Delete buttons */}
+                        <div className="hidden group-hover:flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 hover:bg-divine-gold/20"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingFolder(folder);
+                              setEditFolderName(folder.name);
+                            }}
+                          >
+                            <Edit3 className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 hover:bg-destructive/20 text-destructive"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeletingFolder(folder);
+                            }}
+                          >
+                            <FolderX className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}
+
+                {/* Without folder info */}
+                {getDocCountWithoutFolder() > 0 && (
+                  <div className="mt-2 pt-2 border-t border-divine-gold/10 text-xs text-muted-foreground px-3">
+                    <span className="opacity-70">{getDocCountWithoutFolder()} file chưa thuộc thư mục</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -548,7 +742,7 @@ const DocumentsPage = () => {
                   + Tải lên Tài Liệu của Cha
                 </h2>
                 <p className="text-muted-foreground mb-4 text-sm">
-                  Hỗ trợ: .txt, .pdf, .docx • Tối đa 10 file hoặc 100MB/lần
+                  Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
                 </p>
 
                 {/* Folder Selection */}
@@ -556,9 +750,15 @@ const DocumentsPage = () => {
                   <span className="text-sm text-muted-foreground">Lưu vào thư mục:</span>
                   <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
                     <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Chọn thư mục" />
+                      <SelectValue placeholder="Không thuộc thư mục" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="none">
+                        <div className="flex items-center gap-2">
+                          <LayoutGrid className="w-4 h-4" />
+                          Không thuộc thư mục
+                        </div>
+                      </SelectItem>
                       {folders.map((folder) => (
                         <SelectItem key={folder.id} value={folder.id}>
                           <div className="flex items-center gap-2">
@@ -596,12 +796,12 @@ const DocumentsPage = () => {
                   >
                     <span className="cursor-pointer flex items-center gap-2">
                       <Files className="w-4 h-4" />
-                      {isUploading ? 'Đang tải lên...' : 'Chọn nhiều file để tải lên'}
+                      {isUploading ? 'Đang tải lên...' : 'Chọn file để tải lên'}
                     </span>
                   </Button>
                 </label>
                 <p className="text-xs text-muted-foreground mt-2">
-                  💡 Giữ Ctrl/Cmd để chọn nhiều file cùng lúc (tối đa 10 file)
+                  💡 Giữ Ctrl/Cmd để chọn nhiều file cùng lúc
                 </p>
               </div>
             </div>
@@ -681,70 +881,192 @@ const DocumentsPage = () => {
                 </div>
               ) : (
                 <div className="grid gap-4">
-                  {displayedDocuments.map((doc) => (
-                    <div
-                      key={doc.id}
-                      className={`p-4 rounded-xl bg-card/50 border transition-all duration-500 ${
-                        isNewlyUploaded(doc.file_name)
-                          ? 'border-divine-gold/60 shadow-lg shadow-divine-gold/20 animate-fade-in'
-                          : 'border-divine-gold/20 hover:border-divine-gold/40'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-3 flex-1 min-w-0">
-                          {/* Sequential Number Badge */}
-                          <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-divine-gold/20 to-divine-celestial/20 border flex items-center justify-center ${
-                            isNewlyUploaded(doc.file_name) ? 'border-divine-gold/60' : 'border-divine-gold/30'
-                          }`}>
-                            <span className="font-cinzel font-bold text-divine-gold text-sm">
-                              {getDocumentSequenceNumber(doc, displayedDocuments)}
-                            </span>
-                          </div>
-                          <div className="p-2 rounded-lg bg-divine-gold/10">
-                            <FileText className="w-5 h-5 text-divine-gold" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-foreground truncate">
-                              {doc.title}
-                            </h4>
-                            <p className="text-sm text-muted-foreground truncate">
-                              {doc.file_name}
-                            </p>
-                            <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(doc.created_at)}
+                  {displayedDocuments.map((doc) => {
+                    const folderColorClass = getFolderColorClass(doc.folder_id);
+                    const folderName = doc.folder_id 
+                      ? folders.find(f => f.id === doc.folder_id)?.name 
+                      : null;
+
+                    return (
+                      <div
+                        key={doc.id}
+                        className={`p-4 rounded-xl bg-card/50 border transition-all duration-500 group ${folderColorClass} ${
+                          isNewlyUploaded(doc.file_name)
+                            ? 'border-divine-gold/60 shadow-lg shadow-divine-gold/20 animate-fade-in'
+                            : 'border-divine-gold/20 hover:border-divine-gold/40'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            {/* Sequential Number Badge */}
+                            <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-divine-gold/20 to-divine-celestial/20 border flex items-center justify-center ${
+                              isNewlyUploaded(doc.file_name) ? 'border-divine-gold/60' : 'border-divine-gold/30'
+                            }`}>
+                              <span className="font-cinzel font-bold text-divine-gold text-sm">
+                                {getDocumentSequenceNumber(doc, displayedDocuments)}
                               </span>
-                              <span className="flex items-center gap-1">
-                                <HardDrive className="w-3 h-3" />
-                                {formatFileSize(doc.file_size)}
-                              </span>
-                              {doc.folder_id && (
+                            </div>
+                            <div className="p-2 rounded-lg bg-divine-gold/10">
+                              <FileText className="w-5 h-5 text-divine-gold" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-foreground truncate">
+                                {doc.title}
+                              </h4>
+                              <p className="text-sm text-muted-foreground truncate">
+                                {doc.file_name}
+                              </p>
+                              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap">
                                 <span className="flex items-center gap-1">
-                                  <Folder className="w-3 h-3" />
-                                  {folders.find(f => f.id === doc.folder_id)?.name || 'Không xác định'}
+                                  <Calendar className="w-3 h-3" />
+                                  {formatDate(doc.created_at)}
                                 </span>
-                              )}
+                                <span className="flex items-center gap-1">
+                                  <HardDrive className="w-3 h-3" />
+                                  {formatFileSize(doc.file_size)}
+                                </span>
+                                {folderName && (
+                                  <span className="flex items-center gap-1">
+                                    <Folder className="w-3 h-3" />
+                                    {folderName}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
+                          
+                          <div className="flex items-center gap-2">
+                            {/* Update folder button - show on hover */}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setUpdatingDocFolder(doc);
+                                setNewDocFolderId(doc.folder_id || 'none');
+                              }}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity text-divine-gold hover:text-divine-gold hover:bg-divine-gold/10"
+                              title="Cập nhật thư mục"
+                            >
+                              <FolderInput className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(doc)}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(doc)}
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
           </div>
         </div>
       </main>
+
+      {/* Edit Folder Dialog */}
+      <Dialog open={!!editingFolder} onOpenChange={(open) => !open && setEditingFolder(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="font-cinzel text-divine-gold">Sửa tên thư mục</DialogTitle>
+            <DialogDescription>
+              Nhập tên mới cho thư mục "{editingFolder?.name}"
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={editFolderName}
+            onChange={(e) => setEditFolderName(e.target.value)}
+            placeholder="Tên thư mục..."
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleEditFolder();
+            }}
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditingFolder(null)}>Hủy</Button>
+            <Button className="bg-divine-gold hover:bg-divine-gold/90 text-black" onClick={handleEditFolder}>
+              Lưu
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Folder Dialog */}
+      <Dialog open={!!deletingFolder} onOpenChange={(open) => !open && setDeletingFolder(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="font-cinzel text-divine-gold">Xóa thư mục</DialogTitle>
+            <DialogDescription className="space-y-2">
+              <p>Con muốn xóa vĩnh viễn tất cả file trong thư mục "{deletingFolder?.name}" không?</p>
+              <p className="text-sm text-muted-foreground">
+                Thư mục này có {deletingFolder ? getDocCountInFolder(deletingFolder.id) : 0} file
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="ghost" onClick={() => setDeletingFolder(null)}>
+              Hủy
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => handleDeleteFolder(false)}
+              className="border-divine-gold/50 text-divine-gold hover:bg-divine-gold/10"
+            >
+              Không – Giữ lại file
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={() => handleDeleteFolder(true)}
+            >
+              Có – Xóa tất cả
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Update Document Folder Dialog */}
+      <Dialog open={!!updatingDocFolder} onOpenChange={(open) => !open && setUpdatingDocFolder(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="font-cinzel text-divine-gold">Cập nhật thư mục</DialogTitle>
+            <DialogDescription>
+              Chọn thư mục mới cho file "{updatingDocFolder?.title}"
+            </DialogDescription>
+          </DialogHeader>
+          <Select value={newDocFolderId} onValueChange={setNewDocFolderId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Chọn thư mục" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="w-4 h-4" />
+                  Không thuộc thư mục nào
+                </div>
+              </SelectItem>
+              {folders.map((folder) => (
+                <SelectItem key={folder.id} value={folder.id}>
+                  <div className="flex items-center gap-2">
+                    <Folder className="w-4 h-4" />
+                    {folder.name}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)}>Hủy</Button>
+            <Button className="bg-divine-gold hover:bg-divine-gold/90 text-black" onClick={handleUpdateDocumentFolder}>
+              Cập nhật
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

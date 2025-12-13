@@ -20,6 +20,7 @@ export default {
         playfair: ["Playfair Display", "serif"],
         divine: ["Cinzel", "Cormorant Garamond", "serif"],
         lora: ["Lora", "serif"],
+        cormorant: ["Cormorant Garamond", "serif"],
         inter: ["Inter", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
       },

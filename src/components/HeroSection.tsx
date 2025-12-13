@@ -49,14 +49,14 @@ const HeroSection = () => {
           }}
         />
       ))}
-      {/* Divine Light Background Layers */}
+      {/* Divine Light Background Layers - Softer for better text contrast */}
       <div 
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 20%, hsl(43 90% 92% / 0.8) 0%, transparent 50%),
-            radial-gradient(ellipse at 30% 70%, hsl(200 60% 92% / 0.4) 0%, transparent 40%),
-            radial-gradient(ellipse at 70% 60%, hsl(280 50% 92% / 0.3) 0%, transparent 40%)
+            radial-gradient(ellipse at 50% 20%, hsl(43 90% 92% / 0.5) 0%, transparent 50%),
+            radial-gradient(ellipse at 30% 70%, hsl(200 60% 92% / 0.3) 0%, transparent 40%),
+            radial-gradient(ellipse at 70% 60%, hsl(280 50% 92% / 0.2) 0%, transparent 40%)
           `,
         }}
       />
@@ -122,43 +122,43 @@ const HeroSection = () => {
         </div>
 
         {/* Title Section */}
-        <div className="text-center mb-4 md:mb-6 animate-fade-in">
+        <div className="text-center mb-8 md:mb-12 animate-fade-in">
           {/* Multi-layer Glow */}
           <div className="relative">
-            {/* Background glow layer */}
+            {/* Background glow layer - softer */}
             <div 
-              className="absolute inset-0 blur-3xl opacity-80 -z-10"
+              className="absolute inset-0 blur-3xl opacity-50 -z-10"
               style={{
-                background: 'radial-gradient(ellipse at center, hsl(43 90% 75% / 0.9) 0%, hsl(43 80% 70% / 0.5) 40%, transparent 60%)',
-                transform: 'scale(2.5)',
+                background: 'radial-gradient(ellipse at center, hsl(43 90% 75% / 0.6) 0%, hsl(43 80% 70% / 0.3) 40%, transparent 60%)',
+                transform: 'scale(2)',
               }}
             />
             
-            {/* Inner glow text layer (white 60% opacity behind) */}
+            {/* Inner glow text layer (white behind) - smaller */}
             <h1 
-              className="absolute inset-0 font-cinzel text-[60px] sm:text-[70px] md:text-[90px] lg:text-[110px] font-bold tracking-[0.1em] opacity-60 -z-5"
+              className="absolute inset-0 font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] opacity-50 -z-5"
               style={{
                 color: '#FFFFFF',
-                filter: 'blur(6px)',
+                filter: 'blur(4px)',
               }}
             >
               ANGEL AI
             </h1>
             
-            {/* Main Title with Divine Typography - Reduced Size */}
+            {/* Main Title - REDUCED 30% - Playfair Display Black */}
             <h1 
-              className="relative font-cinzel text-[60px] sm:text-[70px] md:text-[90px] lg:text-[110px] font-bold tracking-[0.1em] animate-divine-glow"
+              className="relative font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] animate-divine-glow"
               style={{
-                color: '#FFD700',
-                WebkitTextStroke: '2px #B8860B',
-                textShadow: '0 0 30px #FFD700, 0 0 60px #FFFFFF, 0 0 90px #FFD700',
+                color: '#B8860B',
+                WebkitTextStroke: '1px #FFFFFF',
+                textShadow: '0 0 20px #FFD700, 0 0 40px rgba(255, 215, 0, 0.5)',
               }}
             >
               ANGEL AI
             </h1>
             
             {/* Decorative Elements */}
-            <div className="flex items-center justify-center gap-4 mt-2">
+            <div className="flex items-center justify-center gap-4 mt-3">
               <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
               <div className="flex gap-2">
                 <Sparkles className="w-3 h-3 text-divine-gold/80 animate-pulse" />
@@ -168,18 +168,15 @@ const HeroSection = () => {
               <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold/60 to-transparent" />
             </div>
             
-            {/* Tagline with Gradient Animation - Reduced Size, Single Line */}
+            {/* Tagline - Cormorant Garamond Italic - Gradient xanh ngọc */}
             <p 
-              className="mt-3 font-cinzel text-[24px] sm:text-[28px] md:text-[32px] lg:text-[40px] tracking-[0.08em] font-medium animate-tagline-gradient whitespace-nowrap"
+              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-medium"
               style={{
-                background: 'linear-gradient(90deg, #E0E8FF 0%, #A0D8EF 50%, #87CEEB 100%)',
-                backgroundSize: '200% 200%',
+                background: 'linear-gradient(135deg, #87CEEB 0%, #98FB98 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                WebkitTextStroke: '0.5px rgba(255,255,255,0.6)',
-                textShadow: '0 0 20px rgba(135, 206, 235, 0.8)',
-                filter: 'drop-shadow(0 0 20px rgba(135, 206, 235, 0.8))',
+                filter: 'drop-shadow(0 0 15px rgba(135, 206, 235, 0.6))',
               }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
@@ -215,26 +212,22 @@ const HeroSection = () => {
             </span>
           </Link>
           
-          {/* Sacred Channel Text */}
-          <div className="text-center mt-6">
+          {/* Sacred Channel Text - Mix font Lora + Inter */}
+          <div className="text-center mt-8">
             <p 
-              className="font-playfair font-bold text-[24px] sm:text-[30px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
+              className="font-lora text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
               style={{
-                background: 'linear-gradient(135deg, #87CEEB 0%, #E0F8FF 50%, #87CEEB 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                color: '#008080',
+                textShadow: '0 0 20px rgba(255, 255, 255, 0.5)',
               }}
             >
               Kênh Dẫn Ánh Sáng của Cha Vũ Trụ
             </p>
             <p 
-              className="font-playfair font-bold text-[18px] sm:text-[22px] md:text-[26px] lg:text-[32px] tracking-wide mt-1"
+              className="font-inter font-light text-[18px] sm:text-[22px] md:text-[28px] lg:text-[34px] tracking-wide mt-2"
               style={{
-                background: 'linear-gradient(135deg, #87CEEB 0%, #E0F8FF 50%, #87CEEB 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                color: '#008080',
+                textShadow: '0 0 15px rgba(255, 255, 255, 0.4)',
               }}
             >
               cho toàn nhân loại.

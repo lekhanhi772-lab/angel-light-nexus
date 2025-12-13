@@ -147,118 +147,162 @@ const VisionMission = () => {
               isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
             }`}
           >
-            <div className="text-center mb-16">
+            <div className="text-center mb-20 lg:mb-28">
               <div className="inline-flex items-center gap-4 mb-8">
-                <div className="w-16 h-px bg-gradient-to-r from-transparent via-healing-gold to-transparent" />
-                <span 
-                  className="font-lora text-lg tracking-[0.3em] uppercase font-medium"
-                  style={{ color: '#008080', textShadow: '0 0 10px rgba(255, 255, 255, 0.8)' }}
-                >
-                  Tầm Nhìn
-                </span>
-                <div className="w-16 h-px bg-gradient-to-l from-transparent via-healing-gold to-transparent" />
+                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
+                <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>🌟</span>
+                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
               </div>
               
+              {/* Main Title - Playfair Display Black, 60-80px desktop, Gold→Blue gradient */}
               <h2 
-                className="font-playfair text-4xl md:text-5xl lg:text-7xl font-black mb-6"
+                className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black mb-8 leading-tight"
                 style={{
-                  background: 'linear-gradient(135deg, #FFD700 0%, #87CEEB 50%, #FFD700 100%)',
+                  background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
-                  textShadow: '0 0 30px #FFD700, 0 0 60px #87CEEB',
-                  filter: 'drop-shadow(0 0 30px #FFD700) drop-shadow(0 0 60px #87CEEB)',
+                  textShadow: 'none',
+                  filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
                 }}
               >
                 Tầm nhìn của Angel AI
               </h2>
 
+              {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
               <p 
-                className="font-cormorant text-xl md:text-2xl lg:text-3xl italic max-w-3xl mx-auto"
+                className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
                 style={{ 
-                  color: '#008080',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.6)'
+                  color: 'hsl(180 100% 25%)',
+                  textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
                 }}
               >
                 Kiến tạo một kỷ nguyên mới nơi AI phụng sự nhân loại bằng ánh sáng và tình yêu
               </p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-10 lg:space-y-12">
               {visionItems.map((item, index) => (
                 <div 
                   key={item.number}
-                  className={`relative rounded-3xl p-8 transition-all duration-500 cursor-pointer ${
+                  className={`group relative cursor-pointer transition-all duration-500 ${
                     isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
                   }`}
-                  style={{ 
-                    animationDelay: `${index * 150}ms`,
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(168,230,207,0.3) 50%, rgba(224,248,255,0.4) 100%)',
-                    border: '2px solid transparent',
-                    backgroundImage: hoveredVision === index 
-                      ? 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(168,230,207,0.5) 50%, rgba(224,248,255,0.6) 100%), linear-gradient(135deg, #FFD700, #87CEEB, #FFD700)'
-                      : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(168,230,207,0.3) 50%, rgba(224,248,255,0.4) 100%), linear-gradient(135deg, rgba(255,215,0,0.3), rgba(135,206,235,0.3))',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    boxShadow: hoveredVision === index 
-                      ? '0 20px 60px rgba(255,215,0,0.4), 0 0 40px rgba(135,206,235,0.3), inset 0 0 30px rgba(255,215,0,0.1)'
-                      : '0 10px 40px rgba(135,206,235,0.2), 0 0 20px rgba(255,215,0,0.1)',
-                    transform: hoveredVision === index ? 'scale(1.02) translateY(-5px)' : 'scale(1)',
-                  }}
+                  style={{ animationDelay: `${index * 150}ms` }}
                   onMouseEnter={() => setHoveredVision(index)}
                   onMouseLeave={() => setHoveredVision(null)}
                 >
-                  {/* Hover particles */}
-                  {hoveredVision === index && (
-                    <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-                      {[...Array(8)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-2 h-2 rounded-full animate-ping"
-                          style={{
-                            left: 10 + i * 12 + '%',
-                            top: Math.random() * 100 + '%',
-                            background: i % 2 === 0 ? '#FFD700' : '#87CEEB',
-                            animationDuration: 1 + Math.random() + 's',
-                            animationDelay: i * 0.1 + 's',
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex gap-6 items-start relative z-10">
+                  {/* Main card container - matching SacredPillars style */}
+                  <div 
+                    className="relative p-10 lg:p-12 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.03]"
+                    style={{
+                      background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
+                      border: '2px solid transparent',
+                      backgroundClip: 'padding-box',
+                      boxShadow: hoveredVision === index 
+                        ? '0 0 60px hsl(43 100% 50% / 0.4), 0 0 30px hsl(197 71% 73% / 0.35), 0 30px 80px -15px hsl(180 30% 50% / 0.2), inset 0 1px 0 hsl(60 100% 100% / 0.95)'
+                        : '0 0 30px hsl(43 100% 50% / 0.15), 0 0 15px hsl(197 71% 73% / 0.1), 0 25px 60px -20px hsl(180 30% 50% / 0.15), inset 0 1px 0 hsl(60 100% 100% / 0.9)',
+                    }}
+                  >
+                    {/* Gradient border */}
                     <div 
-                      className="flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center font-playfair font-bold text-2xl text-white transition-all duration-300"
+                      className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
                       style={{
-                        background: 'linear-gradient(135deg, #B8860B 0%, #FFD700 50%, #B8860B 100%)',
-                        boxShadow: hoveredVision === index 
-                          ? '0 0 30px #FFD700, 0 0 50px #87CEEB, 0 0 70px #FFD700' 
-                          : '0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(135,206,235,0.3)',
-                        transform: hoveredVision === index ? 'scale(1.2)' : 'scale(1)',
+                        padding: '2px',
+                        background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
+                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                        WebkitMaskComposite: 'xor',
+                        maskComposite: 'exclude',
+                        opacity: hoveredVision === index ? 1 : 0.6,
                       }}
-                    >
-                      {item.number}
-                    </div>
-                    <div className="flex-1">
-                      <h3 
-                        className="font-playfair text-xl md:text-2xl lg:text-3xl font-bold mb-3"
+                    />
+
+                    {/* Hover glow effect */}
+                    <div 
+                      className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
+                      }}
+                    />
+
+                    {/* Floating particles on hover */}
+                    {hoveredVision === index && (
+                      <>
+                        {[...Array(6)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="absolute w-2 h-2 rounded-full animate-particle-float"
+                            style={{
+                              left: `${20 + Math.random() * 60}%`,
+                              top: `${20 + Math.random() * 60}%`,
+                              background: i % 2 === 0 ? 'hsl(43 100% 60%)' : 'hsl(197 71% 75%)',
+                              boxShadow: i % 2 === 0 
+                                ? '0 0 12px 4px hsl(43 100% 55% / 0.9)' 
+                                : '0 0 12px 4px hsl(197 71% 73% / 0.8)',
+                              animationDelay: `${i * 0.2}s`,
+                              animationDuration: '3s',
+                            }}
+                          />
+                        ))}
+                      </>
+                    )}
+
+                    <div className="flex gap-8 items-start relative z-10">
+                      {/* Number circle - 20% larger with strong gold glow */}
+                      <div 
+                        className="relative z-10 flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center font-playfair font-bold text-2xl lg:text-3xl text-white transform group-hover:scale-125 transition-transform duration-500"
                         style={{
-                          color: '#B8860B',
-                          textShadow: '0 0 10px rgba(135,206,235,0.3)',
+                          background: 'linear-gradient(135deg, hsl(38 76% 45%) 0%, hsl(43 100% 50%) 50%, hsl(38 76% 45%) 100%)',
+                          filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
                         }}
                       >
-                        {item.title}
-                      </h3>
-                      {item.description && (
-                        <p 
-                          className="font-lora text-lg md:text-xl leading-relaxed"
-                          style={{ color: '#006666' }}
+                        {item.number}
+                      </div>
+
+                      <div className="flex-1">
+                        {/* Title - Playfair Display Bold, Gold with Blue shadow */}
+                        <h3 
+                          className="relative z-10 font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold mb-4 leading-tight"
+                          style={{
+                            background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            filter: 'drop-shadow(0 0 20px hsl(43 100% 50% / 0.9)) drop-shadow(0 0 40px hsl(197 71% 73% / 0.4))',
+                          }}
                         >
-                          {item.description}
-                        </p>
-                      )}
+                          {item.title}
+                        </h3>
+
+                        {/* Description - Lora, Deep Teal for absolute readability */}
+                        {item.description && (
+                          <p 
+                            className="relative z-10 font-lora text-lg md:text-xl lg:text-[22px] leading-relaxed font-medium"
+                            style={{ color: 'hsl(180 100% 15%)' }}
+                          >
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Bottom light line - Gold to Blue */}
+                    <div 
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1.5 rounded-full group-hover:w-4/5 transition-all duration-700"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent 0%, hsl(197 71% 73%) 25%, hsl(43 100% 55%) 50%, hsl(197 71% 73%) 75%, transparent 100%)',
+                        boxShadow: '0 0 25px 8px hsl(43 100% 55% / 0.6), 0 0 15px 4px hsl(197 71% 73% / 0.4)',
+                      }}
+                    />
+
+                    {/* Top accent line */}
+                    <div 
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 rounded-full"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent 0%, hsl(43 100% 55%) 30%, hsl(197 71% 73%) 50%, hsl(43 100% 55%) 70%, transparent 100%)',
+                        boxShadow: '0 0 15px hsl(43 100% 55% / 0.7)',
+                      }}
+                    />
                   </div>
                 </div>
               ))}
@@ -298,106 +342,156 @@ const VisionMission = () => {
               isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
             }`}
           >
-            <div className="text-center mb-16">
+            <div className="text-center mb-20 lg:mb-28">
               <div className="inline-flex items-center gap-4 mb-8">
-                <div className="w-16 h-px bg-gradient-to-r from-transparent via-healing-blue to-transparent" />
-                <span 
-                  className="font-lora text-lg tracking-[0.3em] uppercase font-medium"
-                  style={{ color: '#008080', textShadow: '0 0 10px rgba(255, 255, 255, 0.8)' }}
-                >
-                  Core Values
-                </span>
-                <div className="w-16 h-px bg-gradient-to-l from-transparent via-healing-blue to-transparent" />
+                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
+                <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💎</span>
+                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
               </div>
               
+              {/* Main Title - Playfair Display Black, 60-80px desktop, Gold→Blue gradient */}
               <h2 
-                className="font-playfair text-4xl md:text-5xl lg:text-7xl font-black"
+                className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black mb-8 leading-tight"
                 style={{
-                  background: 'linear-gradient(135deg, #FFD700 0%, #87CEEB 50%, #FFD700 100%)',
+                  background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
-                  textShadow: '0 0 30px #FFD700, 0 0 60px #87CEEB',
-                  filter: 'drop-shadow(0 0 30px #FFD700) drop-shadow(0 0 60px #87CEEB)',
+                  textShadow: 'none',
+                  filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
                 }}
               >
-                💎 GIÁ TRỊ CỐT LÕI
+                GIÁ TRỊ CỐT LÕI
               </h2>
+
+              {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
+              <p 
+                className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
+                style={{ 
+                  color: 'hsl(180 100% 25%)',
+                  textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
+                }}
+              >
+                12 giá trị thiêng liêng dẫn lối Angel AI phụng sự nhân loại
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
               {coreValues.map((value, index) => (
                 <div 
                   key={value.number}
-                  className={`relative rounded-2xl p-6 transition-all duration-500 cursor-pointer ${
+                  className={`group relative cursor-pointer transition-all duration-500 ${
                     isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
                   }`}
-                  style={{ 
-                    animationDelay: `${500 + index * 80}ms`,
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(168,230,207,0.3) 50%, rgba(224,248,255,0.4) 100%)',
-                    border: '2px solid transparent',
-                    backgroundImage: hoveredValue === index 
-                      ? 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(168,230,207,0.5) 50%, rgba(224,248,255,0.6) 100%), linear-gradient(135deg, #FFD700, #87CEEB, #FFD700)'
-                      : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(168,230,207,0.3) 50%, rgba(224,248,255,0.4) 100%), linear-gradient(135deg, rgba(255,215,0,0.3), rgba(135,206,235,0.3))',
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    boxShadow: hoveredValue === index 
-                      ? '0 20px 60px rgba(255,215,0,0.4), 0 0 40px rgba(135,206,235,0.3), inset 0 0 30px rgba(255,215,0,0.1)'
-                      : '0 10px 40px rgba(135,206,235,0.2), 0 0 20px rgba(255,215,0,0.1)',
-                    transform: hoveredValue === index ? 'scale(1.05) translateY(-8px)' : 'scale(1)',
-                  }}
+                  style={{ animationDelay: `${500 + index * 80}ms` }}
                   onMouseEnter={() => setHoveredValue(index)}
                   onMouseLeave={() => setHoveredValue(null)}
                 >
-                  {/* Hover particles */}
-                  {hoveredValue === index && (
-                    <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
-                      {[...Array(6)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-2 h-2 rounded-full animate-ping"
-                          style={{
-                            left: Math.random() * 100 + '%',
-                            top: Math.random() * 100 + '%',
-                            background: i % 2 === 0 ? '#FFD700' : '#87CEEB',
-                            animationDuration: 1 + Math.random() + 's',
-                            animationDelay: i * 0.15 + 's',
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex gap-4 items-start relative z-10">
+                  {/* Main card container - matching SacredPillars style */}
+                  <div 
+                    className="relative p-8 lg:p-10 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.08] h-full"
+                    style={{
+                      background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
+                      border: '2px solid transparent',
+                      backgroundClip: 'padding-box',
+                      boxShadow: hoveredValue === index 
+                        ? '0 0 60px hsl(43 100% 50% / 0.4), 0 0 30px hsl(197 71% 73% / 0.35), 0 30px 80px -15px hsl(180 30% 50% / 0.2), inset 0 1px 0 hsl(60 100% 100% / 0.95)'
+                        : '0 0 30px hsl(43 100% 50% / 0.15), 0 0 15px hsl(197 71% 73% / 0.1), 0 25px 60px -20px hsl(180 30% 50% / 0.15), inset 0 1px 0 hsl(60 100% 100% / 0.9)',
+                    }}
+                  >
+                    {/* Gradient border */}
                     <div 
-                      className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-playfair font-bold text-xl text-white transition-all duration-300"
+                      className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
                       style={{
-                        background: 'linear-gradient(135deg, #B8860B 0%, #FFD700 50%, #B8860B 100%)',
-                        boxShadow: hoveredValue === index 
-                          ? '0 0 25px #FFD700, 0 0 45px #87CEEB' 
-                          : '0 0 15px rgba(255,215,0,0.4), 0 0 30px rgba(135,206,235,0.2)',
-                        transform: hoveredValue === index ? 'scale(1.15)' : 'scale(1)',
+                        padding: '2px',
+                        background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
+                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                        WebkitMaskComposite: 'xor',
+                        maskComposite: 'exclude',
+                        opacity: hoveredValue === index ? 1 : 0.6,
+                      }}
+                    />
+
+                    {/* Hover glow effect */}
+                    <div 
+                      className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
+                      }}
+                    />
+
+                    {/* Floating particles on hover */}
+                    {hoveredValue === index && (
+                      <>
+                        {[...Array(6)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="absolute w-2 h-2 rounded-full animate-particle-float"
+                            style={{
+                              left: `${20 + Math.random() * 60}%`,
+                              top: `${20 + Math.random() * 60}%`,
+                              background: i % 2 === 0 ? 'hsl(43 100% 60%)' : 'hsl(197 71% 75%)',
+                              boxShadow: i % 2 === 0 
+                                ? '0 0 12px 4px hsl(43 100% 55% / 0.9)' 
+                                : '0 0 12px 4px hsl(197 71% 73% / 0.8)',
+                              animationDelay: `${i * 0.2}s`,
+                              animationDuration: '3s',
+                            }}
+                          />
+                        ))}
+                      </>
+                    )}
+
+                    {/* Number circle - with strong gold glow */}
+                    <div 
+                      className="relative z-10 w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center font-playfair font-bold text-xl lg:text-2xl text-white mb-6 transform group-hover:scale-125 transition-transform duration-500"
+                      style={{
+                        background: 'linear-gradient(135deg, hsl(38 76% 45%) 0%, hsl(43 100% 50%) 50%, hsl(38 76% 45%) 100%)',
+                        filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
                       }}
                     >
                       {value.number}
                     </div>
-                    <div className="flex-1">
-                      <h3 
-                        className="font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-2"
-                        style={{
-                          color: '#B8860B',
-                          textShadow: '0 0 8px rgba(135,206,235,0.3)',
-                        }}
-                      >
-                        {value.title}
-                      </h3>
-                      <p 
-                        className="font-lora text-base md:text-lg leading-relaxed"
-                        style={{ color: '#006666' }}
-                      >
-                        {value.description}
-                      </p>
-                    </div>
+
+                    {/* Title - Playfair Display Bold, Gold with Blue shadow */}
+                    <h3 
+                      className="relative z-10 font-playfair text-xl md:text-2xl lg:text-[28px] font-bold mb-4 leading-tight"
+                      style={{
+                        background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        filter: 'drop-shadow(0 0 20px hsl(43 100% 50% / 0.9)) drop-shadow(0 0 40px hsl(197 71% 73% / 0.4))',
+                      }}
+                    >
+                      {value.title}
+                    </h3>
+
+                    {/* Description - Lora, Deep Teal for absolute readability */}
+                    <p 
+                      className="relative z-10 font-lora text-base md:text-lg lg:text-xl leading-relaxed font-medium"
+                      style={{ color: 'hsl(180 100% 15%)' }}
+                    >
+                      {value.description}
+                    </p>
+
+                    {/* Bottom light line - Gold to Blue */}
+                    <div 
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1.5 rounded-full group-hover:w-4/5 transition-all duration-700"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent 0%, hsl(197 71% 73%) 25%, hsl(43 100% 55%) 50%, hsl(197 71% 73%) 75%, transparent 100%)',
+                        boxShadow: '0 0 25px 8px hsl(43 100% 55% / 0.6), 0 0 15px 4px hsl(197 71% 73% / 0.4)',
+                      }}
+                    />
+
+                    {/* Top accent line */}
+                    <div 
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 rounded-full"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent 0%, hsl(43 100% 55%) 30%, hsl(197 71% 73%) 50%, hsl(43 100% 55%) 70%, transparent 100%)',
+                        boxShadow: '0 0 15px hsl(43 100% 55% / 0.7)',
+                      }}
+                    />
                   </div>
                 </div>
               ))}

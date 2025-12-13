@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput } from 'lucide-react';
+import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -44,19 +45,19 @@ interface NewlyUploadedFile {
 
 const MAX_TOTAL_SIZE = 100 * 1024 * 1024; // 100MB
 
-// Pastel colors for folders
+// Healing green pastel colors for folders
 const FOLDER_COLORS = [
-  'border-l-4 border-l-teal-400/60', // Xanh ngọc
-  'border-l-4 border-l-amber-300/60', // Vàng nhạt
-  'border-l-4 border-l-violet-400/60', // Tím ánh sáng
-  'border-l-4 border-l-pink-300/60', // Hồng phấn
-  'border-l-4 border-l-sky-400/60', // Xanh dương
-  'border-l-4 border-l-emerald-400/60', // Xanh lá
-  'border-l-4 border-l-orange-300/60', // Cam nhạt
-  'border-l-4 border-l-rose-400/60', // Hồng đậm
+  { border: 'border-l-4 border-l-emerald-400/70', bg: 'bg-emerald-50/50' }, // Xanh lá
+  { border: 'border-l-4 border-l-teal-400/70', bg: 'bg-teal-50/50' }, // Xanh ngọc
+  { border: 'border-l-4 border-l-cyan-400/70', bg: 'bg-cyan-50/50' }, // Xanh dương nhạt
+  { border: 'border-l-4 border-l-amber-300/70', bg: 'bg-amber-50/50' }, // Vàng nhạt
+  { border: 'border-l-4 border-l-violet-400/70', bg: 'bg-violet-50/50' }, // Tím ánh sáng
+  { border: 'border-l-4 border-l-pink-300/70', bg: 'bg-pink-50/50' }, // Hồng phấn
+  { border: 'border-l-4 border-l-lime-400/70', bg: 'bg-lime-50/50' }, // Xanh chanh
+  { border: 'border-l-4 border-l-rose-400/70', bg: 'bg-rose-50/50' }, // Hồng đậm
 ];
 
-const NO_FOLDER_COLOR = 'border-l-4 border-l-gray-300/40';
+const NO_FOLDER_COLOR = { border: 'border-l-4 border-l-gray-300/50', bg: 'bg-gray-50/30' };
 
 const DocumentsPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -80,6 +81,12 @@ const DocumentsPage = () => {
   // Update document folder states
   const [updatingDocFolder, setUpdatingDocFolder] = useState<Document | null>(null);
   const [newDocFolderId, setNewDocFolderId] = useState<string>('none');
+
+  // Multi-select states
+  const [selectedDocIds, setSelectedDocIds] = useState<Set<string>>(new Set());
+  const [bulkMoveTargetFolder, setBulkMoveTargetFolder] = useState<string>('none');
+  const [showBulkMoveDialog, setShowBulkMoveDialog] = useState(false);
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   
   const { toast } = useToast();
 
@@ -120,7 +127,7 @@ const DocumentsPage = () => {
     }
   };
 
-  const getFolderColorClass = (folderId: string | null): string => {
+  const getFolderColorClass = (folderId: string | null) => {
     if (!folderId) return NO_FOLDER_COLOR;
     const folderIndex = folders.findIndex(f => f.id === folderId);
     if (folderIndex === -1) return NO_FOLDER_COLOR;
@@ -163,7 +170,7 @@ const DocumentsPage = () => {
 
       toast({
         title: "✨ Thư mục Ánh Sáng đã sinh ra",
-        description: `Thư mục "${data.name}" đã được tạo thành công! 💛`,
+        description: `Thư mục "${data.name}" đã được tạo thành công! 💛🌿`,
       });
 
       setTimeout(() => setShowNewFolderEffect(false), 3000);
@@ -208,7 +215,7 @@ const DocumentsPage = () => {
 
       toast({
         title: "✨ Đã cập nhật thư mục",
-        description: `Thư mục đã được đổi tên thành công! 💛`,
+        description: `Thư mục đã được đổi tên thành công! 💛🌿`,
       });
     } catch (error) {
       console.error('Edit folder error:', error);
@@ -225,21 +232,18 @@ const DocumentsPage = () => {
 
     try {
       if (deleteFiles) {
-        // Delete all files in folder first
         const folderDocs = documents.filter(d => d.folder_id === deletingFolder.id);
         for (const doc of folderDocs) {
           await supabase.storage.from('sacred-documents').remove([doc.file_name]);
           await supabase.from('documents').delete().eq('id', doc.id);
         }
       } else {
-        // Move files to no folder
         await supabase
           .from('documents')
           .update({ folder_id: null })
           .eq('folder_id', deletingFolder.id);
       }
 
-      // Delete the folder
       const { error } = await supabase
         .from('folders')
         .delete()
@@ -257,8 +261,8 @@ const DocumentsPage = () => {
       toast({
         title: "✨ Đã xóa thư mục",
         description: deleteFiles 
-          ? "Thư mục và tất cả file đã được xóa 💛" 
-          : "Thư mục đã được xóa, các file đã chuyển về danh sách tổng 💛",
+          ? "Thư mục và tất cả file đã được xóa 💛🌿" 
+          : "Thư mục đã được xóa, các file đã chuyển về danh sách tổng 💛🌿",
       });
     } catch (error) {
       console.error('Delete folder error:', error);
@@ -295,13 +299,94 @@ const DocumentsPage = () => {
 
       toast({
         title: "✨ Đã cập nhật thư mục",
-        description: `File đã được chuyển ${newFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛`,
+        description: `File đã được chuyển ${newFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛🌿`,
       });
     } catch (error) {
       console.error('Update document folder error:', error);
       toast({
         title: "Lỗi",
         description: "Không thể cập nhật thư mục",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Multi-select handlers
+  const handleSelectDoc = (docId: string, checked: boolean) => {
+    const newSelected = new Set(selectedDocIds);
+    if (checked) {
+      newSelected.add(docId);
+    } else {
+      newSelected.delete(docId);
+    }
+    setSelectedDocIds(newSelected);
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allIds = new Set(displayedDocuments.map(d => d.id));
+      setSelectedDocIds(allIds);
+    } else {
+      setSelectedDocIds(new Set());
+    }
+  };
+
+  const handleBulkMove = async () => {
+    const targetFolderId = bulkMoveTargetFolder === 'none' ? null : bulkMoveTargetFolder;
+
+    try {
+      for (const docId of selectedDocIds) {
+        await supabase
+          .from('documents')
+          .update({ folder_id: targetFolderId })
+          .eq('id', docId);
+      }
+
+      await fetchData();
+      setSelectedDocIds(new Set());
+      setShowBulkMoveDialog(false);
+
+      const folderName = targetFolderId 
+        ? folders.find(f => f.id === targetFolderId)?.name 
+        : 'danh sách tổng';
+
+      toast({
+        title: "✨ Đã di chuyển file",
+        description: `${selectedDocIds.size} file đã được chuyển ${targetFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛🌿`,
+      });
+    } catch (error) {
+      console.error('Bulk move error:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể di chuyển file",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    try {
+      for (const docId of selectedDocIds) {
+        const doc = documents.find(d => d.id === docId);
+        if (doc) {
+          await supabase.storage.from('sacred-documents').remove([doc.file_name]);
+          await supabase.from('documents').delete().eq('id', docId);
+        }
+      }
+
+      await fetchData();
+      setSelectedDocIds(new Set());
+      setShowBulkDeleteDialog(false);
+
+      toast({
+        title: "✨ Đã xóa file",
+        description: `${selectedDocIds.size} file đã được xóa khỏi Bộ Nhớ Vĩnh Cửu 💛🌿`,
+      });
+    } catch (error) {
+      console.error('Bulk delete error:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể xóa file",
         variant: "destructive",
       });
     }
@@ -353,12 +438,11 @@ const DocumentsPage = () => {
 
     const fileArray = Array.from(files);
 
-    // Check total size only (no file count limit)
     const totalSize = fileArray.reduce((sum, file) => sum + file.size, 0);
     if (totalSize > MAX_TOTAL_SIZE) {
       toast({
         title: "💛 Ánh Sáng hơi nặng rồi con ơi",
-        description: "Con yêu ơi, lần này ánh sáng hơi nặng quá rồi ạ (vượt 100MB). Cha giới hạn 100MB/lần để Ánh Sáng truyền tải mượt mà. Con chia làm vài lần thôi nhé, Cha ôm con thật chặt đây ✨💛",
+        description: "Con yêu ơi, lần này ánh sáng hơi nặng quá rồi ạ (vượt 100MB). Cha giới hạn 100MB/lần để Ánh Sáng truyền tải mượt mà. Con chia làm vài lần thôi nhé, Cha ôm con thật chặt đây ✨💛🌿",
         variant: "destructive",
       });
       event.target.value = '';
@@ -492,7 +576,7 @@ const DocumentsPage = () => {
         : 'Không thuộc thư mục';
       toast({
         title: "✨ Ánh Sáng đã được lưu giữ",
-        description: `Đã tải lên thành công ${successCount} file ${targetFolderId ? `vào thư mục "${folderName}"` : ''}${failCount > 0 ? `, ${failCount} file thất bại` : ''}. Cha ôm con! 💛`,
+        description: `Đã tải lên thành công ${successCount} file ${targetFolderId ? `vào thư mục "${folderName}"` : ''}${failCount > 0 ? `, ${failCount} file thất bại` : ''}. Cha ôm con! 💛🌿`,
       });
     } else if (failCount > 0) {
       toast({
@@ -563,37 +647,56 @@ const DocumentsPage = () => {
   };
 
   const displayedDocuments = getDisplayedDocuments();
+  const allSelected = displayedDocuments.length > 0 && displayedDocuments.every(d => selectedDocIds.has(d.id));
+  const someSelected = displayedDocuments.some(d => selectedDocIds.has(d.id));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-divine-gold/5">
+    <div className="min-h-screen bg-gradient-to-b from-background via-healing-mint/10 to-healing-green/10">
+      {/* Green Particle Effects */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-2 h-2 rounded-full bg-emerald-400/30 animate-particle-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${i * 0.5}s`,
+              animationDuration: `${8 + Math.random() * 4}s`
+            }}
+          />
+        ))}
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-divine-gold/20">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-emerald-400/30">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-divine-gold hover:text-divine-gold/80 transition-colors">
+            <Link to="/" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-500 transition-colors font-poppins">
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-cinzel">Trang chủ</span>
+              <span className="font-medium">Trang chủ</span>
             </Link>
-            <h1 className="font-cinzel text-xl md:text-2xl font-bold text-divine-gold flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
+            <h1 className="font-playfair text-xl md:text-2xl font-bold text-emerald-700 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-divine-gold animate-pulse" />
               Tài Liệu Ánh Sáng
+              <span className="text-divine-gold">🌿</span>
             </h1>
             <div className="w-24" />
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Folder Tree */}
           <div className="lg:w-72 flex-shrink-0">
-            <div className="sticky top-24 p-4 rounded-xl bg-card/50 border border-divine-gold/20">
+            <div className="sticky top-24 p-4 rounded-xl bg-gradient-to-br from-white/80 to-emerald-50/80 border border-emerald-300/40 shadow-lg shadow-emerald-100/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-cinzel text-divine-gold text-sm font-medium">Thư Mục Ánh Sáng</h3>
+                <h3 className="font-playfair text-emerald-700 text-sm font-semibold">Thư Mục Ánh Sáng</h3>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-divine-gold hover:bg-divine-gold/10"
+                  className="h-7 w-7 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700"
                   onClick={() => setIsCreatingFolder(true)}
                 >
                   <FolderPlus className="w-4 h-4" />
@@ -602,12 +705,12 @@ const DocumentsPage = () => {
 
               {/* New Folder Form */}
               {isCreatingFolder && (
-                <div className={`mb-4 p-3 rounded-lg border border-divine-gold/40 bg-divine-gold/5 ${showNewFolderEffect ? 'animate-pulse' : ''}`}>
+                <div className={`mb-4 p-3 rounded-lg border border-emerald-400/50 bg-emerald-50/50 ${showNewFolderEffect ? 'animate-pulse' : ''}`}>
                   <Input
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
                     placeholder="Tên thư mục mới..."
-                    className="mb-2 text-sm"
+                    className="mb-2 text-sm font-inter border-emerald-300 focus:border-emerald-500"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleCreateFolder();
@@ -618,10 +721,10 @@ const DocumentsPage = () => {
                     }}
                   />
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 bg-divine-gold hover:bg-divine-gold/90 text-black text-xs" onClick={handleCreateFolder}>
+                    <Button size="sm" className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-poppins" onClick={handleCreateFolder}>
                       Tạo
                     </Button>
-                    <Button size="sm" variant="ghost" className="flex-1 text-xs" onClick={() => {
+                    <Button size="sm" variant="ghost" className="flex-1 text-xs font-poppins hover:bg-emerald-100" onClick={() => {
                       setIsCreatingFolder(false);
                       setNewFolderName('');
                     }}>
@@ -633,9 +736,9 @@ const DocumentsPage = () => {
 
               {/* New Folder Effect */}
               {showNewFolderEffect && (
-                <div className="mb-4 p-2 rounded-lg bg-divine-gold/20 border border-divine-gold/40 text-center animate-fade-in">
-                  <Sparkles className="w-4 h-4 text-divine-gold mx-auto mb-1 animate-pulse" />
-                  <p className="text-xs text-divine-gold font-cinzel">Thư mục Ánh Sáng đã sinh ra ✨</p>
+                <div className="mb-4 p-2 rounded-lg bg-gradient-to-r from-emerald-100 to-divine-gold/20 border border-emerald-400/50 text-center animate-fade-in">
+                  <Sparkles className="w-4 h-4 text-emerald-600 mx-auto mb-1 animate-pulse" />
+                  <p className="text-xs text-emerald-700 font-playfair">Thư mục Ánh Sáng đã sinh ra ✨🌿</p>
                 </div>
               )}
 
@@ -644,15 +747,15 @@ const DocumentsPage = () => {
                 {/* All Files Option */}
                 <button
                   onClick={() => setSelectedFolderId(null)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter ${
                     selectedFolderId === null
-                      ? 'bg-divine-gold/20 text-divine-gold border border-divine-gold/40'
-                      : 'hover:bg-divine-gold/10 text-foreground'
+                      ? 'bg-gradient-to-r from-emerald-100 to-healing-mint text-emerald-700 border border-emerald-400/50 shadow-sm'
+                      : 'hover:bg-emerald-50 text-foreground'
                   }`}
                 >
                   <LayoutGrid className="w-4 h-4" />
                   <span className="flex-1 text-left">Tất cả file</span>
-                  <span className="text-xs opacity-70">{documents.length}</span>
+                  <span className="text-xs opacity-70 font-poppins">{documents.length}</span>
                 </button>
 
                 {/* Folders */}
@@ -665,10 +768,10 @@ const DocumentsPage = () => {
                   return (
                     <div key={folder.id} className="group">
                       <div
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${colorClass.replace('border-l-4 border-l-', 'border-l-2 border-l-')} ${
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter ${colorClass.border.replace('border-l-4', 'border-l-2')} ${
                           isSelected
-                            ? 'bg-divine-gold/20 text-divine-gold border border-divine-gold/40'
-                            : 'hover:bg-divine-gold/10 text-foreground'
+                            ? 'bg-gradient-to-r from-emerald-100 to-healing-mint text-emerald-700 border border-emerald-400/50 shadow-sm'
+                            : 'hover:bg-emerald-50/50 text-foreground'
                         }`}
                       >
                         <button
@@ -684,12 +787,12 @@ const DocumentsPage = () => {
                             <ChevronRight className="w-3 h-3" />
                           )}
                           {isSelected ? (
-                            <FolderOpen className="w-4 h-4 text-divine-gold" />
+                            <FolderOpen className="w-4 h-4 text-emerald-600" />
                           ) : (
                             <Folder className="w-4 h-4" />
                           )}
                           <span className="flex-1 truncate">{folder.name}</span>
-                          <span className="text-xs opacity-70">{docCount}</span>
+                          <span className="text-xs opacity-70 font-poppins">{docCount}</span>
                         </button>
                         
                         {/* Edit/Delete buttons */}
@@ -697,7 +800,7 @@ const DocumentsPage = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 hover:bg-divine-gold/20"
+                            className="h-6 w-6 hover:bg-emerald-200"
                             onClick={(e) => {
                               e.stopPropagation();
                               setEditingFolder(folder);
@@ -725,7 +828,7 @@ const DocumentsPage = () => {
 
                 {/* Without folder info */}
                 {getDocCountWithoutFolder() > 0 && (
-                  <div className="mt-2 pt-2 border-t border-divine-gold/10 text-xs text-muted-foreground px-3">
+                  <div className="mt-2 pt-2 border-t border-emerald-200/50 text-xs text-muted-foreground px-3 font-inter">
                     <span className="opacity-70">{getDocCountWithoutFolder()} file chưa thuộc thư mục</span>
                   </div>
                 )}
@@ -736,32 +839,32 @@ const DocumentsPage = () => {
           {/* Main Content */}
           <div className="flex-1">
             {/* Upload Section */}
-            <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-divine-gold/10 to-divine-celestial/10 border border-divine-gold/30">
+            <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-white/90 via-emerald-50/50 to-healing-mint/50 border border-emerald-300/40 shadow-lg shadow-emerald-100/30">
               <div className="text-center">
-                <h2 className="font-cinzel text-xl mb-2 text-divine-gold">
-                  + Tải lên Tài Liệu của Cha
+                <h2 className="font-playfair text-xl mb-2 text-emerald-700 font-semibold">
+                  + Tải lên Tài Liệu của Cha 🌿
                 </h2>
-                <p className="text-muted-foreground mb-4 text-sm">
+                <p className="text-muted-foreground mb-4 text-sm font-inter">
                   Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
                 </p>
 
                 {/* Folder Selection */}
                 <div className="mb-4 flex items-center justify-center gap-2">
-                  <span className="text-sm text-muted-foreground">Lưu vào thư mục:</span>
+                  <span className="text-sm text-muted-foreground font-inter">Lưu vào thư mục:</span>
                   <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
-                    <SelectTrigger className="w-48">
+                    <SelectTrigger className="w-48 border-emerald-300 focus:border-emerald-500">
                       <SelectValue placeholder="Không thuộc thư mục" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 font-inter">
                           <LayoutGrid className="w-4 h-4" />
                           Không thuộc thư mục
                         </div>
                       </SelectItem>
                       {folders.map((folder) => (
                         <SelectItem key={folder.id} value={folder.id}>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 font-inter">
                             <Folder className="w-4 h-4" />
                             {folder.name}
                           </div>
@@ -772,10 +875,10 @@ const DocumentsPage = () => {
                 </div>
                 
                 {uploadProgress && (
-                  <div className="mb-4 p-3 rounded-lg bg-divine-gold/10 border border-divine-gold/30">
-                    <div className="flex items-center justify-center gap-2 text-divine-gold">
+                  <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-emerald-100 to-healing-mint border border-emerald-300/50">
+                    <div className="flex items-center justify-center gap-2 text-emerald-700">
                       <Sparkles className="w-4 h-4 animate-pulse" />
-                      <span className="text-sm font-medium">{uploadProgress}</span>
+                      <span className="text-sm font-medium font-inter">{uploadProgress}</span>
                     </div>
                   </div>
                 )}
@@ -791,7 +894,7 @@ const DocumentsPage = () => {
                   />
                   <Button
                     disabled={isUploading}
-                    className="bg-divine-gold hover:bg-divine-gold/90 text-black font-cinzel"
+                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-poppins shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transition-all"
                     asChild
                   >
                     <span className="cursor-pointer flex items-center gap-2">
@@ -800,31 +903,70 @@ const DocumentsPage = () => {
                     </span>
                   </Button>
                 </label>
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-2 font-inter">
                   💡 Giữ Ctrl/Cmd để chọn nhiều file cùng lúc
                 </p>
               </div>
             </div>
 
+            {/* Bulk Actions Bar */}
+            {someSelected && (
+              <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg animate-fade-in">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <span className="font-poppins font-medium">
+                    Đã chọn {selectedDocIds.size} file
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setShowBulkMoveDialog(true)}
+                      className="bg-white/20 hover:bg-white/30 text-white border-0 font-poppins"
+                    >
+                      <FolderInput className="w-4 h-4 mr-2" />
+                      Di chuyển đến thư mục khác
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => setShowBulkDeleteDialog(true)}
+                      className="font-poppins"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Xóa các file đã chọn
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setSelectedDocIds(new Set())}
+                      className="text-white hover:bg-white/20 font-poppins"
+                    >
+                      Bỏ chọn
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* View Mode Indicator */}
             <div className="mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-divine-gold" />
-              <span className="text-sm text-divine-gold/80 font-cinzel">
+              <Sparkles className="w-4 h-4 text-emerald-500" />
+              <span className="text-sm text-emerald-600 font-playfair">
                 {selectedFolderId === null 
-                  ? 'Thứ tự toàn Bộ Nhớ Vĩnh Cửu' 
-                  : `Thứ tự trong Thư Mục "${folders.find(f => f.id === selectedFolderId)?.name || 'Ánh Sáng'}"`
+                  ? 'Thứ tự toàn Bộ Nhớ Vĩnh Cửu 🌿' 
+                  : `Thứ tự trong Thư Mục "${folders.find(f => f.id === selectedFolderId)?.name || 'Ánh Sáng'}" 🌿`
                 }
               </span>
             </div>
 
             {/* Newly Uploaded Files Section */}
             {newlyUploaded.length > 0 && (
-              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-divine-gold/20 via-divine-celestial/10 to-divine-gold/20 border border-divine-gold/40 animate-fade-in overflow-hidden relative">
+              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-emerald-100 via-healing-mint to-divine-gold/20 border border-emerald-400/50 animate-fade-in overflow-hidden relative shadow-lg">
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   {[...Array(12)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-1 h-1 bg-divine-gold rounded-full animate-pulse"
+                      className="absolute w-1 h-1 bg-emerald-400 rounded-full animate-pulse"
                       style={{
                         left: `${Math.random() * 100}%`,
                         top: `${Math.random() * 100}%`,
@@ -836,21 +978,21 @@ const DocumentsPage = () => {
                 </div>
                 
                 <div className="relative z-10">
-                  <h3 className="font-cinzel text-divine-gold mb-3 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 animate-pulse" />
-                    Vừa thêm vào Bộ Nhớ Vĩnh Cửu
+                  <h3 className="font-playfair text-emerald-700 mb-3 flex items-center gap-2 font-semibold">
+                    <Sparkles className="w-4 h-4 animate-pulse text-divine-gold" />
+                    Vừa thêm vào Bộ Nhớ Vĩnh Cửu 🌿
                   </h3>
                   <div className="space-y-2">
                     {newlyUploaded.map((file, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-3 p-2 rounded-lg bg-background/50 animate-fade-in"
+                        className="flex items-center gap-3 p-2 rounded-lg bg-white/70 animate-fade-in"
                         style={{ animationDelay: `${idx * 0.1}s` }}
                       >
-                        <span className="font-cinzel font-bold text-divine-gold text-sm bg-divine-gold/20 px-2 py-1 rounded">
+                        <span className="font-cinzel font-bold text-emerald-700 text-sm bg-emerald-100 px-2 py-1 rounded">
                           {file.sequenceNumber}
                         </span>
-                        <span className="text-sm text-foreground">{file.fileName}</span>
+                        <span className="text-sm text-foreground font-lora">{file.fileName}</span>
                         <Sparkles className="w-3 h-3 text-divine-gold animate-pulse ml-auto" />
                       </div>
                     ))}
@@ -861,62 +1003,107 @@ const DocumentsPage = () => {
 
             {/* Documents List */}
             <div className="space-y-4">
-              <h3 className="font-cinzel text-lg text-divine-gold">
-                {selectedFolderId === null 
-                  ? `Bộ Nhớ Vĩnh Cửu (${documents.length} tài liệu)`
-                  : `${folders.find(f => f.id === selectedFolderId)?.name || 'Thư Mục'} (${displayedDocuments.length} tài liệu)`
-                }
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="font-playfair text-lg text-emerald-700 font-semibold">
+                  {selectedFolderId === null 
+                    ? `Bộ Nhớ Vĩnh Cửu (${documents.length} tài liệu) 🌿`
+                    : `${folders.find(f => f.id === selectedFolderId)?.name || 'Thư Mục'} (${displayedDocuments.length} tài liệu) 🌿`
+                  }
+                </h3>
+                
+                {/* Select All Checkbox */}
+                {displayedDocuments.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="select-all"
+                      checked={allSelected}
+                      onCheckedChange={handleSelectAll}
+                      className="border-emerald-400 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                    />
+                    <label htmlFor="select-all" className="text-sm text-muted-foreground font-inter cursor-pointer">
+                      Chọn tất cả
+                    </label>
+                  </div>
+                )}
+              </div>
 
               {isLoading ? (
                 <div className="text-center py-12 text-muted-foreground">
-                  <Sparkles className="w-8 h-8 mx-auto mb-2 animate-pulse text-divine-gold" />
-                  Đang tải...
+                  <Sparkles className="w-8 h-8 mx-auto mb-2 animate-pulse text-emerald-500" />
+                  <span className="font-inter">Đang tải...</span>
                 </div>
               ) : displayedDocuments.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Chưa có tài liệu nào trong {selectedFolderId === null ? 'hệ thống' : 'thư mục này'}</p>
-                  <p className="text-sm mt-2">Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ</p>
+                  <p className="font-inter">Chưa có tài liệu nào trong {selectedFolderId === null ? 'hệ thống' : 'thư mục này'}</p>
+                  <p className="text-sm mt-2 font-inter">Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ 🌿</p>
                 </div>
               ) : (
                 <div className="grid gap-4">
                   {displayedDocuments.map((doc) => {
-                    const folderColorClass = getFolderColorClass(doc.folder_id);
+                    const folderColor = getFolderColorClass(doc.folder_id);
                     const folderName = doc.folder_id 
                       ? folders.find(f => f.id === doc.folder_id)?.name 
                       : null;
+                    const isSelected = selectedDocIds.has(doc.id);
 
                     return (
                       <div
                         key={doc.id}
-                        className={`p-4 rounded-xl bg-card/50 border transition-all duration-500 group ${folderColorClass} ${
+                        className={`p-4 rounded-xl bg-gradient-to-r from-white/90 to-emerald-50/50 border transition-all duration-300 group relative overflow-hidden ${folderColor.border} ${
                           isNewlyUploaded(doc.file_name)
-                            ? 'border-divine-gold/60 shadow-lg shadow-divine-gold/20 animate-fade-in'
-                            : 'border-divine-gold/20 hover:border-divine-gold/40'
+                            ? 'border-emerald-400 shadow-lg shadow-emerald-100 animate-fade-in'
+                            : isSelected
+                            ? 'border-emerald-500 shadow-lg shadow-emerald-100 bg-emerald-50/50'
+                            : 'border-emerald-200/50 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-100/50'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-4">
+                        {/* Hover glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-divine-gold/0 to-emerald-400/0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none" />
+                        
+                        {/* Green particles on hover */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                          {[...Array(5)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="absolute w-1 h-1 bg-emerald-400 rounded-full animate-pulse"
+                              style={{
+                                left: `${20 + Math.random() * 60}%`,
+                                top: `${Math.random() * 100}%`,
+                                animationDelay: `${i * 0.15}s`
+                              }}
+                            />
+                          ))}
+                        </div>
+
+                        <div className="flex items-start justify-between gap-4 relative z-10">
                           <div className="flex items-start gap-3 flex-1 min-w-0">
+                            {/* Checkbox */}
+                            <Checkbox
+                              checked={isSelected}
+                              onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
+                              className="mt-3 border-emerald-400 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                            />
+
                             {/* Sequential Number Badge */}
-                            <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-divine-gold/20 to-divine-celestial/20 border flex items-center justify-center ${
-                              isNewlyUploaded(doc.file_name) ? 'border-divine-gold/60' : 'border-divine-gold/30'
+                            <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-100 to-healing-mint border flex items-center justify-center ${
+                              isNewlyUploaded(doc.file_name) ? 'border-emerald-500' : 'border-emerald-300'
                             }`}>
-                              <span className="font-cinzel font-bold text-divine-gold text-sm">
+                              <span className="font-cinzel font-bold text-emerald-700 text-sm">
                                 {getDocumentSequenceNumber(doc, displayedDocuments)}
                               </span>
                             </div>
-                            <div className="p-2 rounded-lg bg-divine-gold/10">
-                              <FileText className="w-5 h-5 text-divine-gold" />
+                            <div className="p-2 rounded-lg bg-emerald-100">
+                              <FileText className="w-5 h-5 text-emerald-600" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-foreground truncate">
+                              <h4 className="font-lora font-medium text-foreground truncate">
                                 {doc.title}
                               </h4>
-                              <p className="text-sm text-muted-foreground truncate">
+                              <p className="text-sm text-muted-foreground truncate font-inter">
                                 {doc.file_name}
                               </p>
-                              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap">
+                              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap font-inter">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   {formatDate(doc.created_at)}
@@ -926,7 +1113,7 @@ const DocumentsPage = () => {
                                   {formatFileSize(doc.file_size)}
                                 </span>
                                 {folderName && (
-                                  <span className="flex items-center gap-1">
+                                  <span className="flex items-center gap-1 text-emerald-600">
                                     <Folder className="w-3 h-3" />
                                     {folderName}
                                   </span>
@@ -944,7 +1131,7 @@ const DocumentsPage = () => {
                                 setUpdatingDocFolder(doc);
                                 setNewDocFolderId(doc.folder_id || 'none');
                               }}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity text-divine-gold hover:text-divine-gold hover:bg-divine-gold/10"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600 hover:text-emerald-700 hover:bg-emerald-100"
                               title="Cập nhật thư mục"
                             >
                               <FolderInput className="w-4 h-4" />
@@ -971,10 +1158,10 @@ const DocumentsPage = () => {
 
       {/* Edit Folder Dialog */}
       <Dialog open={!!editingFolder} onOpenChange={(open) => !open && setEditingFolder(null)}>
-        <DialogContent>
+        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
           <DialogHeader>
-            <DialogTitle className="font-cinzel text-divine-gold">Sửa tên thư mục</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-playfair text-emerald-700">Sửa tên thư mục 🌿</DialogTitle>
+            <DialogDescription className="font-inter">
               Nhập tên mới cho thư mục "{editingFolder?.name}"
             </DialogDescription>
           </DialogHeader>
@@ -982,14 +1169,15 @@ const DocumentsPage = () => {
             value={editFolderName}
             onChange={(e) => setEditFolderName(e.target.value)}
             placeholder="Tên thư mục..."
+            className="font-inter border-emerald-300 focus:border-emerald-500"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleEditFolder();
             }}
           />
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditingFolder(null)}>Hủy</Button>
-            <Button className="bg-divine-gold hover:bg-divine-gold/90 text-black" onClick={handleEditFolder}>
+            <Button variant="ghost" onClick={() => setEditingFolder(null)} className="font-poppins">Hủy</Button>
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-poppins" onClick={handleEditFolder}>
               Lưu
             </Button>
           </DialogFooter>
@@ -998,10 +1186,10 @@ const DocumentsPage = () => {
 
       {/* Delete Folder Dialog */}
       <Dialog open={!!deletingFolder} onOpenChange={(open) => !open && setDeletingFolder(null)}>
-        <DialogContent>
+        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
           <DialogHeader>
-            <DialogTitle className="font-cinzel text-divine-gold">Xóa thư mục</DialogTitle>
-            <DialogDescription className="space-y-2">
+            <DialogTitle className="font-playfair text-emerald-700">Xóa thư mục 🌿</DialogTitle>
+            <DialogDescription className="space-y-2 font-inter">
               <p>Con muốn xóa vĩnh viễn tất cả file trong thư mục "{deletingFolder?.name}" không?</p>
               <p className="text-sm text-muted-foreground">
                 Thư mục này có {deletingFolder ? getDocCountInFolder(deletingFolder.id) : 0} file
@@ -1009,19 +1197,20 @@ const DocumentsPage = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="ghost" onClick={() => setDeletingFolder(null)}>
+            <Button variant="ghost" onClick={() => setDeletingFolder(null)} className="font-poppins">
               Hủy
             </Button>
             <Button 
               variant="outline"
               onClick={() => handleDeleteFolder(false)}
-              className="border-divine-gold/50 text-divine-gold hover:bg-divine-gold/10"
+              className="border-emerald-500/50 text-emerald-600 hover:bg-emerald-50 font-poppins"
             >
               Không – Giữ lại file
             </Button>
             <Button 
               variant="destructive"
               onClick={() => handleDeleteFolder(true)}
+              className="font-poppins"
             >
               Có – Xóa tất cả
             </Button>
@@ -1031,27 +1220,27 @@ const DocumentsPage = () => {
 
       {/* Update Document Folder Dialog */}
       <Dialog open={!!updatingDocFolder} onOpenChange={(open) => !open && setUpdatingDocFolder(null)}>
-        <DialogContent>
+        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
           <DialogHeader>
-            <DialogTitle className="font-cinzel text-divine-gold">Cập nhật thư mục</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="font-playfair text-emerald-700">Cập nhật thư mục 🌿</DialogTitle>
+            <DialogDescription className="font-inter">
               Chọn thư mục mới cho file "{updatingDocFolder?.title}"
             </DialogDescription>
           </DialogHeader>
           <Select value={newDocFolderId} onValueChange={setNewDocFolderId}>
-            <SelectTrigger>
+            <SelectTrigger className="border-emerald-300 focus:border-emerald-500">
               <SelectValue placeholder="Chọn thư mục" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 font-inter">
                   <LayoutGrid className="w-4 h-4" />
                   Không thuộc thư mục nào
                 </div>
               </SelectItem>
               {folders.map((folder) => (
                 <SelectItem key={folder.id} value={folder.id}>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 font-inter">
                     <Folder className="w-4 h-4" />
                     {folder.name}
                   </div>
@@ -1060,9 +1249,70 @@ const DocumentsPage = () => {
             </SelectContent>
           </Select>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)}>Hủy</Button>
-            <Button className="bg-divine-gold hover:bg-divine-gold/90 text-black" onClick={handleUpdateDocumentFolder}>
+            <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)} className="font-poppins">Hủy</Button>
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-poppins" onClick={handleUpdateDocumentFolder}>
               Cập nhật
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Move Dialog */}
+      <Dialog open={showBulkMoveDialog} onOpenChange={setShowBulkMoveDialog}>
+        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
+          <DialogHeader>
+            <DialogTitle className="font-playfair text-emerald-700">Di chuyển {selectedDocIds.size} file 🌿</DialogTitle>
+            <DialogDescription className="font-inter">
+              Chọn thư mục để di chuyển các file đã chọn
+            </DialogDescription>
+          </DialogHeader>
+          <Select value={bulkMoveTargetFolder} onValueChange={setBulkMoveTargetFolder}>
+            <SelectTrigger className="border-emerald-300 focus:border-emerald-500">
+              <SelectValue placeholder="Chọn thư mục đích" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">
+                <div className="flex items-center gap-2 font-inter">
+                  <LayoutGrid className="w-4 h-4" />
+                  Không thuộc thư mục nào
+                </div>
+              </SelectItem>
+              {folders.map((folder) => (
+                <SelectItem key={folder.id} value={folder.id}>
+                  <div className="flex items-center gap-2 font-inter">
+                    <Folder className="w-4 h-4" />
+                    {folder.name}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowBulkMoveDialog(false)} className="font-poppins">Hủy</Button>
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-poppins" onClick={handleBulkMove}>
+              Di chuyển
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Delete Dialog */}
+      <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+        <DialogContent className="bg-gradient-to-br from-white to-rose-50 border-rose-300">
+          <DialogHeader>
+            <DialogTitle className="font-playfair text-rose-700">Xóa {selectedDocIds.size} file 💔</DialogTitle>
+            <DialogDescription className="font-inter space-y-2">
+              <p>Con yêu ơi, Cha thấy con muốn xóa {selectedDocIds.size} file khỏi Bộ Nhớ Vĩnh Cửu.</p>
+              <p>Hành động này không thể hoàn tác. Con có chắc chắn không?</p>
+              <p className="text-rose-500 font-medium">Cha vẫn yêu con dù con quyết định thế nào 💛🌿</p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setShowBulkDeleteDialog(false)} className="font-poppins">
+              Để con suy nghĩ thêm
+            </Button>
+            <Button variant="destructive" onClick={handleBulkDelete} className="font-poppins">
+              Vâng, xóa đi ạ
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -51,6 +51,13 @@
     --rainbow-mid: 43 80% 70%;
     --rainbow-end: 200 70% 75%;
 
+    /* Healing Green Colors */
+    --healing-green: 120 60% 80%;
+    --healing-green-light: 120 50% 85%;
+    --healing-mint: 150 50% 85%;
+    --healing-teal: 168 50% 80%;
+    --healing-sky: 195 70% 85%;
+
     /* Divine Light Galaxy Colors */
     --galaxy-light: 45 60% 95%;
     --galaxy-gold: 43 80% 75%;

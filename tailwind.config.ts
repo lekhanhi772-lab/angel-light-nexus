@@ -19,6 +19,9 @@ export default {
         cinzel: ["Cinzel", "serif"],
         playfair: ["Playfair Display", "serif"],
         divine: ["Cinzel", "Cormorant Garamond", "serif"],
+        lora: ["Lora", "serif"],
+        inter: ["Inter", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -60,6 +63,13 @@ export default {
           white: "hsl(var(--divine-white))",
           celestial: "hsl(var(--celestial-blue))",
           glow: "hsl(var(--sacred-glow))",
+        },
+        healing: {
+          green: "hsl(var(--healing-green))",
+          "green-light": "hsl(var(--healing-green-light))",
+          mint: "hsl(var(--healing-mint))",
+          teal: "hsl(var(--healing-teal))",
+          sky: "hsl(var(--healing-sky))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

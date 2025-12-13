@@ -60,17 +60,17 @@ export default {
         },
         divine: {
           gold: "hsl(var(--divine-gold))",
+          "gold-dark": "hsl(var(--divine-gold-dark))",
           "gold-light": "hsl(var(--divine-gold-light))",
           white: "hsl(var(--divine-white))",
-          celestial: "hsl(var(--celestial-blue))",
-          glow: "hsl(var(--sacred-glow))",
+          "white-warm": "hsl(var(--divine-white-warm))",
         },
         healing: {
-          green: "hsl(var(--healing-green))",
-          "green-light": "hsl(var(--healing-green-light))",
-          mint: "hsl(var(--healing-mint))",
-          teal: "hsl(var(--healing-teal))",
           sky: "hsl(var(--healing-sky))",
+          mint: "hsl(var(--healing-mint))",
+          "light-green": "hsl(var(--healing-light-green))",
+          teal: "hsl(var(--healing-teal))",
+          "blue-deep": "hsl(var(--healing-blue-deep))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

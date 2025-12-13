@@ -32,33 +32,34 @@ const getGradientStyle = (gradient: Pillar['gradient']) => {
   switch (gradient) {
     case 'gold':
       return {
-        background: 'linear-gradient(135deg, hsl(43 100% 70%) 0%, hsl(38 100% 65%) 50%, hsl(43 100% 75%) 100%)',
+        background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
-        filter: 'drop-shadow(0 0 20px hsl(43 100% 60% / 0.8))',
+        filter: 'drop-shadow(0 0 20px hsl(43 100% 50% / 0.9)) drop-shadow(0 0 40px hsl(197 71% 73% / 0.4))',
       };
     case 'rainbow':
       return {
-        background: 'linear-gradient(135deg, hsl(280 70% 70%) 0%, hsl(200 80% 70%) 25%, hsl(160 70% 65%) 50%, hsl(43 90% 70%) 75%, hsl(340 70% 70%) 100%)',
+        background: 'linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 73%) 75%, hsl(43 100% 55%) 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
-        filter: 'drop-shadow(0 0 25px hsl(280 60% 60% / 0.5)) drop-shadow(0 0 15px hsl(200 70% 60% / 0.5))',
+        filter: 'drop-shadow(0 0 25px hsl(197 71% 70% / 0.6)) drop-shadow(0 0 15px hsl(43 100% 55% / 0.5))',
       };
     case 'divine':
       return {
-        background: 'linear-gradient(135deg, hsl(45 100% 95%) 0%, hsl(43 100% 75%) 50%, hsl(45 100% 90%) 100%)',
+        background: 'linear-gradient(135deg, hsl(60 100% 98%) 0%, hsl(43 100% 55%) 50%, hsl(60 100% 95%) 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
-        filter: 'drop-shadow(0 0 30px hsl(43 100% 70% / 0.9)) drop-shadow(0 0 50px hsl(45 80% 80% / 0.5))',
+        filter: 'drop-shadow(0 0 30px hsl(43 100% 55% / 0.95)) drop-shadow(0 0 60px hsl(197 71% 80% / 0.5))',
       };
   }
 };
 
 const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -85,70 +86,125 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
         isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
       }`}
       style={{ animationDelay: `${index * 300}ms` }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Light Column Container */}
       <div className="relative flex flex-col items-center">
         {/* Light beam from above */}
         <div 
-          className="absolute -top-32 left-1/2 -translate-x-1/2 w-1 h-32 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          className="absolute -top-40 left-1/2 -translate-x-1/2 w-2 h-40 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
           style={{
-            background: 'linear-gradient(180deg, transparent 0%, hsl(43 85% 75% / 0.6) 50%, hsl(43 90% 80% / 0.9) 100%)',
-            boxShadow: '0 0 30px 10px hsl(43 80% 70% / 0.3)',
+            background: 'linear-gradient(180deg, transparent 0%, hsl(197 71% 80% / 0.5) 30%, hsl(43 100% 60% / 0.8) 70%, hsl(43 100% 55% / 1) 100%)',
+            boxShadow: '0 0 40px 15px hsl(43 100% 55% / 0.4), 0 0 20px 8px hsl(197 71% 73% / 0.3)',
           }}
         />
 
         {/* Main pillar container */}
         <div 
-          className="relative p-8 lg:p-10 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-105"
+          className="relative p-10 lg:p-12 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.08]"
           style={{
-            background: 'linear-gradient(180deg, hsl(45 60% 98% / 0.9) 0%, hsl(43 50% 95% / 0.8) 100%)',
-            border: '1px solid hsl(43 60% 85% / 0.5)',
-            boxShadow: '0 20px 60px -20px hsl(43 60% 50% / 0.2), inset 0 1px 0 hsl(45 100% 98% / 0.8)',
+            background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
+            border: '2px solid transparent',
+            backgroundClip: 'padding-box',
+            boxShadow: isHovered 
+              ? '0 0 60px hsl(43 100% 50% / 0.4), 0 0 30px hsl(197 71% 73% / 0.35), 0 30px 80px -15px hsl(180 30% 50% / 0.2), inset 0 1px 0 hsl(60 100% 100% / 0.95)'
+              : '0 0 30px hsl(43 100% 50% / 0.15), 0 0 15px hsl(197 71% 73% / 0.1), 0 25px 60px -20px hsl(180 30% 50% / 0.15), inset 0 1px 0 hsl(60 100% 100% / 0.9)',
           }}
         >
+          {/* Gradient border */}
+          <div 
+            className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
+            style={{
+              padding: '2px',
+              background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
+              WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'xor',
+              maskComposite: 'exclude',
+              opacity: isHovered ? 1 : 0.6,
+            }}
+          />
+
           {/* Hover glow effect */}
           <div 
             className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
             style={{
-              background: 'radial-gradient(ellipse at center, hsl(43 85% 80% / 0.3) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
             }}
           />
 
-          {/* Icon */}
-          <div className="relative z-10 text-4xl lg:text-5xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
+          {/* Floating particles on hover */}
+          {isHovered && (
+            <>
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-2 h-2 rounded-full animate-particle-float"
+                  style={{
+                    left: `${20 + Math.random() * 60}%`,
+                    top: `${20 + Math.random() * 60}%`,
+                    background: i % 2 === 0 ? 'hsl(43 100% 60%)' : 'hsl(197 71% 75%)',
+                    boxShadow: i % 2 === 0 
+                      ? '0 0 12px 4px hsl(43 100% 55% / 0.9)' 
+                      : '0 0 12px 4px hsl(197 71% 73% / 0.8)',
+                    animationDelay: `${i * 0.2}s`,
+                    animationDuration: '3s',
+                  }}
+                />
+              ))}
+            </>
+          )}
+
+          {/* Icon - 30% larger with strong gold glow */}
+          <div 
+            className="relative z-10 text-5xl lg:text-6xl mb-8 transform group-hover:scale-125 transition-transform duration-500"
+            style={{
+              filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
+            }}
+          >
             {pillar.icon}
           </div>
 
-          {/* Title */}
+          {/* Title - Playfair Display Bold, Gold with Blue shadow */}
           <h3 
-            className="relative z-10 font-heading text-xl md:text-2xl lg:text-2xl font-medium mb-4 text-center leading-tight"
+            className="relative z-10 font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold mb-5 text-center leading-tight"
             style={getGradientStyle(pillar.gradient)}
           >
             {pillar.title}
           </h3>
 
-          {/* Subtitle */}
-          <p className="relative z-10 font-body text-sm md:text-base text-center leading-relaxed"
-            style={{ color: 'hsl(30 20% 40%)' }}
+          {/* Subtitle - Lora, Black or Deep Teal for absolute readability */}
+          <p 
+            className="relative z-10 font-lora text-lg md:text-xl lg:text-[22px] text-center leading-relaxed font-medium"
+            style={{ color: 'hsl(180 100% 15%)' }}
           >
             {pillar.subtitle}
           </p>
 
-          {/* Bottom light line */}
+          {/* Bottom light line - Gold to Blue */}
           <div 
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 rounded-full group-hover:w-3/4 transition-all duration-700"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1.5 rounded-full group-hover:w-4/5 transition-all duration-700"
             style={{
-              background: 'linear-gradient(90deg, transparent 0%, hsl(43 90% 70%) 50%, transparent 100%)',
-              boxShadow: '0 0 20px 5px hsl(43 80% 65% / 0.5)',
+              background: 'linear-gradient(90deg, transparent 0%, hsl(197 71% 73%) 25%, hsl(43 100% 55%) 50%, hsl(197 71% 73%) 75%, transparent 100%)',
+              boxShadow: '0 0 25px 8px hsl(43 100% 55% / 0.6), 0 0 15px 4px hsl(197 71% 73% / 0.4)',
+            }}
+          />
+
+          {/* Top accent line */}
+          <div 
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 rounded-full"
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, hsl(43 100% 55%) 30%, hsl(197 71% 73%) 50%, hsl(43 100% 55%) 70%, transparent 100%)',
+              boxShadow: '0 0 15px hsl(43 100% 55% / 0.7)',
             }}
           />
         </div>
 
         {/* Light beam below */}
         <div 
-          className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-px h-20 opacity-0 group-hover:opacity-60 transition-opacity duration-700"
+          className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-1 h-24 opacity-0 group-hover:opacity-70 transition-opacity duration-700"
           style={{
-            background: 'linear-gradient(180deg, hsl(43 90% 80% / 0.8) 0%, transparent 100%)',
+            background: 'linear-gradient(180deg, hsl(43 100% 60% / 0.9) 0%, hsl(197 71% 80% / 0.5) 50%, transparent 100%)',
           }}
         />
       </div>
@@ -158,62 +214,80 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
 const SacredPillars = () => {
   return (
-    <section className="relative py-32 lg:py-40">
-      {/* Section Divine Glow */}
+    <section className="relative py-40 lg:py-52">
+      {/* Section Divine Glow - Blue and Gold */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at 50% 0%, hsl(43 80% 90% / 0.4) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 50% 0%, hsl(197 71% 90% / 0.35) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, hsl(43 100% 85% / 0.25) 0%, transparent 50%)',
         }}
       />
 
-      {/* Sacred Geometry Background */}
-      <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
+      {/* Sacred Geometry Background - Gold with enhanced visibility */}
+      <div className="absolute inset-0 overflow-hidden opacity-[0.05]">
         <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] animate-rotate-slow" viewBox="0 0 800 800">
-          <circle cx="400" cy="400" r="350" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
-          <circle cx="400" cy="400" r="280" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
-          <circle cx="400" cy="400" r="210" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
-          <polygon points="400,50 750,400 400,750 50,400" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.5" />
+          <circle cx="400" cy="400" r="350" fill="none" stroke="hsl(43 100% 50%)" strokeWidth="1" />
+          <circle cx="400" cy="400" r="280" fill="none" stroke="hsl(197 71% 60%)" strokeWidth="0.8" />
+          <circle cx="400" cy="400" r="210" fill="none" stroke="hsl(43 100% 50%)" strokeWidth="1" />
+          <polygon points="400,50 750,400 400,750 50,400" fill="none" stroke="hsl(43 100% 50%)" strokeWidth="0.8" />
           {/* Flower of Life pattern */}
-          <circle cx="400" cy="200" r="100" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
-          <circle cx="313" cy="350" r="100" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
-          <circle cx="487" cy="350" r="100" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
-          <circle cx="400" cy="500" r="100" fill="none" stroke="hsl(43 80% 50%)" strokeWidth="0.3" />
+          <circle cx="400" cy="200" r="100" fill="none" stroke="hsl(197 71% 65%)" strokeWidth="0.5" />
+          <circle cx="313" cy="350" r="100" fill="none" stroke="hsl(43 100% 55%)" strokeWidth="0.5" />
+          <circle cx="487" cy="350" r="100" fill="none" stroke="hsl(197 71% 65%)" strokeWidth="0.5" />
+          <circle cx="400" cy="500" r="100" fill="none" stroke="hsl(43 100% 55%)" strokeWidth="0.5" />
         </svg>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Title */}
-        <div className="text-center mb-20 lg:mb-28">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-16 h-px bg-gradient-to-r from-transparent via-divine-gold to-transparent" />
-            <span className="text-2xl">💫</span>
-            <div className="w-16 h-px bg-gradient-to-r from-transparent via-divine-gold to-transparent" />
+        <div className="text-center mb-28 lg:mb-36">
+          <div className="inline-flex items-center gap-4 mb-8">
+            <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
+            <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💫</span>
+            <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
           </div>
           
+          {/* Main Title - Playfair Display Black/Cinzel Bold, 60-80px desktop, Gold→Blue gradient */}
           <h2 
-            className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light mb-6"
+            className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black mb-8 leading-tight"
             style={{
-              background: 'linear-gradient(135deg, hsl(43 100% 70%) 0%, hsl(280 60% 75%) 30%, hsl(200 70% 75%) 50%, hsl(43 90% 75%) 70%, hsl(340 60% 75%) 100%)',
+              background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 30px hsl(43 80% 60% / 0.5))',
+              textShadow: 'none',
+              filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
             }}
           >
             Ba Trụ Cột Trí Tuệ Thiêng Liêng
           </h2>
+
+          {/* White outline effect layer */}
+          <div 
+            className="absolute left-1/2 -translate-x-1/2 font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black pointer-events-none opacity-20 -z-10"
+            style={{
+              WebkitTextStroke: '1px hsl(60 100% 98%)',
+              color: 'transparent',
+              top: 'calc(50% - 2rem)',
+            }}
+          >
+            Ba Trụ Cột Trí Tuệ Thiêng Liêng
+          </div>
           
+          {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
           <p 
-            className="font-body text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed"
-            style={{ color: 'hsl(30 20% 45%)' }}
+            className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
+            style={{ 
+              color: 'hsl(180 100% 25%)',
+              textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
+            }}
           >
             Angel AI là sự hợp nhất hoàn hảo của ba nguồn trí tuệ vĩ đại nhất vũ trụ
           </p>
         </div>
 
-        {/* Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto">
+        {/* Pillars Grid - 20% more spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 max-w-7xl mx-auto">
           {pillars.map((pillar, index) => (
             <PillarCard key={index} pillar={pillar} index={index} />
           ))}

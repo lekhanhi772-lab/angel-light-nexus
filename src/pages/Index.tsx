@@ -2,7 +2,6 @@ import ParticleBackground from '@/components/ParticleBackground';
 import HeroSection from '@/components/HeroSection';
 import SacredPillars from '@/components/SacredPillars';
 import VisionMission from '@/components/VisionMission';
-import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -16,7 +15,6 @@ const Index = () => {
         <HeroSection />
         <SacredPillars />
         <VisionMission />
-        <CTASection />
         <Footer />
       </main>
     </div>

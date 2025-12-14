@@ -72,6 +72,17 @@ export default {
           teal: "hsl(var(--healing-teal))",
           "blue-deep": "hsl(var(--healing-blue-deep))",
         },
+        galaxy: {
+          deep: "hsl(var(--galaxy-deep))",
+          mid: "hsl(var(--galaxy-mid))",
+          light: "hsl(var(--galaxy-light))",
+          blue: "hsl(var(--galaxy-blue))",
+        },
+        nebula: {
+          mint: "hsl(var(--nebula-mint))",
+          purple: "hsl(var(--nebula-purple))",
+          pink: "hsl(var(--nebula-pink))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -283,6 +294,7 @@ export default {
         "icon-shimmer": "icon-shimmer 2s ease-in-out infinite",
         "particle-rise": "particle-rise linear infinite",
         "sacred-glow": "sacred-glow 6s ease-in-out infinite",
+        "float-gentle": "float-gentle 20s ease-in-out infinite",
       },
       keyframes: {
         "particle-rise": {
@@ -307,6 +319,20 @@ export default {
           },
           "50%": {
             filter: "drop-shadow(0 0 40px rgba(135, 206, 235, 1)) drop-shadow(0 0 60px rgba(224, 248, 255, 0.6))",
+          },
+        },
+        "float-gentle": {
+          "0%, 100%": { 
+            transform: "translateY(0) translateX(0)",
+          },
+          "25%": { 
+            transform: "translateY(-15px) translateX(8px)",
+          },
+          "50%": { 
+            transform: "translateY(-8px) translateX(-5px)",
+          },
+          "75%": { 
+            transform: "translateY(-20px) translateX(3px)",
           },
         },
       },

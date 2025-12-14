@@ -6,15 +6,15 @@
 
 @layer base {
   :root {
-    /* Divine 5D Blue-Gold Palette */
-    --background: 180 50% 97%;
-    --foreground: 180 30% 15%;
+    /* Galaxy 5D Blue-Gold Palette */
+    --background: 220 60% 10%;
+    --foreground: 60 30% 95%;
 
-    --card: 165 40% 98%;
-    --card-foreground: 180 30% 15%;
+    --card: 220 55% 12%;
+    --card-foreground: 60 30% 95%;
 
-    --popover: 165 40% 98%;
-    --popover-foreground: 180 30% 15%;
+    --popover: 220 55% 12%;
+    --popover-foreground: 60 30% 95%;
 
     /* Sacred Gold */
     --primary: 43 100% 50%;
@@ -22,11 +22,11 @@
 
     /* Healing Sky Blue */
     --secondary: 197 71% 73%;
-    --secondary-foreground: 180 50% 15%;
+    --secondary-foreground: 220 50% 10%;
 
     /* Divine Warm White */
-    --muted: 60 50% 97%;
-    --muted-foreground: 180 20% 35%;
+    --muted: 220 40% 18%;
+    --muted-foreground: 60 20% 75%;
 
     /* Ethereal Accent - Gold */
     --accent: 43 100% 50%;
@@ -35,8 +35,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 165 40% 85%;
-    --input: 165 40% 90%;
+    --border: 220 40% 25%;
+    --input: 220 40% 20%;
     --ring: 43 100% 50%;
 
     --radius: 1rem;
@@ -56,36 +56,39 @@
     --healing-blue-deep: 180 100% 25%;
 
     /* Galaxy & Nebula */
-    --galaxy-light: 165 50% 95%;
-    --galaxy-blue: 197 71% 85%;
-    --nebula-mint: 157 52% 90%;
-    --nebula-warm: 50 80% 95%;
+    --galaxy-deep: 217 70% 8%;
+    --galaxy-mid: 220 60% 15%;
+    --galaxy-light: 222 50% 22%;
+    --galaxy-blue: 197 71% 60%;
+    --nebula-mint: 157 52% 60%;
+    --nebula-purple: 280 60% 65%;
+    --nebula-pink: 340 80% 70%;
 
     /* Gradients - Blue to Gold to White */
     --gradient-divine: linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(43 100% 50%) 50%, hsl(60 100% 98%) 100%);
     --gradient-gold: linear-gradient(180deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%);
     --gradient-healing: linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 50%, hsl(120 73% 79%) 100%);
-    --gradient-celestial: radial-gradient(ellipse at center, hsl(197 71% 85% / 0.5) 0%, transparent 70%);
-    --gradient-5d: linear-gradient(135deg, 
-      hsl(60 100% 98%) 0%, 
-      hsl(150 50% 97%) 25%,
-      hsl(197 50% 95%) 50%,
-      hsl(157 52% 95%) 75%,
-      hsl(180 40% 96%) 100%);
+    --gradient-celestial: radial-gradient(ellipse at center, hsl(197 71% 50% / 0.3) 0%, transparent 70%);
+    --gradient-galaxy: linear-gradient(180deg, 
+      hsl(217 70% 8%) 0%, 
+      hsl(220 60% 12%) 25%,
+      hsl(217 55% 16%) 50%,
+      hsl(222 50% 20%) 75%,
+      hsl(225 45% 25%) 100%);
     
     /* Shadows */
-    --shadow-divine: 0 0 60px hsl(43 100% 50% / 0.4), 0 0 30px hsl(197 71% 73% / 0.3);
-    --shadow-glow-gold: 0 0 30px hsl(43 100% 50% / 0.6);
-    --shadow-glow-blue: 0 0 30px hsl(197 71% 73% / 0.6);
-    --shadow-soft: 0 20px 60px hsl(180 20% 50% / 0.1);
+    --shadow-divine: 0 0 60px hsl(43 100% 50% / 0.5), 0 0 30px hsl(197 71% 73% / 0.4);
+    --shadow-glow-gold: 0 0 30px hsl(43 100% 50% / 0.7);
+    --shadow-glow-blue: 0 0 30px hsl(197 71% 73% / 0.7);
+    --shadow-soft: 0 20px 60px hsl(220 50% 5% / 0.5);
 
-    --sidebar-background: 165 50% 96%;
-    --sidebar-foreground: 180 30% 20%;
+    --sidebar-background: 220 55% 10%;
+    --sidebar-foreground: 60 30% 95%;
     --sidebar-primary: 43 100% 50%;
     --sidebar-primary-foreground: 40 20% 10%;
-    --sidebar-accent: 165 50% 92%;
-    --sidebar-accent-foreground: 180 30% 20%;
-    --sidebar-border: 165 40% 88%;
+    --sidebar-accent: 220 50% 15%;
+    --sidebar-accent-foreground: 60 30% 95%;
+    --sidebar-border: 220 40% 20%;
     --sidebar-ring: 43 100% 50%;
   }
 
@@ -164,30 +167,44 @@
     background-clip: text;
   }
 
-  /* Multi-layer Glow Effects */
+  /* Multi-layer Glow Effects - Enhanced for dark galaxy background */
   .glow-gold {
     text-shadow: 
-      0 0 20px hsl(43 100% 50% / 0.9), 
-      0 0 40px hsl(43 100% 50% / 0.6), 
-      0 0 60px hsl(43 100% 50% / 0.3);
+      0 0 10px hsl(0 0% 0% / 0.8),
+      0 0 25px hsl(43 100% 55% / 1), 
+      0 0 50px hsl(43 100% 50% / 0.8), 
+      0 0 80px hsl(43 100% 50% / 0.5);
   }
 
   .glow-blue {
     text-shadow: 
-      0 0 20px hsl(197 71% 73% / 0.9), 
-      0 0 40px hsl(197 71% 73% / 0.6), 
-      0 0 60px hsl(197 71% 73% / 0.3);
+      0 0 10px hsl(0 0% 0% / 0.8),
+      0 0 25px hsl(197 71% 75% / 1), 
+      0 0 50px hsl(197 71% 73% / 0.8), 
+      0 0 80px hsl(197 71% 73% / 0.5);
   }
 
   .glow-gold-blue {
     text-shadow: 
-      0 0 30px hsl(43 100% 50% / 0.8), 
-      0 0 60px hsl(197 71% 73% / 0.5),
-      0 0 90px hsl(43 100% 50% / 0.3);
+      0 0 8px hsl(0 0% 0% / 0.9),
+      0 0 35px hsl(43 100% 55% / 1), 
+      0 0 70px hsl(197 71% 75% / 0.7),
+      0 0 100px hsl(43 100% 50% / 0.4);
   }
 
   .glow-white {
-    text-shadow: 0 0 20px hsl(60 100% 98% / 0.9), 0 0 40px hsl(60 100% 98% / 0.5);
+    text-shadow: 
+      0 0 8px hsl(0 0% 0% / 0.8),
+      0 0 25px hsl(60 100% 98% / 1), 
+      0 0 50px hsl(60 100% 98% / 0.7);
+  }
+
+  /* Text contrast helper for galaxy background */
+  .text-galaxy-contrast {
+    text-shadow: 
+      0 0 10px hsl(0 0% 0% / 0.9),
+      0 2px 4px hsl(0 0% 0% / 0.8),
+      0 0 30px hsl(43 100% 55% / 0.5);
   }
 
   /* 5D Sacred Pillar Card */

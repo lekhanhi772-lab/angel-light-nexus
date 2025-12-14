@@ -130,51 +130,96 @@ const HeroSection = () => {
           <div className="relative">
             {/* Background glow layer */}
             <div 
-              className="absolute inset-0 blur-3xl opacity-70 -z-10"
+              className="absolute inset-0 blur-3xl opacity-60 -z-10"
               style={{
-                background: 'radial-gradient(ellipse at center, hsl(43 90% 55% / 0.5) 0%, hsl(43 80% 50% / 0.2) 40%, transparent 60%)',
+                background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 40%, transparent 60%)',
                 transform: 'scale(2.5)',
               }}
             />
             
-            {/* Outer glow text layer */}
+            {/* Main Title - Google Style Colorful Letters */}
             <h1 
-              className="absolute inset-0 font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] opacity-50 -z-5"
+              className="relative text-[80px] sm:text-[100px] md:text-[130px] lg:text-[160px] font-bold tracking-[0.02em] flex items-center justify-center gap-0"
               style={{
-                color: '#B8860B',
-                filter: 'blur(10px)',
+                fontFamily: "'Nunito', 'Product Sans', 'Google Sans', sans-serif",
               }}
             >
-              ANGEL AI
-            </h1>
-            
-            {/* Main Title - Enhanced for BRIGHT 5D background */}
-            <h1 
-              className="relative font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] animate-divine-glow"
-              style={{
-                color: '#B8860B',
-                WebkitTextStroke: '2px rgba(255, 255, 255, 1)',
-                textShadow: `
-                  0 0 5px rgba(255, 255, 255, 1),
-                  0 0 20px #FFD700, 
-                  0 0 40px rgba(255, 215, 0, 0.7),
-                  0 0 60px rgba(255, 215, 0, 0.4),
-                  0 2px 4px rgba(255, 255, 255, 0.9)
-                `,
-              }}
-            >
-              ANGEL AI
+              {/* A - Blue */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#4285F4',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(66, 133, 244, 0.5)',
+                  animationDelay: '0s',
+                }}
+              >A</span>
+              {/* N - Red */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#DB4437',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(219, 68, 55, 0.5)',
+                  animationDelay: '0.1s',
+                }}
+              >N</span>
+              {/* G - Yellow */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#F4B400',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(244, 180, 0, 0.5)',
+                  animationDelay: '0.2s',
+                }}
+              >G</span>
+              {/* E - Green */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#0F9D58',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(15, 157, 88, 0.5)',
+                  animationDelay: '0.3s',
+                }}
+              >E</span>
+              {/* L - Blue */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#4285F4',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(66, 133, 244, 0.5)',
+                  animationDelay: '0.4s',
+                }}
+              >L</span>
+              {/* Space */}
+              <span className="w-4 sm:w-6 md:w-8"></span>
+              {/* A - Red */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#DB4437',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(219, 68, 55, 0.5)',
+                  animationDelay: '0.5s',
+                }}
+              >A</span>
+              {/* I - Yellow */}
+              <span 
+                className="animate-google-sparkle"
+                style={{
+                  color: '#F4B400',
+                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(244, 180, 0, 0.5)',
+                  animationDelay: '0.6s',
+                }}
+              >I</span>
             </h1>
             
             {/* Decorative Elements */}
             <div className="flex items-center justify-center gap-4 mt-3">
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#B8860B] to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#4285F4] to-transparent" style={{ boxShadow: '0 0 15px #4285F4' }} />
               <div className="flex gap-2">
-                <Sparkles className="w-3 h-3 text-[#B8860B] animate-pulse" style={{ filter: 'drop-shadow(0 0 8px #FFD700)' }} />
-                <span className="text-[#B8860B] text-sm" style={{ textShadow: '0 0 10px #FFD700' }}>✦</span>
-                <Sparkles className="w-3 h-3 text-[#B8860B] animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+                <Sparkles className="w-3 h-3 text-[#F4B400] animate-pulse" style={{ filter: 'drop-shadow(0 0 8px #F4B400)' }} />
+                <span className="text-[#0F9D58] text-sm" style={{ textShadow: '0 0 10px #0F9D58' }}>✦</span>
+                <Sparkles className="w-3 h-3 text-[#DB4437] animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 8px #DB4437)' }} />
               </div>
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#B8860B] to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#0F9D58] to-transparent" style={{ boxShadow: '0 0 15px #0F9D58' }} />
             </div>
             
             {/* Tagline - Enhanced for bright background */}

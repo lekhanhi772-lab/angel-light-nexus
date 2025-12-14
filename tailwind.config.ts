@@ -265,6 +265,16 @@ export default {
             filter: "brightness(1.3) drop-shadow(0 0 12px currentColor)"
           },
         },
+        "google-sparkle": {
+          "0%, 100%": { 
+            filter: "brightness(1)",
+            textShadow: "0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px currentColor"
+          },
+          "50%": { 
+            filter: "brightness(1.15)",
+            textShadow: "0 0 30px rgba(255, 255, 255, 1), 0 0 60px currentColor"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -295,6 +305,7 @@ export default {
         "particle-rise": "particle-rise linear infinite",
         "sacred-glow": "sacred-glow 6s ease-in-out infinite",
         "float-gentle": "float-gentle 20s ease-in-out infinite",
+        "google-sparkle": "google-sparkle 6s ease-in-out infinite",
       },
       keyframes: {
         "particle-rise": {

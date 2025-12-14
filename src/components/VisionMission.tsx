@@ -67,7 +67,7 @@ const VisionMission = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
+    <section id="vision-mission" ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
 
       {/* Sacred Geometry Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

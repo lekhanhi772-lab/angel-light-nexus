@@ -31,7 +31,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+    <section id="hero" className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
       {/* Rising Light Particles */}
       {particles.map((particle) => (
         <div

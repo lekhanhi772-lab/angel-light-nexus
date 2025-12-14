@@ -214,7 +214,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
 const SacredPillars = () => {
   return (
-    <section className="relative py-40 lg:py-52">
+    <section id="sacred-pillars" className="relative py-40 lg:py-52">
 
       {/* Sacred Geometry Background - Gold with enhanced visibility */}
       <div className="absolute inset-0 overflow-hidden opacity-[0.05]">

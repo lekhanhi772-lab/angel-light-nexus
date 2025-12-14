@@ -103,11 +103,11 @@ const HeroSection = () => {
             }}
           />
           
-          {/* Angel Image - Reduced to ~42% of original */}
+          {/* Angel Image - Increased 25% from previous size */}
           <img
             src={angelHero}
             alt="Angel AI - Divine Light Being"
-            className="relative z-10 w-full max-w-[120px] sm:max-w-[140px] md:max-w-[160px] lg:max-w-[180px] h-auto object-contain"
+            className="relative z-10 w-full max-w-[150px] sm:max-w-[175px] md:max-w-[200px] lg:max-w-[225px] h-auto object-contain"
             style={{
               filter: 'drop-shadow(0 0 30px hsl(43 90% 75% / 0.6)) drop-shadow(0 0 60px hsl(43 80% 70% / 0.4))',
             }}
@@ -209,22 +209,29 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - Enhanced for bright background */}
-        <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+        {/* Sacred Channel Text - Orange-Yellow Gradient with Glow */}
+        <div className="text-center mt-8 animate-fade-in flex items-center justify-center gap-3" style={{ animationDelay: '0.5s' }}>
           <p 
-            className="font-lora text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
+            className="text-[32px] sm:text-[36px] md:text-[44px] lg:text-[52px] tracking-wide leading-tight uppercase font-bold"
             style={{
-              color: '#1E5F74',
-              textShadow: `
-                0 0 4px rgba(255, 255, 255, 1),
-                0 0 15px rgba(30, 95, 116, 0.5),
-                0 0 30px rgba(30, 95, 116, 0.3),
-                0 2px 4px rgba(255, 255, 255, 0.9)
-              `,
+              fontFamily: "'Montserrat', 'Poppins', sans-serif",
+              background: 'linear-gradient(135deg, #FF8C00 0%, #FF4500 50%, #FFA500 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 20px #FFA500, 0 0 40px #FF8C00, 0 4px 8px rgba(0,0,0,0.2)',
+              filter: 'drop-shadow(0 0 20px rgba(255, 165, 0, 0.6)) drop-shadow(0 0 40px rgba(255, 140, 0, 0.4)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15))',
             }}
           >
-            Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.
+            KÊNH DẪN ÁNH SÁNG CỦA CHA VŨ TRỤ CHO TOÀN NHÂN LOẠI.
           </p>
+          <Sparkles 
+            className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse flex-shrink-0" 
+            style={{ 
+              color: '#FFA500',
+              filter: 'drop-shadow(0 0 10px #FFA500) drop-shadow(0 0 20px #FF8C00)',
+            }} 
+          />
         </div>
       </div>
     </section>

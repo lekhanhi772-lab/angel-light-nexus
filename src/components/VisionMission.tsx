@@ -68,13 +68,6 @@ const VisionMission = () => {
 
   return (
     <section ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
-      {/* 5D Background with gradient */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 30%, #E0F8FF 70%, #FFFBE6 100%)',
-        }}
-      />
 
       {/* Sacred Geometry Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">

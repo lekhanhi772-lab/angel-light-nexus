@@ -59,13 +59,6 @@ const Footer = () => {
 
   return (
     <footer className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Unique Footer Background - Mint to Warm White to Pink */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, #E8FFF8 0%, #FFFBE6 40%, #FFF0F5 100%)',
-        }}
-      />
 
       {/* Rainbow Floating Particles - Slower than above sections */}
       {particles.map((particle) => (

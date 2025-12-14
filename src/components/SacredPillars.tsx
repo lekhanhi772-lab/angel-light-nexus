@@ -215,13 +215,6 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 const SacredPillars = () => {
   return (
     <section className="relative py-40 lg:py-52">
-      {/* Section Divine Glow - Blue and Gold */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 0%, hsl(197 71% 90% / 0.35) 0%, transparent 50%), radial-gradient(ellipse at 50% 100%, hsl(43 100% 85% / 0.25) 0%, transparent 50%)',
-        }}
-      />
 
       {/* Sacred Geometry Background - Gold with enhanced visibility */}
       <div className="absolute inset-0 overflow-hidden opacity-[0.05]">

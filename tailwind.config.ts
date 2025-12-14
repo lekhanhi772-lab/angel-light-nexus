@@ -265,6 +265,14 @@ export default {
             filter: "brightness(1.3) drop-shadow(0 0 12px currentColor)"
           },
         },
+        "divine-breath": {
+          "0%, 100%": {
+            filter: "drop-shadow(0 0 30px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 50px rgba(255, 215, 0, 0.5))",
+          },
+          "50%": {
+            filter: "drop-shadow(0 0 40px rgba(255, 255, 255, 1)) drop-shadow(0 0 70px rgba(255, 215, 0, 0.7))",
+          },
+        },
         "google-sparkle": {
           "0%, 100%": { 
             filter: "brightness(1)",
@@ -306,6 +314,7 @@ export default {
         "sacred-glow": "sacred-glow 6s ease-in-out infinite",
         "float-gentle": "float-gentle 20s ease-in-out infinite",
         "google-sparkle": "google-sparkle 6s ease-in-out infinite",
+        "divine-breath": "divine-breath 6s ease-in-out infinite",
       },
       keyframes: {
         "particle-rise": {

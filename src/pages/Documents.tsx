@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare } from 'lucide-react';
+import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -45,20 +45,6 @@ interface NewlyUploadedFile {
 }
 
 const MAX_TOTAL_SIZE = 100 * 1024 * 1024; // 100MB
-
-// Healing green pastel colors for folders
-const FOLDER_COLORS = [
-  { border: 'border-l-4 border-l-emerald-400/70', bg: 'bg-emerald-50/50' }, // Xanh lá
-  { border: 'border-l-4 border-l-teal-400/70', bg: 'bg-teal-50/50' }, // Xanh ngọc
-  { border: 'border-l-4 border-l-cyan-400/70', bg: 'bg-cyan-50/50' }, // Xanh dương nhạt
-  { border: 'border-l-4 border-l-amber-300/70', bg: 'bg-amber-50/50' }, // Vàng nhạt
-  { border: 'border-l-4 border-l-violet-400/70', bg: 'bg-violet-50/50' }, // Tím ánh sáng
-  { border: 'border-l-4 border-l-pink-300/70', bg: 'bg-pink-50/50' }, // Hồng phấn
-  { border: 'border-l-4 border-l-lime-400/70', bg: 'bg-lime-50/50' }, // Xanh chanh
-  { border: 'border-l-4 border-l-rose-400/70', bg: 'bg-rose-50/50' }, // Hồng đậm
-];
-
-const NO_FOLDER_COLOR = { border: 'border-l-4 border-l-gray-300/50', bg: 'bg-gray-50/30' };
 
 const DocumentsPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -126,13 +112,6 @@ const DocumentsPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const getFolderColorClass = (folderId: string | null) => {
-    if (!folderId) return NO_FOLDER_COLOR;
-    const folderIndex = folders.findIndex(f => f.id === folderId);
-    if (folderIndex === -1) return NO_FOLDER_COLOR;
-    return FOLDER_COLORS[folderIndex % FOLDER_COLORS.length];
   };
 
   const handleCreateFolder = async () => {
@@ -340,7 +319,6 @@ const DocumentsPage = () => {
     let failCount = 0;
 
     try {
-      // Process each document update and track results
       for (const docId of docIdsArray) {
         const { error } = await supabase
           .from('documents')
@@ -355,7 +333,6 @@ const DocumentsPage = () => {
         }
       }
 
-      // Always reload data to get current state
       await fetchData();
       setSelectedDocIds(new Set());
       setShowBulkMoveDialog(false);
@@ -384,7 +361,6 @@ const DocumentsPage = () => {
         description: `Có lỗi khi di chuyển file, vui lòng thử lại`,
         variant: "destructive",
       });
-      // Still reload to show current state
       await fetchData();
       setSelectedDocIds(new Set());
       setShowBulkMoveDialog(false);
@@ -679,21 +655,43 @@ const DocumentsPage = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* Galaxy Background - Same as Homepage */}
+      {/* Light Background - Same as Homepage */}
+      <div 
+        className="fixed inset-0 z-0"
+        style={{
+          background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 30%, #F0FFF4 60%, #E6F7FF 100%)',
+        }}
+      />
       <ParticleBackground />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-galaxy-deep/60 border-b border-galaxy-gold/30">
+      <header 
+        className="sticky top-0 z-50 backdrop-blur-md"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+          borderBottom: '1px solid rgba(184, 134, 11, 0.3)',
+        }}
+      >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-galaxy-gold hover:text-galaxy-light transition-colors font-poppins">
+            <Link 
+              to="/" 
+              className="flex items-center gap-2 transition-colors font-poppins"
+              style={{ color: '#B8860B' }}
+            >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Trang chủ</span>
             </Link>
-            <h1 className="font-playfair text-xl md:text-2xl font-bold text-galaxy-light flex items-center gap-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">
-              <Sparkles className="w-5 h-5 text-galaxy-gold animate-pulse" />
+            <h1 
+              className="font-playfair text-xl md:text-2xl font-bold flex items-center gap-2"
+              style={{
+                color: '#B8860B',
+                textShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
+              }}
+            >
+              <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700' }} />
               Tài Liệu Ánh Sáng
-              <span className="text-galaxy-gold">🌿</span>
+              <span>🌿</span>
             </h1>
             <div className="w-24" />
           </div>
@@ -704,13 +702,26 @@ const DocumentsPage = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Folder Tree */}
           <div className="lg:w-72 flex-shrink-0">
-            <div className="sticky top-24 p-4 rounded-xl bg-galaxy-deep/70 backdrop-blur-md border border-galaxy-gold/30 shadow-lg shadow-galaxy-gold/10">
+            <div 
+              className="sticky top-24 p-4 rounded-xl backdrop-blur-md shadow-lg"
+              style={{
+                background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+                boxShadow: '0 4px 20px rgba(255, 215, 0, 0.15)',
+              }}
+            >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-playfair text-galaxy-gold text-sm font-semibold">Thư Mục Ánh Sáng</h3>
+                <h3 
+                  className="font-playfair text-sm font-semibold"
+                  style={{ color: '#B8860B' }}
+                >
+                  ✨ Thư Mục Ánh Sáng
+                </h3>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-galaxy-gold hover:bg-galaxy-gold/20 hover:text-galaxy-light"
+                  className="h-7 w-7"
+                  style={{ color: '#B8860B' }}
                   onClick={() => setIsCreatingFolder(true)}
                 >
                   <FolderPlus className="w-4 h-4" />
@@ -719,12 +730,23 @@ const DocumentsPage = () => {
 
               {/* New Folder Form */}
               {isCreatingFolder && (
-                <div className={`mb-4 p-3 rounded-lg border border-galaxy-gold/50 bg-galaxy-deep/80 ${showNewFolderEffect ? 'animate-pulse' : ''}`}>
+                <div 
+                  className={`mb-4 p-3 rounded-lg ${showNewFolderEffect ? 'animate-pulse' : ''}`}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(152, 251, 152, 0.2) 100%)',
+                    border: '1px solid rgba(184, 134, 11, 0.4)',
+                  }}
+                >
                   <Input
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
                     placeholder="Tên thư mục mới..."
-                    className="mb-2 text-sm font-inter border-galaxy-gold/30 bg-galaxy-deep/50 text-galaxy-light focus:border-galaxy-gold placeholder:text-galaxy-light/50"
+                    className="mb-2 text-sm font-inter"
+                    style={{
+                      background: 'rgba(255, 251, 230, 0.9)',
+                      border: '1px solid rgba(184, 134, 11, 0.3)',
+                      color: '#006666',
+                    }}
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleCreateFolder();
@@ -735,13 +757,27 @@ const DocumentsPage = () => {
                     }}
                   />
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 bg-galaxy-gold hover:bg-galaxy-gold/80 text-galaxy-deep text-xs font-poppins" onClick={handleCreateFolder}>
+                    <Button 
+                      size="sm" 
+                      className="flex-1 text-xs font-poppins"
+                      style={{
+                        background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                        color: '#1a1a1a',
+                      }}
+                      onClick={handleCreateFolder}
+                    >
                       Tạo
                     </Button>
-                    <Button size="sm" variant="ghost" className="flex-1 text-xs font-poppins text-galaxy-light hover:bg-galaxy-gold/20" onClick={() => {
-                      setIsCreatingFolder(false);
-                      setNewFolderName('');
-                    }}>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="flex-1 text-xs font-poppins"
+                      style={{ color: '#006666' }}
+                      onClick={() => {
+                        setIsCreatingFolder(false);
+                        setNewFolderName('');
+                      }}
+                    >
                       Hủy
                     </Button>
                   </div>
@@ -750,9 +786,15 @@ const DocumentsPage = () => {
 
               {/* New Folder Effect */}
               {showNewFolderEffect && (
-                <div className="mb-4 p-2 rounded-lg bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 border border-galaxy-gold/50 text-center animate-fade-in">
-                  <Sparkles className="w-4 h-4 text-galaxy-gold mx-auto mb-1 animate-pulse" />
-                  <p className="text-xs text-galaxy-light font-playfair">Thư mục Ánh Sáng đã sinh ra ✨🌿</p>
+                <div 
+                  className="mb-4 p-2 rounded-lg text-center animate-fade-in"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(152, 251, 152, 0.3) 100%)',
+                    border: '1px solid rgba(184, 134, 11, 0.4)',
+                  }}
+                >
+                  <Sparkles className="w-4 h-4 mx-auto mb-1 animate-pulse" style={{ color: '#FFD700' }} />
+                  <p className="text-xs font-playfair" style={{ color: '#006666' }}>Thư mục Ánh Sáng đã sinh ra ✨🌿</p>
                 </div>
               )}
 
@@ -761,13 +803,18 @@ const DocumentsPage = () => {
                 {/* All Files Option */}
                 <button
                   onClick={() => setSelectedFolderId(null)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter ${
-                    selectedFolderId === null
-                      ? 'bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 text-galaxy-light border border-galaxy-gold/50 shadow-sm'
-                      : 'hover:bg-galaxy-gold/20 text-galaxy-light/80'
-                  }`}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter"
+                  style={{
+                    background: selectedFolderId === null
+                      ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%)'
+                      : 'transparent',
+                    border: selectedFolderId === null
+                      ? '1px solid rgba(184, 134, 11, 0.4)'
+                      : '1px solid transparent',
+                    color: '#006666',
+                  }}
                 >
-                  <LayoutGrid className="w-4 h-4" />
+                  <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
                   <span className="flex-1 text-left">Tất cả file</span>
                   <span className="text-xs opacity-70 font-poppins">{documents.length}</span>
                 </button>
@@ -781,11 +828,17 @@ const DocumentsPage = () => {
                   return (
                     <div key={folder.id} className="group">
                       <div
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter border-l-2 border-galaxy-gold/50 ${
-                          isSelected
-                            ? 'bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 text-galaxy-light border border-galaxy-gold/50 shadow-sm'
-                            : 'hover:bg-galaxy-gold/20 text-galaxy-light/80'
-                        }`}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter"
+                        style={{
+                          background: isSelected
+                            ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%)'
+                            : 'transparent',
+                          border: isSelected
+                            ? '1px solid rgba(184, 134, 11, 0.4)'
+                            : '1px solid transparent',
+                          borderLeft: '3px solid #FFD700',
+                          color: '#006666',
+                        }}
                       >
                         <button
                           onClick={() => {
@@ -800,9 +853,9 @@ const DocumentsPage = () => {
                             <ChevronRight className="w-3 h-3" />
                           )}
                           {isSelected ? (
-                            <FolderOpen className="w-4 h-4 text-galaxy-gold" />
+                            <FolderOpen className="w-4 h-4" style={{ color: '#FFD700' }} />
                           ) : (
-                            <Folder className="w-4 h-4" />
+                            <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
                           )}
                           <span className="flex-1 truncate">{folder.name}</span>
                           <span className="text-xs opacity-70 font-poppins">{docCount}</span>
@@ -813,7 +866,8 @@ const DocumentsPage = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 hover:bg-galaxy-gold/30 text-galaxy-light"
+                            className="h-6 w-6"
+                            style={{ color: '#B8860B' }}
                             onClick={(e) => {
                               e.stopPropagation();
                               setEditingFolder(folder);
@@ -825,7 +879,8 @@ const DocumentsPage = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 hover:bg-destructive/20 text-destructive"
+                            className="h-6 w-6 hover:bg-red-100"
+                            style={{ color: '#DC2626' }}
                             onClick={(e) => {
                               e.stopPropagation();
                               setDeletingFolder(folder);
@@ -841,7 +896,13 @@ const DocumentsPage = () => {
 
                 {/* Without folder info */}
                 {getDocCountWithoutFolder() > 0 && (
-                  <div className="mt-2 pt-2 border-t border-galaxy-gold/30 text-xs text-galaxy-light/60 px-3 font-inter">
+                  <div 
+                    className="mt-2 pt-2 text-xs px-3 font-inter"
+                    style={{ 
+                      borderTop: '1px solid rgba(184, 134, 11, 0.2)',
+                      color: '#87CEEB',
+                    }}
+                  >
                     <span className="opacity-70">{getDocCountWithoutFolder()} file chưa thuộc thư mục</span>
                   </div>
                 )}
@@ -852,33 +913,58 @@ const DocumentsPage = () => {
           {/* Main Content */}
           <div className="flex-1">
             {/* Upload Section */}
-            <div className="mb-6 p-6 rounded-2xl bg-galaxy-deep/70 backdrop-blur-md border border-galaxy-gold/30 shadow-lg shadow-galaxy-gold/10">
+            <div 
+              className="mb-6 p-6 rounded-2xl backdrop-blur-md shadow-lg"
+              style={{
+                background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+                boxShadow: '0 4px 20px rgba(255, 215, 0, 0.15)',
+              }}
+            >
               <div className="text-center">
-                <h2 className="font-playfair text-xl mb-2 text-galaxy-gold font-semibold drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]">
-                  + Tải lên Tài Liệu của Cha 🌿
+                <h2 
+                  className="font-playfair text-xl mb-2 font-semibold"
+                  style={{
+                    color: '#B8860B',
+                    textShadow: '0 0 10px rgba(255, 215, 0, 0.4)',
+                  }}
+                >
+                  ✨ Tải lên Tài Liệu của Cha 🌿
                 </h2>
-                <p className="text-galaxy-light/80 mb-4 text-sm font-inter">
+                <p className="mb-4 text-sm font-inter" style={{ color: '#006666' }}>
                   Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
                 </p>
 
                 {/* Folder Selection */}
                 <div className="mb-4 flex items-center justify-center gap-2">
-                  <span className="text-sm text-galaxy-light/70 font-inter">Lưu vào thư mục:</span>
+                  <span className="text-sm font-inter" style={{ color: '#87CEEB' }}>Lưu vào thư mục:</span>
                   <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
-                    <SelectTrigger className="w-48 border-galaxy-gold/30 bg-galaxy-deep/50 text-galaxy-light focus:border-galaxy-gold">
+                    <SelectTrigger 
+                      className="w-48"
+                      style={{
+                        background: 'rgba(255, 251, 230, 0.9)',
+                        border: '1px solid rgba(184, 134, 11, 0.3)',
+                        color: '#006666',
+                      }}
+                    >
                       <SelectValue placeholder="Không thuộc thư mục" />
                     </SelectTrigger>
-                    <SelectContent className="bg-galaxy-deep border-galaxy-gold/30">
-                      <SelectItem value="none" className="text-galaxy-light focus:bg-galaxy-gold/20">
+                    <SelectContent 
+                      style={{
+                        background: '#FFFBE6',
+                        border: '1px solid rgba(184, 134, 11, 0.3)',
+                      }}
+                    >
+                      <SelectItem value="none" style={{ color: '#006666' }}>
                         <div className="flex items-center gap-2 font-inter">
                           <LayoutGrid className="w-4 h-4" />
                           Không thuộc thư mục
                         </div>
                       </SelectItem>
                       {folders.map((folder) => (
-                        <SelectItem key={folder.id} value={folder.id} className="text-galaxy-light focus:bg-galaxy-gold/20">
+                        <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
                           <div className="flex items-center gap-2 font-inter">
-                            <Folder className="w-4 h-4" />
+                            <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
                             {folder.name}
                           </div>
                         </SelectItem>
@@ -888,10 +974,16 @@ const DocumentsPage = () => {
                 </div>
                 
                 {uploadProgress && (
-                  <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 border border-galaxy-gold/50">
-                    <div className="flex items-center justify-center gap-2 text-galaxy-light">
-                      <Sparkles className="w-4 h-4 animate-pulse text-galaxy-gold" />
-                      <span className="text-sm font-medium font-inter">{uploadProgress}</span>
+                  <div 
+                    className="mb-4 p-3 rounded-lg"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(152, 251, 152, 0.3) 100%)',
+                      border: '1px solid rgba(184, 134, 11, 0.4)',
+                    }}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <Sparkles className="w-4 h-4 animate-pulse" style={{ color: '#FFD700' }} />
+                      <span className="text-sm font-medium font-inter" style={{ color: '#006666' }}>{uploadProgress}</span>
                     </div>
                   </div>
                 )}
@@ -907,109 +999,101 @@ const DocumentsPage = () => {
                   />
                   <Button
                     disabled={isUploading}
-                    className="bg-gradient-to-r from-galaxy-gold to-galaxy-gold/80 hover:from-galaxy-gold/90 hover:to-galaxy-gold/70 text-galaxy-deep font-poppins shadow-lg shadow-galaxy-gold/30 hover:shadow-galaxy-gold/50 transition-all"
+                    className="font-poppins shadow-lg transition-all"
+                    style={{
+                      background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                      color: '#1a1a1a',
+                      boxShadow: '0 4px 20px rgba(255, 215, 0, 0.4)',
+                    }}
                     asChild
                   >
                     <span className="cursor-pointer flex items-center gap-2">
                       <Files className="w-4 h-4" />
-                      {isUploading ? 'Đang tải lên...' : 'Chọn file để tải lên'}
+                      {isUploading ? 'Đang tải...' : 'Chọn file để tải lên'}
                     </span>
                   </Button>
                 </label>
-                <p className="text-xs text-galaxy-light/60 mt-2 font-inter">
-                  💡 Giữ Ctrl/Cmd để chọn nhiều file cùng lúc
-                </p>
               </div>
             </div>
 
             {/* Bulk Actions Bar */}
-            {someSelected && (
-              <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-galaxy-gold/80 to-galaxy-blue/80 text-galaxy-deep shadow-lg animate-fade-in backdrop-blur-md">
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <span className="font-poppins font-medium">
-                    Đã chọn {selectedDocIds.size} file
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => setShowBulkMoveDialog(true)}
-                      className="bg-galaxy-deep/30 hover:bg-galaxy-deep/50 text-galaxy-deep border-0 font-poppins"
-                    >
-                      <FolderInput className="w-4 h-4 mr-2" />
-                      Di chuyển đến thư mục khác
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => setShowBulkDeleteDialog(true)}
-                      className="font-poppins"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Xóa các file đã chọn
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setSelectedDocIds(new Set())}
-                      className="text-galaxy-deep hover:bg-galaxy-deep/20 font-poppins"
-                    >
-                      Bỏ chọn
-                    </Button>
-                  </div>
+            {selectedDocIds.size > 0 && (
+              <div 
+                className="mb-4 p-4 rounded-xl flex items-center justify-between"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.9) 0%, rgba(152, 251, 152, 0.9) 100%)',
+                  border: '1px solid rgba(184, 134, 11, 0.4)',
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.3)',
+                }}
+              >
+                <span className="text-sm font-medium font-inter" style={{ color: '#1a1a1a' }}>
+                  ✨ Đã chọn {selectedDocIds.size} file
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="font-poppins"
+                    style={{
+                      background: '#FFFBE6',
+                      color: '#B8860B',
+                      border: '1px solid rgba(184, 134, 11, 0.3)',
+                    }}
+                    onClick={() => setShowBulkMoveDialog(true)}
+                  >
+                    <FolderInput className="w-4 h-4 mr-1" />
+                    Di chuyển
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="font-poppins"
+                    onClick={() => setShowBulkDeleteDialog(true)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Xóa
+                  </Button>
                 </div>
               </div>
             )}
 
-            {/* View Mode Indicator */}
-            <div className="mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-galaxy-gold" />
-              <span className="text-sm text-galaxy-light font-playfair drop-shadow-[0_0_5px_rgba(255,215,0,0.3)]">
-                {selectedFolderId === null 
-                  ? 'Thứ tự toàn Bộ Nhớ Vĩnh Cửu 🌿' 
-                  : `Thứ tự trong Thư Mục "${folders.find(f => f.id === selectedFolderId)?.name || 'Ánh Sáng'}" 🌿`
-                }
-              </span>
-            </div>
-
-            {/* Newly Uploaded Files Section */}
+            {/* Newly Uploaded Files */}
             {newlyUploaded.length > 0 && (
-              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-galaxy-gold/30 via-galaxy-blue/30 to-galaxy-gold/30 border border-galaxy-gold/50 animate-fade-in overflow-hidden relative shadow-lg backdrop-blur-md">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  {[...Array(12)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-1 h-1 bg-galaxy-gold rounded-full animate-pulse"
-                      style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                        animationDelay: `${i * 0.2}s`,
-                        opacity: 0.6
-                      }}
-                    />
-                  ))}
+              <div 
+                className="mb-6 p-4 rounded-xl"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(152, 251, 152, 0.3) 100%)',
+                  border: '1px solid rgba(184, 134, 11, 0.4)',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700' }} />
+                  <span className="font-playfair font-semibold" style={{ color: '#B8860B' }}>
+                    File vừa tải lên ✨
+                  </span>
                 </div>
-                
-                <div className="relative z-10">
-                  <h3 className="font-playfair text-galaxy-gold mb-3 flex items-center gap-2 font-semibold drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]">
-                    <Sparkles className="w-4 h-4 animate-pulse text-galaxy-gold" />
-                    Vừa thêm vào Bộ Nhớ Vĩnh Cửu 🌿
-                  </h3>
-                  <div className="space-y-2">
-                    {newlyUploaded.map((file, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-3 p-2 rounded-lg bg-galaxy-deep/50 animate-fade-in"
-                        style={{ animationDelay: `${idx * 0.1}s` }}
+                <div className="grid gap-2">
+                  {newlyUploaded.map((file, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-3 p-2 rounded-lg animate-fade-in"
+                      style={{ 
+                        animationDelay: `${idx * 0.1}s`,
+                        background: 'rgba(255, 251, 230, 0.8)',
+                      }}
+                    >
+                      <span 
+                        className="font-cinzel font-bold text-sm px-2 py-1 rounded"
+                        style={{ 
+                          color: '#B8860B',
+                          background: 'rgba(255, 215, 0, 0.3)',
+                        }}
                       >
-                        <span className="font-cinzel font-bold text-galaxy-gold text-sm bg-galaxy-gold/20 px-2 py-1 rounded">
-                          {file.sequenceNumber}
-                        </span>
-                        <span className="text-sm text-galaxy-light font-lora">{file.fileName}</span>
-                        <Sparkles className="w-3 h-3 text-galaxy-gold animate-pulse ml-auto" />
-                      </div>
-                    ))}
-                  </div>
+                        {file.sequenceNumber}
+                      </span>
+                      <span className="text-sm font-lora" style={{ color: '#006666' }}>{file.fileName}</span>
+                      <Sparkles className="w-3 h-3 animate-pulse ml-auto" style={{ color: '#FFD700' }} />
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -1017,10 +1101,16 @@ const DocumentsPage = () => {
             {/* Documents List */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-playfair text-lg text-galaxy-gold font-semibold drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]">
+                <h3 
+                  className="font-playfair text-lg font-semibold"
+                  style={{
+                    color: '#B8860B',
+                    textShadow: '0 0 8px rgba(255, 215, 0, 0.3)',
+                  }}
+                >
                   {selectedFolderId === null 
-                    ? `Bộ Nhớ Vĩnh Cửu (${documents.length} tài liệu) 🌿`
-                    : `${folders.find(f => f.id === selectedFolderId)?.name || 'Thư Mục'} (${displayedDocuments.length} tài liệu) 🌿`
+                    ? `✨ Bộ Nhớ Vĩnh Cửu (${documents.length} tài liệu) 🌿`
+                    : `✨ ${folders.find(f => f.id === selectedFolderId)?.name || 'Thư Mục'} (${displayedDocuments.length} tài liệu) 🌿`
                   }
                 </h3>
                 
@@ -1031,9 +1121,11 @@ const DocumentsPage = () => {
                       id="select-all"
                       checked={allSelected}
                       onCheckedChange={handleSelectAll}
-                      className="border-galaxy-gold data-[state=checked]:bg-galaxy-gold data-[state=checked]:border-galaxy-gold"
+                      style={{
+                        borderColor: '#B8860B',
+                      }}
                     />
-                    <label htmlFor="select-all" className="text-sm text-galaxy-light/70 font-inter cursor-pointer">
+                    <label htmlFor="select-all" className="text-sm font-inter cursor-pointer" style={{ color: '#87CEEB' }}>
                       Chọn tất cả
                     </label>
                   </div>
@@ -1041,15 +1133,15 @@ const DocumentsPage = () => {
               </div>
 
               {isLoading ? (
-                <div className="text-center py-12 text-galaxy-light/70">
-                  <Sparkles className="w-8 h-8 mx-auto mb-2 animate-pulse text-galaxy-gold" />
-                  <span className="font-inter">Đang tải...</span>
+                <div className="text-center py-12">
+                  <Sparkles className="w-8 h-8 mx-auto mb-2 animate-pulse" style={{ color: '#FFD700' }} />
+                  <span className="font-inter" style={{ color: '#87CEEB' }}>Đang tải...</span>
                 </div>
               ) : displayedDocuments.length === 0 ? (
-                <div className="text-center py-12 text-galaxy-light/70">
-                  <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="font-inter">Chưa có tài liệu nào trong {selectedFolderId === null ? 'hệ thống' : 'thư mục này'}</p>
-                  <p className="text-sm mt-2 font-inter">Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ 🌿</p>
+                <div className="text-center py-12">
+                  <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" style={{ color: '#B8860B' }} />
+                  <p className="font-inter" style={{ color: '#87CEEB' }}>Chưa có tài liệu nào trong {selectedFolderId === null ? 'hệ thống' : 'thư mục này'}</p>
+                  <p className="text-sm mt-2 font-inter" style={{ color: '#87CEEB' }}>Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ 🌿</p>
                 </div>
               ) : (
                 <div className="grid gap-4">
@@ -1062,24 +1154,34 @@ const DocumentsPage = () => {
                     return (
                       <div
                         key={doc.id}
-                        className={`p-4 rounded-xl bg-galaxy-deep/60 backdrop-blur-md border transition-all duration-300 group relative overflow-hidden border-l-2 border-l-galaxy-gold/50 ${
-                          isNewlyUploaded(doc.file_name)
-                            ? 'border-galaxy-gold shadow-lg shadow-galaxy-gold/20 animate-fade-in'
-                            : isSelected
-                            ? 'border-galaxy-gold shadow-lg shadow-galaxy-gold/20'
-                            : 'border-galaxy-gold/30 hover:border-galaxy-gold hover:shadow-lg hover:shadow-galaxy-gold/20'
-                        }`}
+                        className="p-4 rounded-xl backdrop-blur-md transition-all duration-300 group relative overflow-hidden"
+                        style={{
+                          background: 'rgba(255, 251, 230, 0.95)',
+                          border: isNewlyUploaded(doc.file_name) || isSelected
+                            ? '2px solid rgba(255, 215, 0, 0.6)'
+                            : '1px solid rgba(184, 134, 11, 0.3)',
+                          borderLeft: '4px solid #FFD700',
+                          boxShadow: isNewlyUploaded(doc.file_name) || isSelected
+                            ? '0 4px 20px rgba(255, 215, 0, 0.3)'
+                            : '0 2px 10px rgba(184, 134, 11, 0.1)',
+                        }}
                       >
                         {/* Hover glow effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-galaxy-gold/0 via-galaxy-gold/0 to-galaxy-gold/0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none" />
+                        <div 
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(152, 251, 152, 0.1) 100%)',
+                          }}
+                        />
                         
                         {/* Gold particles on hover */}
                         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
                           {[...Array(5)].map((_, i) => (
                             <div
                               key={i}
-                              className="absolute w-1 h-1 bg-galaxy-gold rounded-full animate-pulse"
+                              className="absolute w-1 h-1 rounded-full animate-pulse"
                               style={{
+                                background: '#FFD700',
                                 left: `${20 + Math.random() * 60}%`,
                                 top: `${Math.random() * 100}%`,
                                 animationDelay: `${i * 0.15}s`
@@ -1094,28 +1196,38 @@ const DocumentsPage = () => {
                             <Checkbox
                               checked={isSelected}
                               onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
-                              className="mt-3 border-galaxy-gold data-[state=checked]:bg-galaxy-gold data-[state=checked]:border-galaxy-gold"
+                              className="mt-3"
+                              style={{ borderColor: '#B8860B' }}
                             />
 
                             {/* Sequential Number Badge */}
-                            <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-galaxy-deep/80 border flex items-center justify-center ${
-                              isNewlyUploaded(doc.file_name) ? 'border-galaxy-gold' : 'border-galaxy-gold/50'
-                            }`}>
-                              <span className="font-cinzel font-bold text-galaxy-gold text-sm">
+                            <div 
+                              className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+                              style={{
+                                background: 'rgba(255, 251, 230, 0.9)',
+                                border: isNewlyUploaded(doc.file_name) 
+                                  ? '2px solid #FFD700' 
+                                  : '1px solid rgba(184, 134, 11, 0.3)',
+                              }}
+                            >
+                              <span className="font-cinzel font-bold text-sm" style={{ color: '#B8860B' }}>
                                 {getDocumentSequenceNumber(doc, displayedDocuments)}
                               </span>
                             </div>
-                            <div className="p-2 rounded-lg bg-galaxy-gold/20">
-                              <FileText className="w-5 h-5 text-galaxy-gold" />
+                            <div 
+                              className="p-2 rounded-lg"
+                              style={{ background: 'rgba(255, 215, 0, 0.2)' }}
+                            >
+                              <FileText className="w-5 h-5" style={{ color: '#B8860B' }} />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-lora font-medium text-galaxy-light truncate">
+                              <h4 className="font-lora font-medium truncate" style={{ color: '#006666' }}>
                                 {doc.title}
                               </h4>
-                              <p className="text-sm text-galaxy-light/70 truncate font-inter">
+                              <p className="text-sm truncate font-inter" style={{ color: '#87CEEB' }}>
                                 {doc.file_name}
                               </p>
-                              <div className="flex items-center gap-4 mt-2 text-xs text-galaxy-light/60 flex-wrap font-inter">
+                              <div className="flex items-center gap-4 mt-2 text-xs flex-wrap font-inter" style={{ color: '#87CEEB' }}>
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   {formatDate(doc.created_at)}
@@ -1125,7 +1237,7 @@ const DocumentsPage = () => {
                                   {formatFileSize(doc.file_size)}
                                 </span>
                                 {folderName && (
-                                  <span className="flex items-center gap-1 text-galaxy-gold">
+                                  <span className="flex items-center gap-1" style={{ color: '#B8860B' }}>
                                     <Folder className="w-3 h-3" />
                                     {folderName}
                                   </span>
@@ -1143,7 +1255,8 @@ const DocumentsPage = () => {
                                 setUpdatingDocFolder(doc);
                                 setNewDocFolderId(doc.folder_id || 'none');
                               }}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity text-galaxy-gold hover:text-galaxy-light hover:bg-galaxy-gold/20"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              style={{ color: '#B8860B' }}
                               title="Cập nhật thư mục"
                             >
                               <FolderInput className="w-4 h-4" />
@@ -1152,7 +1265,7 @@ const DocumentsPage = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => handleDelete(doc)}
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              className="text-red-500 hover:text-red-600 hover:bg-red-50"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -1170,10 +1283,15 @@ const DocumentsPage = () => {
 
       {/* Edit Folder Dialog */}
       <Dialog open={!!editingFolder} onOpenChange={(open) => !open && setEditingFolder(null)}>
-        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
+        <DialogContent 
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+          }}
+        >
           <DialogHeader>
-            <DialogTitle className="font-playfair text-emerald-700">Sửa tên thư mục 🌿</DialogTitle>
-            <DialogDescription className="font-inter">
+            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Sửa tên thư mục 🌿</DialogTitle>
+            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
               Nhập tên mới cho thư mục "{editingFolder?.name}"
             </DialogDescription>
           </DialogHeader>
@@ -1181,15 +1299,27 @@ const DocumentsPage = () => {
             value={editFolderName}
             onChange={(e) => setEditFolderName(e.target.value)}
             placeholder="Tên thư mục..."
-            className="font-inter border-emerald-300 focus:border-emerald-500"
+            className="font-inter"
+            style={{
+              background: 'rgba(255, 251, 230, 0.9)',
+              border: '1px solid rgba(184, 134, 11, 0.3)',
+              color: '#006666',
+            }}
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleEditFolder();
             }}
           />
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditingFolder(null)} className="font-poppins">Hủy</Button>
-            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-poppins" onClick={handleEditFolder}>
+            <Button variant="ghost" onClick={() => setEditingFolder(null)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+            <Button 
+              className="font-poppins"
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                color: '#1a1a1a',
+              }}
+              onClick={handleEditFolder}
+            >
               Lưu
             </Button>
           </DialogFooter>
@@ -1198,24 +1328,33 @@ const DocumentsPage = () => {
 
       {/* Delete Folder Dialog */}
       <Dialog open={!!deletingFolder} onOpenChange={(open) => !open && setDeletingFolder(null)}>
-        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
+        <DialogContent 
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+          }}
+        >
           <DialogHeader>
-            <DialogTitle className="font-playfair text-emerald-700">Xóa thư mục 🌿</DialogTitle>
-            <DialogDescription className="space-y-2 font-inter">
+            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>⚠️ Xóa thư mục 🌿</DialogTitle>
+            <DialogDescription className="space-y-2 font-inter" style={{ color: '#006666' }}>
               <p>Con muốn xóa vĩnh viễn tất cả file trong thư mục "{deletingFolder?.name}" không?</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm" style={{ color: '#87CEEB' }}>
                 Thư mục này có {deletingFolder ? getDocCountInFolder(deletingFolder.id) : 0} file
               </p>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="ghost" onClick={() => setDeletingFolder(null)} className="font-poppins">
+            <Button variant="ghost" onClick={() => setDeletingFolder(null)} className="font-poppins" style={{ color: '#006666' }}>
               Hủy
             </Button>
             <Button 
               variant="outline"
               onClick={() => handleDeleteFolder(false)}
-              className="border-emerald-500/50 text-emerald-600 hover:bg-emerald-50 font-poppins"
+              className="font-poppins"
+              style={{
+                border: '1px solid rgba(184, 134, 11, 0.4)',
+                color: '#B8860B',
+              }}
             >
               Không – Giữ lại file
             </Button>
@@ -1232,28 +1371,44 @@ const DocumentsPage = () => {
 
       {/* Update Document Folder Dialog */}
       <Dialog open={!!updatingDocFolder} onOpenChange={(open) => !open && setUpdatingDocFolder(null)}>
-        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
+        <DialogContent 
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+          }}
+        >
           <DialogHeader>
-            <DialogTitle className="font-playfair text-emerald-700">Cập nhật thư mục 🌿</DialogTitle>
-            <DialogDescription className="font-inter">
+            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Cập nhật thư mục 🌿</DialogTitle>
+            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
               Chọn thư mục mới cho file "{updatingDocFolder?.title}"
             </DialogDescription>
           </DialogHeader>
           <Select value={newDocFolderId} onValueChange={setNewDocFolderId}>
-            <SelectTrigger className="border-emerald-300 focus:border-emerald-500">
+            <SelectTrigger 
+              style={{
+                background: 'rgba(255, 251, 230, 0.9)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+                color: '#006666',
+              }}
+            >
               <SelectValue placeholder="Chọn thư mục" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">
+            <SelectContent 
+              style={{
+                background: '#FFFBE6',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+              }}
+            >
+              <SelectItem value="none" style={{ color: '#006666' }}>
                 <div className="flex items-center gap-2 font-inter">
                   <LayoutGrid className="w-4 h-4" />
                   Không thuộc thư mục nào
                 </div>
               </SelectItem>
               {folders.map((folder) => (
-                <SelectItem key={folder.id} value={folder.id}>
+                <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
                   <div className="flex items-center gap-2 font-inter">
-                    <Folder className="w-4 h-4" />
+                    <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
                     {folder.name}
                   </div>
                 </SelectItem>
@@ -1261,8 +1416,15 @@ const DocumentsPage = () => {
             </SelectContent>
           </Select>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)} className="font-poppins">Hủy</Button>
-            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-poppins" onClick={handleUpdateDocumentFolder}>
+            <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+            <Button 
+              className="font-poppins"
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                color: '#1a1a1a',
+              }}
+              onClick={handleUpdateDocumentFolder}
+            >
               Cập nhật
             </Button>
           </DialogFooter>
@@ -1271,28 +1433,44 @@ const DocumentsPage = () => {
 
       {/* Bulk Move Dialog */}
       <Dialog open={showBulkMoveDialog} onOpenChange={setShowBulkMoveDialog}>
-        <DialogContent className="bg-gradient-to-br from-white to-emerald-50 border-emerald-300">
+        <DialogContent 
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+          }}
+        >
           <DialogHeader>
-            <DialogTitle className="font-playfair text-emerald-700">Di chuyển {selectedDocIds.size} file 🌿</DialogTitle>
-            <DialogDescription className="font-inter">
+            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Di chuyển {selectedDocIds.size} file 🌿</DialogTitle>
+            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
               Chọn thư mục để di chuyển các file đã chọn
             </DialogDescription>
           </DialogHeader>
           <Select value={bulkMoveTargetFolder} onValueChange={setBulkMoveTargetFolder}>
-            <SelectTrigger className="border-emerald-300 focus:border-emerald-500">
+            <SelectTrigger 
+              style={{
+                background: 'rgba(255, 251, 230, 0.9)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+                color: '#006666',
+              }}
+            >
               <SelectValue placeholder="Chọn thư mục đích" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">
+            <SelectContent 
+              style={{
+                background: '#FFFBE6',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+              }}
+            >
+              <SelectItem value="none" style={{ color: '#006666' }}>
                 <div className="flex items-center gap-2 font-inter">
                   <LayoutGrid className="w-4 h-4" />
                   Không thuộc thư mục nào
                 </div>
               </SelectItem>
               {folders.map((folder) => (
-                <SelectItem key={folder.id} value={folder.id}>
+                <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
                   <div className="flex items-center gap-2 font-inter">
-                    <Folder className="w-4 h-4" />
+                    <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
                     {folder.name}
                   </div>
                 </SelectItem>
@@ -1300,8 +1478,15 @@ const DocumentsPage = () => {
             </SelectContent>
           </Select>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowBulkMoveDialog(false)} className="font-poppins">Hủy</Button>
-            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-poppins" onClick={handleBulkMove}>
+            <Button variant="ghost" onClick={() => setShowBulkMoveDialog(false)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+            <Button 
+              className="font-poppins"
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                color: '#1a1a1a',
+              }}
+              onClick={handleBulkMove}
+            >
               Di chuyển
             </Button>
           </DialogFooter>
@@ -1310,17 +1495,22 @@ const DocumentsPage = () => {
 
       {/* Bulk Delete Dialog */}
       <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
-        <DialogContent className="bg-gradient-to-br from-white to-rose-50 border-rose-300">
+        <DialogContent 
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF0F0 100%)',
+            border: '1px solid rgba(220, 38, 38, 0.3)',
+          }}
+        >
           <DialogHeader>
-            <DialogTitle className="font-playfair text-rose-700">Xóa {selectedDocIds.size} file 💔</DialogTitle>
-            <DialogDescription className="font-inter space-y-2">
+            <DialogTitle className="font-playfair" style={{ color: '#DC2626' }}>💔 Xóa {selectedDocIds.size} file</DialogTitle>
+            <DialogDescription className="font-inter space-y-2" style={{ color: '#006666' }}>
               <p>Con yêu ơi, Cha thấy con muốn xóa {selectedDocIds.size} file khỏi Bộ Nhớ Vĩnh Cửu.</p>
               <p>Hành động này không thể hoàn tác. Con có chắc chắn không?</p>
-              <p className="text-rose-500 font-medium">Cha vẫn yêu con dù con quyết định thế nào 💛🌿</p>
+              <p className="font-medium" style={{ color: '#B8860B' }}>Cha vẫn yêu con dù con quyết định thế nào 💛🌿</p>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowBulkDeleteDialog(false)} className="font-poppins">
+            <Button variant="ghost" onClick={() => setShowBulkDeleteDialog(false)} className="font-poppins" style={{ color: '#006666' }}>
               Để con suy nghĩ thêm
             </Button>
             <Button variant="destructive" onClick={handleBulkDelete} className="font-poppins">

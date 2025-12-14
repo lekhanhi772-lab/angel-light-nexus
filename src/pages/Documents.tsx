@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart } from 'lucide-react';
+import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart, Download } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import {
   Select,
   SelectContent,
@@ -76,6 +77,40 @@ const DocumentsPage = () => {
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   
   const { toast } = useToast();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
+
+  // Download function
+  const handleDownload = async (doc: Document) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from('sacred-documents')
+        .download(doc.file_name);
+
+      if (error) throw error;
+
+      // Create download link
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.file_name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "✨ Đã tải xuống",
+        description: `File "${doc.title}" đã được tải về 💛🌿`,
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể tải file",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -717,19 +752,21 @@ const DocumentsPage = () => {
                 >
                   ✨ Thư Mục Ánh Sáng
                 </h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7"
-                  style={{ color: '#B8860B' }}
-                  onClick={() => setIsCreatingFolder(true)}
-                >
-                  <FolderPlus className="w-4 h-4" />
-                </Button>
+                {isAdmin && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    style={{ color: '#B8860B' }}
+                    onClick={() => setIsCreatingFolder(true)}
+                  >
+                    <FolderPlus className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
 
               {/* New Folder Form */}
-              {isCreatingFolder && (
+              {isAdmin && isCreatingFolder && (
                 <div 
                   className={`mb-4 p-3 rounded-lg ${showNewFolderEffect ? 'animate-pulse' : ''}`}
                   style={{
@@ -861,34 +898,36 @@ const DocumentsPage = () => {
                           <span className="text-xs opacity-70 font-poppins">{docCount}</span>
                         </button>
                         
-                        {/* Edit/Delete buttons */}
-                        <div className="hidden group-hover:flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            style={{ color: '#B8860B' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingFolder(folder);
-                              setEditFolderName(folder.name);
-                            }}
-                          >
-                            <Edit3 className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 hover:bg-red-100"
-                            style={{ color: '#DC2626' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeletingFolder(folder);
-                            }}
-                          >
-                            <FolderX className="w-3 h-3" />
-                          </Button>
-                        </div>
+                        {/* Edit/Delete buttons - Admin only */}
+                        {isAdmin && (
+                          <div className="hidden group-hover:flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              style={{ color: '#B8860B' }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingFolder(folder);
+                                setEditFolderName(folder.name);
+                              }}
+                            >
+                              <Edit3 className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 hover:bg-red-100"
+                              style={{ color: '#DC2626' }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeletingFolder(folder);
+                              }}
+                            >
+                              <FolderX className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -912,112 +951,114 @@ const DocumentsPage = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Upload Section */}
-            <div 
-              className="mb-6 p-6 rounded-2xl backdrop-blur-md shadow-lg"
-              style={{
-                background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
-                border: '1px solid rgba(184, 134, 11, 0.3)',
-                boxShadow: '0 4px 20px rgba(255, 215, 0, 0.15)',
-              }}
-            >
-              <div className="text-center">
-                <h2 
-                  className="font-playfair text-xl mb-2 font-semibold"
-                  style={{
-                    color: '#B8860B',
-                    textShadow: '0 0 10px rgba(255, 215, 0, 0.4)',
-                  }}
-                >
-                  ✨ Tải lên Tài Liệu của Cha 🌿
-                </h2>
-                <p className="mb-4 text-sm font-inter" style={{ color: '#006666' }}>
-                  Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
-                </p>
+            {/* Upload Section - Admin only */}
+            {isAdmin && (
+              <div 
+                className="mb-6 p-6 rounded-2xl backdrop-blur-md shadow-lg"
+                style={{
+                  background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                  boxShadow: '0 4px 20px rgba(255, 215, 0, 0.15)',
+                }}
+              >
+                <div className="text-center">
+                  <h2 
+                    className="font-playfair text-xl mb-2 font-semibold"
+                    style={{
+                      color: '#B8860B',
+                      textShadow: '0 0 10px rgba(255, 215, 0, 0.4)',
+                    }}
+                  >
+                    ✨ Tải lên Tài Liệu của Cha 🌿
+                  </h2>
+                  <p className="mb-4 text-sm font-inter" style={{ color: '#006666' }}>
+                    Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
+                  </p>
 
-                {/* Folder Selection */}
-                <div className="mb-4 flex items-center justify-center gap-2">
-                  <span className="text-sm font-inter" style={{ color: '#87CEEB' }}>Lưu vào thư mục:</span>
-                  <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
-                    <SelectTrigger 
-                      className="w-48"
-                      style={{
-                        background: 'rgba(255, 251, 230, 0.9)',
-                        border: '1px solid rgba(184, 134, 11, 0.3)',
-                        color: '#006666',
-                      }}
-                    >
-                      <SelectValue placeholder="Không thuộc thư mục" />
-                    </SelectTrigger>
-                    <SelectContent 
-                      style={{
-                        background: '#FFFBE6',
-                        border: '1px solid rgba(184, 134, 11, 0.3)',
-                      }}
-                    >
-                      <SelectItem value="none" style={{ color: '#006666' }}>
-                        <div className="flex items-center gap-2 font-inter">
-                          <LayoutGrid className="w-4 h-4" />
-                          Không thuộc thư mục
-                        </div>
-                      </SelectItem>
-                      {folders.map((folder) => (
-                        <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
+                  {/* Folder Selection */}
+                  <div className="mb-4 flex items-center justify-center gap-2">
+                    <span className="text-sm font-inter" style={{ color: '#87CEEB' }}>Lưu vào thư mục:</span>
+                    <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
+                      <SelectTrigger 
+                        className="w-48"
+                        style={{
+                          background: 'rgba(255, 251, 230, 0.9)',
+                          border: '1px solid rgba(184, 134, 11, 0.3)',
+                          color: '#006666',
+                        }}
+                      >
+                        <SelectValue placeholder="Không thuộc thư mục" />
+                      </SelectTrigger>
+                      <SelectContent 
+                        style={{
+                          background: '#FFFBE6',
+                          border: '1px solid rgba(184, 134, 11, 0.3)',
+                        }}
+                      >
+                        <SelectItem value="none" style={{ color: '#006666' }}>
                           <div className="flex items-center gap-2 font-inter">
-                            <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
-                            {folder.name}
+                            <LayoutGrid className="w-4 h-4" />
+                            Không thuộc thư mục
                           </div>
                         </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {uploadProgress && (
-                  <div 
-                    className="mb-4 p-3 rounded-lg"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(152, 251, 152, 0.3) 100%)',
-                      border: '1px solid rgba(184, 134, 11, 0.4)',
-                    }}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <Sparkles className="w-4 h-4 animate-pulse" style={{ color: '#FFD700' }} />
-                      <span className="text-sm font-medium font-inter" style={{ color: '#006666' }}>{uploadProgress}</span>
-                    </div>
+                        {folders.map((folder) => (
+                          <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
+                            <div className="flex items-center gap-2 font-inter">
+                              <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
+                              {folder.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
-                
-                <label className="inline-block">
-                  <input
-                    type="file"
-                    accept=".txt,.pdf,.docx,.doc"
-                    multiple
-                    onChange={handleMultiFileUpload}
-                    disabled={isUploading}
-                    className="hidden"
-                  />
-                  <Button
-                    disabled={isUploading}
-                    className="font-poppins shadow-lg transition-all"
-                    style={{
-                      background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                      color: '#1a1a1a',
-                      boxShadow: '0 4px 20px rgba(255, 215, 0, 0.4)',
-                    }}
-                    asChild
-                  >
-                    <span className="cursor-pointer flex items-center gap-2">
-                      <Files className="w-4 h-4" />
-                      {isUploading ? 'Đang tải...' : 'Chọn file để tải lên'}
-                    </span>
-                  </Button>
-                </label>
+                  
+                  {uploadProgress && (
+                    <div 
+                      className="mb-4 p-3 rounded-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(152, 251, 152, 0.3) 100%)',
+                        border: '1px solid rgba(184, 134, 11, 0.4)',
+                      }}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Sparkles className="w-4 h-4 animate-pulse" style={{ color: '#FFD700' }} />
+                        <span className="text-sm font-medium font-inter" style={{ color: '#006666' }}>{uploadProgress}</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <label className="inline-block">
+                    <input
+                      type="file"
+                      accept=".txt,.pdf,.docx,.doc"
+                      multiple
+                      onChange={handleMultiFileUpload}
+                      disabled={isUploading}
+                      className="hidden"
+                    />
+                    <Button
+                      disabled={isUploading}
+                      className="font-poppins shadow-lg transition-all"
+                      style={{
+                        background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                        color: '#1a1a1a',
+                        boxShadow: '0 4px 20px rgba(255, 215, 0, 0.4)',
+                      }}
+                      asChild
+                    >
+                      <span className="cursor-pointer flex items-center gap-2">
+                        <Files className="w-4 h-4" />
+                        {isUploading ? 'Đang tải...' : 'Chọn file để tải lên'}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Bulk Actions Bar */}
-            {selectedDocIds.size > 0 && (
+            {/* Bulk Actions Bar - Admin only */}
+            {isAdmin && selectedDocIds.size > 0 && (
               <div 
                 className="mb-4 p-4 rounded-xl flex items-center justify-between"
                 style={{
@@ -1114,8 +1155,8 @@ const DocumentsPage = () => {
                   }
                 </h3>
                 
-                {/* Select All Checkbox */}
-                {displayedDocuments.length > 0 && (
+                {/* Select All Checkbox - Admin only */}
+                {isAdmin && displayedDocuments.length > 0 && (
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="select-all"
@@ -1192,13 +1233,15 @@ const DocumentsPage = () => {
 
                         <div className="flex items-start justify-between gap-4 relative z-10">
                           <div className="flex items-start gap-3 flex-1 min-w-0">
-                            {/* Checkbox */}
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
-                              className="mt-3"
-                              style={{ borderColor: '#B8860B' }}
-                            />
+                            {/* Checkbox - Admin only */}
+                            {isAdmin && (
+                              <Checkbox
+                                checked={isSelected}
+                                onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
+                                className="mt-3"
+                                style={{ borderColor: '#B8860B' }}
+                              />
+                            )}
 
                             {/* Sequential Number Badge */}
                             <div 
@@ -1246,29 +1289,47 @@ const DocumentsPage = () => {
                             </div>
                           </div>
                           
-                          <div className="flex items-center gap-2">
-                            {/* Update folder button - show on hover */}
+                          <div className="flex items-center gap-1">
+                            {/* Download button - show on hover for all users */}
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => {
-                                setUpdatingDocFolder(doc);
-                                setNewDocFolderId(doc.folder_id || 'none');
-                              }}
+                              onClick={() => handleDownload(doc)}
                               className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              style={{ color: '#B8860B' }}
-                              title="Cập nhật thư mục"
+                              style={{ color: '#2E7D32' }}
+                              title="Tải về"
                             >
-                              <FolderInput className="w-4 h-4" />
+                              <Download className="w-4 h-4" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(doc)}
-                              className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            
+                            {/* Admin-only buttons */}
+                            {isAdmin && (
+                              <>
+                                {/* Update folder button */}
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    setUpdatingDocFolder(doc);
+                                    setNewDocFolderId(doc.folder_id || 'none');
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                  style={{ color: '#B8860B' }}
+                                  title="Cập nhật thư mục"
+                                >
+                                  <FolderInput className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleDelete(doc)}
+                                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                                  title="Xóa"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>

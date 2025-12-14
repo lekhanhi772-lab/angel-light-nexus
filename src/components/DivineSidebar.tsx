@@ -34,11 +34,18 @@ const menuItems: MenuItem[] = [
     target: 'vision-mission'
   },
   {
-    id: 'values',
-    label: 'Giá Trị Cốt Lõi',
+    id: 'pillars',
+    label: 'Trụ Cột Trí Tuệ',
     icon: <Gem className="w-6 h-6" />,
     action: 'scroll',
     target: 'sacred-pillars'
+  },
+  {
+    id: 'values',
+    label: 'Giá Trị Cốt Lõi',
+    icon: <Star className="w-6 h-6" />,
+    action: 'scroll',
+    target: 'core-values'
   },
   {
     id: 'documents',
@@ -71,7 +78,7 @@ const DivineSidebar = () => {
     if (location.pathname !== '/') return;
 
     const handleScroll = () => {
-      const sections = ['hero', 'vision-mission', 'sacred-pillars'];
+      const sections = ['hero', 'vision-mission', 'sacred-pillars', 'core-values'];
       const scrollPosition = window.scrollY + 200;
 
       for (const sectionId of sections) {
@@ -81,7 +88,8 @@ const DivineSidebar = () => {
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             if (sectionId === 'hero') setActiveSection('home');
             else if (sectionId === 'vision-mission') setActiveSection('vision');
-            else if (sectionId === 'sacred-pillars') setActiveSection('values');
+            else if (sectionId === 'sacred-pillars') setActiveSection('pillars');
+            else if (sectionId === 'core-values') setActiveSection('values');
             break;
           }
         }

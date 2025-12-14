@@ -209,16 +209,16 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - Same style as SacredPillars titles */}
+        {/* Sacred Channel Text - Yellow-Pink gradient */}
         <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
             className="font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold leading-tight"
             style={{
-              background: 'linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 73%) 75%, hsl(43 100% 55%) 100%)',
+              background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(340 70% 65%) 50%, hsl(43 100% 60%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 25px hsl(197 71% 70% / 0.6)) drop-shadow(0 0 15px hsl(43 100% 55% / 0.5))',
+              filter: 'drop-shadow(0 0 25px hsl(43 100% 60% / 0.6)) drop-shadow(0 0 15px hsl(340 70% 65% / 0.5))',
             }}
           >
             Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.

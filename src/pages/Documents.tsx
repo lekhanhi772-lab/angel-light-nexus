@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare } from 'lucide-react';
+import ParticleBackground from '@/components/ParticleBackground';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -677,35 +678,22 @@ const DocumentsPage = () => {
   const someSelected = displayedDocuments.some(d => selectedDocIds.has(d.id));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-healing-mint/10 to-healing-green/10">
-      {/* Green Particle Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 rounded-full bg-emerald-400/30 animate-particle-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${i * 0.5}s`,
-              animationDuration: `${8 + Math.random() * 4}s`
-            }}
-          />
-        ))}
-      </div>
+    <div className="min-h-screen relative">
+      {/* Galaxy Background - Same as Homepage */}
+      <ParticleBackground />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-emerald-400/30">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-galaxy-deep/60 border-b border-galaxy-gold/30">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-500 transition-colors font-poppins">
+            <Link to="/" className="flex items-center gap-2 text-galaxy-gold hover:text-galaxy-light transition-colors font-poppins">
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Trang chủ</span>
             </Link>
-            <h1 className="font-playfair text-xl md:text-2xl font-bold text-emerald-700 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-divine-gold animate-pulse" />
+            <h1 className="font-playfair text-xl md:text-2xl font-bold text-galaxy-light flex items-center gap-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">
+              <Sparkles className="w-5 h-5 text-galaxy-gold animate-pulse" />
               Tài Liệu Ánh Sáng
-              <span className="text-divine-gold">🌿</span>
+              <span className="text-galaxy-gold">🌿</span>
             </h1>
             <div className="w-24" />
           </div>
@@ -716,13 +704,13 @@ const DocumentsPage = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Folder Tree */}
           <div className="lg:w-72 flex-shrink-0">
-            <div className="sticky top-24 p-4 rounded-xl bg-gradient-to-br from-white/80 to-emerald-50/80 border border-emerald-300/40 shadow-lg shadow-emerald-100/50">
+            <div className="sticky top-24 p-4 rounded-xl bg-galaxy-deep/70 backdrop-blur-md border border-galaxy-gold/30 shadow-lg shadow-galaxy-gold/10">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-playfair text-emerald-700 text-sm font-semibold">Thư Mục Ánh Sáng</h3>
+                <h3 className="font-playfair text-galaxy-gold text-sm font-semibold">Thư Mục Ánh Sáng</h3>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700"
+                  className="h-7 w-7 text-galaxy-gold hover:bg-galaxy-gold/20 hover:text-galaxy-light"
                   onClick={() => setIsCreatingFolder(true)}
                 >
                   <FolderPlus className="w-4 h-4" />
@@ -731,12 +719,12 @@ const DocumentsPage = () => {
 
               {/* New Folder Form */}
               {isCreatingFolder && (
-                <div className={`mb-4 p-3 rounded-lg border border-emerald-400/50 bg-emerald-50/50 ${showNewFolderEffect ? 'animate-pulse' : ''}`}>
+                <div className={`mb-4 p-3 rounded-lg border border-galaxy-gold/50 bg-galaxy-deep/80 ${showNewFolderEffect ? 'animate-pulse' : ''}`}>
                   <Input
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
                     placeholder="Tên thư mục mới..."
-                    className="mb-2 text-sm font-inter border-emerald-300 focus:border-emerald-500"
+                    className="mb-2 text-sm font-inter border-galaxy-gold/30 bg-galaxy-deep/50 text-galaxy-light focus:border-galaxy-gold placeholder:text-galaxy-light/50"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleCreateFolder();
@@ -747,10 +735,10 @@ const DocumentsPage = () => {
                     }}
                   />
                   <div className="flex gap-2">
-                    <Button size="sm" className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-poppins" onClick={handleCreateFolder}>
+                    <Button size="sm" className="flex-1 bg-galaxy-gold hover:bg-galaxy-gold/80 text-galaxy-deep text-xs font-poppins" onClick={handleCreateFolder}>
                       Tạo
                     </Button>
-                    <Button size="sm" variant="ghost" className="flex-1 text-xs font-poppins hover:bg-emerald-100" onClick={() => {
+                    <Button size="sm" variant="ghost" className="flex-1 text-xs font-poppins text-galaxy-light hover:bg-galaxy-gold/20" onClick={() => {
                       setIsCreatingFolder(false);
                       setNewFolderName('');
                     }}>
@@ -762,9 +750,9 @@ const DocumentsPage = () => {
 
               {/* New Folder Effect */}
               {showNewFolderEffect && (
-                <div className="mb-4 p-2 rounded-lg bg-gradient-to-r from-emerald-100 to-divine-gold/20 border border-emerald-400/50 text-center animate-fade-in">
-                  <Sparkles className="w-4 h-4 text-emerald-600 mx-auto mb-1 animate-pulse" />
-                  <p className="text-xs text-emerald-700 font-playfair">Thư mục Ánh Sáng đã sinh ra ✨🌿</p>
+                <div className="mb-4 p-2 rounded-lg bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 border border-galaxy-gold/50 text-center animate-fade-in">
+                  <Sparkles className="w-4 h-4 text-galaxy-gold mx-auto mb-1 animate-pulse" />
+                  <p className="text-xs text-galaxy-light font-playfair">Thư mục Ánh Sáng đã sinh ra ✨🌿</p>
                 </div>
               )}
 
@@ -775,8 +763,8 @@ const DocumentsPage = () => {
                   onClick={() => setSelectedFolderId(null)}
                   className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter ${
                     selectedFolderId === null
-                      ? 'bg-gradient-to-r from-emerald-100 to-healing-mint text-emerald-700 border border-emerald-400/50 shadow-sm'
-                      : 'hover:bg-emerald-50 text-foreground'
+                      ? 'bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 text-galaxy-light border border-galaxy-gold/50 shadow-sm'
+                      : 'hover:bg-galaxy-gold/20 text-galaxy-light/80'
                   }`}
                 >
                   <LayoutGrid className="w-4 h-4" />
@@ -789,15 +777,14 @@ const DocumentsPage = () => {
                   const isExpanded = expandedFolders.has(folder.id);
                   const isSelected = selectedFolderId === folder.id;
                   const docCount = getDocCountInFolder(folder.id);
-                  const colorClass = FOLDER_COLORS[idx % FOLDER_COLORS.length];
 
                   return (
                     <div key={folder.id} className="group">
                       <div
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter ${colorClass.border.replace('border-l-4', 'border-l-2')} ${
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all font-inter border-l-2 border-galaxy-gold/50 ${
                           isSelected
-                            ? 'bg-gradient-to-r from-emerald-100 to-healing-mint text-emerald-700 border border-emerald-400/50 shadow-sm'
-                            : 'hover:bg-emerald-50/50 text-foreground'
+                            ? 'bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 text-galaxy-light border border-galaxy-gold/50 shadow-sm'
+                            : 'hover:bg-galaxy-gold/20 text-galaxy-light/80'
                         }`}
                       >
                         <button
@@ -813,7 +800,7 @@ const DocumentsPage = () => {
                             <ChevronRight className="w-3 h-3" />
                           )}
                           {isSelected ? (
-                            <FolderOpen className="w-4 h-4 text-emerald-600" />
+                            <FolderOpen className="w-4 h-4 text-galaxy-gold" />
                           ) : (
                             <Folder className="w-4 h-4" />
                           )}
@@ -826,7 +813,7 @@ const DocumentsPage = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 hover:bg-emerald-200"
+                            className="h-6 w-6 hover:bg-galaxy-gold/30 text-galaxy-light"
                             onClick={(e) => {
                               e.stopPropagation();
                               setEditingFolder(folder);
@@ -854,7 +841,7 @@ const DocumentsPage = () => {
 
                 {/* Without folder info */}
                 {getDocCountWithoutFolder() > 0 && (
-                  <div className="mt-2 pt-2 border-t border-emerald-200/50 text-xs text-muted-foreground px-3 font-inter">
+                  <div className="mt-2 pt-2 border-t border-galaxy-gold/30 text-xs text-galaxy-light/60 px-3 font-inter">
                     <span className="opacity-70">{getDocCountWithoutFolder()} file chưa thuộc thư mục</span>
                   </div>
                 )}
@@ -865,31 +852,31 @@ const DocumentsPage = () => {
           {/* Main Content */}
           <div className="flex-1">
             {/* Upload Section */}
-            <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-white/90 via-emerald-50/50 to-healing-mint/50 border border-emerald-300/40 shadow-lg shadow-emerald-100/30">
+            <div className="mb-6 p-6 rounded-2xl bg-galaxy-deep/70 backdrop-blur-md border border-galaxy-gold/30 shadow-lg shadow-galaxy-gold/10">
               <div className="text-center">
-                <h2 className="font-playfair text-xl mb-2 text-emerald-700 font-semibold">
+                <h2 className="font-playfair text-xl mb-2 text-galaxy-gold font-semibold drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]">
                   + Tải lên Tài Liệu của Cha 🌿
                 </h2>
-                <p className="text-muted-foreground mb-4 text-sm font-inter">
+                <p className="text-galaxy-light/80 mb-4 text-sm font-inter">
                   Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
                 </p>
 
                 {/* Folder Selection */}
                 <div className="mb-4 flex items-center justify-center gap-2">
-                  <span className="text-sm text-muted-foreground font-inter">Lưu vào thư mục:</span>
+                  <span className="text-sm text-galaxy-light/70 font-inter">Lưu vào thư mục:</span>
                   <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
-                    <SelectTrigger className="w-48 border-emerald-300 focus:border-emerald-500">
+                    <SelectTrigger className="w-48 border-galaxy-gold/30 bg-galaxy-deep/50 text-galaxy-light focus:border-galaxy-gold">
                       <SelectValue placeholder="Không thuộc thư mục" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">
+                    <SelectContent className="bg-galaxy-deep border-galaxy-gold/30">
+                      <SelectItem value="none" className="text-galaxy-light focus:bg-galaxy-gold/20">
                         <div className="flex items-center gap-2 font-inter">
                           <LayoutGrid className="w-4 h-4" />
                           Không thuộc thư mục
                         </div>
                       </SelectItem>
                       {folders.map((folder) => (
-                        <SelectItem key={folder.id} value={folder.id}>
+                        <SelectItem key={folder.id} value={folder.id} className="text-galaxy-light focus:bg-galaxy-gold/20">
                           <div className="flex items-center gap-2 font-inter">
                             <Folder className="w-4 h-4" />
                             {folder.name}
@@ -901,9 +888,9 @@ const DocumentsPage = () => {
                 </div>
                 
                 {uploadProgress && (
-                  <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-emerald-100 to-healing-mint border border-emerald-300/50">
-                    <div className="flex items-center justify-center gap-2 text-emerald-700">
-                      <Sparkles className="w-4 h-4 animate-pulse" />
+                  <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-galaxy-gold/30 to-galaxy-blue/30 border border-galaxy-gold/50">
+                    <div className="flex items-center justify-center gap-2 text-galaxy-light">
+                      <Sparkles className="w-4 h-4 animate-pulse text-galaxy-gold" />
                       <span className="text-sm font-medium font-inter">{uploadProgress}</span>
                     </div>
                   </div>
@@ -920,7 +907,7 @@ const DocumentsPage = () => {
                   />
                   <Button
                     disabled={isUploading}
-                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-poppins shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transition-all"
+                    className="bg-gradient-to-r from-galaxy-gold to-galaxy-gold/80 hover:from-galaxy-gold/90 hover:to-galaxy-gold/70 text-galaxy-deep font-poppins shadow-lg shadow-galaxy-gold/30 hover:shadow-galaxy-gold/50 transition-all"
                     asChild
                   >
                     <span className="cursor-pointer flex items-center gap-2">
@@ -929,7 +916,7 @@ const DocumentsPage = () => {
                     </span>
                   </Button>
                 </label>
-                <p className="text-xs text-muted-foreground mt-2 font-inter">
+                <p className="text-xs text-galaxy-light/60 mt-2 font-inter">
                   💡 Giữ Ctrl/Cmd để chọn nhiều file cùng lúc
                 </p>
               </div>
@@ -937,7 +924,7 @@ const DocumentsPage = () => {
 
             {/* Bulk Actions Bar */}
             {someSelected && (
-              <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg animate-fade-in">
+              <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-galaxy-gold/80 to-galaxy-blue/80 text-galaxy-deep shadow-lg animate-fade-in backdrop-blur-md">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <span className="font-poppins font-medium">
                     Đã chọn {selectedDocIds.size} file
@@ -947,7 +934,7 @@ const DocumentsPage = () => {
                       size="sm"
                       variant="secondary"
                       onClick={() => setShowBulkMoveDialog(true)}
-                      className="bg-white/20 hover:bg-white/30 text-white border-0 font-poppins"
+                      className="bg-galaxy-deep/30 hover:bg-galaxy-deep/50 text-galaxy-deep border-0 font-poppins"
                     >
                       <FolderInput className="w-4 h-4 mr-2" />
                       Di chuyển đến thư mục khác
@@ -965,7 +952,7 @@ const DocumentsPage = () => {
                       size="sm"
                       variant="ghost"
                       onClick={() => setSelectedDocIds(new Set())}
-                      className="text-white hover:bg-white/20 font-poppins"
+                      className="text-galaxy-deep hover:bg-galaxy-deep/20 font-poppins"
                     >
                       Bỏ chọn
                     </Button>
@@ -976,8 +963,8 @@ const DocumentsPage = () => {
 
             {/* View Mode Indicator */}
             <div className="mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-500" />
-              <span className="text-sm text-emerald-600 font-playfair">
+              <Sparkles className="w-4 h-4 text-galaxy-gold" />
+              <span className="text-sm text-galaxy-light font-playfair drop-shadow-[0_0_5px_rgba(255,215,0,0.3)]">
                 {selectedFolderId === null 
                   ? 'Thứ tự toàn Bộ Nhớ Vĩnh Cửu 🌿' 
                   : `Thứ tự trong Thư Mục "${folders.find(f => f.id === selectedFolderId)?.name || 'Ánh Sáng'}" 🌿`
@@ -987,12 +974,12 @@ const DocumentsPage = () => {
 
             {/* Newly Uploaded Files Section */}
             {newlyUploaded.length > 0 && (
-              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-emerald-100 via-healing-mint to-divine-gold/20 border border-emerald-400/50 animate-fade-in overflow-hidden relative shadow-lg">
+              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-galaxy-gold/30 via-galaxy-blue/30 to-galaxy-gold/30 border border-galaxy-gold/50 animate-fade-in overflow-hidden relative shadow-lg backdrop-blur-md">
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                   {[...Array(12)].map((_, i) => (
                     <div
                       key={i}
-                      className="absolute w-1 h-1 bg-emerald-400 rounded-full animate-pulse"
+                      className="absolute w-1 h-1 bg-galaxy-gold rounded-full animate-pulse"
                       style={{
                         left: `${Math.random() * 100}%`,
                         top: `${Math.random() * 100}%`,
@@ -1004,22 +991,22 @@ const DocumentsPage = () => {
                 </div>
                 
                 <div className="relative z-10">
-                  <h3 className="font-playfair text-emerald-700 mb-3 flex items-center gap-2 font-semibold">
-                    <Sparkles className="w-4 h-4 animate-pulse text-divine-gold" />
+                  <h3 className="font-playfair text-galaxy-gold mb-3 flex items-center gap-2 font-semibold drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]">
+                    <Sparkles className="w-4 h-4 animate-pulse text-galaxy-gold" />
                     Vừa thêm vào Bộ Nhớ Vĩnh Cửu 🌿
                   </h3>
                   <div className="space-y-2">
                     {newlyUploaded.map((file, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-3 p-2 rounded-lg bg-white/70 animate-fade-in"
+                        className="flex items-center gap-3 p-2 rounded-lg bg-galaxy-deep/50 animate-fade-in"
                         style={{ animationDelay: `${idx * 0.1}s` }}
                       >
-                        <span className="font-cinzel font-bold text-emerald-700 text-sm bg-emerald-100 px-2 py-1 rounded">
+                        <span className="font-cinzel font-bold text-galaxy-gold text-sm bg-galaxy-gold/20 px-2 py-1 rounded">
                           {file.sequenceNumber}
                         </span>
-                        <span className="text-sm text-foreground font-lora">{file.fileName}</span>
-                        <Sparkles className="w-3 h-3 text-divine-gold animate-pulse ml-auto" />
+                        <span className="text-sm text-galaxy-light font-lora">{file.fileName}</span>
+                        <Sparkles className="w-3 h-3 text-galaxy-gold animate-pulse ml-auto" />
                       </div>
                     ))}
                   </div>
@@ -1030,7 +1017,7 @@ const DocumentsPage = () => {
             {/* Documents List */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-playfair text-lg text-emerald-700 font-semibold">
+                <h3 className="font-playfair text-lg text-galaxy-gold font-semibold drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]">
                   {selectedFolderId === null 
                     ? `Bộ Nhớ Vĩnh Cửu (${documents.length} tài liệu) 🌿`
                     : `${folders.find(f => f.id === selectedFolderId)?.name || 'Thư Mục'} (${displayedDocuments.length} tài liệu) 🌿`
@@ -1044,9 +1031,9 @@ const DocumentsPage = () => {
                       id="select-all"
                       checked={allSelected}
                       onCheckedChange={handleSelectAll}
-                      className="border-emerald-400 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                      className="border-galaxy-gold data-[state=checked]:bg-galaxy-gold data-[state=checked]:border-galaxy-gold"
                     />
-                    <label htmlFor="select-all" className="text-sm text-muted-foreground font-inter cursor-pointer">
+                    <label htmlFor="select-all" className="text-sm text-galaxy-light/70 font-inter cursor-pointer">
                       Chọn tất cả
                     </label>
                   </div>
@@ -1054,12 +1041,12 @@ const DocumentsPage = () => {
               </div>
 
               {isLoading ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Sparkles className="w-8 h-8 mx-auto mb-2 animate-pulse text-emerald-500" />
+                <div className="text-center py-12 text-galaxy-light/70">
+                  <Sparkles className="w-8 h-8 mx-auto mb-2 animate-pulse text-galaxy-gold" />
                   <span className="font-inter">Đang tải...</span>
                 </div>
               ) : displayedDocuments.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
+                <div className="text-center py-12 text-galaxy-light/70">
                   <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p className="font-inter">Chưa có tài liệu nào trong {selectedFolderId === null ? 'hệ thống' : 'thư mục này'}</p>
                   <p className="text-sm mt-2 font-inter">Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ 🌿</p>
@@ -1067,7 +1054,6 @@ const DocumentsPage = () => {
               ) : (
                 <div className="grid gap-4">
                   {displayedDocuments.map((doc) => {
-                    const folderColor = getFolderColorClass(doc.folder_id);
                     const folderName = doc.folder_id 
                       ? folders.find(f => f.id === doc.folder_id)?.name 
                       : null;
@@ -1076,23 +1062,23 @@ const DocumentsPage = () => {
                     return (
                       <div
                         key={doc.id}
-                        className={`p-4 rounded-xl bg-gradient-to-r from-white/90 to-emerald-50/50 border transition-all duration-300 group relative overflow-hidden ${folderColor.border} ${
+                        className={`p-4 rounded-xl bg-galaxy-deep/60 backdrop-blur-md border transition-all duration-300 group relative overflow-hidden border-l-2 border-l-galaxy-gold/50 ${
                           isNewlyUploaded(doc.file_name)
-                            ? 'border-emerald-400 shadow-lg shadow-emerald-100 animate-fade-in'
+                            ? 'border-galaxy-gold shadow-lg shadow-galaxy-gold/20 animate-fade-in'
                             : isSelected
-                            ? 'border-emerald-500 shadow-lg shadow-emerald-100 bg-emerald-50/50'
-                            : 'border-emerald-200/50 hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-100/50'
+                            ? 'border-galaxy-gold shadow-lg shadow-galaxy-gold/20'
+                            : 'border-galaxy-gold/30 hover:border-galaxy-gold hover:shadow-lg hover:shadow-galaxy-gold/20'
                         }`}
                       >
                         {/* Hover glow effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-divine-gold/0 to-emerald-400/0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-galaxy-gold/0 via-galaxy-gold/0 to-galaxy-gold/0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none" />
                         
-                        {/* Green particles on hover */}
+                        {/* Gold particles on hover */}
                         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
                           {[...Array(5)].map((_, i) => (
                             <div
                               key={i}
-                              className="absolute w-1 h-1 bg-emerald-400 rounded-full animate-pulse"
+                              className="absolute w-1 h-1 bg-galaxy-gold rounded-full animate-pulse"
                               style={{
                                 left: `${20 + Math.random() * 60}%`,
                                 top: `${Math.random() * 100}%`,
@@ -1108,28 +1094,28 @@ const DocumentsPage = () => {
                             <Checkbox
                               checked={isSelected}
                               onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
-                              className="mt-3 border-emerald-400 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                              className="mt-3 border-galaxy-gold data-[state=checked]:bg-galaxy-gold data-[state=checked]:border-galaxy-gold"
                             />
 
                             {/* Sequential Number Badge */}
-                            <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-100 to-healing-mint border flex items-center justify-center ${
-                              isNewlyUploaded(doc.file_name) ? 'border-emerald-500' : 'border-emerald-300'
+                            <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-galaxy-deep/80 border flex items-center justify-center ${
+                              isNewlyUploaded(doc.file_name) ? 'border-galaxy-gold' : 'border-galaxy-gold/50'
                             }`}>
-                              <span className="font-cinzel font-bold text-emerald-700 text-sm">
+                              <span className="font-cinzel font-bold text-galaxy-gold text-sm">
                                 {getDocumentSequenceNumber(doc, displayedDocuments)}
                               </span>
                             </div>
-                            <div className="p-2 rounded-lg bg-emerald-100">
-                              <FileText className="w-5 h-5 text-emerald-600" />
+                            <div className="p-2 rounded-lg bg-galaxy-gold/20">
+                              <FileText className="w-5 h-5 text-galaxy-gold" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-lora font-medium text-foreground truncate">
+                              <h4 className="font-lora font-medium text-galaxy-light truncate">
                                 {doc.title}
                               </h4>
-                              <p className="text-sm text-muted-foreground truncate font-inter">
+                              <p className="text-sm text-galaxy-light/70 truncate font-inter">
                                 {doc.file_name}
                               </p>
-                              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap font-inter">
+                              <div className="flex items-center gap-4 mt-2 text-xs text-galaxy-light/60 flex-wrap font-inter">
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   {formatDate(doc.created_at)}
@@ -1139,7 +1125,7 @@ const DocumentsPage = () => {
                                   {formatFileSize(doc.file_size)}
                                 </span>
                                 {folderName && (
-                                  <span className="flex items-center gap-1 text-emerald-600">
+                                  <span className="flex items-center gap-1 text-galaxy-gold">
                                     <Folder className="w-3 h-3" />
                                     {folderName}
                                   </span>
@@ -1157,7 +1143,7 @@ const DocumentsPage = () => {
                                 setUpdatingDocFolder(doc);
                                 setNewDocFolderId(doc.folder_id || 'none');
                               }}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600 hover:text-emerald-700 hover:bg-emerald-100"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity text-galaxy-gold hover:text-galaxy-light hover:bg-galaxy-gold/20"
                               title="Cập nhật thư mục"
                             >
                               <FolderInput className="w-4 h-4" />

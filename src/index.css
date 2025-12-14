@@ -138,73 +138,73 @@
 }
 
 @layer components {
-  /* 5D Gold-Blue Gradient Text */
+  /* 5D Gold-Blue Gradient Text - Enhanced for bright background */
   .text-gradient-gold-blue {
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(197 71% 73%) 100%);
+    background: linear-gradient(135deg, hsl(43 100% 45%) 0%, hsl(197 71% 55%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%);
+    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 40%) 50%, hsl(43 100% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-rainbow {
-    background: linear-gradient(90deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 73%) 75%, hsl(43 100% 55%) 100%);
+    background: linear-gradient(90deg, hsl(197 71% 55%) 0%, hsl(157 52% 55%) 25%, hsl(43 100% 45%) 50%, hsl(197 71% 55%) 75%, hsl(43 100% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-divine {
-    background: linear-gradient(135deg, hsl(60 100% 98%) 0%, hsl(43 100% 60%) 50%, hsl(60 100% 98%) 100%);
+    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 80% 42%) 50%, hsl(43 100% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  /* Multi-layer Glow Effects - Enhanced for dark galaxy background */
+  /* Multi-layer Glow Effects - Enhanced for bright 5D background */
   .glow-gold {
     text-shadow: 
-      0 0 10px hsl(0 0% 0% / 0.8),
-      0 0 25px hsl(43 100% 55% / 1), 
-      0 0 50px hsl(43 100% 50% / 0.8), 
-      0 0 80px hsl(43 100% 50% / 0.5);
+      0 0 3px hsl(0 0% 100% / 0.9),
+      0 0 15px hsl(43 100% 50% / 1), 
+      0 0 30px hsl(43 100% 50% / 0.7), 
+      0 0 50px hsl(43 100% 50% / 0.4);
   }
 
   .glow-blue {
     text-shadow: 
-      0 0 10px hsl(0 0% 0% / 0.8),
-      0 0 25px hsl(197 71% 75% / 1), 
-      0 0 50px hsl(197 71% 73% / 0.8), 
-      0 0 80px hsl(197 71% 73% / 0.5);
+      0 0 3px hsl(0 0% 100% / 0.9),
+      0 0 15px hsl(197 71% 55% / 1), 
+      0 0 30px hsl(197 71% 55% / 0.7), 
+      0 0 50px hsl(197 71% 55% / 0.4);
   }
 
   .glow-gold-blue {
     text-shadow: 
-      0 0 8px hsl(0 0% 0% / 0.9),
-      0 0 35px hsl(43 100% 55% / 1), 
-      0 0 70px hsl(197 71% 75% / 0.7),
-      0 0 100px hsl(43 100% 50% / 0.4);
+      0 0 4px hsl(0 0% 100% / 1),
+      0 0 20px hsl(43 100% 50% / 1), 
+      0 0 40px hsl(197 71% 60% / 0.6),
+      0 0 60px hsl(43 100% 50% / 0.3);
   }
 
   .glow-white {
     text-shadow: 
-      0 0 8px hsl(0 0% 0% / 0.8),
-      0 0 25px hsl(60 100% 98% / 1), 
-      0 0 50px hsl(60 100% 98% / 0.7);
+      0 0 3px hsl(43 100% 60% / 0.8),
+      0 0 15px hsl(0 0% 100% / 1), 
+      0 0 30px hsl(0 0% 100% / 0.7);
   }
 
-  /* Text contrast helper for galaxy background */
+  /* Text contrast helper for bright 5D background */
   .text-galaxy-contrast {
     text-shadow: 
-      0 0 10px hsl(0 0% 0% / 0.9),
-      0 2px 4px hsl(0 0% 0% / 0.8),
-      0 0 30px hsl(43 100% 55% / 0.5);
+      0 0 4px hsl(0 0% 100% / 1),
+      0 1px 3px hsl(0 0% 100% / 0.8),
+      0 0 20px hsl(43 100% 55% / 0.6);
   }
 
   /* 5D Sacred Pillar Card */

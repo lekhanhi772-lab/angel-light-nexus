@@ -50,25 +50,25 @@ const HeroSection = () => {
         />
       ))}
       
-      {/* Soft Overlay for text contrast */}
+      {/* Soft Overlay for text contrast on bright background */}
       <div 
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 40%, hsl(220 60% 8% / 0.4) 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 80%, hsl(220 50% 5% / 0.5) 0%, transparent 50%)
+            radial-gradient(ellipse at 50% 40%, hsl(0 0% 100% / 0.3) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 80%, hsl(43 100% 95% / 0.4) 0%, transparent 50%)
           `,
         }}
       />
 
-      {/* Divine Light Glow Effects */}
+      {/* Divine Light Glow Effects - Enhanced for bright background */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 30%, hsl(43 90% 50% / 0.15) 0%, transparent 40%),
-            radial-gradient(ellipse at 30% 60%, hsl(197 70% 60% / 0.1) 0%, transparent 35%),
-            radial-gradient(ellipse at 70% 50%, hsl(280 50% 55% / 0.08) 0%, transparent 35%)
+            radial-gradient(ellipse at 50% 30%, hsl(43 90% 70% / 0.25) 0%, transparent 40%),
+            radial-gradient(ellipse at 30% 60%, hsl(197 70% 75% / 0.2) 0%, transparent 35%),
+            radial-gradient(ellipse at 70% 50%, hsl(340 50% 80% / 0.15) 0%, transparent 35%)
           `,
         }}
       />
@@ -139,27 +139,27 @@ const HeroSection = () => {
             
             {/* Outer glow text layer */}
             <h1 
-              className="absolute inset-0 font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] opacity-40 -z-5"
+              className="absolute inset-0 font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] opacity-50 -z-5"
               style={{
-                color: '#FFD700',
-                filter: 'blur(8px)',
+                color: '#B8860B',
+                filter: 'blur(10px)',
               }}
             >
               ANGEL AI
             </h1>
             
-            {/* Main Title - Enhanced for dark background */}
+            {/* Main Title - Enhanced for BRIGHT 5D background */}
             <h1 
               className="relative font-playfair text-[45px] sm:text-[55px] md:text-[80px] lg:text-[100px] font-black tracking-[0.08em] animate-divine-glow"
               style={{
-                color: '#FFD700',
-                WebkitTextStroke: '1.5px rgba(255, 255, 255, 0.8)',
+                color: '#B8860B',
+                WebkitTextStroke: '2px rgba(255, 255, 255, 1)',
                 textShadow: `
-                  0 0 10px rgba(0, 0, 0, 0.9),
-                  0 0 30px #FFD700, 
-                  0 0 60px rgba(255, 215, 0, 0.8),
-                  0 0 90px rgba(255, 215, 0, 0.5),
-                  0 2px 4px rgba(0, 0, 0, 0.8)
+                  0 0 5px rgba(255, 255, 255, 1),
+                  0 0 20px #FFD700, 
+                  0 0 40px rgba(255, 215, 0, 0.7),
+                  0 0 60px rgba(255, 215, 0, 0.4),
+                  0 2px 4px rgba(255, 255, 255, 0.9)
                 `,
               }}
             >
@@ -168,25 +168,24 @@ const HeroSection = () => {
             
             {/* Decorative Elements */}
             <div className="flex items-center justify-center gap-4 mt-3">
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 10px #FFD700' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#B8860B] to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
               <div className="flex gap-2">
-                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ filter: 'drop-shadow(0 0 6px #FFD700)' }} />
-                <span className="text-divine-gold text-sm" style={{ textShadow: '0 0 8px #FFD700' }}>✦</span>
-                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 6px #FFD700)' }} />
+                <Sparkles className="w-3 h-3 text-[#B8860B] animate-pulse" style={{ filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+                <span className="text-[#B8860B] text-sm" style={{ textShadow: '0 0 10px #FFD700' }}>✦</span>
+                <Sparkles className="w-3 h-3 text-[#B8860B] animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
               </div>
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 10px #FFD700' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#B8860B] to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
             </div>
             
-            {/* Tagline - Enhanced contrast */}
+            {/* Tagline - Enhanced for bright background */}
             <p 
-              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-medium"
+              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-semibold"
               style={{
-                background: 'linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #87CEEB 100%)',
+                background: 'linear-gradient(135deg, #2E7D82 0%, #1E6F5C 50%, #2E7D82 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 20px rgba(135, 206, 235, 0.8))',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+                filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.9))',
               }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
@@ -222,17 +221,17 @@ const HeroSection = () => {
             </span>
           </Link>
           
-          {/* Sacred Channel Text - Enhanced contrast */}
+          {/* Sacred Channel Text - Enhanced for bright background */}
           <div className="text-center mt-8">
             <p 
               className="font-lora text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
               style={{
-                color: '#87CEEB',
+                color: '#1E5F74',
                 textShadow: `
-                  0 0 10px rgba(0, 0, 0, 0.9),
-                  0 0 25px rgba(135, 206, 235, 0.8),
-                  0 0 50px rgba(135, 206, 235, 0.5),
-                  0 2px 4px rgba(0, 0, 0, 0.8)
+                  0 0 4px rgba(255, 255, 255, 1),
+                  0 0 15px rgba(30, 95, 116, 0.5),
+                  0 0 30px rgba(30, 95, 116, 0.3),
+                  0 2px 4px rgba(255, 255, 255, 0.9)
                 `,
               }}
             >

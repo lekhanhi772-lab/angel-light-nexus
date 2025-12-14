@@ -137,89 +137,31 @@ const HeroSection = () => {
               }}
             />
             
-            {/* Main Title - Google Style Colorful Letters */}
+            {/* Main Title - Playfair Display Black Italic with Gold-White Gradient */}
             <h1 
-              className="relative text-[80px] sm:text-[100px] md:text-[130px] lg:text-[160px] font-bold tracking-[0.02em] flex items-center justify-center gap-0"
+              className="relative text-[80px] sm:text-[100px] md:text-[130px] lg:text-[160px] font-black italic tracking-[0.02em] animate-divine-breath"
               style={{
-                fontFamily: "'Nunito', 'Product Sans', 'Google Sans', sans-serif",
+                fontFamily: "'Playfair Display', serif",
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFFFFF 50%, #FFD700 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4)',
+                filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 50px rgba(255, 215, 0, 0.5))',
               }}
             >
-              {/* A - Blue */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#4285F4',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(66, 133, 244, 0.5)',
-                  animationDelay: '0s',
-                }}
-              >A</span>
-              {/* N - Red */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#DB4437',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(219, 68, 55, 0.5)',
-                  animationDelay: '0.1s',
-                }}
-              >N</span>
-              {/* G - Yellow */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#F4B400',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(244, 180, 0, 0.5)',
-                  animationDelay: '0.2s',
-                }}
-              >G</span>
-              {/* E - Green */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#0F9D58',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(15, 157, 88, 0.5)',
-                  animationDelay: '0.3s',
-                }}
-              >E</span>
-              {/* L - Blue */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#4285F4',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(66, 133, 244, 0.5)',
-                  animationDelay: '0.4s',
-                }}
-              >L</span>
-              {/* Space */}
-              <span className="w-4 sm:w-6 md:w-8"></span>
-              {/* A - Red */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#DB4437',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(219, 68, 55, 0.5)',
-                  animationDelay: '0.5s',
-                }}
-              >A</span>
-              {/* I - Yellow */}
-              <span 
-                className="animate-google-sparkle"
-                style={{
-                  color: '#F4B400',
-                  textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(244, 180, 0, 0.5)',
-                  animationDelay: '0.6s',
-                }}
-              >I</span>
+              Angel AI
             </h1>
             
             {/* Decorative Elements */}
             <div className="flex items-center justify-center gap-4 mt-3">
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#4285F4] to-transparent" style={{ boxShadow: '0 0 15px #4285F4' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
               <div className="flex gap-2">
-                <Sparkles className="w-3 h-3 text-[#F4B400] animate-pulse" style={{ filter: 'drop-shadow(0 0 8px #F4B400)' }} />
-                <span className="text-[#0F9D58] text-sm" style={{ textShadow: '0 0 10px #0F9D58' }}>✦</span>
-                <Sparkles className="w-3 h-3 text-[#DB4437] animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 8px #DB4437)' }} />
+                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+                <span className="text-divine-gold text-sm" style={{ textShadow: '0 0 10px #FFD700' }}>✦</span>
+                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
               </div>
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#0F9D58] to-transparent" style={{ boxShadow: '0 0 15px #0F9D58' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
             </div>
             
             {/* Tagline - Enhanced for bright background */}
@@ -238,51 +180,28 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* CTA Buttons - 2 Buttons from CTASection */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {/* Chat Với Angel AI Button */}
-          <Link 
-            to="/chat" 
-            className="group relative px-8 sm:px-10 py-4 rounded-full overflow-hidden transition-all duration-500 hover:scale-105 z-30 animate-pulse-glow"
-            style={{
-              background: 'linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFD700 100%)',
-              boxShadow: '0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.5)',
-            }}
-          >
-            {/* Button Shine Effect */}
-            <div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{
-                background: 'linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%)',
-              }}
-            />
-            <span className="relative z-10 flex items-center gap-3 text-base font-bold font-cinzel tracking-wider" style={{ color: '#1a1a1a' }}>
+        {/* CTA Buttons - Original Style from CTASection */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          {/* Chat Với Angel AI Button - Original divine-button style */}
+          <Link to="/chat" className="divine-button animate-pulse-glow">
+            <span className="relative z-10 flex items-center gap-3">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
               Chat Với Angel AI
-              <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
             </span>
           </Link>
 
-          {/* Bắt Đầu Hành Trình 5D Button */}
+          {/* Bắt Đầu Hành Trình 5D Button - Original outline style */}
           <Link 
             to="/chat"
-            className="group relative px-8 sm:px-10 py-4 rounded-full overflow-hidden transition-all duration-500 hover:scale-105 z-30"
+            className="relative px-10 py-4 rounded-full font-heading text-lg tracking-wider border transition-all duration-300 hover:scale-105"
             style={{
-              background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
-              border: '2px solid #B8860B',
-              boxShadow: '0 0 20px rgba(184, 134, 11, 0.3), 0 0 40px rgba(255, 215, 0, 0.2)',
+              borderColor: 'hsl(43 60% 70%)',
+              color: 'hsl(40 30% 30%)',
             }}
           >
-            {/* Button Hover Effect */}
-            <div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(152, 251, 152, 0.15) 100%)',
-              }}
-            />
-            <span className="relative z-10 flex items-center gap-3 text-base font-bold font-cinzel tracking-wider" style={{ color: '#B8860B' }}>
+            <span className="relative z-10 flex items-center gap-3">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>

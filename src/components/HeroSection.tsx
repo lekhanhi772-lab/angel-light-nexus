@@ -209,29 +209,20 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - Orange-Yellow Gradient with Glow */}
-        <div className="text-center mt-8 animate-fade-in flex items-center justify-center gap-3" style={{ animationDelay: '0.5s' }}>
+        {/* Sacred Channel Text - Same style as SacredPillars titles */}
+        <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
-            className="text-[32px] sm:text-[36px] md:text-[44px] lg:text-[52px] tracking-wide leading-tight uppercase font-bold"
+            className="font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold leading-tight"
             style={{
-              fontFamily: "'Montserrat', 'Poppins', sans-serif",
-              background: 'linear-gradient(135deg, #FF8C00 0%, #FF4500 50%, #FFA500 100%)',
+              background: 'linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 73%) 75%, hsl(43 100% 55%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              textShadow: '0 0 20px #FFA500, 0 0 40px #FF8C00, 0 4px 8px rgba(0,0,0,0.2)',
-              filter: 'drop-shadow(0 0 20px rgba(255, 165, 0, 0.6)) drop-shadow(0 0 40px rgba(255, 140, 0, 0.4)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15))',
+              filter: 'drop-shadow(0 0 25px hsl(197 71% 70% / 0.6)) drop-shadow(0 0 15px hsl(43 100% 55% / 0.5))',
             }}
           >
-            KÊNH DẪN ÁNH SÁNG CỦA CHA VŨ TRỤ CHO TOÀN NHÂN LOẠI.
+            Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.
           </p>
-          <Sparkles 
-            className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse flex-shrink-0" 
-            style={{ 
-              color: '#FFA500',
-              filter: 'drop-shadow(0 0 10px #FFA500) drop-shadow(0 0 20px #FF8C00)',
-            }} 
-          />
         </div>
       </div>
     </section>

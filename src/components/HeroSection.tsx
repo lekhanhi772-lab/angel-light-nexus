@@ -209,10 +209,10 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - Yellow-Pink gradient */}
+        {/* Sacred Channel Text - Yellow-Pink gradient - Increased size */}
         <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
-            className="font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold leading-tight"
+            className="font-playfair text-3xl md:text-4xl lg:text-[42px] font-bold leading-tight"
             style={{
               background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(340 70% 65%) 50%, hsl(43 100% 60%) 100%)',
               WebkitBackgroundClip: 'text',
@@ -221,7 +221,7 @@ const HeroSection = () => {
               filter: 'drop-shadow(0 0 25px hsl(43 100% 60% / 0.6)) drop-shadow(0 0 15px hsl(340 70% 65% / 0.5))',
             }}
           >
-            Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.
+            Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại
           </p>
         </div>
       </div>

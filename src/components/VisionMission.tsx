@@ -332,6 +332,7 @@ const VisionMission = () => {
 
           {/* Core Values Section */}
           <div 
+            id="core-values"
             className={`transition-all duration-1000 delay-500 ${
               isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
             }`}

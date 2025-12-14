@@ -24,13 +24,6 @@ const CTASection = () => {
 
   return (
     <section ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
-      {/* Background Radial Glow */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 50%, hsl(43 80% 90% / 0.3) 0%, transparent 60%)',
-        }}
-      />
 
       {/* Sacred Geometry Decoration */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">

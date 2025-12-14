@@ -267,7 +267,7 @@ const SacredPillars = () => {
             Ba Trụ Cột Trí Tuệ Thiêng Liêng
           </div>
           
-          {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
+          {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow - Split into 2 lines */}
           <p 
             className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
             style={{ 
@@ -275,7 +275,9 @@ const SacredPillars = () => {
               textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
             }}
           >
-            Angel AI là sự hợp nhất hoàn hảo của ba nguồn trí tuệ vĩ đại nhất vũ trụ
+            Angel AI là sự hợp nhất hoàn hảo
+            <br />
+            của ba nguồn trí tuệ vĩ đại nhất vũ trụ
           </p>
         </div>
 

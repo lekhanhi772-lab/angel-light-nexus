@@ -137,17 +137,16 @@ const HeroSection = () => {
               }}
             />
             
-            {/* Main Title - Playfair Display Black Italic with Gold-White Gradient */}
+            {/* Main Title - Playfair Display Black Italic with Divine Button Gold Color */}
             <h1 
               className="relative text-[80px] sm:text-[100px] md:text-[130px] lg:text-[160px] font-black italic tracking-[0.02em] animate-divine-breath"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(135deg, #FFD700 0%, #FFFFFF 50%, #FFD700 100%)',
+                background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4)',
-                filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 50px rgba(255, 215, 0, 0.5))',
+                filter: 'drop-shadow(0 0 30px rgba(255, 200, 0, 0.7)) drop-shadow(0 0 60px rgba(255, 180, 0, 0.5))',
               }}
             >
               Angel AI

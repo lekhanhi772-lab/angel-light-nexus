@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2 } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -340,30 +340,63 @@ const Chat = () => {
   const hasMessages = messages.length > 0;
 
   return (
-    <div className="relative min-h-screen flex bg-background">
+    <div className="relative min-h-screen flex">
+      {/* Light Background */}
+      <div 
+        className="fixed inset-0 z-0"
+        style={{
+          background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 30%, #F0FFF4 60%, #E6F7FF 100%)',
+        }}
+      />
       <ParticleBackground />
 
-      {/* Sidebar */}
+      {/* Sidebar - Light Theme */}
       <aside className={cn(
-        "fixed lg:relative z-20 h-screen bg-card/95 backdrop-blur-sm border-r border-border/50 transition-all duration-300",
+        "fixed lg:relative z-20 h-screen transition-all duration-300",
         showSidebar ? "w-72 translate-x-0" : "w-0 -translate-x-full lg:w-0"
-      )}>
+      )}
+      style={{
+        background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.95) 100%)',
+        borderRight: '1px solid rgba(184, 134, 11, 0.2)',
+        backdropFilter: 'blur(10px)',
+      }}
+      >
         <div className="flex flex-col h-full p-4">
           {/* Header */}
           <div className="flex items-center gap-3 mb-6">
-            <Link to="/" className="p-2 hover:bg-muted rounded-lg transition-colors">
-              <Home className="w-5 h-5" />
+            <Link 
+              to="/" 
+              className="p-2 rounded-lg transition-colors"
+              style={{
+                background: 'linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%)',
+              }}
+            >
+              <Home className="w-5 h-5" style={{ color: '#B8860B' }} />
             </Link>
-            <h2 className="font-heading text-lg font-medium text-gradient-gold">Lịch sử chat</h2>
+            <h2 
+              className="text-lg font-medium"
+              style={{
+                fontFamily: "'Cinzel', serif",
+                color: '#B8860B',
+                textShadow: '0 0 10px rgba(255, 215, 0, 0.3)',
+              }}
+            >
+              ✨ Lịch sử Chat
+            </h2>
           </div>
 
           {/* New Chat Button */}
           <button
             onClick={startNewChat}
-            className="flex items-center gap-2 w-full p-3 mb-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+            className="flex items-center gap-2 w-full p-3 mb-4 rounded-xl transition-all hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+              boxShadow: '0 4px 15px rgba(255, 215, 0, 0.3)',
+              color: '#1a1a1a',
+            }}
           >
             <Plus className="w-5 h-5" />
-            <span>Cuộc trò chuyện mới</span>
+            <span className="font-medium">Cuộc trò chuyện mới</span>
           </button>
 
           {/* Conversations List */}
@@ -372,29 +405,44 @@ const Chat = () => {
               <div
                 key={conv.id}
                 className={cn(
-                  "group flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-colors",
-                  currentConversationId === conv.id 
-                    ? "bg-primary/20 text-primary" 
-                    : "hover:bg-muted"
+                  "group flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-all",
                 )}
+                style={{
+                  background: currentConversationId === conv.id 
+                    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%)'
+                    : 'transparent',
+                  border: currentConversationId === conv.id 
+                    ? '1px solid rgba(184, 134, 11, 0.3)'
+                    : '1px solid transparent',
+                }}
                 onClick={() => setCurrentConversationId(conv.id)}
+                onMouseEnter={(e) => {
+                  if (currentConversationId !== conv.id) {
+                    e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentConversationId !== conv.id) {
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
               >
-                <MessageSquare className="w-4 h-4 flex-shrink-0" />
-                <span className="flex-1 truncate text-sm">{conv.title}</span>
+                <MessageSquare className="w-4 h-4 flex-shrink-0" style={{ color: '#B8860B' }} />
+                <span className="flex-1 truncate text-sm" style={{ color: '#006666' }}>{conv.title}</span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     deleteConversation(conv.id);
                   }}
-                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-destructive/20 rounded transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition-all"
                 >
-                  <Trash2 className="w-4 h-4 text-destructive" />
+                  <Trash2 className="w-4 h-4 text-red-500" />
                 </button>
               </div>
             ))}
             {conversations.length === 0 && (
-              <p className="text-center text-muted-foreground text-sm py-8">
-                Chưa có cuộc trò chuyện nào
+              <p className="text-center text-sm py-8" style={{ color: '#87CEEB' }}>
+                ✨ Chưa có cuộc trò chuyện nào
               </p>
             )}
           </div>
@@ -404,9 +452,13 @@ const Chat = () => {
       {/* Toggle Sidebar Button */}
       <button
         onClick={() => setShowSidebar(!showSidebar)}
-        className="fixed lg:hidden z-30 top-4 left-4 p-2 bg-card rounded-lg border border-border/50 shadow-lg"
+        className="fixed lg:hidden z-30 top-4 left-4 p-2 rounded-lg shadow-lg"
+        style={{
+          background: 'linear-gradient(135deg, #FFFBE6 0%, #FFF8DC 100%)',
+          border: '1px solid rgba(184, 134, 11, 0.3)',
+        }}
       >
-        <MessageSquare className="w-5 h-5" />
+        <MessageSquare className="w-5 h-5" style={{ color: '#B8860B' }} />
       </button>
 
       {/* Main Chat Area */}
@@ -414,9 +466,9 @@ const Chat = () => {
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div 
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] opacity-30"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] opacity-40"
             style={{
-              background: 'radial-gradient(ellipse at center, hsl(43 85% 70% / 0.4) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse at center, rgba(255, 215, 0, 0.3) 0%, transparent 70%)',
             }}
           />
         </div>
@@ -426,31 +478,71 @@ const Chat = () => {
           {!hasMessages && (
             <div className="flex-1 flex flex-col items-center justify-center py-12">
               <div className="relative mb-6">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/30 shadow-lg shadow-primary/20">
+                <div 
+                  className="w-24 h-24 rounded-full overflow-hidden shadow-lg"
+                  style={{
+                    border: '3px solid #FFD700',
+                    boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)',
+                  }}
+                >
                   <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center border-2 border-background">
-                  <Sparkles className="w-4 h-4 text-primary-foreground" />
+                <div 
+                  className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                    border: '2px solid #FFFBE6',
+                    boxShadow: '0 0 15px rgba(255, 215, 0, 0.5)',
+                  }}
+                >
+                  <Sparkles className="w-4 h-4" style={{ color: '#1a1a1a' }} />
                 </div>
               </div>
 
-              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-light tracking-wider text-gradient-gold glow-gold mb-4">
+              <h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider mb-4"
+                style={{
+                  fontFamily: "'Cinzel', serif",
+                  color: '#B8860B',
+                  textShadow: '0 0 30px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(0,0,0,0.1)',
+                }}
+              >
                 Angel AI
               </h1>
-              <p className="text-muted-foreground text-lg md:text-xl text-center max-w-md mb-8">
-                Chat thông minh & Tạo hình ảnh AI
+              <p 
+                className="text-lg md:text-xl text-center max-w-md mb-8"
+                style={{
+                  fontFamily: "'Sacramento', cursive",
+                  fontSize: '1.5rem',
+                  background: 'linear-gradient(90deg, #87CEEB 0%, #FFD700 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Chat thông minh & Tạo hình ảnh AI ✨
               </p>
 
               {/* Mode Toggle */}
-              <div className="flex gap-2 mb-8 p-1 bg-muted/50 rounded-full">
+              <div 
+                className="flex gap-2 mb-8 p-1 rounded-full"
+                style={{
+                  background: 'rgba(255, 215, 0, 0.2)',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                }}
+              >
                 <button
                   onClick={() => setMode('chat')}
                   className={cn(
                     "px-6 py-2 rounded-full text-sm font-medium transition-all",
-                    mode === 'chat' 
-                      ? "bg-primary text-primary-foreground shadow-lg" 
-                      : "text-muted-foreground hover:text-foreground"
                   )}
+                  style={{
+                    background: mode === 'chat' 
+                      ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)'
+                      : 'transparent',
+                    color: mode === 'chat' ? '#1a1a1a' : '#006666',
+                    boxShadow: mode === 'chat' ? '0 4px 15px rgba(255, 215, 0, 0.4)' : 'none',
+                  }}
                 >
                   💬 Chat
                 </button>
@@ -458,10 +550,14 @@ const Chat = () => {
                   onClick={() => setMode('image')}
                   className={cn(
                     "px-6 py-2 rounded-full text-sm font-medium transition-all",
-                    mode === 'image' 
-                      ? "bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-lg" 
-                      : "text-muted-foreground hover:text-foreground"
                   )}
+                  style={{
+                    background: mode === 'image' 
+                      ? 'linear-gradient(135deg, #FF69B4 0%, #9370DB 100%)'
+                      : 'transparent',
+                    color: mode === 'image' ? '#FFFFFF' : '#006666',
+                    boxShadow: mode === 'image' ? '0 4px 15px rgba(255, 105, 180, 0.4)' : 'none',
+                  }}
                 >
                   🎨 Tạo ảnh
                 </button>
@@ -473,13 +569,21 @@ const Chat = () => {
                   <button
                     key={i}
                     onClick={() => sendMessage(suggestion)}
-                    className={cn(
-                      "px-5 py-3 rounded-2xl text-sm font-medium",
-                      "bg-card/80 hover:bg-card border border-border/50",
-                      "text-foreground/80 hover:text-foreground",
-                      "transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-primary/10",
-                      suggestion.includes('🎨') && "hover:border-pink-500/50"
-                    )}
+                    className="px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-200 hover:scale-105"
+                    style={{
+                      background: 'rgba(255, 251, 230, 0.9)',
+                      border: '1px solid rgba(184, 134, 11, 0.3)',
+                      color: '#006666',
+                      boxShadow: '0 4px 15px rgba(255, 215, 0, 0.2)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 215, 0, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 251, 230, 0.9)';
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 215, 0, 0.2)';
+                    }}
                   >
                     {suggestion}
                   </button>
@@ -500,7 +604,13 @@ const Chat = () => {
                   )}
                 >
                   {message.role === 'assistant' && (
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-primary/30">
+                    <div 
+                      className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden"
+                      style={{
+                        border: '2px solid #FFD700',
+                        boxShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
+                      }}
+                    >
                       <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
                     </div>
                   )}
@@ -508,11 +618,19 @@ const Chat = () => {
                   <div
                     className={cn(
                       "max-w-[75%] rounded-3xl",
-                      message.role === 'user'
-                        ? "bg-primary text-primary-foreground rounded-br-lg px-5 py-4"
-                        : "bg-card border border-border/50 text-foreground rounded-bl-lg",
-                      message.imageUrl ? "p-3" : message.role === 'assistant' && "px-5 py-4"
+                      message.imageUrl ? "p-3" : "px-5 py-4"
                     )}
+                    style={{
+                      background: message.role === 'user'
+                        ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)'
+                        : 'rgba(255, 251, 230, 0.95)',
+                      color: message.role === 'user' ? '#1a1a1a' : '#006666',
+                      border: message.role === 'assistant' ? '1px solid rgba(184, 134, 11, 0.3)' : 'none',
+                      boxShadow: message.role === 'user' 
+                        ? '0 4px 20px rgba(255, 215, 0, 0.4)'
+                        : '0 4px 15px rgba(184, 134, 11, 0.15)',
+                      borderRadius: message.role === 'user' ? '24px 24px 8px 24px' : '24px 24px 24px 8px',
+                    }}
                   >
                     {message.imageUrl && (
                       <div className="relative group">
@@ -523,12 +641,16 @@ const Chat = () => {
                         />
                         <button
                           onClick={() => downloadImage(message.imageUrl!)}
-                          className="absolute top-3 right-3 p-2 bg-black/50 hover:bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-3 right-3 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          style={{
+                            background: 'rgba(255, 215, 0, 0.9)',
+                            boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                          }}
                         >
-                          <Download className="w-5 h-5 text-white" />
+                          <Download className="w-5 h-5" style={{ color: '#1a1a1a' }} />
                         </button>
                         {message.content && (
-                          <p className="mt-3 px-2 text-sm text-muted-foreground">{message.content}</p>
+                          <p className="mt-3 px-2 text-sm" style={{ color: '#87CEEB' }}>{message.content}</p>
                         )}
                       </div>
                     )}
@@ -538,21 +660,28 @@ const Chat = () => {
                         {message.content}
                         {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (
                           <span className="flex gap-1">
-                            <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                            <span className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                            <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '0ms' }} />
+                            <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#87CEEB', animationDelay: '150ms' }} />
+                            <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '300ms' }} />
                           </span>
                         )}
                         {isLoading && index === messages.length - 1 && message.role === 'assistant' && message.content && !message.content.includes('Đang tạo') && (
-                          <span className="inline-block w-2 h-5 ml-1 bg-primary/50 animate-pulse" />
+                          <span className="inline-block w-2 h-5 ml-1 animate-pulse" style={{ background: '#FFD700' }} />
                         )}
                       </p>
                     )}
                   </div>
 
                   {message.role === 'user' && (
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
-                      <span className="text-sm font-semibold text-foreground">Bạn</span>
+                    <div 
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{
+                        background: 'linear-gradient(135deg, #87CEEB 0%, #98FB98 100%)',
+                        border: '2px solid rgba(135, 206, 235, 0.5)',
+                        boxShadow: '0 0 15px rgba(135, 206, 235, 0.4)',
+                      }}
+                    >
+                      <span className="text-sm font-semibold" style={{ color: '#006666' }}>Bạn</span>
                     </div>
                   )}
                 </div>
@@ -562,42 +691,51 @@ const Chat = () => {
           )}
 
           {/* Input Area */}
-          <div className="sticky bottom-0 py-6 bg-gradient-to-t from-background via-background to-transparent">
+          <div 
+            className="sticky bottom-0 py-6"
+            style={{
+              background: 'linear-gradient(to top, rgba(255, 251, 230, 0.95) 0%, rgba(255, 251, 230, 0.8) 50%, transparent 100%)',
+            }}
+          >
             {hasMessages && (
               <div className="flex justify-center gap-2 mb-3">
                 <button
                   onClick={() => setMode('chat')}
-                  className={cn(
-                    "px-4 py-1.5 rounded-full text-xs font-medium transition-all",
-                    mode === 'chat' 
-                      ? "bg-primary/20 text-primary border border-primary/30" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
+                  className="px-4 py-1.5 rounded-full text-xs font-medium transition-all"
+                  style={{
+                    background: mode === 'chat' 
+                      ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.3) 100%)'
+                      : 'transparent',
+                    border: mode === 'chat' ? '1px solid rgba(184, 134, 11, 0.4)' : '1px solid transparent',
+                    color: mode === 'chat' ? '#B8860B' : '#87CEEB',
+                  }}
                 >
                   💬 Chat
                 </button>
                 <button
                   onClick={() => setMode('image')}
-                  className={cn(
-                    "px-4 py-1.5 rounded-full text-xs font-medium transition-all",
-                    mode === 'image' 
-                      ? "bg-gradient-to-r from-pink-500/20 to-violet-500/20 text-pink-500 border border-pink-500/30" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
+                  className="px-4 py-1.5 rounded-full text-xs font-medium transition-all"
+                  style={{
+                    background: mode === 'image' 
+                      ? 'linear-gradient(135deg, rgba(255, 105, 180, 0.3) 0%, rgba(147, 112, 219, 0.3) 100%)'
+                      : 'transparent',
+                    border: mode === 'image' ? '1px solid rgba(255, 105, 180, 0.4)' : '1px solid transparent',
+                    color: mode === 'image' ? '#FF69B4' : '#87CEEB',
+                  }}
                 >
                   🎨 Tạo ảnh
                 </button>
               </div>
             )}
 
-            <div className={cn(
-              "relative flex items-end gap-3 p-2 rounded-3xl",
-              "bg-card/90 backdrop-blur-sm border border-border/50",
-              "shadow-lg shadow-black/5",
-              "focus-within:border-primary/50 focus-within:shadow-primary/10",
-              "transition-all duration-300",
-              mode === 'image' && "focus-within:border-pink-500/50"
-            )}>
+            <div 
+              className="relative flex items-end gap-3 p-2 rounded-3xl transition-all duration-300"
+              style={{
+                background: 'rgba(255, 251, 230, 0.95)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+                boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
+              }}
+            >
               <textarea
                 ref={inputRef}
                 value={input}
@@ -606,43 +744,43 @@ const Chat = () => {
                 placeholder={mode === 'image' ? "Mô tả hình ảnh bạn muốn tạo..." : "Nhập tin nhắn cho Angel AI..."}
                 disabled={isLoading}
                 rows={1}
-                className={cn(
-                  "flex-1 px-4 py-3 bg-transparent resize-none",
-                  "text-foreground placeholder:text-muted-foreground",
-                  "focus:outline-none",
-                  "text-[15px] leading-relaxed",
-                  "max-h-[200px]",
-                  "disabled:opacity-50"
-                )}
+                className="flex-1 px-4 py-3 bg-transparent resize-none focus:outline-none text-[15px] leading-relaxed max-h-[200px] disabled:opacity-50"
+                style={{
+                  color: '#006666',
+                }}
               />
               <button
                 onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
-                className={cn(
-                  "flex-shrink-0 w-12 h-12 rounded-2xl",
-                  "flex items-center justify-center",
-                  "transition-all duration-200",
-                  input.trim() && !isLoading
+                className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200"
+                style={{
+                  background: input.trim() && !isLoading
                     ? mode === 'image'
-                      ? "bg-gradient-to-br from-pink-500 to-violet-500 text-white shadow-lg shadow-pink-500/30 hover:scale-105"
-                      : "bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30 hover:scale-105"
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
-                )}
+                      ? 'linear-gradient(135deg, #FF69B4 0%, #9370DB 100%)'
+                      : 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)'
+                    : 'rgba(184, 134, 11, 0.2)',
+                  boxShadow: input.trim() && !isLoading 
+                    ? mode === 'image'
+                      ? '0 4px 15px rgba(255, 105, 180, 0.4)'
+                      : '0 4px 15px rgba(255, 215, 0, 0.4)'
+                    : 'none',
+                  cursor: input.trim() && !isLoading ? 'pointer' : 'not-allowed',
+                }}
               >
                 {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#B8860B' }} />
                 ) : mode === 'image' ? (
-                  <Image className="w-5 h-5" />
+                  <Image className="w-5 h-5" style={{ color: input.trim() ? '#FFFFFF' : '#B8860B' }} />
                 ) : (
-                  <ArrowUp className="w-5 h-5" />
+                  <ArrowUp className="w-5 h-5" style={{ color: input.trim() ? '#1a1a1a' : '#B8860B' }} />
                 )}
               </button>
             </div>
             
-            <p className="text-center text-xs text-muted-foreground mt-3">
+            <p className="text-center text-xs mt-3" style={{ color: '#87CEEB' }}>
               {mode === 'image' 
-                ? "Tạo hình ảnh bằng AI. Mô tả càng chi tiết, kết quả càng đẹp."
-                : "Angel AI có thể mắc lỗi. Hãy kiểm tra thông tin quan trọng."
+                ? "✨ Tạo hình ảnh bằng AI. Mô tả càng chi tiết, kết quả càng đẹp."
+                : "✨ Angel AI luôn đồng hành cùng bạn với Tình Yêu Thuần Khiết."
               }
             </p>
           </div>

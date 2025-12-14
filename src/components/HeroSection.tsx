@@ -238,12 +238,12 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="flex flex-col items-center gap-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {/* CTA Button - Divine Golden Design */}
-          <Link
-            to="/chat"
-            className="group relative px-8 py-4 rounded-full overflow-hidden transition-all duration-500 hover:scale-110 z-30"
+        {/* CTA Buttons - 2 Buttons from CTASection */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          {/* Chat Với Angel AI Button */}
+          <Link 
+            to="/chat" 
+            className="group relative px-8 sm:px-10 py-4 rounded-full overflow-hidden transition-all duration-500 hover:scale-105 z-30 animate-pulse-glow"
             style={{
               background: 'linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FFD700 100%)',
               boxShadow: '0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.5)',
@@ -256,33 +256,57 @@ const HeroSection = () => {
                 background: 'linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%)',
               }}
             />
-            
-            <span className="relative flex items-center gap-3 text-base font-bold font-cinzel tracking-wider"
-              style={{ color: '#1a1a1a' }}
-            >
-              <MessageCircle className="w-5 h-5" />
-              Chat với Angel AI
+            <span className="relative z-10 flex items-center gap-3 text-base font-bold font-cinzel tracking-wider" style={{ color: '#1a1a1a' }}>
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Chat Với Angel AI
               <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
             </span>
           </Link>
-          
-          {/* Sacred Channel Text - Enhanced for bright background */}
-          <div className="text-center mt-8">
-            <p 
-              className="font-lora text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
+
+          {/* Bắt Đầu Hành Trình 5D Button */}
+          <Link 
+            to="/chat"
+            className="group relative px-8 sm:px-10 py-4 rounded-full overflow-hidden transition-all duration-500 hover:scale-105 z-30"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+              border: '2px solid #B8860B',
+              boxShadow: '0 0 20px rgba(184, 134, 11, 0.3), 0 0 40px rgba(255, 215, 0, 0.2)',
+            }}
+          >
+            {/* Button Hover Effect */}
+            <div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               style={{
-                color: '#1E5F74',
-                textShadow: `
-                  0 0 4px rgba(255, 255, 255, 1),
-                  0 0 15px rgba(30, 95, 116, 0.5),
-                  0 0 30px rgba(30, 95, 116, 0.3),
-                  0 2px 4px rgba(255, 255, 255, 0.9)
-                `,
+                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(152, 251, 152, 0.15) 100%)',
               }}
-            >
-              Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.
-            </p>
-          </div>
+            />
+            <span className="relative z-10 flex items-center gap-3 text-base font-bold font-cinzel tracking-wider" style={{ color: '#B8860B' }}>
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Bắt Đầu Hành Trình 5D
+            </span>
+          </Link>
+        </div>
+
+        {/* Sacred Channel Text - Enhanced for bright background */}
+        <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          <p 
+            className="font-lora text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] tracking-wide leading-tight"
+            style={{
+              color: '#1E5F74',
+              textShadow: `
+                0 0 4px rgba(255, 255, 255, 1),
+                0 0 15px rgba(30, 95, 116, 0.5),
+                0 0 30px rgba(30, 95, 116, 0.3),
+                0 2px 4px rgba(255, 255, 255, 0.9)
+              `,
+            }}
+          >
+            Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại.
+          </p>
         </div>
       </div>
     </section>

@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Chat from "./pages/Chat";
 import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
+import DivineSidebar from "./components/DivineSidebar";
 
 const queryClient = new QueryClient();
 
@@ -16,13 +17,16 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/tai-lieu" element={<Documents />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <DivineSidebar />
+        <div className="md:ml-[280px] ml-[70px] transition-all duration-300">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/tai-lieu" element={<Documents />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -217,9 +217,11 @@ const DivineSidebar = () => {
           "flex flex-col py-6"
         )}
         style={{
+          position: 'fixed',
           background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
           boxShadow: '4px 0 20px rgba(255, 215, 0, 0.3), 2px 0 10px rgba(255, 215, 0, 0.2)',
           borderRight: '2px solid rgba(255, 215, 0, 0.4)',
+          overflowY: 'auto',
         }}
       >
         {/* Toggle button for mobile */}

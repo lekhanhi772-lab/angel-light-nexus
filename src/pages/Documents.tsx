@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useIsAdmin } from '@/hooks/useIsAdmin';
+
 import {
   Select,
   SelectContent,
@@ -77,7 +77,6 @@ const DocumentsPage = () => {
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   
   const { toast } = useToast();
-  const { isAdmin, loading: adminLoading } = useIsAdmin();
 
   // Download function
   const handleDownload = async (doc: Document) => {
@@ -752,21 +751,19 @@ const DocumentsPage = () => {
                 >
                   ✨ Thư Mục Ánh Sáng
                 </h3>
-                {isAdmin && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    style={{ color: '#B8860B' }}
-                    onClick={() => setIsCreatingFolder(true)}
-                  >
-                    <FolderPlus className="w-4 h-4" />
-                  </Button>
-                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  style={{ color: '#B8860B' }}
+                  onClick={() => setIsCreatingFolder(true)}
+                >
+                  <FolderPlus className="w-4 h-4" />
+                </Button>
               </div>
 
               {/* New Folder Form */}
-              {isAdmin && isCreatingFolder && (
+              {isCreatingFolder && (
                 <div 
                   className={`mb-4 p-3 rounded-lg ${showNewFolderEffect ? 'animate-pulse' : ''}`}
                   style={{
@@ -898,36 +895,34 @@ const DocumentsPage = () => {
                           <span className="text-xs opacity-70 font-poppins">{docCount}</span>
                         </button>
                         
-                        {/* Edit/Delete buttons - Admin only */}
-                        {isAdmin && (
-                          <div className="hidden group-hover:flex items-center gap-1">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6"
-                              style={{ color: '#B8860B' }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingFolder(folder);
-                                setEditFolderName(folder.name);
-                              }}
-                            >
-                              <Edit3 className="w-3 h-3" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 hover:bg-red-100"
-                              style={{ color: '#DC2626' }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeletingFolder(folder);
-                              }}
-                            >
-                              <FolderX className="w-3 h-3" />
-                            </Button>
-                          </div>
-                        )}
+                        {/* Edit/Delete buttons */}
+                        <div className="hidden group-hover:flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            style={{ color: '#B8860B' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingFolder(folder);
+                              setEditFolderName(folder.name);
+                            }}
+                          >
+                            <Edit3 className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 hover:bg-red-100"
+                            style={{ color: '#DC2626' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeletingFolder(folder);
+                            }}
+                          >
+                            <FolderX className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -951,9 +946,8 @@ const DocumentsPage = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Upload Section - Admin only */}
-            {isAdmin && (
-              <div 
+            {/* Upload Section */}
+            <div
                 className="mb-6 p-6 rounded-2xl backdrop-blur-md shadow-lg"
                 style={{
                   background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
@@ -1055,10 +1049,9 @@ const DocumentsPage = () => {
                   </label>
                 </div>
               </div>
-            )}
 
-            {/* Bulk Actions Bar - Admin only */}
-            {isAdmin && selectedDocIds.size > 0 && (
+            {/* Bulk Actions Bar */}
+            {selectedDocIds.size > 0 && (
               <div 
                 className="mb-4 p-4 rounded-xl flex items-center justify-between"
                 style={{
@@ -1155,8 +1148,8 @@ const DocumentsPage = () => {
                   }
                 </h3>
                 
-                {/* Select All Checkbox - Admin only */}
-                {isAdmin && displayedDocuments.length > 0 && (
+                {/* Select All Checkbox */}
+                {displayedDocuments.length > 0 && (
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="select-all"
@@ -1233,15 +1226,13 @@ const DocumentsPage = () => {
 
                         <div className="flex items-start justify-between gap-4 relative z-10">
                           <div className="flex items-start gap-3 flex-1 min-w-0">
-                            {/* Checkbox - Admin only */}
-                            {isAdmin && (
-                              <Checkbox
-                                checked={isSelected}
-                                onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
-                                className="mt-3"
-                                style={{ borderColor: '#B8860B' }}
-                              />
-                            )}
+                            {/* Checkbox */}
+                            <Checkbox
+                              checked={isSelected}
+                              onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
+                              className="mt-3"
+                              style={{ borderColor: '#B8860B' }}
+                            />
 
                             {/* Sequential Number Badge */}
                             <div 
@@ -1302,34 +1293,29 @@ const DocumentsPage = () => {
                               <Download className="w-4 h-4" />
                             </Button>
                             
-                            {/* Admin-only buttons */}
-                            {isAdmin && (
-                              <>
-                                {/* Update folder button */}
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    setUpdatingDocFolder(doc);
-                                    setNewDocFolderId(doc.folder_id || 'none');
-                                  }}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                  style={{ color: '#B8860B' }}
-                                  title="Cập nhật thư mục"
-                                >
-                                  <FolderInput className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleDelete(doc)}
-                                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                  title="Xóa"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </>
-                            )}
+                            {/* Update folder button */}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                setUpdatingDocFolder(doc);
+                                setNewDocFolderId(doc.folder_id || 'none');
+                              }}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              style={{ color: '#B8860B' }}
+                              title="Cập nhật thư mục"
+                            >
+                              <FolderInput className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(doc)}
+                              className="text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Xóa"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </div>
                         </div>
                       </div>

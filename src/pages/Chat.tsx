@@ -58,8 +58,10 @@ const Chat = () => {
   // Load conversations only if user is logged in
   useEffect(() => {
     if (!authLoading && user) {
+      console.log('[chat] auth ready, user:', user.id);
       loadConversations();
     } else if (!authLoading && !user) {
+      console.log('[chat] guest mode (no user)');
       // Guest mode - clear conversations
       setConversations([]);
       setCurrentConversationId(null);
@@ -70,9 +72,8 @@ const Chat = () => {
   // Load messages when conversation changes
   useEffect(() => {
     if (currentConversationId && user) {
+      console.log('[chat] loading messages for conversation:', currentConversationId);
       loadMessages(currentConversationId);
-    } else if (!user) {
-      // Guest mode - don't load from DB
     }
   }, [currentConversationId, user]);
 
@@ -93,17 +94,24 @@ const Chat = () => {
 
   const loadConversations = async () => {
     if (!user) return;
-    
+
+    // Debug: ensure we truly have a session/JWT when hitting RLS-protected tables
+    const { data: sessionData } = await supabase.auth.getSession();
+    console.log('[chat] loadConversations user:', user.id, 'sessionUser:', sessionData.session?.user?.id);
+
     const { data, error } = await supabase
       .from('conversations')
       .select('*')
       .eq('user_id', user.id)
       .order('updated_at', { ascending: false });
-    
+
     if (error) {
-      console.error('Error loading conversations:', error);
+      console.error('[chat] Error loading conversations:', error);
+      toast.error(`Không tải được lịch sử chat: ${error.message}`);
       return;
     }
+
+    console.log('[chat] conversations loaded:', data?.length ?? 0);
     setConversations(data || []);
   };
 
@@ -113,17 +121,21 @@ const Chat = () => {
       .select('*')
       .eq('conversation_id', conversationId)
       .order('created_at', { ascending: true });
-    
+
     if (error) {
-      console.error('Error loading messages:', error);
+      console.error('[chat] Error loading messages:', error);
+      toast.error(`Không tải được tin nhắn: ${error.message}`);
       return;
     }
-    setMessages(data?.map(m => ({
-      id: m.id,
-      role: m.role as 'user' | 'assistant',
-      content: m.content,
-      imageUrl: m.image_url || undefined
-    })) || []);
+
+    setMessages(
+      data?.map((m) => ({
+        id: m.id,
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+        imageUrl: m.image_url || undefined,
+      })) || []
+    );
   };
 
   const createNewConversation = async (firstMessage: string): Promise<string | null> => {
@@ -156,25 +168,29 @@ const Chat = () => {
 
   const saveMessage = async (conversationId: string | null, message: Message) => {
     if (!conversationId || !user) return; // Guest mode - no save
-    
-    const { error } = await supabase
-      .from('chat_messages')
-      .insert({
-        conversation_id: conversationId,
-        role: message.role,
-        content: message.content,
-        image_url: message.imageUrl || null
-      });
-    
+
+    const { error } = await supabase.from('chat_messages').insert({
+      conversation_id: conversationId,
+      role: message.role,
+      content: message.content,
+      image_url: message.imageUrl || null,
+    });
+
     if (error) {
-      console.error('Error saving message:', error);
+      console.error('[chat] Error saving message:', error);
+      toast.error(`Không thể lưu tin nhắn: ${error.message}`);
+      return;
     }
 
     // Update conversation timestamp
-    await supabase
+    const { error: updateError } = await supabase
       .from('conversations')
       .update({ updated_at: new Date().toISOString() })
       .eq('id', conversationId);
+
+    if (updateError) {
+      console.error('[chat] Error updating conversation timestamp:', updateError);
+    }
   };
 
   const saveGeneratedImage = async (conversationId: string | null, prompt: string, imageUrl: string) => {

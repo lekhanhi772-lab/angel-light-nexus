@@ -372,31 +372,36 @@ const DivineSidebar = () => {
             <div className="flex items-center justify-center py-3">
               <div className="w-5 h-5 border-2 border-[#FFD700] border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : user && profile ? (
+          ) : user ? (
             // Logged in state - show user info
             <div className="space-y-3">
               <div className="flex items-center gap-3 p-2 rounded-xl bg-[#FFFACD]/50">
-                {profile.avatar_url ? (
-                  <img 
-                    src={profile.avatar_url} 
-                    alt={profile.display_name || 'User'} 
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={profile.display_name || profile.email || user.email || 'User'}
                     className="w-10 h-10 rounded-full border-2 border-[#FFD700]"
                     style={{ boxShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}
+                    loading="lazy"
                   />
                 ) : (
-                  <div 
+                  <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
                     style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' }}
                   >
-                    {(profile.display_name || profile.email || 'U').charAt(0).toUpperCase()}
+                    {(
+                      (profile?.display_name || profile?.email || user.email || 'U')
+                        .charAt(0)
+                        .toUpperCase()
+                    )}
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#5C4033] truncate">
-                    {profile.display_name || profile.email?.split('@')[0] || 'Người dùng'}
+                    {profile?.display_name || profile?.email?.split('@')[0] || user.email?.split('@')[0] || 'Người dùng'}
                   </p>
                   <p className="text-xs text-[#8B7355]/70 truncate">
-                    {profile.email}
+                    {profile?.email || user.email}
                   </p>
                 </div>
               </div>

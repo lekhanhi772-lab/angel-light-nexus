@@ -18,28 +18,28 @@ export const useAuth = () => {
 
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Defer profile fetch with setTimeout to prevent deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            fetchProfile(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      // Defer profile fetch with setTimeout to prevent deadlock
+      if (session?.user) {
+        setTimeout(() => {
+          fetchProfile(session.user);
+        }, 0);
+      } else {
+        setProfile(null);
       }
-    );
+    });
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfile(session.user);
       }
       setLoading(false);
     });
@@ -47,16 +47,49 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (authUser: User) => {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', authUser.id)
       .single();
-    
+
+    // If profile exists, use it
     if (!error && data) {
       setProfile(data);
+      return;
     }
+
+    // If no profile row yet, create it so UI can show logged-in state reliably
+    // (Many new users won't have a profiles row initially.)
+    const noRow = (error as any)?.code === 'PGRST116';
+    if (noRow) {
+      const display_name =
+        (authUser.user_metadata as any)?.full_name ??
+        (authUser.user_metadata as any)?.name ??
+        null;
+      const avatar_url = (authUser.user_metadata as any)?.avatar_url ?? null;
+      const email = authUser.email ?? null;
+
+      const { data: created, error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: authUser.id,
+          display_name,
+          avatar_url,
+          email,
+        })
+        .select('*')
+        .single();
+
+      if (!insertError && created) {
+        setProfile(created);
+        return;
+      }
+    }
+
+    // Fallback: allow app to still treat user as logged in even if profile fetch/create fails
+    setProfile(null);
   };
 
   const signInWithGoogle = async () => {

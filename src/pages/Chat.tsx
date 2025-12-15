@@ -416,19 +416,21 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Sidebar - Light Theme - Fixed Position */}
-      <aside className={cn(
-        "fixed left-0 top-0 z-30 h-screen transition-all duration-300",
-        showSidebar ? "w-72" : "w-0"
-      )}
-      style={{
-        background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
-        borderRight: showSidebar ? '1px solid rgba(184, 134, 11, 0.2)' : 'none',
-        backdropFilter: 'blur(10px)',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        visibility: showSidebar ? 'visible' : 'hidden',
-      }}
+      {/* Sidebar - Light Theme - Fixed Position (offset to the right of DivineSidebar) */}
+      <aside
+        className={cn(
+          "fixed top-0 z-40 h-screen transition-all duration-300 left-[70px] md:left-[280px]",
+          showSidebar ? "w-72" : "w-0"
+        )}
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
+          borderRight: showSidebar ? '1px solid rgba(184, 134, 11, 0.2)' : 'none',
+          backdropFilter: 'blur(10px)',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          visibility: showSidebar ? 'visible' : 'hidden',
+        }}
       >
         <div className="flex flex-col h-full p-4">
           {/* Header - Sticky */}
@@ -557,12 +559,15 @@ const Chat = () => {
         </div>
       </aside>
 
-      {/* Toggle Sidebar Button - Always visible */}
+      {/* Toggle Sidebar Button - Always visible (offset to the right of DivineSidebar) */}
       <button
         onClick={() => setShowSidebar(!showSidebar)}
-        className="fixed z-30 top-4 p-2 rounded-lg shadow-lg transition-all"
+        className={cn(
+          "fixed z-40 top-4 p-2 rounded-lg shadow-lg transition-all",
+          "left-[calc(1rem+70px)] md:left-[calc(1rem+280px)]"
+        )}
         style={{
-          left: showSidebar ? '19rem' : '1rem',
+          transform: showSidebar ? 'translateX(18rem)' : 'translateX(0)',
           background: 'linear-gradient(135deg, #FFFBE6 0%, #FFF8DC 100%)',
           border: '1px solid rgba(184, 134, 11, 0.3)',
         }}

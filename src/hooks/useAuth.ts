@@ -93,14 +93,8 @@ export const useAuth = () => {
   };
 
   const signInWithGoogle = async () => {
-    // Force OAuth to always return to the public domain (prevents Lovable preview redirects)
-    const PUBLIC_ORIGIN = 'https://angel-light-nexus.lovable.app';
-    const redirectOrigin =
-      window.location.hostname === 'angel-light-nexus.lovable.app'
-        ? window.location.origin
-        : PUBLIC_ORIGIN;
-
-    const redirectUrl = `${redirectOrigin}/`;
+    // Use the current origin so auth works in preview + production domains
+    const redirectUrl = `${window.location.origin}/`;
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',

@@ -134,6 +134,8 @@ const Chat = () => {
     
     const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? '...' : '');
     
+    console.log('Creating conversation for user:', user.id, 'with title:', title);
+    
     const { data, error } = await supabase
       .from('conversations')
       .insert({ title, user_id: user.id })
@@ -142,9 +144,11 @@ const Chat = () => {
     
     if (error) {
       console.error('Error creating conversation:', error);
-      throw error;
+      toast.error('Không thể tạo cuộc trò chuyện: ' + error.message);
+      return null;
     }
     
+    console.log('Conversation created:', data);
     setConversations(prev => [data, ...prev]);
     setCurrentConversationId(data.id);
     return data.id;
@@ -312,15 +316,23 @@ const Chat = () => {
     setIsLoading(true);
 
     try {
+      // Add message to UI immediately
+      setMessages(prev => [...prev, userMessage]);
+      
       // Create or get conversation (null for guests)
       let convId = currentConversationId;
       if (!convId && user) {
         convId = await createNewConversation(messageText);
+        if (!convId) {
+          // Failed to create conversation, continue in guest mode
+          console.warn('Failed to create conversation, continuing in guest mode');
+        }
       }
 
-      // Save user message (only if logged in)
-      await saveMessage(convId, userMessage);
-      setMessages(prev => [...prev, userMessage]);
+      // Save user message (only if logged in and have conversation)
+      if (convId) {
+        await saveMessage(convId, userMessage);
+      }
 
       if (shouldGenerateImage) {
         setMessages(prev => [...prev, { 
@@ -342,8 +354,10 @@ const Chat = () => {
           return updated;
         });
 
-        await saveMessage(convId, assistantMessage);
-        await saveGeneratedImage(convId, messageText, result.imageUrl);
+        if (convId) {
+          await saveMessage(convId, assistantMessage);
+          await saveGeneratedImage(convId, messageText, result.imageUrl);
+        }
       } else {
         await sendChatMessage([...messages, userMessage], convId);
       }
@@ -388,15 +402,16 @@ const Chat = () => {
 
       {/* Sidebar - Light Theme - Fixed Position */}
       <aside className={cn(
-        "fixed left-0 top-0 z-20 h-screen transition-all duration-300",
-        showSidebar ? "w-72 translate-x-0" : "w-0 -translate-x-full"
+        "fixed left-0 top-0 z-30 h-screen transition-all duration-300",
+        showSidebar ? "w-72" : "w-0"
       )}
       style={{
-        position: 'fixed',
         background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
-        borderRight: '1px solid rgba(184, 134, 11, 0.2)',
+        borderRight: showSidebar ? '1px solid rgba(184, 134, 11, 0.2)' : 'none',
         backdropFilter: 'blur(10px)',
         overflowY: 'auto',
+        overflowX: 'hidden',
+        visibility: showSidebar ? 'visible' : 'hidden',
       }}
       >
         <div className="flex flex-col h-full p-4">

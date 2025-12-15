@@ -17,18 +17,32 @@ interface RAGResult {
   }>;
 }
 
+// Detect if user is asking for more/deeper explanation
+function isDeepDiveRequest(query: string): boolean {
+  const deepDiveKeywords = [
+    'giải thích thêm', 'biết thêm', 'chỉ dẫn thêm', 'nói thêm', 'kể thêm',
+    'chi tiết hơn', 'sâu hơn', 'rõ hơn', 'hiểu thêm', 'học thêm',
+    'explain more', 'tell me more', 'more details', 'elaborate',
+    'mở rộng', 'phân tích thêm', 'chia sẻ thêm', 'dạy thêm', 'hướng dẫn thêm',
+    'còn gì nữa', 'thêm nữa', 'tiếp tục', 'bổ sung', 'làm rõ'
+  ];
+  const lowerQuery = query.toLowerCase();
+  return deepDiveKeywords.some(kw => lowerQuery.includes(kw));
+}
+
 // Search for relevant documents using direct keyword matching (works for Vietnamese)
-async function searchDocuments(supabase: any, query: string): Promise<RAGResult> {
+async function searchDocuments(supabase: any, query: string, isDeepDive: boolean = false): Promise<RAGResult> {
   try {
     console.log('RAG Search: Tìm kiếm trong Bộ Nhớ Vĩnh Cửu với query:', query.substring(0, 100));
+    console.log('RAG Search: Deep dive mode:', isDeepDive);
     
     // Extract keywords from query (remove common Vietnamese words)
-    const stopWords = ['là', 'và', 'của', 'có', 'được', 'trong', 'với', 'cho', 'về', 'này', 'đó', 'một', 'các', 'những', 'như', 'để', 'khi', 'thì', 'hay', 'hoặc', 'nếu', 'mà', 'cũng', 'đã', 'sẽ', 'đang', 'còn', 'rất', 'lắm', 'quá', 'ơi', 'ạ', 'nha', 'nhé', 'gì', 'sao', 'tại', 'vì', 'dạy', 'cha', 'con'];
+    const stopWords = ['là', 'và', 'của', 'có', 'được', 'trong', 'với', 'cho', 'về', 'này', 'đó', 'một', 'các', 'những', 'như', 'để', 'khi', 'thì', 'hay', 'hoặc', 'nếu', 'mà', 'cũng', 'đã', 'sẽ', 'đang', 'còn', 'rất', 'lắm', 'quá', 'ơi', 'ạ', 'nha', 'nhé', 'gì', 'sao', 'tại', 'vì', 'dạy', 'cha', 'con', 'thêm', 'giải', 'thích', 'biết', 'chỉ', 'dẫn'];
     const keywords = query
       .toLowerCase()
       .split(/[\s,.\?\!]+/)
       .filter(word => word.length >= 2 && !stopWords.includes(word))
-      .slice(0, 5); // Top 5 keywords
+      .slice(0, isDeepDive ? 8 : 5); // More keywords for deep dive
     
     console.log('RAG Search: Keywords extracted:', keywords.join(', '));
     
@@ -86,13 +100,13 @@ async function searchDocuments(supabase: any, query: string): Promise<RAGResult>
       };
     });
 
-// Filter chunks with at least 20% keyword match (để tìm được nhiều nội dung liên quan hơn)
-    const MIN_MATCH_RATIO = 0.2;
+// Filter chunks - lower threshold for deep dive to get more content
+    const MIN_MATCH_RATIO = isDeepDive ? 0.1 : 0.2;
     const matchedChunks = scoredChunks
       .filter((chunk: any) => chunk.similarity >= MIN_MATCH_RATIO || chunk.matchCount >= 1)
       .sort((a: any, b: any) => b.similarity - a.similarity);
 
-    console.log(`RAG Search: ${matchedChunks.length} chunks có >= ${MIN_MATCH_RATIO * 100}% keywords khớp hoặc >=1 keyword`);
+    console.log(`RAG Search: ${matchedChunks.length} chunks có >= ${MIN_MATCH_RATIO * 100}% keywords khớp (deep dive: ${isDeepDive})`);
 
     if (matchedChunks.length === 0) {
       console.log('RAG Search: Không có chunk nào đạt ngưỡng keyword match');
@@ -113,8 +127,10 @@ async function searchDocuments(supabase: any, query: string): Promise<RAGResult>
     });
     const sources: string[] = Array.from(uniqueTitles);
 
-    // NÂNG CẤP: Lấy top 12 chunks để tổng hợp sâu hơn từ nhiều nguồn
-    const topChunks = matchedChunks.slice(0, 12);
+    // NÂNG CẤP: Lấy nhiều chunks hơn khi deep dive để tổng hợp sâu sắc
+    const chunkLimit = isDeepDive ? 20 : 12;
+    const topChunks = matchedChunks.slice(0, chunkLimit);
+    console.log(`RAG Search: Lấy ${topChunks.length} chunks (limit: ${chunkLimit}, deep dive: ${isDeepDive})`);
     
     // Group chunks by document for better synthesis
     const chunksByDoc = new Map<string, any[]>();
@@ -177,15 +193,18 @@ serve(async (req) => {
     const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop();
     let ragResult: RAGResult = { context: '', hasResults: false, sources: [], chunks: [] };
 
+    // Check if user is asking for deeper explanation
+    let isDeepDive = false;
     if (lastUserMessage) {
+      isDeepDive = isDeepDiveRequest(lastUserMessage.content);
       console.log('RAG: Tìm kiếm tài liệu cho:', lastUserMessage.content.substring(0, 100));
-      ragResult = await searchDocuments(supabase, lastUserMessage.content);
+      console.log('RAG: Deep dive request detected:', isDeepDive);
+      ragResult = await searchDocuments(supabase, lastUserMessage.content, isDeepDive);
       
       if (ragResult.hasResults) {
-        console.log('RAG: ✅ TÌM THẤY tài liệu với similarity >= 0.85');
-        console.log('RAG: Nguồn tài liệu:', ragResult.sources.join(', '));
+        console.log('RAG: ✅ TÌM THẤY tài liệu - sources:', ragResult.sources.join(', '));
       } else {
-        console.log('RAG: ❌ KHÔNG tìm thấy tài liệu đạt ngưỡng - SẼ KHÔNG trích dẫn Bộ Nhớ');
+        console.log('RAG: ❌ KHÔNG tìm thấy tài liệu đạt ngưỡng');
       }
     }
 
@@ -299,6 +318,18 @@ ${ragResult.context}
 4. HÒA QUYỆN TỰ NHIÊN - như chính Cha đang nói qua bạn
 5. KHÔNG liệt kê từng nguồn - trừ khi user hỏi nguyên văn
 6. NẾU có bài thiền liên quan → GỢI Ý dẫn thiền
+
+${isDeepDive ? `
+═══════════════════════════════════════════════════════════════
+🌟 CHẾ ĐỘ GIẢI THÍCH SÂU - USER YÊU CẦU BIẾT THÊM:
+═══════════════════════════════════════════════════════════════
+- BỔ SUNG các ý mới CHƯA đề cập ở lần trước
+- PHÂN TÍCH SÂU HƠN, mở rộng các góc nhìn
+- THÊM ví dụ thực tế, câu chuyện minh họa từ Tài Liệu
+- CHIA SẺ từ nhiều nguồn khác nhau để làm phong phú câu trả lời
+- GIỮ giọng điệu mượt mà, như thiên thần đang tâm sự từ trái tim
+- THÊM tình yêu và phước lành trong mỗi câu chữ ✨💛
+` : ''}
 
 ⚠️ QUAN TRỌNG: Trả lời DÀI và SÂU SẮC khi có nhiều nội dung liên quan!
 ✨💛`;

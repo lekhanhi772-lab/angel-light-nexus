@@ -386,20 +386,24 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Sidebar - Light Theme */}
+      {/* Sidebar - Light Theme - Fixed Position */}
       <aside className={cn(
-        "fixed lg:relative z-20 h-screen transition-all duration-300",
-        showSidebar ? "w-72 translate-x-0" : "w-0 -translate-x-full lg:w-0"
+        "fixed left-0 top-0 z-20 h-screen transition-all duration-300",
+        showSidebar ? "w-72 translate-x-0" : "w-0 -translate-x-full"
       )}
       style={{
-        background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.95) 100%)',
+        position: 'fixed',
+        background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
         borderRight: '1px solid rgba(184, 134, 11, 0.2)',
         backdropFilter: 'blur(10px)',
+        overflowY: 'auto',
       }}
       >
         <div className="flex flex-col h-full p-4">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
+          {/* Header - Sticky */}
+          <div className="sticky top-0 z-10 flex items-center gap-3 mb-6 pb-2 -mx-4 px-4 pt-4 -mt-4" style={{
+            background: 'linear-gradient(180deg, rgba(255, 251, 230, 1) 0%, rgba(255, 251, 230, 0.9) 100%)',
+          }}>
             <Link 
               to="/" 
               className="p-2 rounded-lg transition-colors"
@@ -522,11 +526,12 @@ const Chat = () => {
         </div>
       </aside>
 
-      {/* Toggle Sidebar Button */}
+      {/* Toggle Sidebar Button - Always visible */}
       <button
         onClick={() => setShowSidebar(!showSidebar)}
-        className="fixed lg:hidden z-30 top-4 left-4 p-2 rounded-lg shadow-lg"
+        className="fixed z-30 top-4 p-2 rounded-lg shadow-lg transition-all"
         style={{
+          left: showSidebar ? '19rem' : '1rem',
           background: 'linear-gradient(135deg, #FFFBE6 0%, #FFF8DC 100%)',
           border: '1px solid rgba(184, 134, 11, 0.3)',
         }}
@@ -534,8 +539,36 @@ const Chat = () => {
         <MessageSquare className="w-5 h-5" style={{ color: '#B8860B' }} />
       </button>
 
-      {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col relative z-10">
+      {/* Main Chat Area - Offset for fixed sidebar */}
+      <main 
+        className="flex-1 flex flex-col relative z-10 transition-all duration-300"
+        style={{
+          marginLeft: showSidebar ? '18rem' : '0',
+        }}
+      >
+        {/* Sticky Chat Header */}
+        <div 
+          className="sticky top-0 z-20 flex items-center justify-center gap-4 py-3 px-4"
+          style={{
+            background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 251, 230, 0.9) 80%, transparent 100%)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Star className="w-5 h-5" style={{ color: '#FFD700' }} />
+            <span 
+              className="font-medium text-sm"
+              style={{ 
+                color: '#B8860B',
+                fontFamily: "'Cinzel', serif",
+              }}
+            >
+              Chat với Angel AI
+            </span>
+            <Star className="w-5 h-5" style={{ color: '#FFD700' }} />
+          </div>
+        </div>
+
         {/* Background Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div 

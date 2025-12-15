@@ -48,6 +48,7 @@ const Footer = () => {
 
   return (
     <footer 
+      id="tai-lieu-anh-sang"
       className="relative py-20 lg:py-28 overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 40%, #F0FFF4 100%)',

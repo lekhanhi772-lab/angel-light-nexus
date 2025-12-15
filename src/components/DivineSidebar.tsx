@@ -53,8 +53,8 @@ const menuItems: MenuItem[] = [
     id: 'documents',
     label: 'Tài Liệu Ánh Sáng',
     icon: <BookOpen className="w-6 h-6" />,
-    action: 'navigate',
-    target: '/documents'
+    action: 'scroll',
+    target: 'tai-lieu-anh-sang'
   }
 ];
 
@@ -97,7 +97,7 @@ const DivineSidebar = () => {
     if (location.pathname !== '/') return;
 
     const handleScroll = () => {
-      const sections = ['hero', 'vision-mission', 'sacred-pillars', 'core-values'];
+      const sections = ['hero', 'vision-mission', 'sacred-pillars', 'core-values', 'tai-lieu-anh-sang'];
       const scrollPosition = window.scrollY + 200;
 
       for (const sectionId of sections) {
@@ -109,6 +109,7 @@ const DivineSidebar = () => {
             else if (sectionId === 'vision-mission') setActiveSection('vision');
             else if (sectionId === 'sacred-pillars') setActiveSection('pillars');
             else if (sectionId === 'core-values') setActiveSection('values');
+            else if (sectionId === 'tai-lieu-anh-sang') setActiveSection('documents');
             break;
           }
         }
@@ -145,19 +146,25 @@ const DivineSidebar = () => {
     if (item.action === 'navigate') {
       navigate(item.target);
     } else if (item.action === 'scroll') {
-      if (location.pathname !== '/') {
-        navigate('/');
-        setTimeout(() => {
-          const element = document.getElementById(item.target);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 100);
-      } else {
+      const scrollToElement = () => {
         const element = document.getElementById(item.target);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const offset = 80;
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - offset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
         }
+      };
+
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(scrollToElement, 150);
+      } else {
+        scrollToElement();
       }
     }
 

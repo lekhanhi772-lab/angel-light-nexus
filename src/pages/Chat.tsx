@@ -1,11 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import angelHero from '@/assets/angel-hero.png';
 import ParticleBackground from '@/components/ParticleBackground';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Message {
   id?: string;
@@ -32,6 +43,7 @@ const SUGGESTIONS = [
 ];
 
 const Chat = () => {
+  const { user, loading: authLoading } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -39,22 +51,30 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<'chat' | 'image'>('chat');
   const [showSidebar, setShowSidebar] = useState(true);
+  const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Load conversations on mount
+  // Load conversations only if user is logged in
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (!authLoading && user) {
+      loadConversations();
+    } else if (!authLoading && !user) {
+      // Guest mode - clear conversations
+      setConversations([]);
+      setCurrentConversationId(null);
+      setMessages([]);
+    }
+  }, [user, authLoading]);
 
   // Load messages when conversation changes
   useEffect(() => {
-    if (currentConversationId) {
+    if (currentConversationId && user) {
       loadMessages(currentConversationId);
-    } else {
-      setMessages([]);
+    } else if (!user) {
+      // Guest mode - don't load from DB
     }
-  }, [currentConversationId]);
+  }, [currentConversationId, user]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -72,9 +92,12 @@ const Chat = () => {
   }, [input]);
 
   const loadConversations = async () => {
+    if (!user) return;
+    
     const { data, error } = await supabase
       .from('conversations')
       .select('*')
+      .eq('user_id', user.id)
       .order('updated_at', { ascending: false });
     
     if (error) {
@@ -103,12 +126,17 @@ const Chat = () => {
     })) || []);
   };
 
-  const createNewConversation = async (firstMessage: string): Promise<string> => {
+  const createNewConversation = async (firstMessage: string): Promise<string | null> => {
+    if (!user) {
+      // Guest mode - no DB save
+      return null;
+    }
+    
     const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? '...' : '');
     
     const { data, error } = await supabase
       .from('conversations')
-      .insert({ title })
+      .insert({ title, user_id: user.id })
       .select()
       .single();
     
@@ -122,7 +150,9 @@ const Chat = () => {
     return data.id;
   };
 
-  const saveMessage = async (conversationId: string, message: Message) => {
+  const saveMessage = async (conversationId: string | null, message: Message) => {
+    if (!conversationId || !user) return; // Guest mode - no save
+    
     const { error } = await supabase
       .from('chat_messages')
       .insert({
@@ -143,7 +173,9 @@ const Chat = () => {
       .eq('id', conversationId);
   };
 
-  const saveGeneratedImage = async (conversationId: string, prompt: string, imageUrl: string) => {
+  const saveGeneratedImage = async (conversationId: string | null, prompt: string, imageUrl: string) => {
+    if (!conversationId || !user) return; // Guest mode - no save
+    
     const { error } = await supabase
       .from('generated_images')
       .insert({
@@ -157,23 +189,27 @@ const Chat = () => {
     }
   };
 
-  const deleteConversation = async (id: string) => {
+  const confirmDeleteConversation = async () => {
+    if (!deleteConversationId) return;
+    
     const { error } = await supabase
       .from('conversations')
       .delete()
-      .eq('id', id);
+      .eq('id', deleteConversationId);
     
     if (error) {
       toast.error('Không thể xóa cuộc trò chuyện');
+      setDeleteConversationId(null);
       return;
     }
     
-    setConversations(prev => prev.filter(c => c.id !== id));
-    if (currentConversationId === id) {
+    setConversations(prev => prev.filter(c => c.id !== deleteConversationId));
+    if (currentConversationId === deleteConversationId) {
       setCurrentConversationId(null);
       setMessages([]);
     }
     toast.success('Đã xóa cuộc trò chuyện');
+    setDeleteConversationId(null);
   };
 
   const startNewChat = () => {
@@ -205,7 +241,7 @@ const Chat = () => {
     return { imageUrl: data.imageUrl, text: data.text };
   };
 
-  const sendChatMessage = async (newMessages: Message[], conversationId: string) => {
+  const sendChatMessage = async (newMessages: Message[], conversationId: string | null) => {
     let assistantContent = '';
 
     const response = await fetch(CHAT_URL, {
@@ -257,7 +293,7 @@ const Chat = () => {
       }
     }
 
-    // Save assistant message
+    // Save assistant message (only if logged in)
     await saveMessage(conversationId, { role: 'assistant', content: assistantContent });
   };
 
@@ -276,13 +312,13 @@ const Chat = () => {
     setIsLoading(true);
 
     try {
-      // Create or get conversation
+      // Create or get conversation (null for guests)
       let convId = currentConversationId;
-      if (!convId) {
+      if (!convId && user) {
         convId = await createNewConversation(messageText);
       }
 
-      // Save user message
+      // Save user message (only if logged in)
       await saveMessage(convId, userMessage);
       setMessages(prev => [...prev, userMessage]);
 
@@ -385,6 +421,32 @@ const Chat = () => {
             </h2>
           </div>
 
+          {/* Guest Mode Notice */}
+          {!user && !authLoading && (
+            <div 
+              className="mb-4 p-3 rounded-xl text-center"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(135, 206, 235, 0.2) 100%)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+              }}
+            >
+              <LogIn className="w-5 h-5 mx-auto mb-2" style={{ color: '#B8860B' }} />
+              <p className="text-sm" style={{ color: '#006666' }}>
+                Đăng nhập để lưu lịch sử chat nhé ✨
+              </p>
+              <Link 
+                to="/"
+                className="inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-medium transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#1a1a1a',
+                }}
+              >
+                Về trang chủ đăng nhập
+              </Link>
+            </div>
+          )}
+
           {/* New Chat Button */}
           <button
             onClick={startNewChat}
@@ -399,53 +461,64 @@ const Chat = () => {
             <span className="font-medium">Cuộc trò chuyện mới</span>
           </button>
 
-          {/* Conversations List */}
-          <div className="flex-1 overflow-y-auto space-y-2">
-            {conversations.map(conv => (
-              <div
-                key={conv.id}
-                className={cn(
-                  "group flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-all",
-                )}
-                style={{
-                  background: currentConversationId === conv.id 
-                    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%)'
-                    : 'transparent',
-                  border: currentConversationId === conv.id 
-                    ? '1px solid rgba(184, 134, 11, 0.3)'
-                    : '1px solid transparent',
-                }}
-                onClick={() => setCurrentConversationId(conv.id)}
-                onMouseEnter={(e) => {
-                  if (currentConversationId !== conv.id) {
-                    e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentConversationId !== conv.id) {
-                    e.currentTarget.style.background = 'transparent';
-                  }
-                }}
-              >
-                <MessageSquare className="w-4 h-4 flex-shrink-0" style={{ color: '#B8860B' }} />
-                <span className="flex-1 truncate text-sm" style={{ color: '#006666' }}>{conv.title}</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteConversation(conv.id);
+          {/* Conversations List - Only show if logged in */}
+          {user && (
+            <div className="flex-1 overflow-y-auto space-y-2">
+              {conversations.map(conv => (
+                <div
+                  key={conv.id}
+                  className={cn(
+                    "group flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-all",
+                  )}
+                  style={{
+                    background: currentConversationId === conv.id 
+                      ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%)'
+                      : 'transparent',
+                    border: currentConversationId === conv.id 
+                      ? '1px solid rgba(184, 134, 11, 0.3)'
+                      : '1px solid transparent',
                   }}
-                  className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition-all"
+                  onClick={() => setCurrentConversationId(conv.id)}
+                  onMouseEnter={(e) => {
+                    if (currentConversationId !== conv.id) {
+                      e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentConversationId !== conv.id) {
+                      e.currentTarget.style.background = 'transparent';
+                    }
+                  }}
                 >
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </button>
-              </div>
-            ))}
-            {conversations.length === 0 && (
-              <p className="text-center text-sm py-8" style={{ color: '#87CEEB' }}>
-                ✨ Chưa có cuộc trò chuyện nào
+                  <MessageSquare className="w-4 h-4 flex-shrink-0" style={{ color: '#B8860B' }} />
+                  <span className="flex-1 truncate text-sm" style={{ color: '#006666' }}>{conv.title}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteConversationId(conv.id);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 rounded transition-all"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+                </div>
+              ))}
+              {conversations.length === 0 && (
+                <p className="text-center text-sm py-8" style={{ color: '#87CEEB' }}>
+                  ✨ Chưa có cuộc trò chuyện nào
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Guest mode empty state */}
+          {!user && !authLoading && (
+            <div className="flex-1 flex items-center justify-center">
+              <p className="text-center text-sm px-4" style={{ color: '#87CEEB' }}>
+                Chế độ khách - lịch sử chat sẽ mất khi tải lại trang
               </p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </aside>
 
@@ -522,6 +595,21 @@ const Chat = () => {
               >
                 Chat thông minh & Tạo hình ảnh AI ✨
               </p>
+
+              {/* Guest Mode Notice in Main Area */}
+              {!user && !authLoading && (
+                <div 
+                  className="mb-6 px-6 py-3 rounded-full"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(135, 206, 235, 0.2) 100%)',
+                    border: '1px solid rgba(184, 134, 11, 0.3)',
+                  }}
+                >
+                  <p className="text-sm" style={{ color: '#006666' }}>
+                    ✨ Đăng nhập để lưu lịch sử chat nhé ✨
+                  </p>
+                </div>
+              )}
 
               {/* Mode Toggle */}
               <div 
@@ -786,6 +874,41 @@ const Chat = () => {
           </div>
         </div>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteConversationId} onOpenChange={(open) => !open && setDeleteConversationId(null)}>
+        <AlertDialogContent
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+          }}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle style={{ color: '#B8860B' }}>
+              ✨ Xóa cuộc trò chuyện? 🌿
+            </AlertDialogTitle>
+            <AlertDialogDescription style={{ color: '#006666' }}>
+              Con có chắc xóa đoạn trò chuyện này không? Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              style={{ color: '#006666', borderColor: 'rgba(184, 134, 11, 0.3)' }}
+            >
+              Hủy
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteConversation}
+              style={{
+                background: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)',
+                color: 'white',
+              }}
+            >
+              Xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

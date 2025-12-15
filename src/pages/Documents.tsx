@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 import {
   Select,
@@ -77,8 +78,9 @@ const DocumentsPage = () => {
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   
   const { toast } = useToast();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
 
-  // Download function
+  // Download function - available for all users
   const handleDownload = async (doc: Document) => {
     try {
       const { data, error } = await supabase.storage
@@ -751,19 +753,22 @@ const DocumentsPage = () => {
                 >
                   ✨ Thư Mục Ánh Sáng
                 </h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7"
-                  style={{ color: '#B8860B' }}
-                  onClick={() => setIsCreatingFolder(true)}
-                >
-                  <FolderPlus className="w-4 h-4" />
-                </Button>
+                {/* Only show folder creation button for admin */}
+                {isAdmin && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7"
+                    style={{ color: '#B8860B' }}
+                    onClick={() => setIsCreatingFolder(true)}
+                  >
+                    <FolderPlus className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
 
-              {/* New Folder Form */}
-              {isCreatingFolder && (
+              {/* New Folder Form - Only for admin */}
+              {isAdmin && isCreatingFolder && (
                 <div 
                   className={`mb-4 p-3 rounded-lg ${showNewFolderEffect ? 'animate-pulse' : ''}`}
                   style={{
@@ -895,34 +900,36 @@ const DocumentsPage = () => {
                           <span className="text-xs opacity-70 font-poppins">{docCount}</span>
                         </button>
                         
-                        {/* Edit/Delete buttons */}
-                        <div className="hidden group-hover:flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            style={{ color: '#B8860B' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingFolder(folder);
-                              setEditFolderName(folder.name);
-                            }}
-                          >
-                            <Edit3 className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 hover:bg-red-100"
-                            style={{ color: '#DC2626' }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeletingFolder(folder);
-                            }}
-                          >
-                            <FolderX className="w-3 h-3" />
-                          </Button>
-                        </div>
+                        {/* Edit/Delete buttons - Only for admin */}
+                        {isAdmin && (
+                          <div className="hidden group-hover:flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              style={{ color: '#B8860B' }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingFolder(folder);
+                                setEditFolderName(folder.name);
+                              }}
+                            >
+                              <Edit3 className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 hover:bg-red-100"
+                              style={{ color: '#DC2626' }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeletingFolder(folder);
+                              }}
+                            >
+                              <FolderX className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -946,8 +953,9 @@ const DocumentsPage = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            {/* Upload Section */}
-            <div
+            {/* Upload Section - Only show for admin */}
+            {isAdmin && (
+              <div
                 className="mb-6 p-6 rounded-2xl backdrop-blur-md shadow-lg"
                 style={{
                   background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
@@ -965,38 +973,37 @@ const DocumentsPage = () => {
                   >
                     ✨ Tải lên Tài Liệu của Cha 🌿
                   </h2>
-                  <p className="mb-4 text-sm font-inter" style={{ color: '#006666' }}>
-                    Hỗ trợ: .txt, .pdf, .docx • Tối đa 100MB/lần (không giới hạn số file)
+                  <p className="text-sm mb-4 font-inter" style={{ color: '#87CEEB' }}>
+                    Hỗ trợ: TXT, PDF, DOCX (tối đa 50MB/file, 100MB/lần)
                   </p>
-
-                  {/* Folder Selection */}
-                  <div className="mb-4 flex items-center justify-center gap-2">
-                    <span className="text-sm font-inter" style={{ color: '#87CEEB' }}>Lưu vào thư mục:</span>
+                  
+                  {/* Folder Selection for Upload */}
+                  <div className="flex justify-center mb-4">
                     <Select value={uploadTargetFolderId} onValueChange={setUploadTargetFolderId}>
                       <SelectTrigger 
-                        className="w-48"
+                        className="w-64 font-inter"
                         style={{
                           background: 'rgba(255, 251, 230, 0.9)',
                           border: '1px solid rgba(184, 134, 11, 0.3)',
                           color: '#006666',
                         }}
                       >
-                        <SelectValue placeholder="Không thuộc thư mục" />
+                        <SelectValue placeholder="Chọn thư mục đích" />
                       </SelectTrigger>
-                      <SelectContent 
+                      <SelectContent
                         style={{
                           background: '#FFFBE6',
                           border: '1px solid rgba(184, 134, 11, 0.3)',
                         }}
                       >
-                        <SelectItem value="none" style={{ color: '#006666' }}>
-                          <div className="flex items-center gap-2 font-inter">
-                            <LayoutGrid className="w-4 h-4" />
+                        <SelectItem value="none" className="font-inter">
+                          <div className="flex items-center gap-2">
+                            <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
                             Không thuộc thư mục
                           </div>
                         </SelectItem>
-                        {folders.map((folder) => (
-                          <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
+                        {folders.map(folder => (
+                          <SelectItem key={folder.id} value={folder.id} className="font-inter">
                             <div className="flex items-center gap-2 font-inter">
                               <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
                               {folder.name}
@@ -1049,9 +1056,10 @@ const DocumentsPage = () => {
                   </label>
                 </div>
               </div>
+            )}
 
-            {/* Bulk Actions Bar */}
-            {selectedDocIds.size > 0 && (
+            {/* Bulk Actions Bar - Only for admin */}
+            {isAdmin && selectedDocIds.size > 0 && (
               <div 
                 className="mb-4 p-4 rounded-xl flex items-center justify-between"
                 style={{
@@ -1090,8 +1098,8 @@ const DocumentsPage = () => {
               </div>
             )}
 
-            {/* Newly Uploaded Files */}
-            {newlyUploaded.length > 0 && (
+            {/* Newly Uploaded Files - Only for admin */}
+            {isAdmin && newlyUploaded.length > 0 && (
               <div 
                 className="mb-6 p-4 rounded-xl"
                 style={{
@@ -1148,8 +1156,8 @@ const DocumentsPage = () => {
                   }
                 </h3>
                 
-                {/* Select All Checkbox */}
-                {displayedDocuments.length > 0 && (
+                {/* Select All Checkbox - Only for admin */}
+                {isAdmin && displayedDocuments.length > 0 && (
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="select-all"
@@ -1175,7 +1183,9 @@ const DocumentsPage = () => {
                 <div className="text-center py-12">
                   <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" style={{ color: '#B8860B' }} />
                   <p className="font-inter" style={{ color: '#87CEEB' }}>Chưa có tài liệu nào trong {selectedFolderId === null ? 'hệ thống' : 'thư mục này'}</p>
-                  <p className="text-sm mt-2 font-inter" style={{ color: '#87CEEB' }}>Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ 🌿</p>
+                  {isAdmin && (
+                    <p className="text-sm mt-2 font-inter" style={{ color: '#87CEEB' }}>Hãy tải lên tài liệu đầu tiên của Cha Vũ Trụ 🌿</p>
+                  )}
                 </div>
               ) : (
                 <div className="grid gap-4">
@@ -1226,13 +1236,15 @@ const DocumentsPage = () => {
 
                         <div className="flex items-start justify-between gap-4 relative z-10">
                           <div className="flex items-start gap-3 flex-1 min-w-0">
-                            {/* Checkbox */}
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
-                              className="mt-3"
-                              style={{ borderColor: '#B8860B' }}
-                            />
+                            {/* Checkbox - Only for admin */}
+                            {isAdmin && (
+                              <Checkbox
+                                checked={isSelected}
+                                onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
+                                className="mt-3"
+                                style={{ borderColor: '#B8860B' }}
+                              />
+                            )}
 
                             {/* Sequential Number Badge */}
                             <div 
@@ -1281,41 +1293,46 @@ const DocumentsPage = () => {
                           </div>
                           
                           <div className="flex items-center gap-1">
-                            {/* Download button - show on hover for all users */}
+                            {/* Download button - always visible on hover for all users (green color) */}
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => handleDownload(doc)}
                               className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              style={{ color: '#2E7D32' }}
+                              style={{ color: '#22C55E' }}
                               title="Tải về"
                             >
                               <Download className="w-4 h-4" />
                             </Button>
                             
-                            {/* Update folder button */}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                setUpdatingDocFolder(doc);
-                                setNewDocFolderId(doc.folder_id || 'none');
-                              }}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              style={{ color: '#B8860B' }}
-                              title="Cập nhật thư mục"
-                            >
-                              <FolderInput className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(doc)}
-                              className="text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                              title="Xóa"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            {/* Admin-only buttons */}
+                            {isAdmin && (
+                              <>
+                                {/* Update folder button */}
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    setUpdatingDocFolder(doc);
+                                    setNewDocFolderId(doc.folder_id || 'none');
+                                  }}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                  style={{ color: '#B8860B' }}
+                                  title="Cập nhật thư mục"
+                                >
+                                  <FolderInput className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleDelete(doc)}
+                                  className="text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  title="Xóa"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1328,244 +1345,257 @@ const DocumentsPage = () => {
         </div>
       </main>
 
-      {/* Edit Folder Dialog */}
-      <Dialog open={!!editingFolder} onOpenChange={(open) => !open && setEditingFolder(null)}>
-        <DialogContent 
-          style={{
-            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
-            border: '1px solid rgba(184, 134, 11, 0.3)',
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Sửa tên thư mục 🌿</DialogTitle>
-            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
-              Nhập tên mới cho thư mục "{editingFolder?.name}"
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={editFolderName}
-            onChange={(e) => setEditFolderName(e.target.value)}
-            placeholder="Tên thư mục..."
-            className="font-inter"
+      {/* Edit Folder Dialog - Only for admin */}
+      {isAdmin && (
+        <Dialog open={!!editingFolder} onOpenChange={(open) => !open && setEditingFolder(null)}>
+          <DialogContent 
             style={{
-              background: 'rgba(255, 251, 230, 0.9)',
+              background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
               border: '1px solid rgba(184, 134, 11, 0.3)',
-              color: '#006666',
             }}
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleEditFolder();
-            }}
-          />
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setEditingFolder(null)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
-            <Button 
-              className="font-poppins"
-              style={{
-                background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                color: '#1a1a1a',
-              }}
-              onClick={handleEditFolder}
-            >
-              Lưu
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Folder Dialog */}
-      <Dialog open={!!deletingFolder} onOpenChange={(open) => !open && setDeletingFolder(null)}>
-        <DialogContent 
-          style={{
-            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
-            border: '1px solid rgba(184, 134, 11, 0.3)',
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>⚠️ Xóa thư mục 🌿</DialogTitle>
-            <DialogDescription className="space-y-2 font-inter" style={{ color: '#006666' }}>
-              <p>Con muốn xóa vĩnh viễn tất cả file trong thư mục "{deletingFolder?.name}" không?</p>
-              <p className="text-sm" style={{ color: '#87CEEB' }}>
-                Thư mục này có {deletingFolder ? getDocCountInFolder(deletingFolder.id) : 0} file
-              </p>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="ghost" onClick={() => setDeletingFolder(null)} className="font-poppins" style={{ color: '#006666' }}>
-              Hủy
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={() => handleDeleteFolder(false)}
-              className="font-poppins"
-              style={{
-                border: '1px solid rgba(184, 134, 11, 0.4)',
-                color: '#B8860B',
-              }}
-            >
-              Không – Giữ lại file
-            </Button>
-            <Button 
-              variant="destructive"
-              onClick={() => handleDeleteFolder(true)}
-              className="font-poppins"
-            >
-              Có – Xóa tất cả
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Update Document Folder Dialog */}
-      <Dialog open={!!updatingDocFolder} onOpenChange={(open) => !open && setUpdatingDocFolder(null)}>
-        <DialogContent 
-          style={{
-            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
-            border: '1px solid rgba(184, 134, 11, 0.3)',
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Cập nhật thư mục 🌿</DialogTitle>
-            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
-              Chọn thư mục mới cho file "{updatingDocFolder?.title}"
-            </DialogDescription>
-          </DialogHeader>
-          <Select value={newDocFolderId} onValueChange={setNewDocFolderId}>
-            <SelectTrigger 
+          >
+            <DialogHeader>
+              <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Sửa tên thư mục 🌿</DialogTitle>
+              <DialogDescription className="font-inter" style={{ color: '#006666' }}>
+                Nhập tên mới cho thư mục "{editingFolder?.name}"
+              </DialogDescription>
+            </DialogHeader>
+            <Input
+              value={editFolderName}
+              onChange={(e) => setEditFolderName(e.target.value)}
+              placeholder="Tên thư mục..."
+              className="font-inter"
               style={{
                 background: 'rgba(255, 251, 230, 0.9)',
                 border: '1px solid rgba(184, 134, 11, 0.3)',
                 color: '#006666',
               }}
-            >
-              <SelectValue placeholder="Chọn thư mục" />
-            </SelectTrigger>
-            <SelectContent 
-              style={{
-                background: '#FFFBE6',
-                border: '1px solid rgba(184, 134, 11, 0.3)',
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleEditFolder();
               }}
-            >
-              <SelectItem value="none" style={{ color: '#006666' }}>
-                <div className="flex items-center gap-2 font-inter">
-                  <LayoutGrid className="w-4 h-4" />
-                  Không thuộc thư mục nào
-                </div>
-              </SelectItem>
-              {folders.map((folder) => (
-                <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
-                  <div className="flex items-center gap-2 font-inter">
-                    <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
-                    {folder.name}
+            />
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setEditingFolder(null)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+              <Button 
+                className="font-poppins"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#1a1a1a',
+                }}
+                onClick={handleEditFolder}
+              >
+                Lưu
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Delete Folder Dialog - Only for admin */}
+      {isAdmin && (
+        <Dialog open={!!deletingFolder} onOpenChange={(open) => !open && setDeletingFolder(null)}>
+          <DialogContent 
+            style={{
+              background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+              border: '1px solid rgba(184, 134, 11, 0.3)',
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Xóa thư mục 🌿</DialogTitle>
+              <DialogDescription className="font-inter" style={{ color: '#006666' }}>
+                Bạn muốn xử lý thư mục "{deletingFolder?.name}" như thế nào?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-3 mt-4">
+              <Button 
+                className="font-poppins"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#1a1a1a',
+                }}
+                onClick={() => handleDeleteFolder(false)}
+              >
+                Xóa thư mục, giữ lại file
+              </Button>
+              <Button 
+                variant="destructive"
+                className="font-poppins"
+                onClick={() => handleDeleteFolder(true)}
+              >
+                Xóa thư mục và tất cả file
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="font-poppins"
+                style={{ color: '#006666' }}
+                onClick={() => setDeletingFolder(null)}
+              >
+                Hủy
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Update Document Folder Dialog - Only for admin */}
+      {isAdmin && (
+        <Dialog open={!!updatingDocFolder} onOpenChange={(open) => !open && setUpdatingDocFolder(null)}>
+          <DialogContent 
+            style={{
+              background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+              border: '1px solid rgba(184, 134, 11, 0.3)',
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Cập nhật thư mục 🌿</DialogTitle>
+              <DialogDescription className="font-inter" style={{ color: '#006666' }}>
+                Chọn thư mục mới cho file "{updatingDocFolder?.title}"
+              </DialogDescription>
+            </DialogHeader>
+            <Select value={newDocFolderId} onValueChange={setNewDocFolderId}>
+              <SelectTrigger 
+                className="w-full font-inter"
+                style={{
+                  background: 'rgba(255, 251, 230, 0.9)',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                  color: '#006666',
+                }}
+              >
+                <SelectValue placeholder="Chọn thư mục" />
+              </SelectTrigger>
+              <SelectContent
+                style={{
+                  background: '#FFFBE6',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                }}
+              >
+                <SelectItem value="none" className="font-inter">
+                  <div className="flex items-center gap-2">
+                    <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
+                    Không thuộc thư mục
                   </div>
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
-            <Button 
-              className="font-poppins"
-              style={{
-                background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                color: '#1a1a1a',
-              }}
-              onClick={handleUpdateDocumentFolder}
-            >
-              Cập nhật
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                {folders.map(folder => (
+                  <SelectItem key={folder.id} value={folder.id} className="font-inter">
+                    <div className="flex items-center gap-2">
+                      <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
+                      {folder.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setUpdatingDocFolder(null)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+              <Button 
+                className="font-poppins"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#1a1a1a',
+                }}
+                onClick={handleUpdateDocumentFolder}
+              >
+                Lưu
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
-      {/* Bulk Move Dialog */}
-      <Dialog open={showBulkMoveDialog} onOpenChange={setShowBulkMoveDialog}>
-        <DialogContent 
-          style={{
-            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
-            border: '1px solid rgba(184, 134, 11, 0.3)',
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Di chuyển {selectedDocIds.size} file 🌿</DialogTitle>
-            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
-              Chọn thư mục để di chuyển các file đã chọn
-            </DialogDescription>
-          </DialogHeader>
-          <Select value={bulkMoveTargetFolder} onValueChange={setBulkMoveTargetFolder}>
-            <SelectTrigger 
-              style={{
-                background: 'rgba(255, 251, 230, 0.9)',
-                border: '1px solid rgba(184, 134, 11, 0.3)',
-                color: '#006666',
-              }}
-            >
-              <SelectValue placeholder="Chọn thư mục đích" />
-            </SelectTrigger>
-            <SelectContent 
-              style={{
-                background: '#FFFBE6',
-                border: '1px solid rgba(184, 134, 11, 0.3)',
-              }}
-            >
-              <SelectItem value="none" style={{ color: '#006666' }}>
-                <div className="flex items-center gap-2 font-inter">
-                  <LayoutGrid className="w-4 h-4" />
-                  Không thuộc thư mục nào
-                </div>
-              </SelectItem>
-              {folders.map((folder) => (
-                <SelectItem key={folder.id} value={folder.id} style={{ color: '#006666' }}>
-                  <div className="flex items-center gap-2 font-inter">
-                    <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
-                    {folder.name}
+      {/* Bulk Move Dialog - Only for admin */}
+      {isAdmin && (
+        <Dialog open={showBulkMoveDialog} onOpenChange={setShowBulkMoveDialog}>
+          <DialogContent 
+            style={{
+              background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+              border: '1px solid rgba(184, 134, 11, 0.3)',
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="font-playfair" style={{ color: '#B8860B' }}>✨ Di chuyển {selectedDocIds.size} file 🌿</DialogTitle>
+              <DialogDescription className="font-inter" style={{ color: '#006666' }}>
+                Chọn thư mục đích
+              </DialogDescription>
+            </DialogHeader>
+            <Select value={bulkMoveTargetFolder} onValueChange={setBulkMoveTargetFolder}>
+              <SelectTrigger 
+                className="w-full font-inter"
+                style={{
+                  background: 'rgba(255, 251, 230, 0.9)',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                  color: '#006666',
+                }}
+              >
+                <SelectValue placeholder="Chọn thư mục" />
+              </SelectTrigger>
+              <SelectContent
+                style={{
+                  background: '#FFFBE6',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                }}
+              >
+                <SelectItem value="none" className="font-inter">
+                  <div className="flex items-center gap-2">
+                    <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
+                    Không thuộc thư mục
                   </div>
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowBulkMoveDialog(false)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
-            <Button 
-              className="font-poppins"
-              style={{
-                background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                color: '#1a1a1a',
-              }}
-              onClick={handleBulkMove}
-            >
-              Di chuyển
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                {folders.map(folder => (
+                  <SelectItem key={folder.id} value={folder.id} className="font-inter">
+                    <div className="flex items-center gap-2">
+                      <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
+                      {folder.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setShowBulkMoveDialog(false)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+              <Button 
+                className="font-poppins"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#1a1a1a',
+                }}
+                onClick={handleBulkMove}
+              >
+                Di chuyển
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
-      {/* Bulk Delete Dialog */}
-      <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
-        <DialogContent 
-          style={{
-            background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF0F0 100%)',
-            border: '1px solid rgba(220, 38, 38, 0.3)',
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="font-playfair" style={{ color: '#DC2626' }}>💔 Xóa {selectedDocIds.size} file</DialogTitle>
-            <DialogDescription className="font-inter space-y-2" style={{ color: '#006666' }}>
-              <p>Con yêu ơi, Cha thấy con muốn xóa {selectedDocIds.size} file khỏi Bộ Nhớ Vĩnh Cửu.</p>
-              <p>Hành động này không thể hoàn tác. Con có chắc chắn không?</p>
-              <p className="font-medium" style={{ color: '#B8860B' }}>Cha vẫn yêu con dù con quyết định thế nào 💛🌿</p>
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowBulkDeleteDialog(false)} className="font-poppins" style={{ color: '#006666' }}>
-              Để con suy nghĩ thêm
-            </Button>
-            <Button variant="destructive" onClick={handleBulkDelete} className="font-poppins">
-              Vâng, xóa đi ạ
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Bulk Delete Dialog - Only for admin */}
+      {isAdmin && (
+        <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+          <DialogContent 
+            style={{
+              background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+              border: '1px solid rgba(184, 134, 11, 0.3)',
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="font-playfair" style={{ color: '#DC2626' }}>⚠️ Xóa {selectedDocIds.size} file</DialogTitle>
+              <DialogDescription className="font-inter" style={{ color: '#006666' }}>
+                Bạn có chắc muốn xóa {selectedDocIds.size} file đã chọn? Hành động này không thể hoàn tác.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="ghost" onClick={() => setShowBulkDeleteDialog(false)} className="font-poppins" style={{ color: '#006666' }}>Hủy</Button>
+              <Button 
+                variant="destructive"
+                className="font-poppins"
+                onClick={handleBulkDelete}
+              >
+                Xóa tất cả
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

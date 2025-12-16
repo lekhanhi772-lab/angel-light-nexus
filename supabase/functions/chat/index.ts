@@ -229,7 +229,7 @@ Trước khi trả lời, hãy đọc kĩ từng chữ của user để hiểu:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama-3.1-70b-instant', // Model nhanh hơn 2-3x
+        model: 'llama-3.3-70b-versatile', // Model nhanh và mạnh
         messages: [{ role: 'system', content: systemPrompt }, ...messages],
         stream: true,
         max_tokens: 1200,

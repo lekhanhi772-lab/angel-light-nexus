@@ -36,7 +36,10 @@ function isDeepDiveRequest(query: string): boolean {
 function needsWebSearch(query: string): boolean {
   const webSearchKeywords = [
     'tin tức', 'news', 'hôm nay', 'today', 'mới nhất', 'latest',
-    '2024', '2025', 'xu hướng', 'trending', 'cập nhật'
+    '2024', '2025', 'xu hướng', 'trending', 'cập nhật',
+    'giá', 'price', 'bitcoin', 'btc', 'crypto', 'coin', 'usdt',
+    'thời tiết', 'weather', 'tỷ giá', 'exchange rate', 'stock', 'chứng khoán',
+    'search', 'tìm kiếm', 'tra cứu', 'hiện tại', 'bây giờ', 'now'
   ];
   return webSearchKeywords.some(kw => query.toLowerCase().includes(kw));
 }
@@ -51,7 +54,7 @@ async function searchTavily(query: string): Promise<TavilyResult> {
   }
   
   try {
-    console.log('Tavily Search:', query.substring(0, 50));
+    console.log('Tavily Search:', query.substring(0, 80));
     
     const response = await fetch('https://api.tavily.com/search', {
       method: 'POST',
@@ -61,21 +64,30 @@ async function searchTavily(query: string): Promise<TavilyResult> {
         query: query,
         search_depth: 'basic',
         include_answer: true,
-        max_results: 3,
+        max_results: 5,
       }),
     });
     
-    if (!response.ok) return { context: '', hasResults: false, sources: [] };
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Tavily API error:', response.status, errorText);
+      return { context: '', hasResults: false, sources: [] };
+    }
     
     const data = await response.json();
-    if (!data.results?.length) return { context: '', hasResults: false, sources: [] };
+    console.log('Tavily raw response:', JSON.stringify(data).substring(0, 500));
     
-    let context = data.answer ? `📌 ${data.answer}\n\n` : '';
+    if (!data.results?.length) {
+      console.log('Tavily: No results found');
+      return { context: '', hasResults: false, sources: [] };
+    }
+    
+    let context = data.answer ? `📌 Tóm tắt: ${data.answer}\n\n` : '';
     const sources: string[] = [];
     
-    data.results.slice(0, 3).forEach((r: any, i: number) => {
-      context += `【${i + 1}】${r.title}: ${r.content.substring(0, 300)}\n\n`;
-      sources.push(r.title);
+    data.results.slice(0, 5).forEach((r: any, i: number) => {
+      context += `【${i + 1}】${r.title}: ${r.content.substring(0, 400)}\n\n`;
+      sources.push(r.url || r.title);
     });
     
     console.log('Tavily: ✅ Found', sources.length, 'results');

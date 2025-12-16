@@ -82,11 +82,14 @@ async function searchTavily(query: string): Promise<TavilyResult> {
       return { context: '', hasResults: false, sources: [] };
     }
     
-    let context = data.answer ? `📌 Tóm tắt: ${data.answer}\n\n` : '';
+    // KHÔNG dùng data.answer vì thường không chính xác
+    // Chỉ dùng content thực từ search results
+    let context = '🔍 KẾT QUẢ TÌM KIẾM WEB (dữ liệu thực tế, hãy trích dẫn chính xác):\n\n';
     const sources: string[] = [];
     
     data.results.slice(0, 5).forEach((r: any, i: number) => {
-      context += `【${i + 1}】${r.title}: ${r.content.substring(0, 400)}\n\n`;
+      const content = r.content || r.snippet || '';
+      context += `【${i + 1}】${r.title}\nNguồn: ${r.url}\nNội dung: ${content.substring(0, 500)}\n\n`;
       sources.push(r.url || r.title);
     });
     
@@ -228,9 +231,9 @@ Trước khi trả lời, hãy đọc kĩ từng chữ của user để hiểu:
       systemPrompt += `\n\n📚 TÀI LIỆU:\n${ragResult.context}\n→ Tổng hợp tự nhiên.`;
     }
     
-    // Add Tavily context
+    // Add Tavily context - QUAN TRỌNG: dùng dữ liệu chính xác
     if (tavilyResult.hasResults) {
-      systemPrompt += `\n\n🌐 THÔNG TIN MỚI:\n${tavilyResult.context}\n→ Diễn đạt tự nhiên.`;
+      systemPrompt += `\n\n🌐 DỮ LIỆU TÌM KIẾM WEB (QUAN TRỌNG - SỬ DỤNG CHÍNH XÁC):\n${tavilyResult.context}\n⚠️ HÃY TRÍCH DẪN CHÍNH XÁC số liệu/giá từ kết quả tìm kiếm trên, KHÔNG tự suy luận hay làm tròn số.`;
     }
 
     // Sử dụng model NHANH HƠN: llama-3.1-70b-instant

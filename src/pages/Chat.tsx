@@ -238,8 +238,26 @@ const Chat = () => {
   };
 
   const isImagePrompt = (text: string) => {
+    const lowerText = text.toLowerCase();
+    
+    // Kiểm tra nếu user đang yêu cầu VIẾT PROMPT (không phải tạo hình trực tiếp)
+    const promptWritingKeywords = [
+      'viết prompt', 'tạo prompt', 'prompt cho', 'prompt để', 
+      'giúp con viết prompt', 'giúp con tạo prompt', 'nhờ bé viết prompt',
+      'write prompt', 'create prompt', 'make prompt', 'help me write prompt',
+      'prompt giúp', 'cho con prompt', 'bé viết prompt'
+    ];
+    
+    const isPromptWritingRequest = promptWritingKeywords.some(keyword => lowerText.includes(keyword));
+    
+    // Nếu đang yêu cầu viết prompt → KHÔNG tạo hình, để Angel trả lời bằng text
+    if (isPromptWritingRequest) {
+      return false;
+    }
+    
+    // Chỉ tạo hình khi user yêu cầu TẠO HÌNH TRỰC TIẾP
     const imageKeywords = ['tạo hình', 'vẽ', 'generate', 'create image', 'draw', '🎨', 'hình ảnh', 'picture', 'illustration', 'tạo ảnh'];
-    return imageKeywords.some(keyword => text.toLowerCase().includes(keyword)) || mode === 'image';
+    return imageKeywords.some(keyword => lowerText.includes(keyword)) || mode === 'image';
   };
 
   const generateImage = async (prompt: string) => {

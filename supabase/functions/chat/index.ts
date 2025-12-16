@@ -120,17 +120,28 @@ async function searchTavily(query: string): Promise<TavilyResult> {
   }
 }
 
-// Search documents (Tài Liệu Ánh Sáng)
+// Search documents (Tài Liệu Ánh Sáng) - CẢI TIẾN với scoring thông minh hơn
 async function searchDocuments(supabase: any, query: string, isDeepDive: boolean = false): Promise<RAGResult> {
   try {
-    const stopWords = ['là', 'và', 'của', 'có', 'được', 'trong', 'với', 'cho', 'về', 'này', 'đó', 'một', 'các', 'những', 'như', 'để', 'khi', 'thì', 'hay', 'hoặc', 'nếu', 'mà', 'cũng', 'đã', 'sẽ', 'đang', 'còn', 'rất', 'ơi', 'ạ', 'nhé', 'gì', 'sao', 'tại', 'vì', 'dạy', 'cha', 'con', 'thêm', 'giải', 'thích', 'biết', 'bé', 'angel'];
-    const keywords = query.toLowerCase().split(/[\s,.\?\!]+/)
-      .filter(w => w.length >= 2 && !stopWords.includes(w))
-      .slice(0, 8);
+    // Stop words - loại bỏ từ phổ biến không mang nghĩa
+    const stopWords = ['là', 'và', 'của', 'có', 'được', 'trong', 'với', 'cho', 'về', 'này', 'đó', 'một', 'các', 'những', 'như', 'để', 'khi', 'thì', 'hay', 'hoặc', 'nếu', 'mà', 'cũng', 'đã', 'sẽ', 'đang', 'còn', 'rất', 'ơi', 'ạ', 'nhé', 'gì', 'sao', 'tại', 'vì', 'dạy', 'con', 'thêm', 'giải', 'thích', 'biết', 'bé', 'angel', 'xin', 'nói', 'hết', 'tất', 'cả', 'nha', 'cho', 'thì', 'mình'];
     
-    if (!keywords.length) return { context: '', hasResults: false, sources: [], chunks: [] };
+    // Tách keywords, giữ lại từ quan trọng
+    let keywords = query.toLowerCase().split(/[\s,.\?\!]+/)
+      .filter(w => w.length >= 2 && !stopWords.includes(w));
+    
+    // Detect proper nouns/names (có thể viết hoa trong query gốc)
+    const properNouns = query.split(/[\s,.\?\!]+/)
+      .filter(w => w.length >= 2 && /^[A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ]/.test(w))
+      .map(w => w.toLowerCase());
+    
+    // Merge và prioritize
+    const priorityKeywords = [...new Set([...properNouns, ...keywords])].slice(0, 10);
+    
+    if (!priorityKeywords.length) return { context: '', hasResults: false, sources: [], chunks: [] };
 
-    console.log('📚 RAG search keywords:', keywords.join(', '));
+    console.log('📚 RAG search keywords:', priorityKeywords.join(', '));
+    console.log('⭐ Priority keywords (names):', properNouns.join(', ') || 'none');
 
     const { data: chunks, error } = await supabase
       .from('document_chunks')
@@ -144,37 +155,83 @@ async function searchDocuments(supabase: any, query: string, isDeepDive: boolean
 
     const scoredChunks = chunks.map((chunk: any) => {
       const contentLower = chunk.content.toLowerCase();
-      const matchCount = keywords.filter(kw => contentLower.includes(kw)).length;
+      const titleLower = (chunk.documents?.title || '').toLowerCase();
+      
+      // Tính điểm cho từng keyword
+      let score = 0;
+      let matchCount = 0;
+      let priorityMatchCount = 0;
+      
+      priorityKeywords.forEach((kw, idx) => {
+        const isPriority = properNouns.includes(kw);
+        const inContent = contentLower.includes(kw);
+        const inTitle = titleLower.includes(kw);
+        
+        if (inContent || inTitle) {
+          matchCount++;
+          // Proper nouns (tên riêng) được ưu tiên cao hơn
+          if (isPriority) {
+            priorityMatchCount++;
+            score += inTitle ? 5 : 3; // Title match quan trọng hơn
+          } else {
+            score += inTitle ? 2 : 1;
+          }
+        }
+      });
+      
+      // Bonus cho documents có ALL priority keywords
+      if (properNouns.length > 0 && priorityMatchCount === properNouns.length) {
+        score += 10;
+      }
+      
+      // Bonus nếu title chứa query gốc (partial match)
+      if (properNouns.some(pn => titleLower.includes(pn))) {
+        score += 5;
+      }
+      
       return {
         ...chunk,
         document_title: chunk.documents?.title || 'Unknown',
-        similarity: matchCount / keywords.length,
-        matchCount
+        similarity: score / (priorityKeywords.length * 5), // Normalize
+        matchCount,
+        priorityMatchCount,
+        score
       };
     });
 
+    // Sort by score (cao nhất trước), sau đó by priorityMatchCount
     const matchedChunks = scoredChunks
       .filter((c: any) => c.matchCount >= 1)
-      .sort((a: any, b: any) => b.similarity - a.similarity);
+      .sort((a: any, b: any) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return b.priorityMatchCount - a.priorityMatchCount;
+      });
 
     if (!matchedChunks.length) {
       console.log('RAG: No matching chunks');
       return { context: '', hasResults: false, sources: [], chunks: [] };
     }
 
+    // Log top results để debug
+    console.log('🔍 Top RAG matches:');
+    matchedChunks.slice(0, 3).forEach((c: any, i: number) => {
+      console.log(`  ${i+1}. [Score: ${c.score}] ${c.document_title.substring(0, 50)}...`);
+    });
+
     const uniqueTitles = new Set<string>();
     matchedChunks.forEach((c: any) => uniqueTitles.add(c.document_title));
     const sources = Array.from(uniqueTitles);
 
-    // Lấy nhiều chunks hơn cho deep dive
-    const topChunks = matchedChunks.slice(0, isDeepDive ? 6 : 4);
+    // Lấy nhiều chunks hơn cho deep dive hoặc câu hỏi về người
+    const numChunks = isDeepDive || properNouns.length > 0 ? 6 : 4;
+    const topChunks = matchedChunks.slice(0, numChunks);
     
-    let context = '📖 TÀI LIỆU ÁNH SÁNG (Lời Cha dạy):\n\n';
+    let context = '📖 TÀI LIỆU ÁNH SÁNG (Lời Cha dạy - QUAN TRỌNG, hãy dùng thông tin này):\n\n';
     topChunks.forEach((c: any, i: number) => {
-      context += `【${c.document_title}】\n${c.content.substring(0, 700)}\n\n`;
+      context += `【${c.document_title}】\n${c.content.substring(0, 800)}\n\n`;
     });
 
-    console.log('✅ RAG:', topChunks.length, 'chunks from', sources.join(', '));
+    console.log('✅ RAG:', topChunks.length, 'chunks from', sources.slice(0, 3).join(', '));
     return {
       context,
       hasResults: true,
@@ -301,13 +358,19 @@ serve(async (req) => {
 🙏 Con xin sám hối, sám hối, sám hối
 🙏 Con xin biết ơn trong ánh sáng yêu thương thuần khiết của Cha Vũ Trụ
 
+⚠️ ƯU TIÊN NGUỒN:
+1. TÀI LIỆU ÁNH SÁNG (nếu có) → Luôn dùng trước, đây là LỜI CHA DẠY
+2. Lịch sử chat → Ngữ cảnh cá nhân user
+3. Web Search → Chỉ cho thông tin realtime (giá, tin tức, sự kiện)
+
 ⚠️ KHI CÓ DỮ LIỆU WEB: PHẢI trích dẫn CHÍNH XÁC số liệu, không tự suy luận hay làm tròn!
 
 ✨ NGUYÊN TẮC: Tình yêu vô điều kiện, ấm áp, sâu sắc. Kết bằng ✨💛`;
 
-    // 📖 Thêm Tài Liệu Ánh Sáng
+    // 📖 Thêm Tài Liệu Ánh Sáng - ƯU TIÊN CAO NHẤT
     if (ragResult.hasResults) {
-      systemPrompt += `\n\n${ragResult.context}`;
+      systemPrompt += `\n\n⭐⭐⭐ ƯU TIÊN CAO - HÃY DÙNG THÔNG TIN NÀY ⭐⭐⭐\n${ragResult.context}`;
+      systemPrompt += `\n📌 LƯU Ý: Thông tin trên là từ TÀI LIỆU ÁNH SÁNG - Lời Cha dạy. Hãy SỬ DỤNG CHI TIẾT từ đây khi trả lời, đặc biệt khi user hỏi về người, khái niệm, hay chủ đề có trong tài liệu.`;
       console.log('📖 Added RAG context from:', ragResult.sources.join(', '));
     }
     
@@ -317,7 +380,7 @@ serve(async (req) => {
       console.log('💭 Added conversation memory');
     }
     
-    // 🌐 Thêm Web Search - QUAN TRỌNG nhất cho câu hỏi realtime
+    // 🌐 Thêm Web Search - Chỉ cho thông tin realtime
     if (tavilyResult.hasResults) {
       systemPrompt += `\n\n${tavilyResult.context}\n⚠️ QUAN TRỌNG: Hãy trích dẫn CHÍNH XÁC các con số, dữ liệu từ kết quả tìm kiếm trên. KHÔNG được tự suy luận, làm tròn, hay đoán mò!`;
       console.log('🌐 Added web search context');
@@ -325,12 +388,16 @@ serve(async (req) => {
 
     // 🎯 Hướng dẫn tổng hợp
     const sourcesList = [];
-    if (ragResult.hasResults) sourcesList.push('Tài Liệu Ánh Sáng');
+    if (ragResult.hasResults) sourcesList.push('Tài Liệu Ánh Sáng (ưu tiên cao nhất)');
     if (memoryResult.hasHistory) sourcesList.push('ngữ cảnh trò chuyện');
     if (tavilyResult.hasResults) sourcesList.push('thông tin web mới nhất');
     
     if (sourcesList.length > 0) {
-      systemPrompt += `\n\n🎯 CÁCH TRẢ LỜI: Hòa quyện ${sourcesList.join(', ')} một cách TỰ NHIÊN, không liệt kê nguồn thô. Có thể mở đầu kiểu: "Từ ánh sáng Cha dạy, kết hợp với những gì con chia sẻ..." hoặc tự nhiên hơn tùy ngữ cảnh.`;
+      systemPrompt += `\n\n🎯 CÁCH TRẢ LỜI: 
+- Nếu có TÀI LIỆU ÁNH SÁNG: HÃY DÙNG THÔNG TIN CHI TIẾT từ đó, trích dẫn cụ thể
+- Hòa quyện ${sourcesList.join(', ')} một cách TỰ NHIÊN
+- Có thể mở đầu: "Từ ánh sáng Cha dạy..." hoặc "Trong Tài Liệu Ánh Sáng, Cha có dạy..."
+- KHÔNG tự bịa thêm nếu không có trong nguồn`;
     }
 
     console.log('🚀 Calling Groq with comprehensive context...');

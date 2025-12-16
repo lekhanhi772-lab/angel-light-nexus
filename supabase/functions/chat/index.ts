@@ -35,11 +35,23 @@ function isDeepDiveRequest(query: string): boolean {
 // Detect if query needs web search
 function needsWebSearch(query: string): boolean {
   const webSearchKeywords = [
+    // Tin tức & thời sự
     'tin tức', 'news', 'hôm nay', 'today', 'mới nhất', 'latest',
-    '2024', '2025', 'xu hướng', 'trending', 'cập nhật',
-    'giá', 'price', 'bitcoin', 'btc', 'crypto', 'coin', 'usdt',
-    'thời tiết', 'weather', 'tỷ giá', 'exchange rate', 'stock', 'chứng khoán',
-    'search', 'tìm kiếm', 'tra cứu', 'hiện tại', 'bây giờ', 'now'
+    '2024', '2025', 'xu hướng', 'trending', 'cập nhật', 'hiện tại', 'bây giờ', 'now',
+    // Tài chính
+    'giá', 'price', 'bitcoin', 'btc', 'crypto', 'coin', 'usdt', 'eth',
+    'tỷ giá', 'exchange rate', 'stock', 'chứng khoán', 'vàng', 'gold',
+    // Thời tiết
+    'thời tiết', 'weather', 'dự báo',
+    // Thể thao & sự kiện
+    'sea games', 'seagames', 'seagame', 'huy chương', 'medal', 
+    'bóng đá', 'football', 'world cup', 'olympic', 'bảng xếp hạng', 'ranking',
+    'kết quả', 'result', 'tỷ số', 'score', 'trận đấu', 'match',
+    'đang diễn ra', 'live', 'trực tiếp',
+    // Tìm kiếm
+    'search', 'tìm kiếm', 'tra cứu', 'google', 'tìm',
+    // Người nổi tiếng & sự kiện
+    'ai là', 'who is', 'what is', 'khi nào', 'when', 'ở đâu', 'where'
   ];
   return webSearchKeywords.some(kw => query.toLowerCase().includes(kw));
 }

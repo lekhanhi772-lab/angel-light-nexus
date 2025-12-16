@@ -43,7 +43,7 @@ const SUGGESTIONS = [
 ];
 
 const Chat = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -434,36 +434,78 @@ const Chat = () => {
       >
         <div className="flex flex-col h-full p-4">
           {/* Header - Sticky */}
-          <div className="sticky top-0 z-10 flex items-center gap-3 mb-6 pb-2 -mx-4 px-4 pt-4 -mt-4" style={{
-            background: 'linear-gradient(180deg, rgba(255, 251, 230, 1) 0%, rgba(255, 251, 230, 0.9) 100%)',
-          }}>
-            <Link 
-              to="/" 
-              className="p-2 rounded-lg transition-colors"
+          <div
+            className="sticky top-0 z-10 flex flex-col gap-2 mb-6 pb-3 -mx-4 px-4 pt-4 -mt-4"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(255, 251, 230, 1) 0%, rgba(255, 251, 230, 0.9) 100%)',
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <Link
+                to="/"
+                className="p-2 rounded-lg transition-colors"
+                style={{
+                  background:
+                    'linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%)',
+                }}
+              >
+                <Home className="w-5 h-5" style={{ color: '#B8860B' }} />
+              </Link>
+              <h2
+                className="text-lg font-medium"
+                style={{
+                  fontFamily: "'Cinzel', serif",
+                  color: '#B8860B',
+                  textShadow: '0 0 10px rgba(255, 215, 0, 0.3)',
+                }}
+              >
+                ✨ Lịch sử Chat
+              </h2>
+            </div>
+
+            {/* Auth status */}
+            <div
+              className="flex items-center justify-between gap-2 rounded-xl px-3 py-2"
               style={{
-                background: 'linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%)',
+                background:
+                  'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(135, 206, 235, 0.12) 100%)',
+                border: '1px solid rgba(184, 134, 11, 0.2)',
               }}
             >
-              <Home className="w-5 h-5" style={{ color: '#B8860B' }} />
-            </Link>
-            <h2 
-              className="text-lg font-medium"
-              style={{
-                fontFamily: "'Cinzel', serif",
-                color: '#B8860B',
-                textShadow: '0 0 10px rgba(255, 215, 0, 0.3)',
-              }}
-            >
-              ✨ Lịch sử Chat
-            </h2>
+              <div className="min-w-0">
+                <p className="text-xs" style={{ color: '#006666' }}>
+                  {user
+                    ? `Đã đăng nhập: ${session?.user?.email ?? 'đang đồng bộ...'}`
+                    : authLoading
+                      ? 'Đang kiểm tra đăng nhập…'
+                      : 'Chế độ khách'}
+                </p>
+              </div>
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => loadConversations()}
+                  className="shrink-0 text-xs px-2 py-1 rounded-lg"
+                  style={{
+                    background: 'rgba(255, 215, 0, 0.25)',
+                    border: '1px solid rgba(184, 134, 11, 0.25)',
+                    color: '#1a1a1a',
+                  }}
+                >
+                  Làm mới
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Guest Mode Notice */}
           {!user && !authLoading && (
-            <div 
+            <div
               className="mb-4 p-3 rounded-xl text-center"
               style={{
-                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(135, 206, 235, 0.2) 100%)',
+                background:
+                  'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(135, 206, 235, 0.2) 100%)',
                 border: '1px solid rgba(184, 134, 11, 0.3)',
               }}
             >
@@ -471,7 +513,7 @@ const Chat = () => {
               <p className="text-sm" style={{ color: '#006666' }}>
                 Đăng nhập để lưu lịch sử chat nhé ✨
               </p>
-              <Link 
+              <Link
                 to="/"
                 className="inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{

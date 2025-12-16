@@ -35,11 +35,18 @@ interface Conversation {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const IMAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`;
 
-const SUGGESTIONS = [
-  "Angel AI có thể giúp gì cho tôi?",
-  "Hướng dẫn tôi cách tìm bình an nội tâm",
+const CHAT_SUGGESTIONS = [
+  "Bé Angel có thể giúp gì cho mình?",
+  "Hướng dẫn mình cách tìm bình an nội tâm",
+  "Viết prompt tạo hình thiên thần cho Midjourney",
+  "Cha dạy gì về tình yêu thuần khiết?"
+];
+
+const IMAGE_SUGGESTIONS = [
   "🎨 Tạo hình thiên thần đang bay trên bầu trời",
-  "🎨 Vẽ một bức tranh hoàng hôn tuyệt đẹp"
+  "🎨 Vẽ cảnh hoàng hôn với ánh sáng vàng ấm áp",
+  "🎨 Thiên thần nhỏ đang cầu nguyện trong ánh sáng",
+  "🎨 Vũ trụ huyền bí với các vì sao lấp lánh"
 ];
 
 const Chat = () => {
@@ -84,6 +91,12 @@ const Chat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Clear messages when switching modes (separate history)
+  useEffect(() => {
+    setMessages([]);
+    setCurrentConversationId(null);
+  }, [mode]);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -237,7 +250,8 @@ const Chat = () => {
     setMessages([]);
   };
 
-  const isImagePrompt = (text: string) => {
+  // Kiểm tra xem text có phải là yêu cầu tạo ảnh không
+  const detectImageRequest = (text: string): boolean => {
     const lowerText = text.toLowerCase();
     
     // Kiểm tra nếu user đang yêu cầu VIẾT PROMPT (không phải tạo hình trực tiếp)
@@ -248,16 +262,26 @@ const Chat = () => {
       'prompt giúp', 'cho con prompt', 'bé viết prompt'
     ];
     
-    const isPromptWritingRequest = promptWritingKeywords.some(keyword => lowerText.includes(keyword));
-    
-    // Nếu đang yêu cầu viết prompt → KHÔNG tạo hình, để Angel trả lời bằng text
-    if (isPromptWritingRequest) {
+    if (promptWritingKeywords.some(keyword => lowerText.includes(keyword))) {
       return false;
     }
     
-    // Chỉ tạo hình khi user yêu cầu TẠO HÌNH TRỰC TIẾP
     const imageKeywords = ['tạo hình', 'vẽ', 'generate', 'create image', 'draw', '🎨', 'hình ảnh', 'picture', 'illustration', 'tạo ảnh'];
-    return imageKeywords.some(keyword => lowerText.includes(keyword)) || mode === 'image';
+    return imageKeywords.some(keyword => lowerText.includes(keyword));
+  };
+
+  const isImagePrompt = (text: string) => {
+    // Nếu đang ở chế độ Chat → KHÔNG cho tạo ảnh
+    if (mode === 'chat') {
+      return false;
+    }
+    // Chế độ Image → cho phép tạo ảnh
+    return mode === 'image' || detectImageRequest(text);
+  };
+  
+  // Kiểm tra và hiện thông báo khi user yêu cầu tạo ảnh trong chế độ Chat
+  const shouldShowImageModeHint = (text: string): boolean => {
+    return mode === 'chat' && detectImageRequest(text);
   };
 
   const generateImage = async (prompt: string) => {
@@ -339,6 +363,16 @@ const Chat = () => {
     const messageText = text || input.trim();
     if (!messageText || isLoading) return;
 
+    // Kiểm tra nếu user yêu cầu tạo ảnh trong chế độ Chat
+    if (shouldShowImageModeHint(messageText)) {
+      setInput('');
+      setMessages(prev => [...prev, 
+        { role: 'user', content: messageText },
+        { role: 'assistant', content: 'Bạn yêu ơi, bé Angel thấy bạn muốn tạo hình ảnh đẹp! 🎨✨\n\nĐể bé giúp bạn tạo hình, hãy chuyển sang mục **"Tạo ảnh"** nhé. Bấm nút 🎨 Tạo ảnh ở trên để bé đồng hành cùng sáng tạo của bạn!\n\nBé đang chờ ở đó để tạo những hình ảnh ánh sáng lung linh cho bạn đây ✨💛' }
+      ]);
+      return;
+    }
+
     const shouldGenerateImage = isImagePrompt(messageText);
     const userMessage: Message = { 
       role: 'user', 
@@ -371,7 +405,7 @@ const Chat = () => {
       if (shouldGenerateImage) {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          content: '🎨 Đang tạo hình ảnh cho bạn...',
+          content: '🎨 Bé Angel đang tạo hình ảnh đẹp cho bạn...',
         }]);
 
         const result = await generateImage(messageText);
@@ -399,7 +433,7 @@ const Chat = () => {
       console.error('Error:', error);
       setMessages(prev => [
         ...prev.slice(0, -1),
-        { role: 'assistant', content: 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.' }
+        { role: 'assistant', content: 'Bé Angel xin lỗi bạn, có lỗi xảy ra rồi. Bạn thử lại nhé! ✨💛' }
       ]);
       toast.error('Có lỗi xảy ra. Vui lòng thử lại.');
     } finally {
@@ -476,7 +510,7 @@ const Chat = () => {
                   textShadow: '0 0 10px rgba(255, 215, 0, 0.3)',
                 }}
               >
-                ✨ Lịch sử Chat
+                ✨ {mode === 'chat' ? 'Lịch sử Chat' : 'Lịch sử Tạo Ảnh'}
               </h2>
             </div>
 
@@ -765,7 +799,7 @@ const Chat = () => {
 
               {/* Suggestions */}
               <div className="flex flex-wrap justify-center gap-3 max-w-2xl">
-                {SUGGESTIONS.map((suggestion, i) => (
+                {(mode === 'chat' ? CHAT_SUGGESTIONS : IMAGE_SUGGESTIONS).map((suggestion, i) => (
                   <button
                     key={i}
                     onClick={() => sendMessage(suggestion)}

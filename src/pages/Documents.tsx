@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart, Download } from 'lucide-react';
+import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart, Download, Search, X, Loader2 } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -76,6 +76,19 @@ const DocumentsPage = () => {
   const [bulkMoveTargetFolder, setBulkMoveTargetFolder] = useState<string>('none');
   const [showBulkMoveDialog, setShowBulkMoveDialog] = useState(false);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  
+  // Search states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<{
+    id: string;
+    document_id: string;
+    content: string;
+    chunk_index: number;
+    document_title: string;
+    similarity: number;
+  }[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   
   const { toast } = useToast();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
@@ -685,6 +698,89 @@ const DocumentsPage = () => {
     return documents.filter(d => d.folder_id === null).length;
   };
 
+  // Search handler - tìm kiếm trong tài liệu
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setShowSearchResults(false);
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    setShowSearchResults(true);
+
+    try {
+      // Tìm kiếm bằng function search_documents (full-text search)
+      const { data, error } = await supabase.rpc('search_documents', {
+        search_query: searchQuery.trim(),
+        match_count: 20
+      });
+
+      if (error) {
+        console.error('Search error:', error);
+        // Fallback: tìm kiếm đơn giản theo title và file_name
+        const filteredDocs = documents.filter(doc => 
+          doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          doc.file_name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        
+        // Chuyển đổi sang format search results
+        const fallbackResults = filteredDocs.map(doc => ({
+          id: doc.id,
+          document_id: doc.id,
+          content: `File: ${doc.file_name}`,
+          chunk_index: 0,
+          document_title: doc.title,
+          similarity: 1.0
+        }));
+        
+        setSearchResults(fallbackResults);
+      } else {
+        setSearchResults(data || []);
+      }
+
+      if ((!data || data.length === 0) && !error) {
+        // Nếu không tìm thấy trong nội dung, tìm theo tên file
+        const filteredDocs = documents.filter(doc => 
+          doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          doc.file_name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        
+        const fallbackResults = filteredDocs.map(doc => ({
+          id: doc.id,
+          document_id: doc.id,
+          content: `File: ${doc.file_name}`,
+          chunk_index: 0,
+          document_title: doc.title,
+          similarity: 1.0
+        }));
+        
+        setSearchResults(fallbackResults);
+      }
+    } catch (err) {
+      console.error('Search error:', err);
+      toast({
+        title: "Lỗi tìm kiếm",
+        description: "Không thể tìm kiếm, vui lòng thử lại",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Clear search
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowSearchResults(false);
+  };
+
+  // Get document from search result
+  const getDocumentFromSearchResult = (result: typeof searchResults[0]) => {
+    return documents.find(d => d.id === result.document_id);
+  };
+
   const displayedDocuments = getDisplayedDocuments();
   const allSelected = displayedDocuments.length > 0 && displayedDocuments.every(d => selectedDocIds.has(d.id));
   const someSelected = displayedDocuments.some(d => selectedDocIds.has(d.id));
@@ -734,7 +830,147 @@ const DocumentsPage = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 relative z-10">
+      {/* Search Section */}
+      <div className="container mx-auto px-4 pt-6 relative z-10">
+        <div 
+          className="p-4 rounded-xl backdrop-blur-md shadow-lg mb-6"
+          style={{
+            background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+            boxShadow: '0 4px 20px rgba(255, 215, 0, 0.15)',
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#B8860B' }} />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="✨ Tìm kiếm Ánh Sáng... (theo tên file hoặc nội dung)"
+                className="pl-10 pr-10 font-inter"
+                style={{
+                  background: 'rgba(255, 251, 230, 0.9)',
+                  border: '1px solid rgba(184, 134, 11, 0.3)',
+                  color: '#006666',
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSearch();
+                  if (e.key === 'Escape') clearSearch();
+                }}
+              />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-amber-100 transition-colors"
+                >
+                  <X className="w-4 h-4" style={{ color: '#B8860B' }} />
+                </button>
+              )}
+            </div>
+            <Button
+              onClick={handleSearch}
+              disabled={isSearching || !searchQuery.trim()}
+              className="font-poppins"
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                color: '#1a1a1a',
+              }}
+            >
+              {isSearching ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Search className="w-4 h-4 mr-2" />
+                  Tìm kiếm
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Search Results */}
+          {showSearchResults && (
+            <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(184, 134, 11, 0.2)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-playfair text-sm font-semibold" style={{ color: '#B8860B' }}>
+                  ✨ Kết quả tìm kiếm "{searchQuery}"
+                </h4>
+                <span className="text-xs font-inter" style={{ color: '#87CEEB' }}>
+                  {searchResults.length} kết quả
+                </span>
+              </div>
+
+              {isSearching ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#FFD700' }} />
+                  <span className="ml-2 font-inter" style={{ color: '#006666' }}>Đang tìm kiếm...</span>
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="text-center py-8">
+                  <Search className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: '#B8860B' }} />
+                  <p className="font-inter" style={{ color: '#006666' }}>
+                    Không tìm thấy kết quả nào cho "{searchQuery}"
+                  </p>
+                  <p className="text-sm mt-1" style={{ color: '#87CEEB' }}>
+                    Hãy thử từ khóa khác nhé 💛
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {searchResults.map((result, idx) => {
+                    const doc = getDocumentFromSearchResult(result);
+                    return (
+                      <div
+                        key={`${result.id}-${idx}`}
+                        className="p-3 rounded-lg transition-all hover:shadow-md"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(152, 251, 152, 0.1) 100%)',
+                          border: '1px solid rgba(184, 134, 11, 0.2)',
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <FileText className="w-8 h-8 flex-shrink-0 mt-1" style={{ color: '#FFD700' }} />
+                          <div className="flex-1 min-w-0">
+                            <h5 className="font-semibold font-playfair truncate" style={{ color: '#006666' }}>
+                              {result.document_title}
+                            </h5>
+                            <p 
+                              className="text-sm mt-1 line-clamp-2 font-inter" 
+                              style={{ color: '#87CEEB' }}
+                            >
+                              {result.content.substring(0, 150)}...
+                            </p>
+                            {doc && (
+                              <div className="flex items-center gap-3 mt-2 text-xs" style={{ color: '#B8860B' }}>
+                                <span>{formatFileSize(doc.file_size)}</span>
+                                <span>•</span>
+                                <span>{formatDate(doc.created_at)}</span>
+                              </div>
+                            )}
+                          </div>
+                          {doc && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDownload(doc)}
+                              className="flex-shrink-0"
+                              style={{ color: '#FFD700' }}
+                            >
+                              <Download className="w-4 h-4 mr-1" />
+                              Tải về
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <main className="container mx-auto px-4 pb-8 relative z-10">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar - Folder Tree */}
           <div className="lg:w-72 flex-shrink-0">

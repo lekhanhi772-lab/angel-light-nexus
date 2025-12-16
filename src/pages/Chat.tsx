@@ -603,28 +603,30 @@ const Chat = () => {
 
       {/* Toggle Sidebar Button - Always visible (offset to the right of DivineSidebar) */}
       <button
-        onClick={() => setShowSidebar(!showSidebar)}
+        onClick={() => setShowSidebar((v) => !v)}
         className={cn(
           "fixed z-[60] top-4 p-2 rounded-lg shadow-lg transition-all pointer-events-auto",
+          // Keep button in a stable place so it never jumps off-screen
           "left-[calc(1rem+70px)] md:left-[calc(1rem+280px)]"
         )}
         style={{
-          transform: showSidebar ? 'translateX(18rem)' : 'translateX(0)',
           background: 'linear-gradient(135deg, #FFFBE6 0%, #FFF8DC 100%)',
           border: '1px solid rgba(184, 134, 11, 0.3)',
         }}
-        aria-label="Mở lịch sử chat"
+        aria-label={showSidebar ? 'Đóng lịch sử chat' : 'Mở lịch sử chat'}
         type="button"
       >
         <MessageSquare className="w-5 h-5" style={{ color: '#B8860B' }} />
       </button>
 
-      {/* Main Chat Area - Offset for fixed sidebar */}
-      <main 
-        className="flex-1 flex flex-col relative z-10 transition-all duration-300"
-        style={{
-          marginLeft: showSidebar ? '18rem' : '0',
-        }}
+      {/* Main Chat Area - Offset for fixed sidebars */}
+      <main
+        className={cn(
+          "flex-1 flex flex-col relative z-10 transition-all duration-300",
+          showSidebar
+            ? "ml-[calc(70px+18rem)] md:ml-[calc(280px+18rem)]"
+            : "ml-[70px] md:ml-[280px]"
+        )}
       >
         {/* Sticky Chat Header */}
         <div 

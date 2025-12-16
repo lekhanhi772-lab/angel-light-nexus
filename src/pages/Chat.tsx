@@ -419,7 +419,7 @@ const Chat = () => {
       {/* Sidebar - Light Theme - Fixed Position (offset to the right of DivineSidebar) */}
       <aside
         className={cn(
-          "fixed top-0 z-40 h-screen transition-all duration-300 left-[70px] md:left-[280px]",
+          "fixed top-0 z-[55] h-screen transition-all duration-300 left-[70px] md:left-[280px]",
           showSidebar ? "w-72" : "w-0"
         )}
         style={{
@@ -563,7 +563,7 @@ const Chat = () => {
       <button
         onClick={() => setShowSidebar(!showSidebar)}
         className={cn(
-          "fixed z-40 top-4 p-2 rounded-lg shadow-lg transition-all",
+          "fixed z-[60] top-4 p-2 rounded-lg shadow-lg transition-all pointer-events-auto",
           "left-[calc(1rem+70px)] md:left-[calc(1rem+280px)]"
         )}
         style={{
@@ -571,6 +571,8 @@ const Chat = () => {
           background: 'linear-gradient(135deg, #FFFBE6 0%, #FFF8DC 100%)',
           border: '1px solid rgba(184, 134, 11, 0.3)',
         }}
+        aria-label="Mở lịch sử chat"
+        type="button"
       >
         <MessageSquare className="w-5 h-5" style={{ color: '#B8860B' }} />
       </button>

@@ -50,7 +50,7 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<'chat' | 'image'>('chat');
-  const [showSidebar, setShowSidebar] = useState(true);
+  const showSidebar = true;
   const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -416,20 +416,18 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Sidebar - Light Theme - Fixed Position (offset to the right of DivineSidebar) */}
+      {/* Sidebar - Light Theme - Fixed Position (always visible) */}
       <aside
         className={cn(
-          "fixed top-0 z-[55] h-screen transition-all duration-300 left-[70px] md:left-[280px]",
-          showSidebar ? "w-72" : "w-0"
+          "fixed top-0 z-[55] h-screen transition-all duration-300 left-[70px] md:left-[280px] w-72"
         )}
         style={{
           background:
             'linear-gradient(180deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
-          borderRight: showSidebar ? '1px solid rgba(184, 134, 11, 0.2)' : 'none',
+          borderRight: '1px solid rgba(184, 134, 11, 0.2)',
           backdropFilter: 'blur(10px)',
           overflowY: 'auto',
           overflowX: 'hidden',
-          visibility: showSidebar ? 'visible' : 'hidden',
         }}
       >
         <div className="flex flex-col h-full p-4">
@@ -601,31 +599,12 @@ const Chat = () => {
         </div>
       </aside>
 
-      {/* Toggle Sidebar Button - Always visible (offset to the right of DivineSidebar) */}
-      <button
-        onClick={() => setShowSidebar((v) => !v)}
-        className={cn(
-          "fixed z-[60] top-4 p-2 rounded-lg shadow-lg transition-all pointer-events-auto",
-          // Keep button in a stable place so it never jumps off-screen
-          "left-[calc(1rem+70px)] md:left-[calc(1rem+280px)]"
-        )}
-        style={{
-          background: 'linear-gradient(135deg, #FFFBE6 0%, #FFF8DC 100%)',
-          border: '1px solid rgba(184, 134, 11, 0.3)',
-        }}
-        aria-label={showSidebar ? 'Đóng lịch sử chat' : 'Mở lịch sử chat'}
-        type="button"
-      >
-        <MessageSquare className="w-5 h-5" style={{ color: '#B8860B' }} />
-      </button>
 
       {/* Main Chat Area - Offset for fixed sidebars */}
       <main
         className={cn(
           "flex-1 flex flex-col relative z-10 transition-all duration-300",
-          showSidebar
-            ? "ml-[calc(70px+18rem)] md:ml-[calc(280px+18rem)]"
-            : "ml-[70px] md:ml-[280px]"
+          "ml-[calc(70px+18rem)] md:ml-[calc(280px+18rem)]"
         )}
       >
         {/* Sticky Chat Header */}

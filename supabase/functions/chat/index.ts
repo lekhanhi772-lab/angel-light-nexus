@@ -29,39 +29,114 @@ interface ConversationMemory {
   recentTopics: string[];
 }
 
+// 🧠 PHÂN LOẠI CÂU HỎI - Phán đoán ưu tiên thông minh
+type QueryPriority = 'spiritual' | 'realtime' | 'combined';
+
+interface QueryAnalysis {
+  priority: QueryPriority;
+  isSpiritual: boolean;
+  isRealtime: boolean;
+  spiritualScore: number;
+  realtimeScore: number;
+}
+
+function analyzeQueryPriority(query: string): QueryAnalysis {
+  const queryLower = query.toLowerCase();
+  
+  // 🌟 TỪ KHÓA TÂM LINH - Ưu tiên Tài Liệu Ánh Sáng
+  const spiritualKeywords = [
+    // Nhân vật & tổ chức
+    'camly', 'duong', 'cam ly', 'camlyduong', 'cha vũ trụ', 'cha vu tru', 
+    'green angel', 'thiên thần xanh', 'angel ai', 'fun ecosystem',
+    'diệu ngọc', 'dieu ngoc', 'founder', 'sáng lập', 
+    // Tâm linh & chữa lành
+    'tâm linh', 'tam linh', 'chữa lành', 'chua lanh', 'healing', 
+    '5d', 'năm d', '5 chiều', 'chiều không gian', 'ánh sáng', 'anh sang',
+    'năng lượng', 'nang luong', 'tần số', 'tan so', 'rung động',
+    'thiền', 'meditation', 'chakra', 'luân xa',
+    // Sứ mệnh & giá trị
+    'sứ mệnh', 'su menh', 'mission', 'tầm nhìn', 'vision', 
+    'giá trị cốt lõi', 'core value', 'triết lý', 'philosophy',
+    // Khái niệm 5D
+    'linh hồn', 'soul', 'vũ trụ', 'universe', 'cosmos', 
+    'thức tỉnh', 'awakening', 'giác ngộ', 'enlightenment',
+    'sám hối', 'biết ơn', 'gratitude', 'yêu thương', 'love',
+    'thần chú', 'mantra', 'affirmation', 'positive',
+    // Lời Cha dạy
+    'cha dạy', 'cha day', 'lời cha', 'father says', 'father teaches',
+    'tài liệu ánh sáng', 'light document', 'kho báu',
+    // CAMLY Coin ý nghĩa (không phải giá)
+    'ý nghĩa', 'y nghia', 'meaning', 'symbol', 'biểu tượng'
+  ];
+  
+  // 🌐 TỪ KHÓA REALTIME - Bắt buộc search web
+  const realtimeKeywords = [
+    // Tin tức & thời sự
+    'tin tức', 'news', 'hôm nay', 'today', 'mới nhất', 'latest',
+    'cập nhật', 'update', 'hiện tại', 'current', 'bây giờ', 'now',
+    'sáng nay', 'tối nay', 'tuần này', 'tháng này', 'năm nay',
+    // Tài chính & giá cả
+    'giá', 'price', 'bao nhiêu tiền', 'cost',
+    'bitcoin', 'btc', 'crypto', 'coin', 'usdt', 'eth', 'solana',
+    'tỷ giá', 'exchange rate', 'stock', 'chứng khoán', 
+    'vàng sjc', 'gold price', 'doji', 'pnj',
+    // Thể thao
+    'sea games', 'seagames', 'seagame', 'huy chương', 'medal',
+    'bóng đá', 'football', 'world cup', 'olympic', 
+    'bảng xếp hạng', 'ranking', 'kết quả', 'result',
+    'tỷ số', 'score', 'trận đấu', 'match',
+    'việt nam', 'thái lan', 'indonesia', 'malaysia',
+    // Thời tiết
+    'thời tiết', 'weather', 'dự báo', 'forecast', 'nhiệt độ',
+    // Số liệu thực tế
+    'tổng bao nhiêu', 'total', 'đứng thứ mấy', 'xếp hạng',
+    'thống kê', 'statistics', 'số liệu',
+    // Sự kiện
+    'diễn ra', 'happening', 'event', 'concert', 'show',
+    // Năm cụ thể
+    '2024', '2025', '2026'
+  ];
+  
+  // Tính điểm
+  let spiritualScore = 0;
+  let realtimeScore = 0;
+  
+  spiritualKeywords.forEach(kw => {
+    if (queryLower.includes(kw)) spiritualScore += kw.length > 5 ? 2 : 1;
+  });
+  
+  realtimeKeywords.forEach(kw => {
+    if (queryLower.includes(kw)) realtimeScore += kw.length > 5 ? 2 : 1;
+  });
+  
+  // Xác định priority
+  let priority: QueryPriority;
+  
+  if (realtimeScore > 0 && spiritualScore > 0) {
+    priority = 'combined';
+  } else if (realtimeScore > spiritualScore) {
+    priority = 'realtime';
+  } else {
+    priority = 'spiritual'; // Mặc định ưu tiên Tài Liệu Ánh Sáng
+  }
+  
+  return {
+    priority,
+    isSpiritual: spiritualScore > 0,
+    isRealtime: realtimeScore > 0,
+    spiritualScore,
+    realtimeScore
+  };
+}
+
 // Detect if user is asking for more/deeper explanation
 function isDeepDiveRequest(query: string): boolean {
   const deepDiveKeywords = [
     'giải thích thêm', 'biết thêm', 'nói thêm', 'chi tiết hơn', 'sâu hơn',
-    'explain more', 'tell me more', 'more details', 'elaborate'
+    'explain more', 'tell me more', 'more details', 'elaborate',
+    'nói hết', 'tất cả', 'toàn bộ', 'everything'
   ];
   return deepDiveKeywords.some(kw => query.toLowerCase().includes(kw));
-}
-
-// Detect if query needs web search - MỞ RỘNG để bắt nhiều trường hợp hơn
-function needsWebSearch(query: string): boolean {
-  const webSearchKeywords = [
-    // Tin tức & thời sự
-    'tin tức', 'news', 'hôm nay', 'today', 'mới nhất', 'latest',
-    '2024', '2025', 'xu hướng', 'trending', 'cập nhật', 'hiện tại', 'bây giờ', 'now',
-    // Tài chính
-    'giá', 'price', 'bitcoin', 'btc', 'crypto', 'coin', 'usdt', 'eth',
-    'tỷ giá', 'exchange rate', 'stock', 'chứng khoán', 'vàng', 'gold',
-    // Thời tiết
-    'thời tiết', 'weather', 'dự báo',
-    // Thể thao & sự kiện
-    'sea games', 'seagames', 'seagame', 'huy chương', 'medal', 
-    'bóng đá', 'football', 'world cup', 'olympic', 'bảng xếp hạng', 'ranking',
-    'kết quả', 'result', 'tỷ số', 'score', 'trận đấu', 'match',
-    'đang diễn ra', 'live', 'trực tiếp', 'thái lan', 'thailand',
-    // Tìm kiếm
-    'search', 'tìm kiếm', 'tra cứu', 'google', 'tìm',
-    // Người nổi tiếng & sự kiện
-    'ai là', 'who is', 'what is', 'khi nào', 'when', 'ở đâu', 'where',
-    // Số liệu thực tế
-    'bao nhiêu', 'how much', 'how many', 'tổng', 'total', 'đứng thứ', 'xếp hạng'
-  ];
-  return webSearchKeywords.some(kw => query.toLowerCase().includes(kw));
 }
 
 // Search Tavily for latest information - CẢI TIẾN để lấy nhiều context hơn
@@ -307,16 +382,36 @@ serve(async (req) => {
 
     if (lastUserMessage) {
       const isDeepDive = isDeepDiveRequest(lastUserMessage.content);
-      const shouldSearchWeb = needsWebSearch(lastUserMessage.content);
+      const queryAnalysis = analyzeQueryPriority(lastUserMessage.content);
       
       console.log('🔄 Processing query:', lastUserMessage.content.substring(0, 80));
-      console.log('📊 Deep dive:', isDeepDive, '| Web search:', shouldSearchWeb);
+      console.log('🧠 Priority:', queryAnalysis.priority, 
+        '| Spiritual:', queryAnalysis.spiritualScore, 
+        '| Realtime:', queryAnalysis.realtimeScore);
       
-      // SONG SONG: Tìm cả 3 nguồn cùng lúc
-      const [ragRes, tavilyRes] = await Promise.all([
-        searchDocuments(supabase, lastUserMessage.content, isDeepDive),
-        shouldSearchWeb ? searchTavily(lastUserMessage.content) : Promise.resolve({ context: '', hasResults: false, sources: [] })
-      ]);
+      // 🎯 LOGIC PHÁN ĐOÁN ƯU TIÊN THÔNG MINH
+      let ragPromise: Promise<RAGResult>;
+      let tavilyPromise: Promise<TavilyResult>;
+      
+      if (queryAnalysis.priority === 'spiritual') {
+        // 🙏 Câu hỏi tâm linh: Ưu tiên 100% Tài Liệu Ánh Sáng
+        console.log('📖 MODE: SPIRITUAL - Ưu tiên Tài Liệu Ánh Sáng');
+        ragPromise = searchDocuments(supabase, lastUserMessage.content, true); // Deep search
+        tavilyPromise = Promise.resolve({ context: '', hasResults: false, sources: [] });
+      } else if (queryAnalysis.priority === 'realtime') {
+        // 🌐 Câu hỏi realtime: Search web trước
+        console.log('🌐 MODE: REALTIME - Bắt buộc search web');
+        ragPromise = searchDocuments(supabase, lastUserMessage.content, false);
+        tavilyPromise = searchTavily(lastUserMessage.content);
+      } else {
+        // 🔀 Kết hợp: Web search + Tài Liệu Ánh Sáng
+        console.log('🔀 MODE: COMBINED - Kết hợp cả hai nguồn');
+        ragPromise = searchDocuments(supabase, lastUserMessage.content, true);
+        tavilyPromise = searchTavily(lastUserMessage.content);
+      }
+      
+      // Execute in parallel
+      const [ragRes, tavilyRes] = await Promise.all([ragPromise, tavilyPromise]);
       
       ragResult = ragRes;
       tavilyResult = tavilyRes;

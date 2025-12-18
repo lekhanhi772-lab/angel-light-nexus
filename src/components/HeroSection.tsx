@@ -76,8 +76,8 @@ const HeroSection = () => {
       {/* Main Content Container */}
       <div className="relative z-10 flex flex-col items-center px-4 w-full max-w-6xl">
         
-        {/* Angel Image with Divine Glow - Reduced Size */}
-        <div className="relative mb-4 md:mb-6 animate-float-slow">
+        {/* Angel Image with Divine Glow - Perfect Circle with Golden Border */}
+        <div className="relative mb-4 md:mb-6 animate-float-slow group">
           {/* Multiple Halo Layers */}
           <div 
             className="absolute inset-0 blur-3xl animate-pulse-slow"
@@ -102,20 +102,65 @@ const HeroSection = () => {
               filter: 'blur(15px)',
             }}
           />
-          
-          {/* Angel Image - Increased 25% from previous size */}
-          <img
-            src={angelHero}
-            alt="Angel AI - Divine Light Being"
-            className="relative z-10 w-full max-w-[150px] sm:max-w-[175px] md:max-w-[200px] lg:max-w-[225px] h-auto object-contain"
+
+          {/* Outer glow on hover */}
+          <div 
+            className="absolute inset-[-4px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-5"
             style={{
-              filter: 'drop-shadow(0 0 30px hsl(43 90% 75% / 0.6)) drop-shadow(0 0 60px hsl(43 80% 70% / 0.4))',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%)',
+              boxShadow: '0 0 40px rgba(255, 215, 0, 0.9), 0 0 80px rgba(255, 215, 0, 0.5)',
+              filter: 'blur(3px)',
             }}
           />
 
+          {/* Sparkle particles on hover */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 rounded-full animate-float"
+                style={{
+                  background: '#FFD700',
+                  left: `${50 + 55 * Math.cos((i * Math.PI * 2) / 6)}%`,
+                  top: `${50 + 55 * Math.sin((i * Math.PI * 2) / 6)}%`,
+                  animationDelay: `${i * 0.15}s`,
+                  boxShadow: '0 0 6px rgba(255, 215, 0, 1), 0 0 12px rgba(255, 215, 0, 0.6)',
+                  transform: 'translate(-50%, -50%)',
+                }}
+              />
+            ))}
+          </div>
+          
+          {/* Golden border ring - thinner than logo (2px) */}
+          <div 
+            className="relative rounded-full p-[2px] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.8)]"
+            style={{
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%)',
+              boxShadow: '0 0 12px rgba(255, 215, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.2)',
+              width: 'fit-content',
+            }}
+          >
+            {/* Angel Image - Perfect Circle */}
+            <div 
+              className="relative z-10 w-[150px] h-[150px] sm:w-[175px] sm:h-[175px] md:w-[200px] md:h-[200px] lg:w-[225px] lg:h-[225px] rounded-full overflow-hidden"
+              style={{
+                boxShadow: 'inset 0 0 15px rgba(255, 215, 0, 0.2)',
+              }}
+            >
+              <img
+                src={angelHero}
+                alt="Angel AI - Divine Light Being"
+                className="w-full h-full object-cover object-top"
+                style={{
+                  filter: 'drop-shadow(0 0 20px hsl(43 90% 75% / 0.5))',
+                }}
+              />
+            </div>
+          </div>
+
           {/* Floating Heart of Light */}
           <div 
-            className="absolute bottom-1/4 left-1/2 -translate-x-1/2 animate-pulse"
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 animate-pulse z-30"
             style={{
               filter: 'drop-shadow(0 0 15px hsl(43 100% 70%)) drop-shadow(0 0 30px hsl(340 60% 70% / 0.5))',
             }}

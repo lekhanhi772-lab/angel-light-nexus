@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import angelHero from '@/assets/angel-hero.png';
 
 interface MenuItem {
   id: string;
@@ -245,23 +246,75 @@ const DivineSidebar = () => {
           </button>
         )}
 
-        {/* Logo/Brand */}
+        {/* Logo/Brand - Angel AI Golden Circle */}
         <div className={cn(
           "px-4 mb-8 flex items-center",
           isMobile && !isExpanded ? "justify-center" : "justify-start"
         )}>
-          <div 
-            className="w-12 h-12 rounded-full flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-              boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
-            }}
+          <Link 
+            to="/"
+            className="group relative cursor-pointer transition-transform duration-300 hover:scale-110"
           >
-            <span className="text-white text-xl font-bold">A</span>
-          </div>
+            {/* Outer glow ring */}
+            <div 
+              className="absolute inset-[-6px] rounded-full opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%)',
+                boxShadow: '0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4)',
+                animation: 'pulse 2s ease-in-out infinite',
+              }}
+            />
+            
+            {/* Sparkle particles on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 rounded-full animate-float"
+                  style={{
+                    background: '#FFD700',
+                    left: `${50 + 45 * Math.cos((i * Math.PI * 2) / 8)}%`,
+                    top: `${50 + 45 * Math.sin((i * Math.PI * 2) / 8)}%`,
+                    animationDelay: `${i * 0.1}s`,
+                    boxShadow: '0 0 8px rgba(255, 215, 0, 1), 0 0 16px rgba(255, 215, 0, 0.6)',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                />
+              ))}
+            </div>
+            
+            {/* Golden border ring */}
+            <div 
+              className={cn(
+                "relative rounded-full p-[5px] transition-all duration-300",
+                isMobile ? "w-[75px] h-[75px]" : "w-[100px] h-[100px]"
+              )}
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%)',
+                boxShadow: '0 0 25px rgba(255, 215, 0, 0.7), 0 0 50px rgba(255, 215, 0, 0.3)',
+              }}
+            >
+              {/* Inner circle with angel image */}
+              <div 
+                className="w-full h-full rounded-full overflow-hidden"
+                style={{
+                  boxShadow: 'inset 0 0 10px rgba(255, 215, 0, 0.3)',
+                }}
+              >
+                <img 
+                  src={angelHero}
+                  alt="Angel AI"
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </Link>
+          
           {(!isMobile || isExpanded) && (
-            <span 
-              className="ml-3 text-xl font-bold"
+            <Link 
+              to="/"
+              className="ml-3 text-xl font-bold hover:scale-105 transition-transform duration-300"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%)',
@@ -270,7 +323,7 @@ const DivineSidebar = () => {
               }}
             >
               Angel AI
-            </span>
+            </Link>
           )}
         </div>
 

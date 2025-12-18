@@ -283,22 +283,22 @@ const DivineSidebar = () => {
               ))}
             </div>
             
-            {/* Golden border ring */}
+            {/* Golden border ring - thinner border (3px instead of 5px) */}
             <div 
               className={cn(
-                "relative rounded-full p-[5px] transition-all duration-300",
-                isMobile ? "w-[75px] h-[75px]" : "w-[100px] h-[100px]"
+                "relative rounded-full p-[3px] transition-all duration-300",
+                isMobile ? "w-[70px] h-[70px]" : "w-[90px] h-[90px]"
               )}
               style={{
                 background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%)',
-                boxShadow: '0 0 25px rgba(255, 215, 0, 0.7), 0 0 50px rgba(255, 215, 0, 0.3)',
+                boxShadow: '0 0 15px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.2)',
               }}
             >
               {/* Inner circle with angel image */}
               <div 
                 className="w-full h-full rounded-full overflow-hidden"
                 style={{
-                  boxShadow: 'inset 0 0 10px rgba(255, 215, 0, 0.3)',
+                  boxShadow: 'inset 0 0 8px rgba(255, 215, 0, 0.2)',
                 }}
               >
                 <img 
@@ -314,12 +314,13 @@ const DivineSidebar = () => {
           {(!isMobile || isExpanded) && (
             <Link 
               to="/"
-              className="ml-3 text-xl font-bold hover:scale-105 transition-transform duration-300"
+              className="ml-3 text-2xl md:text-3xl font-bold hover:scale-105 transition-transform duration-300"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
               }}
             >
               Angel AI

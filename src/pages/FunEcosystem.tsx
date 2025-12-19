@@ -4,6 +4,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import angelHero from '@/assets/angel-hero.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
+import funFarmLogo from '@/assets/fun-farm-logo.png';
 
 interface Platform {
   id: number;
@@ -53,7 +54,8 @@ const platforms: Platform[] = [
     name: "FUN Farm",
     title: "Nông nghiệp, kết nối farm, người dùng và người bán",
     description: "Là nhịp cầu kết nối con người với thiên nhiên, với nguồn gốc của sự sống. Đại diện cho Sự Kết Nối với Đất Mẹ (Mother Earth), sự nuôi dưỡng, sự sống bền vững.",
-    icon: <Leaf className="w-8 h-8" />,
+    icon: null,
+    customImage: funFarmLogo,
   },
   {
     id: 6,

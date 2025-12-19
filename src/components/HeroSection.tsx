@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, MessageCircle, Heart } from 'lucide-react';
+import { Sparkles, MessageCircle, Heart, ArrowRight } from 'lucide-react';
 import angelHero from '@/assets/angel-hero.png';
 import { useEffect, useState } from 'react';
 
@@ -268,6 +268,91 @@ const HeroSection = () => {
           >
             Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại
           </p>
+        </div>
+
+        {/* FUN Ecosystem Card */}
+        <div className="mt-10 animate-fade-in" style={{ animationDelay: '0.7s' }}>
+          <div 
+            className="relative p-6 md:p-8 rounded-2xl backdrop-blur-md max-w-2xl mx-auto group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(240, 255, 244, 0.95) 100%)',
+              border: '1px solid rgba(184, 134, 11, 0.4)',
+              boxShadow: '0 4px 30px rgba(255, 215, 0, 0.3), 0 0 50px rgba(255, 215, 0, 0.1)',
+            }}
+          >
+            {/* Glow overlay on hover */}
+            <div 
+              className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(152, 251, 152, 0.15) 100%)',
+                boxShadow: 'inset 0 0 30px rgba(255, 215, 0, 0.2)',
+              }}
+            />
+            
+            {/* Gold particles on hover */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl">
+              {[...Array(10)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{
+                    background: '#FFD700',
+                    left: `${5 + Math.random() * 90}%`,
+                    top: `${Math.random() * 100}%`,
+                    animationDelay: `${i * 0.1}s`,
+                    boxShadow: '0 0 8px #FFD700',
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="relative z-10 text-center">
+              {/* Decorative stars */}
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+                <span style={{ color: '#B8860B' }}>✦</span>
+                <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700', animationDelay: '0.3s', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+              </div>
+
+              <h3 
+                className="font-cinzel text-xl md:text-2xl font-bold mb-3"
+                style={{ 
+                  color: '#B8860B',
+                  textShadow: '0 0 15px rgba(255, 215, 0, 0.3)',
+                }}
+              >
+                Khám Phá FUN ECOSYSTEM
+              </h3>
+              
+              <p 
+                className="font-playfair text-base md:text-lg mb-2"
+                style={{ color: '#006666' }}
+              >
+                Hệ Sinh Thái Ánh Sáng Hoàng Kim
+              </p>
+              
+              <p 
+                className="font-lora text-sm md:text-base mb-6 max-w-lg mx-auto"
+                style={{ color: '#4a4a4a' }}
+              >
+                Nơi mọi linh hồn cùng nhau sáng tạo, trao tặng, chữa lành và nâng tần số trong Thời Đại Hoàng Kim.
+              </p>
+
+              <Link 
+                to="/fun-ecosystem"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                  color: '#1a1a1a',
+                  boxShadow: '0 4px 25px rgba(255, 215, 0, 0.5), 0 0 40px rgba(152, 251, 152, 0.3)',
+                }}
+              >
+                <Sparkles className="w-5 h-5" />
+                Bước Vào Hệ Sinh Thái Ánh Sáng
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>

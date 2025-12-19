@@ -77,7 +77,7 @@ const HeroSection = () => {
       <div className="relative z-10 flex flex-col items-center px-4 w-full max-w-6xl">
         
         {/* Angel Image with Divine Glow - Perfect Circle with Golden Border */}
-        <div className="relative mb-4 md:mb-6 animate-float-slow group">
+        <div className="relative mb-2 md:mb-3 animate-float-slow group">
           {/* Multiple Halo Layers */}
           <div 
             className="absolute inset-0 blur-3xl animate-pulse-slow"
@@ -184,7 +184,7 @@ const HeroSection = () => {
             
             {/* Main Title - Playfair Display Black Italic with Divine Button Gold Color */}
             <h1 
-              className="relative text-[80px] sm:text-[100px] md:text-[130px] lg:text-[160px] font-black italic tracking-[0.02em] animate-divine-breath"
+              className="relative text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] font-black italic tracking-[0.02em] animate-divine-breath"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%)',

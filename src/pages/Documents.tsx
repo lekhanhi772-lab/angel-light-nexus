@@ -29,6 +29,7 @@ interface Document {
   id: string;
   title: string;
   file_name: string;
+  file_path: string;
   file_size: number;
   file_type: string;
   created_at: string;
@@ -106,9 +107,10 @@ const DocumentsPage = () => {
     setViewContent(null);
 
     try {
+      // Use file_path (sanitized name in storage) not file_name (original Vietnamese name)
       const { data: publicUrlData } = supabase.storage
         .from('sacred-documents')
-        .getPublicUrl(doc.file_name);
+        .getPublicUrl(doc.file_path);
 
       if (!publicUrlData?.publicUrl) {
         throw new Error('Could not get public URL');
@@ -163,10 +165,10 @@ const DocumentsPage = () => {
     });
 
     try {
-      // Get public URL for the file
+      // Use file_path (sanitized name in storage) not file_name (original Vietnamese name)
       const { data: publicUrlData } = supabase.storage
         .from('sacred-documents')
-        .getPublicUrl(doc.file_name);
+        .getPublicUrl(doc.file_path);
 
       if (publicUrlData?.publicUrl) {
         // Use fetch to download the file
@@ -683,6 +685,7 @@ const DocumentsPage = () => {
           id: result.document.id,
           title: result.document.title,
           file_name: file.name,
+          file_path: result.document.file_path || file.name,
           file_size: file.size,
           file_type: result.document.file_type,
           created_at: new Date().toISOString(),

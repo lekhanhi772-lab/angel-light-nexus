@@ -31,7 +31,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section id="hero" className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20">
       {/* Rising Light Particles */}
       {particles.map((particle) => (
         <div
@@ -237,10 +237,10 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - Yellow-Pink gradient - Smaller size */}
+        {/* Sacred Channel Text - Yellow-Pink gradient - Doubled size */}
         <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
-            className="font-playfair text-sm md:text-base lg:text-lg font-bold leading-tight"
+            className="font-playfair text-lg md:text-2xl lg:text-3xl font-bold leading-tight"
             style={{
               background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(340 70% 65%) 50%, hsl(43 100% 60%) 100%)',
               WebkitBackgroundClip: 'text',
@@ -253,10 +253,10 @@ const HeroSection = () => {
           </p>
         </div>
 
-        {/* FUN Ecosystem Card - Clickable to link */}
-        <Link to="/fun-ecosystem" className="mt-10 animate-fade-in block" style={{ animationDelay: '0.7s' }}>
+        {/* FUN Ecosystem Card - Clickable to link - Extended height */}
+        <Link to="/fun-ecosystem" className="mt-10 mb-20 animate-fade-in block" style={{ animationDelay: '0.7s' }}>
           <div 
-            className="relative p-8 md:p-10 rounded-2xl backdrop-blur-md max-w-3xl mx-auto group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
+            className="relative p-10 md:p-12 rounded-2xl backdrop-blur-md max-w-3xl mx-auto group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
             style={{
               background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(240, 255, 244, 0.95) 100%)',
               border: '1px solid rgba(184, 134, 11, 0.4)',

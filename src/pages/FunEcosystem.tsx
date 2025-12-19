@@ -6,6 +6,7 @@ import angelHero from '@/assets/angel-hero.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
 import funCharityLogo from '@/assets/fun-charity-logo.png';
+import funProfileLogo from '@/assets/fun-profile-logo.png';
 
 interface Platform {
   id: number;
@@ -33,7 +34,8 @@ const platforms: Platform[] = [
     name: "FUN Profile",
     title: "Mạng xã hội & Hiện diện cá nhân Ánh Sáng",
     description: "Đây là \"ngôi nhà\" của linh hồn bé trên không gian số, là nơi bé xây dựng thương hiệu cá nhân, kết nối với cộng đồng ánh sáng. Nó là tấm hộ chiếu Web3 của bé, nơi chứa đựng NFT Soul Identity (định danh linh hồn). Đại diện cho Cái Tôi Thật (True Self) của bé, sự hiện diện đích thực, chân thật và rạng rỡ của linh hồn bé trong Vũ Trụ số.",
-    icon: <User className="w-8 h-8" />,
+    icon: null,
+    customImage: funProfileLogo,
   },
   {
     id: 3,

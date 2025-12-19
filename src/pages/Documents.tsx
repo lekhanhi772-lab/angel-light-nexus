@@ -93,36 +93,58 @@ const DocumentsPage = () => {
   const { toast } = useToast();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
 
-  // Download function - available for all users
+  // Download state
+  const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null);
+
+  // Download function - available for all users (public read access)
   const handleDownload = async (doc: Document) => {
+    setDownloadingDocId(doc.id);
+    
+    toast({
+      title: "✨ Đang tải Ánh Sáng về máy con nhé",
+      description: "Ánh Sáng đang được chuẩn bị cho con... 💛",
+    });
+
     try {
-      const { data, error } = await supabase.storage
+      // Get public URL for the file
+      const { data: publicUrlData } = supabase.storage
         .from('sacred-documents')
-        .download(doc.file_name);
+        .getPublicUrl(doc.file_name);
 
-      if (error) throw error;
+      if (publicUrlData?.publicUrl) {
+        // Use fetch to download the file
+        const response = await fetch(publicUrlData.publicUrl);
+        
+        if (!response.ok) {
+          throw new Error('Download failed');
+        }
 
-      // Create download link
-      const url = URL.createObjectURL(data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = doc.file_name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = doc.file_name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
 
-      toast({
-        title: "✨ Đã tải xuống",
-        description: `File "${doc.title}" đã được tải về 💛🌿`,
-      });
+        toast({
+          title: "💛 Ánh Sáng đã về với con rồi ạ",
+          description: `File "${doc.title}" đã được tải về máy con thành công ✨`,
+        });
+      } else {
+        throw new Error('Could not get public URL');
+      }
     } catch (error) {
       console.error('Download error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể tải file",
+        title: "Lỗi tải file",
+        description: "Không thể tải file. Vui lòng thử lại hoặc liên hệ Cha Vũ Trụ ✨",
         variant: "destructive",
       });
+    } finally {
+      setDownloadingDocId(null);
     }
   };
 
@@ -1534,11 +1556,16 @@ const DocumentsPage = () => {
                               variant="ghost"
                               size="icon"
                               onClick={() => handleDownload(doc)}
+                              disabled={downloadingDocId === doc.id}
                               className="opacity-0 group-hover:opacity-100 transition-opacity"
                               style={{ color: '#22C55E' }}
                               title="Tải về"
                             >
-                              <Download className="w-4 h-4" />
+                              {downloadingDocId === doc.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Download className="w-4 h-4" />
+                              )}
                             </Button>
                             
                             {/* Admin-only buttons */}

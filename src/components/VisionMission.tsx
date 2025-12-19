@@ -67,7 +67,7 @@ const VisionMission = () => {
   }, []);
 
   return (
-    <section id="vision-mission" ref={sectionRef} className="relative py-32 lg:py-40 overflow-hidden">
+    <section id="vision-mission" ref={sectionRef} className="relative py-16 lg:py-24 overflow-hidden">
 
       {/* Sacred Geometry Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -136,20 +136,20 @@ const VisionMission = () => {
         <div className="max-w-6xl mx-auto">
           {/* Vision Section */}
           <div 
-            className={`mb-32 transition-all duration-1000 ${
+            className={`mb-16 transition-all duration-1000 ${
               isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
             }`}
           >
-            <div className="text-center mb-20 lg:mb-28">
-              <div className="inline-flex items-center gap-4 mb-8">
-                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
-                <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>🌟</span>
-                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
+            <div className="text-center mb-12 lg:mb-16">
+              <div className="inline-flex items-center gap-3 mb-5">
+                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
+                <span className="text-2xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>🌟</span>
+                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
               </div>
               
-              {/* Main Title - Playfair Display Black, 60-80px desktop, Gold→Blue gradient */}
+              {/* Main Title - Playfair Display Black, reduced size */}
               <h2 
-                className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black mb-8 leading-tight"
+                className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
                 style={{
                   background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
                   WebkitBackgroundClip: 'text',
@@ -162,9 +162,9 @@ const VisionMission = () => {
                 Tầm Nhìn Của Angel AI
               </h2>
 
-              {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
+              {/* Subtitle - reduced size */}
               <p 
-                className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
+                className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
                 style={{ 
                   color: 'hsl(180 100% 25%)',
                   textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
@@ -175,7 +175,7 @@ const VisionMission = () => {
               </p>
             </div>
 
-            <div className="space-y-10 lg:space-y-12">
+            <div className="space-y-6 lg:space-y-8">
               {visionItems.map((item, index) => (
                 <div 
                   key={item.number}
@@ -188,7 +188,7 @@ const VisionMission = () => {
                 >
                   {/* Main card container - matching SacredPillars style */}
                   <div 
-                    className="relative p-10 lg:p-12 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.03]"
+                    className="relative p-6 lg:p-8 rounded-2xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.02]"
                     style={{
                       background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
                       border: '2px solid transparent',
@@ -241,10 +241,10 @@ const VisionMission = () => {
                       </>
                     )}
 
-                    <div className="flex gap-8 items-start relative z-10">
-                      {/* Number circle - 20% larger with strong gold glow */}
+                    <div className="flex gap-5 items-start relative z-10">
+                      {/* Number circle - smaller size */}
                       <div 
-                        className="relative z-10 flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center font-playfair font-bold text-2xl lg:text-3xl text-white transform group-hover:scale-125 transition-transform duration-500"
+                        className="relative z-10 flex-shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center font-playfair font-bold text-lg lg:text-xl text-white transform group-hover:scale-110 transition-transform duration-500"
                         style={{
                           background: 'linear-gradient(135deg, hsl(38 76% 45%) 0%, hsl(43 100% 50%) 50%, hsl(38 76% 45%) 100%)',
                           filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
@@ -256,7 +256,7 @@ const VisionMission = () => {
                       <div className="flex-1">
                         {/* Title - Playfair Display Bold, Gold with Blue shadow */}
                         <h3 
-                          className="relative z-10 font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold mb-4 leading-tight"
+                          className="relative z-10 font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-2 leading-tight"
                           style={{
                             background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
                             WebkitBackgroundClip: 'text',
@@ -271,7 +271,7 @@ const VisionMission = () => {
                         {/* Description - Lora, Deep Teal for absolute readability */}
                         {item.description && (
                           <p 
-                            className="relative z-10 font-lora text-lg md:text-xl lg:text-[22px] leading-relaxed font-medium"
+                            className="relative z-10 font-lora text-sm md:text-base lg:text-lg leading-relaxed font-medium"
                             style={{ color: 'hsl(180 100% 15%)' }}
                           >
                             {item.description}

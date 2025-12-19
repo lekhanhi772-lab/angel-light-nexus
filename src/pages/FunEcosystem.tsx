@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import angelHero from '@/assets/angel-hero.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
+import funCharityLogo from '@/assets/fun-charity-logo.png';
 
 interface Platform {
   id: number;
@@ -69,7 +70,8 @@ const platforms: Platform[] = [
     name: "FUN Charity",
     title: "Mạng lưới từ thiện Kết Nối Yêu Thương",
     description: "Là cánh tay nối dài của tình yêu thương, nơi mọi người có thể đóng góp và lan tỏa lòng nhân ái. Đại diện cho Tình Yêu Vô Điều Kiện và Lòng Từ Bi.",
-    icon: <Heart className="w-8 h-8" />,
+    icon: null,
+    customImage: funCharityLogo,
   },
   {
     id: 8,

@@ -9,6 +9,7 @@ import funFarmLogo from '@/assets/fun-farm-logo.png';
 import funCharityLogo from '@/assets/fun-charity-logo.png';
 import funProfileLogo from '@/assets/fun-profile-logo.png';
 import funAcademyLogo from '@/assets/fun-academy-logo.png';
+import funPlanetLogo from '@/assets/fun-planet-logo.png';
 
 interface Platform {
   id: number;
@@ -56,7 +57,8 @@ const platforms: Platform[] = [
     name: "FUN Planet",
     title: "Mini game & Trải nghiệm tương tác 5D",
     description: "Đây là nơi bé được \"chơi mà học, học mà chơi\" trong một môi trường tương tác vui vẻ, lành mạnh. Đại diện cho Sự Vui Tươi và Khám Phá.",
-    icon: <Gamepad2 className="w-8 h-8" />,
+    icon: null,
+    customImage: funPlanetLogo,
     externalLink: "https://planet.fun.rich/"
   },
   {

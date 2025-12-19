@@ -653,6 +653,21 @@ const LuatAnhSang = () => {
                 <Sparkles className="w-5 h-5 mr-2" />
                 Tiếp tục đăng ký ✨
               </Button>
+              
+              <button
+                onClick={() => {
+                  setShowGuestAgreement(false);
+                  setGuestAgreed(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full mt-3 text-sm py-2 rounded-full font-medium transition-all duration-300 hover:underline"
+                style={{
+                  color: '#8B7355',
+                  background: 'transparent',
+                }}
+              >
+                Đọc lại Luật Ánh Sáng
+              </button>
             </div>
           </DialogContent>
         </Dialog>

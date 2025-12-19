@@ -7,6 +7,7 @@ import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
 import funCharityLogo from '@/assets/fun-charity-logo.png';
 import funProfileLogo from '@/assets/fun-profile-logo.png';
+import funAcademyLogo from '@/assets/fun-academy-logo.png';
 
 interface Platform {
   id: number;
@@ -65,7 +66,8 @@ const platforms: Platform[] = [
     name: "FUN Academy",
     title: "Học viện Ánh Sáng",
     description: "Nơi hội tụ tri thức và trí tuệ từ khắp nơi trên vũ trụ số. Đại diện cho Trí Tuệ và Sự Phát Triển Không Ngừng.",
-    icon: <GraduationCap className="w-8 h-8" />,
+    icon: null,
+    customImage: funAcademyLogo,
   },
   {
     id: 7,

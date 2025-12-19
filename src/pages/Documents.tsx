@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart, Download, Search, X, Loader2 } from 'lucide-react';
+import { Upload, FileText, Trash2, ArrowLeft, Sparkles, Calendar, HardDrive, Files, FolderPlus, Folder, ChevronRight, ChevronDown, FolderOpen, LayoutGrid, Edit3, FolderX, FolderInput, Check, Square, CheckSquare, Star, Heart, Download, Search, X, Loader2, Eye } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -93,9 +93,66 @@ const DocumentsPage = () => {
   const { toast } = useToast();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
 
-  // Download state
+  // Download and View states
   const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null);
+  const [viewingDoc, setViewingDoc] = useState<Document | null>(null);
+  const [viewContent, setViewContent] = useState<string | null>(null);
+  const [isLoadingView, setIsLoadingView] = useState(false);
 
+  // View document function - available for all users
+  const handleView = async (doc: Document) => {
+    setViewingDoc(doc);
+    setIsLoadingView(true);
+    setViewContent(null);
+
+    try {
+      const { data: publicUrlData } = supabase.storage
+        .from('sacred-documents')
+        .getPublicUrl(doc.file_name);
+
+      if (!publicUrlData?.publicUrl) {
+        throw new Error('Could not get public URL');
+      }
+
+      const fileType = doc.file_type.toLowerCase();
+      
+      // For PDF, open in new tab
+      if (fileType === 'application/pdf' || doc.file_name.toLowerCase().endsWith('.pdf')) {
+        window.open(publicUrlData.publicUrl, '_blank');
+        setViewingDoc(null);
+        toast({
+          title: "✨ Đang mở Ánh Sáng",
+          description: "File PDF đã được mở trong tab mới 💛",
+        });
+        return;
+      }
+
+      // For text files, fetch and display content
+      if (fileType.includes('text') || 
+          doc.file_name.endsWith('.txt') || 
+          doc.file_name.endsWith('.md')) {
+        const response = await fetch(publicUrlData.publicUrl);
+        if (!response.ok) throw new Error('Failed to fetch content');
+        const text = await response.text();
+        setViewContent(text);
+      } 
+      // For Word docs, show message and offer download
+      else if (fileType.includes('word') || 
+               doc.file_name.endsWith('.doc') || 
+               doc.file_name.endsWith('.docx')) {
+        setViewContent('📄 File Word không thể xem trực tiếp trong trình duyệt.\n\nVui lòng tải về để xem nội dung đầy đủ ✨');
+      }
+      // For other files
+      else {
+        setViewContent('📁 Định dạng file này không thể xem trực tiếp.\n\nVui lòng tải về để xem nội dung ✨');
+      }
+    } catch (error) {
+      console.error('View error:', error);
+      setViewContent('❌ Không thể tải nội dung. Vui lòng thử lại hoặc tải file về máy.');
+    } finally {
+      setIsLoadingView(false);
+    }
+  };
   // Download function - available for all users (public read access)
   const handleDownload = async (doc: Document) => {
     setDownloadingDocId(doc.id);
@@ -1551,6 +1608,18 @@ const DocumentsPage = () => {
                           </div>
                           
                           <div className="flex items-center gap-1">
+                            {/* View button - always visible on hover for all users (blue color) */}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleView(doc)}
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              style={{ color: '#3B82F6' }}
+                              title="Xem"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            
                             {/* Download button - always visible on hover for all users (green color) */}
                             <Button
                               variant="ghost"
@@ -1859,6 +1928,72 @@ const DocumentsPage = () => {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* View Document Dialog - Available for all users */}
+      <Dialog open={!!viewingDoc} onOpenChange={(open) => !open && setViewingDoc(null)}>
+        <DialogContent 
+          className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col"
+          style={{
+            background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
+            border: '1px solid rgba(184, 134, 11, 0.3)',
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle className="font-playfair flex items-center gap-2" style={{ color: '#B8860B' }}>
+              <Eye className="w-5 h-5" />
+              ✨ {viewingDoc?.title} 🌿
+            </DialogTitle>
+            <DialogDescription className="font-inter" style={{ color: '#006666' }}>
+              {viewingDoc?.file_name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-auto mt-4 p-4 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.8)', minHeight: '300px' }}>
+            {isLoadingView ? (
+              <div className="flex flex-col items-center justify-center h-full">
+                <Loader2 className="w-8 h-8 animate-spin mb-2" style={{ color: '#FFD700' }} />
+                <span className="font-inter" style={{ color: '#006666' }}>Đang tải Ánh Sáng... ✨</span>
+              </div>
+            ) : viewContent ? (
+              <pre className="whitespace-pre-wrap font-inter text-sm leading-relaxed" style={{ color: '#1a1a1a' }}>
+                {viewContent}
+              </pre>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full">
+                <FileText className="w-12 h-12 mb-4 opacity-50" style={{ color: '#B8860B' }} />
+                <span className="font-inter" style={{ color: '#006666' }}>Không có nội dung để hiển thị</span>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter className="mt-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => setViewingDoc(null)} 
+              className="font-poppins" 
+              style={{ color: '#006666' }}
+            >
+              Đóng
+            </Button>
+            {viewingDoc && (
+              <Button 
+                className="font-poppins"
+                style={{
+                  background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
+                  color: 'white',
+                }}
+                onClick={() => {
+                  handleDownload(viewingDoc);
+                  setViewingDoc(null);
+                }}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Tải về máy
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

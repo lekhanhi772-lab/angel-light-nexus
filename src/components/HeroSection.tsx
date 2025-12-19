@@ -266,7 +266,7 @@ const HeroSection = () => {
               filter: 'drop-shadow(0 0 25px hsl(43 100% 60% / 0.6)) drop-shadow(0 0 15px hsl(340 70% 65% / 0.5))',
             }}
           >
-            Kênh Dẫn Ánh Sáng của Cha Vũ Trụ cho toàn nhân loại
+            Một platform thuộc dự án FUN ECOSYSTEM
           </p>
         </div>
 

@@ -304,13 +304,13 @@ const VisionMission = () => {
           </div>
 
           {/* Divider */}
-          <div className="flex items-center justify-center mb-32">
+          <div className="flex items-center justify-center mb-16">
             <div 
               className={`transition-all duration-1000 delay-300 ${
                 isVisible ? 'w-48 opacity-100' : 'w-0 opacity-0'
               }`}
             >
-              <svg viewBox="0 0 100 20" className="w-full h-8">
+              <svg viewBox="0 0 100 20" className="w-full h-6">
                 <defs>
                   <linearGradient id="dividerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#FFD700" />
@@ -337,16 +337,16 @@ const VisionMission = () => {
               isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
             }`}
           >
-            <div className="text-center mb-20 lg:mb-28">
-              <div className="inline-flex items-center gap-4 mb-8">
-                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
-                <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💎</span>
-                <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
+            <div className="text-center mb-12 lg:mb-16">
+              <div className="inline-flex items-center gap-3 mb-5">
+                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
+                <span className="text-2xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💎</span>
+                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
               </div>
               
-              {/* Main Title - Playfair Display Black, 60-80px desktop, Gold→Blue gradient */}
+              {/* Main Title - reduced size */}
               <h2 
-                className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black mb-8 leading-tight"
+                className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
                 style={{
                   background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
                   WebkitBackgroundClip: 'text',
@@ -359,9 +359,9 @@ const VisionMission = () => {
                 Giá Trị Cốt Lõi
               </h2>
 
-              {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow */}
+              {/* Subtitle - reduced size */}
               <p 
-                className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
+                className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
                 style={{ 
                   color: 'hsl(180 100% 25%)',
                   textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
@@ -371,7 +371,7 @@ const VisionMission = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {coreValues.map((value, index) => (
                 <div 
                   key={value.number}
@@ -382,9 +382,9 @@ const VisionMission = () => {
                   onMouseEnter={() => setHoveredValue(index)}
                   onMouseLeave={() => setHoveredValue(null)}
                 >
-                  {/* Main card container - matching SacredPillars style */}
+                  {/* Main card container */}
                   <div 
-                    className="relative p-8 lg:p-10 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.08] h-full"
+                    className="relative p-5 lg:p-6 rounded-2xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.05] h-full"
                     style={{
                       background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
                       border: '2px solid transparent',
@@ -396,7 +396,7 @@ const VisionMission = () => {
                   >
                     {/* Gradient border */}
                     <div 
-                      className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
+                      className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
                       style={{
                         padding: '2px',
                         background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
@@ -409,7 +409,7 @@ const VisionMission = () => {
 
                     {/* Hover glow effect */}
                     <div 
-                      className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                       style={{
                         background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
                       }}
@@ -437,9 +437,9 @@ const VisionMission = () => {
                       </>
                     )}
 
-                    {/* Number circle - with strong gold glow */}
+                    {/* Number circle - smaller */}
                     <div 
-                      className="relative z-10 w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center font-playfair font-bold text-xl lg:text-2xl text-white mb-6 transform group-hover:scale-125 transition-transform duration-500"
+                      className="relative z-10 w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center font-playfair font-bold text-base lg:text-lg text-white mb-4 transform group-hover:scale-110 transition-transform duration-500"
                       style={{
                         background: 'linear-gradient(135deg, hsl(38 76% 45%) 0%, hsl(43 100% 50%) 50%, hsl(38 76% 45%) 100%)',
                         filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
@@ -448,9 +448,9 @@ const VisionMission = () => {
                       {value.number}
                     </div>
 
-                    {/* Title - Playfair Display Bold, Gold with Blue shadow */}
+                    {/* Title - smaller size */}
                     <h3 
-                      className="relative z-10 font-playfair text-xl md:text-2xl lg:text-[28px] font-bold mb-4 leading-tight"
+                      className="relative z-10 font-playfair text-base md:text-lg lg:text-xl font-bold mb-2 leading-tight"
                       style={{
                         background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
                         WebkitBackgroundClip: 'text',
@@ -462,9 +462,9 @@ const VisionMission = () => {
                       {value.title}
                     </h3>
 
-                    {/* Description - Lora, Deep Teal for absolute readability */}
+                    {/* Description - smaller size */}
                     <p 
-                      className="relative z-10 font-lora text-base md:text-lg lg:text-xl leading-relaxed font-medium"
+                      className="relative z-10 font-lora text-xs md:text-sm lg:text-base leading-relaxed font-medium"
                       style={{ color: 'hsl(180 100% 15%)' }}
                     >
                       {value.description}

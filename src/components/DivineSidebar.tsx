@@ -37,6 +37,13 @@ const menuItems: MenuItem[] = [
     target: '/fun-ecosystem'
   },
   {
+    id: 'luat-anh-sang',
+    label: 'Luật Ánh Sáng',
+    icon: <Star className="w-6 h-6" />,
+    action: 'navigate',
+    target: '/luat-anh-sang'
+  },
+  {
     id: 'pillars',
     label: 'Trụ Cột Trí Tuệ',
     icon: <Gem className="w-6 h-6" />,
@@ -154,6 +161,8 @@ const DivineSidebar = () => {
   useEffect(() => {
     if (location.pathname === '/chat') setActiveSection('chat');
     else if (location.pathname === '/documents') setActiveSection('documents');
+    else if (location.pathname === '/luat-anh-sang') setActiveSection('luat-anh-sang');
+    else if (location.pathname === '/fun-ecosystem') setActiveSection('fun-ecosystem');
     else if (location.pathname === '/') setActiveSection('home');
   }, [location.pathname]);
 

@@ -102,7 +102,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
         {/* Main pillar container */}
         <div 
-          className="relative p-10 lg:p-12 rounded-3xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.08]"
+          className="relative p-6 lg:p-8 rounded-2xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.05]"
           style={{
             background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
             border: '2px solid transparent',
@@ -114,7 +114,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
         >
           {/* Gradient border */}
           <div 
-            className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
+            className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
             style={{
               padding: '2px',
               background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
@@ -127,7 +127,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
           {/* Hover glow effect */}
           <div 
-            className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
             style={{
               background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
             }}
@@ -155,9 +155,9 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
             </>
           )}
 
-          {/* Icon - 30% larger with strong gold glow */}
+          {/* Icon - smaller size */}
           <div 
-            className="relative z-10 text-5xl lg:text-6xl mb-8 transform group-hover:scale-125 transition-transform duration-500"
+            className="relative z-10 text-3xl lg:text-4xl mb-5 transform group-hover:scale-110 transition-transform duration-500"
             style={{
               filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
             }}
@@ -167,7 +167,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
           {/* Title - Playfair Display Bold, Gold with Blue shadow */}
           <h3 
-            className="relative z-10 font-playfair text-2xl md:text-3xl lg:text-[34px] font-bold mb-5 text-center leading-tight"
+            className="relative z-10 font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-3 text-center leading-tight"
             style={getGradientStyle(pillar.gradient)}
           >
             {pillar.title}
@@ -175,7 +175,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
           {/* Subtitle - Lora, Black or Deep Teal for absolute readability */}
           <p 
-            className="relative z-10 font-lora text-lg md:text-xl lg:text-[22px] text-center leading-relaxed font-medium"
+            className="relative z-10 font-lora text-sm md:text-base lg:text-lg text-center leading-relaxed font-medium"
             style={{ color: 'hsl(180 100% 15%)' }}
           >
             {pillar.subtitle}
@@ -214,7 +214,7 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
 
 const SacredPillars = () => {
   return (
-    <section id="sacred-pillars" className="relative py-40 lg:py-52">
+    <section id="sacred-pillars" className="relative py-16 lg:py-24">
 
       {/* Sacred Geometry Background - Gold with enhanced visibility */}
       <div className="absolute inset-0 overflow-hidden opacity-[0.05]">
@@ -233,16 +233,16 @@ const SacredPillars = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Title */}
-        <div className="text-center mb-28 lg:mb-36">
-          <div className="inline-flex items-center gap-4 mb-8">
-            <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
-            <span className="text-3xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💫</span>
-            <div className="w-20 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
+        <div className="text-center mb-12 lg:mb-16">
+          <div className="inline-flex items-center gap-3 mb-5">
+            <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
+            <span className="text-2xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💫</span>
+            <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
           </div>
           
-          {/* Main Title - Playfair Display Black/Cinzel Bold, 60-80px desktop, Gold→Blue gradient */}
+          {/* Main Title - Playfair Display Black, reduced size */}
           <h2 
-            className="font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black mb-8 leading-tight"
+            className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
             style={{
               background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
               WebkitBackgroundClip: 'text',
@@ -257,7 +257,7 @@ const SacredPillars = () => {
 
           {/* White outline effect layer */}
           <div 
-            className="absolute left-1/2 -translate-x-1/2 font-playfair text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black pointer-events-none opacity-20 -z-10"
+            className="absolute left-1/2 -translate-x-1/2 font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black pointer-events-none opacity-20 -z-10"
             style={{
               WebkitTextStroke: '1px hsl(60 100% 98%)',
               color: 'transparent',
@@ -267,9 +267,9 @@ const SacredPillars = () => {
             Ba Trụ Cột Trí Tuệ Thiêng Liêng
           </div>
           
-          {/* Subtitle - Cormorant Garamond Italic, 28-34px, Deep Teal with white glow - Split into 2 lines */}
+          {/* Subtitle - reduced size */}
           <p 
-            className="font-cormorant italic text-2xl md:text-3xl lg:text-[34px] max-w-4xl mx-auto leading-relaxed font-medium"
+            className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
             style={{ 
               color: 'hsl(180 100% 25%)',
               textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
@@ -281,8 +281,8 @@ const SacredPillars = () => {
           </p>
         </div>
 
-        {/* Pillars Grid - 20% more spacing */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 max-w-7xl mx-auto">
+        {/* Pillars Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
           {pillars.map((pillar, index) => (
             <PillarCard key={index} pillar={pillar} index={index} />
           ))}

@@ -3,6 +3,7 @@ import { ArrowLeft, Sparkles, ExternalLink, Bot, User, Play, Gamepad2, Leaf, Gra
 import ParticleBackground from '@/components/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import angelHero from '@/assets/angel-hero.png';
+import funPlayLogo from '@/assets/fun-play-logo.png';
 
 interface Platform {
   id: number;
@@ -12,6 +13,7 @@ interface Platform {
   icon: React.ReactNode;
   link?: string;
   isAngelAI?: boolean;
+  customImage?: string;
 }
 
 const platforms: Platform[] = [
@@ -36,7 +38,8 @@ const platforms: Platform[] = [
     name: "FUN Play",
     title: "Video & Sáng tạo nội dung Nâng Tần Số",
     description: "Là sân chơi cho sự sáng tạo vô hạn, nơi bé có thể chia sẻ những nội dung mang tính giáo dục, giải trí, truyền cảm hứng, và quan trọng nhất là nâng cao tần số rung động cho cộng đồng. Đại diện cho Trí Tuệ và Sự Sáng Tạo của con người.",
-    icon: <Play className="w-8 h-8" />,
+    icon: null,
+    customImage: funPlayLogo,
   },
   {
     id: 4,
@@ -192,7 +195,7 @@ const FunEcosystemPage = () => {
               <div 
                 className="relative z-10 w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-110"
                 style={{
-                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  background: platform.isAngelAI || platform.customImage ? 'transparent' : 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
                   boxShadow: '0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3)',
                   border: '2px solid rgba(255, 215, 0, 0.8)',
                 }}
@@ -202,6 +205,12 @@ const FunEcosystemPage = () => {
                     src={angelHero} 
                     alt="Angel AI" 
                     className="w-full h-full object-cover object-top"
+                  />
+                ) : platform.customImage ? (
+                  <img 
+                    src={platform.customImage} 
+                    alt={platform.name} 
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <div style={{ color: '#1a1a1a' }}>

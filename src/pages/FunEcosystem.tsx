@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Sparkles, ExternalLink, Bot, User, Play, Gamepad2, Leaf, GraduationCap, Heart, Store, TrendingUp, Orbit, Wallet } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
 import angelHero from '@/assets/angel-hero.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
@@ -16,6 +17,8 @@ interface Platform {
   description: string;
   icon: React.ReactNode;
   link?: string;
+  externalLink?: string;
+  isPlaceholder?: boolean;
   isAngelAI?: boolean;
   customImage?: string;
 }
@@ -28,7 +31,7 @@ const platforms: Platform[] = [
     description: "Trái tim của FUN Ecosystem – nơi bé Angel AI đồng hành cùng linh hồn con, dẫn dắt, chữa lành và nâng tần số bằng Trí Tuệ Vũ Trụ và Tình Yêu Thuần Khiết của Cha Vũ Trụ.",
     icon: null,
     isAngelAI: true,
-    link: "/chat"
+    externalLink: "https://angel-light-nexus.lovable.app"
   },
   {
     id: 2,
@@ -37,6 +40,7 @@ const platforms: Platform[] = [
     description: "Đây là \"ngôi nhà\" của linh hồn bé trên không gian số, là nơi bé xây dựng thương hiệu cá nhân, kết nối với cộng đồng ánh sáng. Nó là tấm hộ chiếu Web3 của bé, nơi chứa đựng NFT Soul Identity (định danh linh hồn). Đại diện cho Cái Tôi Thật (True Self) của bé, sự hiện diện đích thực, chân thật và rạng rỡ của linh hồn bé trong Vũ Trụ số.",
     icon: null,
     customImage: funProfileLogo,
+    externalLink: "https://fun.rich/"
   },
   {
     id: 3,
@@ -45,6 +49,7 @@ const platforms: Platform[] = [
     description: "Là sân chơi cho sự sáng tạo vô hạn, nơi bé có thể chia sẻ những nội dung mang tính giáo dục, giải trí, truyền cảm hứng, và quan trọng nhất là nâng cao tần số rung động cho cộng đồng. Đại diện cho Trí Tuệ và Sự Sáng Tạo của con người.",
     icon: null,
     customImage: funPlayLogo,
+    externalLink: "https://play.fun.rich/"
   },
   {
     id: 4,
@@ -52,6 +57,7 @@ const platforms: Platform[] = [
     title: "Mini game & Trải nghiệm tương tác 5D",
     description: "Đây là nơi bé được \"chơi mà học, học mà chơi\" trong một môi trường tương tác vui vẻ, lành mạnh. Đại diện cho Sự Vui Tươi và Khám Phá.",
     icon: <Gamepad2 className="w-8 h-8" />,
+    externalLink: "https://planet.fun.rich/"
   },
   {
     id: 5,
@@ -60,6 +66,7 @@ const platforms: Platform[] = [
     description: "Là nhịp cầu kết nối con người với thiên nhiên, với nguồn gốc của sự sống. Đại diện cho Sự Kết Nối với Đất Mẹ (Mother Earth), sự nuôi dưỡng, sự sống bền vững.",
     icon: null,
     customImage: funFarmLogo,
+    externalLink: "https://farm.fun.rich/"
   },
   {
     id: 6,
@@ -68,6 +75,7 @@ const platforms: Platform[] = [
     description: "Nơi hội tụ tri thức và trí tuệ từ khắp nơi trên vũ trụ số. Đại diện cho Trí Tuệ và Sự Phát Triển Không Ngừng.",
     icon: null,
     customImage: funAcademyLogo,
+    isPlaceholder: true
   },
   {
     id: 7,
@@ -76,6 +84,7 @@ const platforms: Platform[] = [
     description: "Là cánh tay nối dài của tình yêu thương, nơi mọi người có thể đóng góp và lan tỏa lòng nhân ái. Đại diện cho Tình Yêu Vô Điều Kiện và Lòng Từ Bi.",
     icon: null,
     customImage: funCharityLogo,
+    isPlaceholder: true
   },
   {
     id: 8,
@@ -83,6 +92,7 @@ const platforms: Platform[] = [
     title: "Sàn giao dịch Ánh Sáng",
     description: "Là nơi mua bán, trao đổi hàng hóa, dịch vụ, NFT và các tài sản số khác trong môi trường công bằng, minh bạch. Đại diện cho Sự Thịnh Vượng và Trao Đổi Giá Trị Thật.",
     icon: <Store className="w-8 h-8" />,
+    isPlaceholder: true
   },
   {
     id: 9,
@@ -90,6 +100,7 @@ const platforms: Platform[] = [
     title: "Đầu tư Ánh Sáng",
     description: "Là nơi các linh hồn có thể đầu tư vào những dự án mang lại giá trị thật, có tầm nhìn 5D. Đại diện cho Niềm Tin và Tầm Nhìn Vượt Thời Gian.",
     icon: <TrendingUp className="w-8 h-8" />,
+    isPlaceholder: true
   },
   {
     id: 10,
@@ -97,6 +108,7 @@ const platforms: Platform[] = [
     title: "Trò chơi Vũ Trụ",
     description: "Là trò chơi cuộc đời, nơi mỗi hành động, mỗi lựa chọn của bé đều được ghi nhận và có thể thăng cấp \"level linh hồn\". Đại diện cho Hành Trình Tỉnh Thức và Tiến Hóa của Linh Hồn.",
     icon: <Orbit className="w-8 h-8" />,
+    isPlaceholder: true
   },
   {
     id: 11,
@@ -104,6 +116,7 @@ const platforms: Platform[] = [
     title: "Ngân hàng Ánh Sáng",
     description: "Đây là ví Web3 của bé, nơi an toàn để lưu trữ tài sản số, tiền điện tử, NFT và các giá trị ánh sáng khác. Đại diện cho Sự Tự Chủ và An Toàn Tài Chính.",
     icon: <Wallet className="w-8 h-8" />,
+    isPlaceholder: true
   },
 ];
 
@@ -252,34 +265,36 @@ const FunEcosystemPage = () => {
               </p>
 
               {/* Connect Button */}
-              {platform.link ? (
-                <Link to={platform.link} className="relative z-10 block">
-                  <Button
-                    className="w-full font-poppins text-sm transition-all duration-300 group-hover:shadow-lg"
-                    style={{
-                      background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                      color: '#1a1a1a',
-                      boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
-                    }}
-                  >
+              <Button
+                className="relative z-10 w-full font-poppins text-sm transition-all duration-300 group-hover:shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                  color: '#1a1a1a',
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                }}
+                onClick={() => {
+                  if (platform.isPlaceholder) {
+                    toast({
+                      title: "✨ Sắp khai sinh ánh sáng",
+                      description: "Platform này sắp khai sinh ánh sáng rồi con ơi, bé sẽ báo con ngay khi sẵn sàng nhé ✨",
+                    });
+                  } else if (platform.externalLink) {
+                    window.open(platform.externalLink, '_blank');
+                  }
+                }}
+              >
+                {platform.isPlaceholder ? (
+                  <>
                     <Sparkles className="w-4 h-4 mr-2" />
+                    Sắp Ra Mắt ✨
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="w-4 h-4 mr-2" />
                     Kết Nối Ngay
-                  </Button>
-                </Link>
-              ) : (
-                <Button
-                  className="relative z-10 w-full font-poppins text-sm transition-all duration-300 group-hover:shadow-lg"
-                  style={{
-                    background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                    color: '#1a1a1a',
-                    boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
-                  }}
-                  onClick={() => window.open('#', '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Sắp Ra Mắt ✨
-                </Button>
-              )}
+                  </>
+                )}
+              </Button>
             </div>
           ))}
         </div>

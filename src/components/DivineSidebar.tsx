@@ -81,33 +81,9 @@ const DivineSidebar = () => {
   const navigate = useNavigate();
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth();
 
-  const handleGoogleSignIn = async () => {
-    // OAuth should NOT run inside Lovable preview/iframe because it can redirect
-    // through lovable.dev (auth-bridge) and get blocked as a preview.
-    const PUBLIC_ORIGIN = 'https://angel-light-nexus.lovable.app';
-
-    const isInIframe = (() => {
-      try {
-        return window.self !== window.top;
-      } catch {
-        return true;
-      }
-    })();
-
-    const isPreviewLikeHost = /lovableproject\.com$|lovable\.dev$/.test(window.location.hostname);
-
-    if (isInIframe || isPreviewLikeHost) {
-      toast.message('Mở đăng nhập ở tab public…', {
-        description: 'Vui lòng đăng nhập Google trên trang đã publish để tránh lỗi “Access Denied”.',
-      });
-      window.open(PUBLIC_ORIGIN, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    const { error } = await signInWithGoogle();
-    if (error) {
-      toast.error('Đăng nhập thất bại: ' + error.message);
-    }
+  const handleGoogleSignIn = () => {
+    // Redirect to Luật Ánh Sáng page first - user must agree before signing in
+    navigate('/luat-anh-sang?action=register');
   };
 
   const handleSignOut = async () => {

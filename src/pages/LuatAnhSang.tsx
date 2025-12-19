@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Sparkles, Check, Star, Users, Shield, DoorOpen, Heart, Globe, Key, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 const LuatAnhSang = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [agreed, setAgreed] = useState(false);
   const [guestAgreed, setGuestAgreed] = useState(false);
   const [hasAgreedBefore, setHasAgreedBefore] = useState(false);
@@ -20,6 +21,16 @@ const LuatAnhSang = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Auto-open agreement modal when redirected from other pages with action=register
+  useEffect(() => {
+    const action = searchParams.get('action');
+    if (action === 'register' && !user) {
+      setShowGuestAgreement(true);
+      // Clear the query param after showing modal
+      setSearchParams({});
+    }
+  }, [searchParams, user, setSearchParams]);
 
   useEffect(() => {
     if (user) {

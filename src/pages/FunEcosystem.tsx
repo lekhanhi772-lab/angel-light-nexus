@@ -127,8 +127,8 @@ const FunEcosystemPage = () => {
     <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)' }}>
       <ParticleBackground />
       
-      {/* Header */}
-      <header className="relative z-10 p-4 md:p-6">
+      {/* Header - Sticky */}
+      <header className="sticky top-0 z-50 p-4 md:p-6 backdrop-blur-md" style={{ background: 'rgba(10, 10, 10, 0.8)' }}>
         <Link to="/">
           <Button
             variant="ghost"

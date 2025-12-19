@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Chat from "./pages/Chat";
 import Documents from "./pages/Documents";
 import FunEcosystem from "./pages/FunEcosystem";
+import LuatAnhSang from "./pages/LuatAnhSang";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/chat" element={<Chat />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/fun-ecosystem" element={<FunEcosystem />} />
+            <Route path="/luat-anh-sang" element={<LuatAnhSang />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

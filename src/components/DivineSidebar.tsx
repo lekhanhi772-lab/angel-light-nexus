@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
+import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -28,6 +28,13 @@ const menuItems: MenuItem[] = [
     icon: <Heart className="w-6 h-6" />,
     action: 'navigate',
     target: '/chat'
+  },
+  {
+    id: 'fun-ecosystem',
+    label: 'FUN Ecosystem',
+    icon: <Sparkles className="w-6 h-6" />,
+    action: 'navigate',
+    target: '/fun-ecosystem'
   },
   {
     id: 'vision',

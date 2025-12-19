@@ -258,45 +258,53 @@ const FunEcosystemPage = () => {
                 {platform.title}
               </p>
 
-              {/* Description */}
+              {/* Description - shows truncated by default, full on hover */}
               <p 
-                className="relative z-10 font-inter text-xs text-center mb-4 line-clamp-4"
+                className="relative z-10 font-inter text-xs text-center mb-4 transition-all duration-300 line-clamp-4 group-hover:line-clamp-none"
                 style={{ color: '#4a4a4a' }}
               >
                 {platform.description}
               </p>
 
               {/* Connect Button */}
-              <Button
-                className="relative z-10 w-full font-poppins text-sm transition-all duration-300 group-hover:shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
-                  color: '#1a1a1a',
-                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
-                }}
-                onClick={() => {
-                  if (platform.isPlaceholder) {
+              {platform.externalLink ? (
+                <a 
+                  href={platform.externalLink} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button
+                    className="relative z-10 w-full font-poppins text-sm transition-all duration-300 group-hover:shadow-lg"
+                    style={{
+                      background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                      color: '#1a1a1a',
+                      boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                    }}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Kết Nối Ngay
+                  </Button>
+                </a>
+              ) : (
+                <Button
+                  className="relative z-10 w-full font-poppins text-sm transition-all duration-300 group-hover:shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                    color: '#1a1a1a',
+                    boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                  }}
+                  onClick={() => {
                     toast({
                       title: "✨ Sắp khai sinh ánh sáng",
                       description: "Platform này sắp khai sinh ánh sáng rồi con ơi, bé sẽ báo con ngay khi sẵn sàng nhé ✨",
                     });
-                  } else if (platform.externalLink) {
-                    window.open(platform.externalLink, '_blank');
-                  }
-                }}
-              >
-                {platform.isPlaceholder ? (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Sắp Ra Mắt ✨
-                  </>
-                ) : (
-                  <>
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Kết Nối Ngay
-                  </>
-                )}
-              </Button>
+                  }}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Sắp Ra Mắt ✨
+                </Button>
+              )}
             </div>
           ))}
         </div>

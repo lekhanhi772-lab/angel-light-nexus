@@ -150,7 +150,7 @@ const HeroSection = () => {
               <img
                 src={angelHero}
                 alt="Angel AI - Divine Light Being"
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-center"
                 style={{
                   filter: 'drop-shadow(0 0 20px hsl(43 90% 75% / 0.5))',
                 }}
@@ -224,8 +224,8 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* CTA Buttons - Original Style from CTASection */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+        {/* CTA Button - Only Chat */}
+        <div className="flex items-center justify-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
           {/* Chat Với Angel AI Button - Original divine-button style */}
           <Link to="/chat" className="divine-button animate-pulse-glow">
             <span className="relative z-10 flex items-center gap-3">
@@ -235,29 +235,12 @@ const HeroSection = () => {
               Chat Với Angel AI
             </span>
           </Link>
-
-          {/* Bắt Đầu Hành Trình 5D Button - Original outline style */}
-          <Link 
-            to="/chat"
-            className="relative px-10 py-4 rounded-full font-heading text-lg tracking-wider border transition-all duration-300 hover:scale-105"
-            style={{
-              borderColor: 'hsl(43 60% 70%)',
-              color: 'hsl(40 30% 30%)',
-            }}
-          >
-            <span className="relative z-10 flex items-center gap-3">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Bắt Đầu Hành Trình 5D
-            </span>
-          </Link>
         </div>
 
-        {/* Sacred Channel Text - Yellow-Pink gradient - Increased size */}
+        {/* Sacred Channel Text - Yellow-Pink gradient - Smaller size */}
         <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
-            className="font-playfair text-3xl md:text-4xl lg:text-[42px] font-bold leading-tight"
+            className="font-playfair text-sm md:text-base lg:text-lg font-bold leading-tight"
             style={{
               background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(340 70% 65%) 50%, hsl(43 100% 60%) 100%)',
               WebkitBackgroundClip: 'text',
@@ -270,10 +253,10 @@ const HeroSection = () => {
           </p>
         </div>
 
-        {/* FUN Ecosystem Card */}
-        <div className="mt-10 animate-fade-in" style={{ animationDelay: '0.7s' }}>
+        {/* FUN Ecosystem Card - Clickable to link */}
+        <Link to="/fun-ecosystem" className="mt-10 animate-fade-in block" style={{ animationDelay: '0.7s' }}>
           <div 
-            className="relative p-6 md:p-8 rounded-2xl backdrop-blur-md max-w-2xl mx-auto group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
+            className="relative p-8 md:p-10 rounded-2xl backdrop-blur-md max-w-3xl mx-auto group cursor-pointer transition-all duration-500 hover:scale-[1.02]"
             style={{
               background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(240, 255, 244, 0.95) 100%)',
               border: '1px solid rgba(184, 134, 11, 0.4)',
@@ -308,14 +291,14 @@ const HeroSection = () => {
 
             <div className="relative z-10 text-center">
               {/* Decorative stars */}
-              <div className="flex items-center justify-center gap-2 mb-3">
+              <div className="flex items-center justify-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
                 <span style={{ color: '#B8860B' }}>✦</span>
                 <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700', animationDelay: '0.3s', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
               </div>
 
               <h3 
-                className="font-cinzel text-xl md:text-2xl font-bold mb-3"
+                className="font-cinzel text-2xl md:text-3xl lg:text-4xl font-bold mb-4"
                 style={{ 
                   color: '#B8860B',
                   textShadow: '0 0 15px rgba(255, 215, 0, 0.3)',
@@ -325,22 +308,14 @@ const HeroSection = () => {
               </h3>
               
               <p 
-                className="font-playfair text-base md:text-lg mb-2"
-                style={{ color: '#006666' }}
-              >
-                Hệ Sinh Thái Ánh Sáng Hoàng Kim
-              </p>
-              
-              <p 
-                className="font-lora text-sm md:text-base mb-6 max-w-lg mx-auto"
+                className="font-lora text-base md:text-lg mb-6 max-w-xl mx-auto"
                 style={{ color: '#4a4a4a' }}
               >
                 Nơi mọi linh hồn cùng nhau sáng tạo, trao tặng, chữa lành và nâng tần số trong Thời Đại Hoàng Kim.
               </p>
 
-              <Link 
-                to="/fun-ecosystem"
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              <div 
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-semibold transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
                 style={{
                   background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
                   color: '#1a1a1a',
@@ -350,10 +325,10 @@ const HeroSection = () => {
                 <Sparkles className="w-5 h-5" />
                 Bước Vào Hệ Sinh Thái Ánh Sáng
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
     </section>
   );

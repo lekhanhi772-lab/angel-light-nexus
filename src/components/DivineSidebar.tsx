@@ -25,7 +25,7 @@ const menuItems: MenuItem[] = [
   {
     id: 'chat',
     label: 'Chat với Angel AI',
-    icon: <Heart className="w-6 h-6" />,
+    icon: <Heart className="w-7 h-7" />,
     action: 'navigate',
     target: '/chat'
   },
@@ -37,18 +37,18 @@ const menuItems: MenuItem[] = [
     target: '/fun-ecosystem'
   },
   {
-    id: 'vision',
-    label: 'Tầm Nhìn',
-    icon: <Star className="w-6 h-6" />,
-    action: 'scroll',
-    target: 'vision-mission'
-  },
-  {
     id: 'pillars',
     label: 'Trụ Cột Trí Tuệ',
     icon: <Gem className="w-6 h-6" />,
     action: 'scroll',
     target: 'sacred-pillars'
+  },
+  {
+    id: 'vision',
+    label: 'Tầm Nhìn',
+    icon: <Star className="w-6 h-6" />,
+    action: 'scroll',
+    target: 'vision-mission'
   },
   {
     id: 'values',
@@ -61,8 +61,8 @@ const menuItems: MenuItem[] = [
     id: 'documents',
     label: 'Tài Liệu Ánh Sáng',
     icon: <BookOpen className="w-6 h-6" />,
-    action: 'scroll',
-    target: 'tai-lieu-anh-sang'
+    action: 'navigate',
+    target: '/documents'
   }
 ];
 
@@ -339,41 +339,51 @@ const DivineSidebar = () => {
         <nav className="flex-1 px-3 space-y-2">
           {menuItems.map((item) => {
             const isActive = activeSection === item.id;
+            const isChatItem = item.id === 'chat';
             
             return (
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden",
+                  "w-full flex items-center gap-3 rounded-xl transition-all duration-300 group relative overflow-hidden",
                   isMobile && !isExpanded ? "justify-center px-2" : "justify-start",
+                  // Chat item gets 25% larger padding
+                  isChatItem ? "px-5 py-4" : "px-4 py-3",
                   isActive 
                     ? "bg-[#FFF8DC]" 
-                    : "hover:bg-[#FFFACD]/50"
+                    : isChatItem 
+                      ? "bg-gradient-to-r from-[#FFFACD]/70 to-[#FFF8DC]/70 hover:from-[#FFFACD] hover:to-[#FFF8DC]"
+                      : "hover:bg-[#FFFACD]/50"
                 )}
                 style={{
-                  boxShadow: isActive 
-                    ? '0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.1)' 
-                    : 'none',
+                  boxShadow: isChatItem 
+                    ? '0 0 25px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.15)'
+                    : isActive 
+                      ? '0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.1)' 
+                      : 'none',
+                  border: isChatItem ? '2px solid rgba(255, 215, 0, 0.5)' : 'none',
                 }}
               >
                 {/* Hover glow effect */}
                 <div 
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    background: 'radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
+                    background: isChatItem 
+                      ? 'radial-gradient(circle at center, rgba(255, 215, 0, 0.35) 0%, transparent 70%)'
+                      : 'radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
                   }}
                 />
 
                 {/* Light particles on hover */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                  {[...Array(3)].map((_, i) => (
+                  {[...Array(isChatItem ? 5 : 3)].map((_, i) => (
                     <div
                       key={i}
                       className="absolute w-1 h-1 rounded-full animate-float"
                       style={{
                         background: '#FFD700',
-                        left: `${20 + i * 30}%`,
+                        left: `${20 + i * (isChatItem ? 15 : 30)}%`,
                         top: `${30 + i * 20}%`,
                         animationDelay: `${i * 0.2}s`,
                         boxShadow: '0 0 6px rgba(255, 215, 0, 0.8)',
@@ -382,30 +392,34 @@ const DivineSidebar = () => {
                   ))}
                 </div>
 
-                {/* Icon */}
+                {/* Icon - Chat item gets larger icon */}
                 <span 
                   className={cn(
                     "relative z-10 transition-all duration-300",
-                    isActive 
+                    isActive || isChatItem
                       ? "text-[#D4A017]" 
                       : "text-[#8B7355] group-hover:text-[#D4A017]"
                   )}
                   style={{
-                    filter: isActive ? 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))' : 'none',
+                    filter: isActive || isChatItem ? 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.7))' : 'none',
                   }}
                 >
                   {item.icon}
                 </span>
 
-                {/* Label */}
+                {/* Label - Chat item gets larger font */}
                 {(!isMobile || isExpanded) && (
                   <span 
                     className={cn(
-                      "relative z-10 text-sm font-medium transition-all duration-300 whitespace-nowrap",
-                      isActive 
+                      "relative z-10 font-medium transition-all duration-300 whitespace-nowrap",
+                      isChatItem ? "text-base" : "text-sm",
+                      isActive || isChatItem
                         ? "text-[#8B6914]" 
                         : "text-[#5C4033] group-hover:text-[#8B6914]"
                     )}
+                    style={{
+                      fontWeight: isChatItem ? 600 : 500,
+                    }}
                   >
                     {item.label}
                   </span>
@@ -418,6 +432,17 @@ const DivineSidebar = () => {
                     style={{
                       background: 'linear-gradient(180deg, #FFD700 0%, #FFA500 100%)',
                       boxShadow: '0 0 10px rgba(255, 215, 0, 0.8)',
+                    }}
+                  />
+                )}
+
+                {/* Special glow indicator for Chat item */}
+                {isChatItem && !isActive && (
+                  <div 
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-10 rounded-l-full animate-pulse"
+                    style={{
+                      background: 'linear-gradient(180deg, #FFD700 0%, #FFA500 100%)',
+                      boxShadow: '0 0 15px rgba(255, 215, 0, 0.9)',
                     }}
                   />
                 )}

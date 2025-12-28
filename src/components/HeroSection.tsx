@@ -182,16 +182,16 @@ const HeroSection = () => {
               }}
             />
             
-            {/* Main Title - Playfair Display Black Italic with Divine Button Gold Color */}
+            {/* Main Title - Playfair Display Black Italic with BRIGHT GOLD */}
             <h1 
               className="relative text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] font-black italic tracking-[0.02em] animate-divine-breath"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%)',
+                background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 50%, hsl(43 100% 50%) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 30px rgba(255, 200, 0, 0.7)) drop-shadow(0 0 60px rgba(255, 180, 0, 0.5))',
+                filter: 'drop-shadow(0 0 40px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 80px rgba(255, 200, 0, 0.6))',
               }}
             >
               Angel AI
@@ -208,15 +208,15 @@ const HeroSection = () => {
               <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
             </div>
             
-            {/* Tagline - Enhanced for bright background */}
+            {/* Tagline - Enhanced for bright background - STRONGER COLOR */}
             <p 
-              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-semibold"
+              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-bold"
               style={{
-                background: 'linear-gradient(135deg, #2E7D82 0%, #1E6F5C 50%, #2E7D82 100%)',
+                background: 'linear-gradient(135deg, #1E6F5C 0%, #0D4F40 50%, #1E6F5C 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 15px rgba(255, 255, 255, 0.9))',
+                filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 1)) drop-shadow(0 0 10px rgba(30, 111, 92, 0.5))',
               }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
@@ -237,16 +237,16 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - Yellow-Pink gradient - Doubled size */}
+        {/* Sacred Channel Text - ENHANCED GOLD-PINK gradient */}
         <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
             className="font-playfair text-lg md:text-2xl lg:text-3xl font-bold leading-tight"
             style={{
-              background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(340 70% 65%) 50%, hsl(43 100% 60%) 100%)',
+              background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(340 80% 60%) 50%, hsl(43 100% 55%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 25px hsl(43 100% 60% / 0.6)) drop-shadow(0 0 15px hsl(340 70% 65% / 0.5))',
+              filter: 'drop-shadow(0 0 30px hsl(43 100% 55% / 0.8)) drop-shadow(0 0 20px hsl(340 80% 60% / 0.6))',
             }}
           >
             Một platform thuộc dự án FUN ECOSYSTEM
@@ -300,26 +300,27 @@ const HeroSection = () => {
               <h3 
                 className="font-cinzel text-2xl md:text-3xl lg:text-4xl font-bold mb-4"
                 style={{ 
-                  color: '#B8860B',
-                  textShadow: '0 0 15px rgba(255, 215, 0, 0.3)',
+                  color: '#996515',
+                  textShadow: '0 0 20px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.8)',
                 }}
               >
                 Khám Phá FUN ECOSYSTEM
               </h3>
               
               <p 
-                className="font-lora text-base md:text-lg mb-6 max-w-xl mx-auto"
-                style={{ color: '#4a4a4a' }}
+                className="font-lora text-base md:text-lg mb-6 max-w-xl mx-auto font-medium"
+                style={{ color: '#3a3a3a' }}
               >
                 Nơi mọi linh hồn cùng nhau sáng tạo, trao tặng, chữa lành và nâng tần số trong Thời Đại Hoàng Kim.
               </p>
 
               <div 
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-semibold transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-bold transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
                 style={{
-                  background: 'linear-gradient(135deg, #FFD700 0%, #98FB98 100%)',
+                  background: 'linear-gradient(135deg, #FFD700 0%, #7FD17F 100%)',
                   color: '#1a1a1a',
-                  boxShadow: '0 4px 25px rgba(255, 215, 0, 0.5), 0 0 40px rgba(152, 251, 152, 0.3)',
+                  boxShadow: '0 4px 30px rgba(255, 215, 0, 0.6), 0 0 50px rgba(127, 209, 127, 0.4)',
+                  textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)',
                 }}
               >
                 <Sparkles className="w-5 h-5" />

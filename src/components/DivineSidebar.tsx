@@ -309,10 +309,11 @@ const DivineSidebar = () => {
               className="ml-3 text-2xl md:text-3xl font-bold hover:scale-105 transition-transform duration-300"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%)',
+                background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
+                filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))',
               }}
             >
               Angel AI
@@ -377,33 +378,33 @@ const DivineSidebar = () => {
                   ))}
                 </div>
 
-                {/* Icon - Chat item gets larger icon */}
+                {/* Icon - Chat item gets larger icon - ENHANCED GOLD */}
                 <span 
                   className={cn(
                     "relative z-10 transition-all duration-300",
                     isActive || isChatItem
-                      ? "text-[#D4A017]" 
-                      : "text-[#8B7355] group-hover:text-[#D4A017]"
+                      ? "text-[#FFD700]" 
+                      : "text-[#B8860B] group-hover:text-[#FFD700]"
                   )}
                   style={{
-                    filter: isActive || isChatItem ? 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.7))' : 'none',
+                    filter: isActive || isChatItem ? 'drop-shadow(0 0 12px rgba(255, 215, 0, 0.9))' : 'drop-shadow(0 0 4px rgba(255, 215, 0, 0.4))',
                   }}
                 >
                   {item.icon}
                 </span>
 
-                {/* Label - Chat item gets larger font */}
+                {/* Label - Chat item gets larger font - ENHANCED VISIBILITY */}
                 {(!isMobile || isExpanded) && (
                   <span 
                     className={cn(
-                      "relative z-10 font-medium transition-all duration-300 whitespace-nowrap",
+                      "relative z-10 transition-all duration-300 whitespace-nowrap",
                       isChatItem ? "text-base" : "text-sm",
                       isActive || isChatItem
-                        ? "text-[#8B6914]" 
-                        : "text-[#5C4033] group-hover:text-[#8B6914]"
+                        ? "text-[#B8860B] font-bold" 
+                        : "text-[#8B6914] font-semibold group-hover:text-[#B8860B]"
                     )}
                     style={{
-                      fontWeight: isChatItem ? 600 : 500,
+                      textShadow: isActive || isChatItem ? '0 0 10px rgba(255, 215, 0, 0.5)' : 'none',
                     }}
                   >
                     {item.label}
@@ -470,7 +471,7 @@ const DivineSidebar = () => {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#5C4033] truncate">
+                  <p className="text-sm font-semibold text-[#8B6914] truncate" style={{ textShadow: '0 0 5px rgba(255, 215, 0, 0.3)' }}>
                     {profile?.display_name || profile?.email?.split('@')[0] || user.email?.split('@')[0] || 'Người dùng'}
                   </p>
                   <p className="text-xs text-[#8B7355]/70 truncate">

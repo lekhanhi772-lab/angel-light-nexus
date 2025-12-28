@@ -8,15 +8,15 @@
   :root {
     /* Galaxy 5D Blue-Gold Palette */
     --background: 220 60% 10%;
-    --foreground: 60 30% 95%;
+    --foreground: 45 100% 95%;
 
     --card: 220 55% 12%;
-    --card-foreground: 60 30% 95%;
+    --card-foreground: 45 100% 95%;
 
     --popover: 220 55% 12%;
-    --popover-foreground: 60 30% 95%;
+    --popover-foreground: 45 100% 95%;
 
-    /* Sacred Gold */
+    /* Sacred Gold - Enhanced for visibility */
     --primary: 43 100% 50%;
     --primary-foreground: 40 10% 10%;
 
@@ -24,15 +24,15 @@
     --secondary: 197 71% 73%;
     --secondary-foreground: 220 50% 10%;
 
-    /* Divine Warm White */
+    /* Divine Warm White - Brighter for better contrast */
     --muted: 220 40% 18%;
-    --muted-foreground: 60 20% 75%;
+    --muted-foreground: 45 80% 90%;
 
     /* Ethereal Accent - Gold */
     --accent: 43 100% 50%;
     --accent-foreground: 40 20% 10%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 40% 25%;
@@ -41,12 +41,14 @@
 
     --radius: 1rem;
 
-    /* 5D Divine Colors - Blue Gold White */
+    /* 5D Divine Colors - Blue Gold White - Enhanced */
     --divine-gold: 43 100% 50%;
-    --divine-gold-dark: 38 76% 45%;
-    --divine-gold-light: 45 90% 65%;
-    --divine-white: 60 100% 98%;
-    --divine-white-warm: 50 100% 97%;
+    --divine-gold-dark: 38 85% 40%;
+    --divine-gold-light: 45 100% 60%;
+    --divine-gold-bright: 43 100% 55%;
+    --divine-white: 45 100% 97%;
+    --divine-white-warm: 40 100% 95%;
+    --divine-cream: 40 60% 90%;
 
     /* Healing Blue Spectrum */
     --healing-sky: 197 71% 73%;
@@ -64,9 +66,15 @@
     --nebula-purple: 280 60% 65%;
     --nebula-pink: 340 80% 70%;
 
+    /* Text Colors - Enhanced for readability */
+    --text-gold-bright: 43 100% 50%;
+    --text-gold-dark: 38 90% 35%;
+    --text-warm-white: 40 80% 94%;
+    --text-cream: 35 60% 88%;
+
     /* Gradients - Blue to Gold to White */
     --gradient-divine: linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(43 100% 50%) 50%, hsl(60 100% 98%) 100%);
-    --gradient-gold: linear-gradient(180deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%);
+    --gradient-gold: linear-gradient(180deg, hsl(43 100% 55%) 0%, hsl(38 85% 40%) 100%);
     --gradient-healing: linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 50%, hsl(120 73% 79%) 100%);
     --gradient-celestial: radial-gradient(ellipse at center, hsl(197 71% 50% / 0.3) 0%, transparent 70%);
     --gradient-galaxy: linear-gradient(180deg, 
@@ -76,18 +84,19 @@
       hsl(222 50% 20%) 75%,
       hsl(225 45% 25%) 100%);
     
-    /* Shadows */
-    --shadow-divine: 0 0 60px hsl(43 100% 50% / 0.5), 0 0 30px hsl(197 71% 73% / 0.4);
-    --shadow-glow-gold: 0 0 30px hsl(43 100% 50% / 0.7);
+    /* Shadows - Enhanced glow */
+    --shadow-divine: 0 0 60px hsl(43 100% 50% / 0.6), 0 0 30px hsl(197 71% 73% / 0.4);
+    --shadow-glow-gold: 0 0 40px hsl(43 100% 50% / 0.8);
     --shadow-glow-blue: 0 0 30px hsl(197 71% 73% / 0.7);
     --shadow-soft: 0 20px 60px hsl(220 50% 5% / 0.5);
+    --shadow-text-gold: 0 0 20px hsl(43 100% 50% / 0.9), 0 0 40px hsl(43 100% 50% / 0.5);
 
     --sidebar-background: 220 55% 10%;
-    --sidebar-foreground: 60 30% 95%;
+    --sidebar-foreground: 45 100% 95%;
     --sidebar-primary: 43 100% 50%;
     --sidebar-primary-foreground: 40 20% 10%;
     --sidebar-accent: 220 50% 15%;
-    --sidebar-accent-foreground: 60 30% 95%;
+    --sidebar-accent-foreground: 45 100% 95%;
     --sidebar-border: 220 40% 20%;
     --sidebar-ring: 43 100% 50%;
   }
@@ -138,73 +147,93 @@
 }
 
 @layer components {
-  /* 5D Gold-Blue Gradient Text - Enhanced for bright background */
+  /* 5D Gold-Blue Gradient Text - Enhanced for bright background - BOLD & VISIBLE */
   .text-gradient-gold-blue {
-    background: linear-gradient(135deg, hsl(43 100% 45%) 0%, hsl(197 71% 55%) 100%);
+    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(197 71% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    filter: drop-shadow(0 0 8px hsl(43 100% 50% / 0.6));
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 40%) 50%, hsl(43 100% 50%) 100%);
+    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 50%, hsl(43 100% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    filter: drop-shadow(0 0 10px hsl(43 100% 50% / 0.7));
   }
 
   .text-gradient-rainbow {
-    background: linear-gradient(90deg, hsl(197 71% 55%) 0%, hsl(157 52% 55%) 25%, hsl(43 100% 45%) 50%, hsl(197 71% 55%) 75%, hsl(43 100% 50%) 100%);
+    background: linear-gradient(90deg, hsl(197 71% 50%) 0%, hsl(157 52% 50%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 50%) 75%, hsl(43 100% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-divine {
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 80% 42%) 50%, hsl(43 100% 50%) 100%);
+    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 50%, hsl(43 100% 50%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    filter: drop-shadow(0 0 12px hsl(43 100% 50% / 0.8));
   }
 
-  /* Multi-layer Glow Effects - Enhanced for bright 5D background */
+  /* Multi-layer Glow Effects - STRONGER for visibility */
   .glow-gold {
     text-shadow: 
-      0 0 3px hsl(0 0% 100% / 0.9),
-      0 0 15px hsl(43 100% 50% / 1), 
-      0 0 30px hsl(43 100% 50% / 0.7), 
-      0 0 50px hsl(43 100% 50% / 0.4);
+      0 0 4px hsl(0 0% 100% / 1),
+      0 0 20px hsl(43 100% 50% / 1), 
+      0 0 40px hsl(43 100% 50% / 0.8), 
+      0 0 60px hsl(43 100% 50% / 0.5);
   }
 
   .glow-blue {
     text-shadow: 
-      0 0 3px hsl(0 0% 100% / 0.9),
-      0 0 15px hsl(197 71% 55% / 1), 
-      0 0 30px hsl(197 71% 55% / 0.7), 
-      0 0 50px hsl(197 71% 55% / 0.4);
+      0 0 4px hsl(0 0% 100% / 1),
+      0 0 20px hsl(197 71% 50% / 1), 
+      0 0 40px hsl(197 71% 50% / 0.8), 
+      0 0 60px hsl(197 71% 50% / 0.5);
   }
 
   .glow-gold-blue {
     text-shadow: 
-      0 0 4px hsl(0 0% 100% / 1),
-      0 0 20px hsl(43 100% 50% / 1), 
-      0 0 40px hsl(197 71% 60% / 0.6),
-      0 0 60px hsl(43 100% 50% / 0.3);
+      0 0 6px hsl(0 0% 100% / 1),
+      0 0 25px hsl(43 100% 50% / 1), 
+      0 0 50px hsl(197 71% 55% / 0.7),
+      0 0 80px hsl(43 100% 50% / 0.4);
   }
 
   .glow-white {
     text-shadow: 
-      0 0 3px hsl(43 100% 60% / 0.8),
-      0 0 15px hsl(0 0% 100% / 1), 
-      0 0 30px hsl(0 0% 100% / 0.7);
+      0 0 4px hsl(43 100% 55% / 0.9),
+      0 0 20px hsl(0 0% 100% / 1), 
+      0 0 40px hsl(0 0% 100% / 0.8);
   }
 
-  /* Text contrast helper for bright 5D background */
+  /* Text contrast helper for bright 5D background - ENHANCED */
   .text-galaxy-contrast {
     text-shadow: 
-      0 0 4px hsl(0 0% 100% / 1),
-      0 1px 3px hsl(0 0% 100% / 0.8),
-      0 0 20px hsl(43 100% 55% / 0.6);
+      0 0 6px hsl(0 0% 100% / 1),
+      0 2px 4px hsl(0 0% 100% / 0.9),
+      0 0 30px hsl(43 100% 50% / 0.8);
+  }
+
+  /* Divine Gold Text - Strong visibility */
+  .text-divine-gold-strong {
+    color: hsl(43 100% 50%);
+    text-shadow: 
+      0 0 4px hsl(0 0% 100% / 0.8),
+      0 0 15px hsl(43 100% 50% / 0.9),
+      0 0 30px hsl(43 100% 50% / 0.5);
+  }
+
+  /* Warm White Text - For secondary content */
+  .text-warm-white-strong {
+    color: hsl(40 80% 94%);
+    text-shadow: 
+      0 0 8px hsl(43 100% 50% / 0.4),
+      0 1px 2px hsl(0 0% 0% / 0.1);
   }
 
   /* 5D Sacred Pillar Card */
@@ -259,15 +288,16 @@
     box-shadow: 0 0 20px hsl(43 100% 50% / 0.8);
   }
 
-  /* Divine Button 5D */
+  /* Divine Button 5D - ENHANCED with white text on strong gradient */
   .divine-button {
     @apply relative px-12 py-5 rounded-full font-playfair text-xl font-bold tracking-wider;
-    background: linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 76% 45%) 100%);
-    color: hsl(40 10% 10%);
+    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 40%) 50%, hsl(25 90% 35%) 100%);
+    color: hsl(0 0% 100%);
+    text-shadow: 0 2px 4px hsl(0 0% 0% / 0.3), 0 0 15px hsl(43 100% 60% / 0.5);
     box-shadow: 
-      0 0 40px hsl(43 100% 50% / 0.6), 
-      0 0 20px hsl(197 71% 73% / 0.3),
-      0 15px 50px hsl(43 100% 50% / 0.4);
+      0 0 50px hsl(43 100% 50% / 0.7), 
+      0 0 25px hsl(197 71% 73% / 0.4),
+      0 15px 50px hsl(43 100% 50% / 0.5);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -278,7 +308,7 @@
     border-radius: 9999px;
     background: linear-gradient(135deg, 
       hsl(43 100% 60%) 0%, 
-      hsl(197 71% 73%) 50%, 
+      hsl(197 71% 70%) 50%, 
       hsl(43 100% 60%) 100%
     );
     z-index: -1;
@@ -288,24 +318,25 @@
 
   .divine-button:hover {
     transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 95% 45%) 50%, hsl(25 95% 40%) 100%);
     box-shadow: 
-      0 0 60px hsl(43 100% 50% / 0.8), 
-      0 0 30px hsl(197 71% 73% / 0.4),
-      0 25px 70px hsl(43 100% 50% / 0.5);
+      0 0 70px hsl(43 100% 50% / 0.9), 
+      0 0 40px hsl(197 71% 73% / 0.5),
+      0 25px 70px hsl(43 100% 50% / 0.6);
   }
 
   .divine-button:hover::before {
     opacity: 1;
   }
 
-  /* 5D Title Glow Effect */
+  /* 5D Title Glow Effect - STRONGER */
   .title-glow-5d {
     text-shadow: 
-      0 0 30px hsl(43 100% 50% / 0.9), 
-      0 0 60px hsl(197 71% 73% / 0.6),
-      0 0 90px hsl(43 100% 50% / 0.4),
-      0 2px 4px hsl(60 100% 100% / 0.3);
-    filter: drop-shadow(0 0 10px hsl(43 100% 50% / 0.5));
+      0 0 40px hsl(43 100% 50% / 1), 
+      0 0 80px hsl(197 71% 70% / 0.7),
+      0 0 120px hsl(43 100% 50% / 0.5),
+      0 3px 6px hsl(0 0% 100% / 0.4);
+    filter: drop-shadow(0 0 15px hsl(43 100% 50% / 0.7));
   }
 
   /* Card Glow Border */

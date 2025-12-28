@@ -275,15 +275,14 @@ const DivineSidebar = () => {
               ))}
             </div>
             
-            {/* Golden border ring - thinner border (2px) */}
+            {/* Golden border ring - ultra thin border */}
             <div 
               className={cn(
-                "relative rounded-full p-[2px] transition-all duration-300",
+                "relative rounded-full border-2 border-[#DAA520] transition-all duration-300",
                 isMobile ? "w-[70px] h-[70px]" : "w-[90px] h-[90px]"
               )}
               style={{
-                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%)',
-                boxShadow: '0 0 12px rgba(255, 215, 0, 0.4), 0 0 25px rgba(255, 215, 0, 0.15)',
+                boxShadow: '0 0 10px rgba(255, 215, 0, 0.3)',
               }}
             >
               {/* Inner circle with angel image */}

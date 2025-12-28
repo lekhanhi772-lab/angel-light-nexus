@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Sparkles, ArrowUp, Image, Loader2, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import angelHero from '@/assets/angel-hero.png';
+import angelAvatar from '@/assets/angel-avatar.png';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -272,7 +272,7 @@ const GrokStyleChat = () => {
           <div className="flex-1 flex flex-col items-center justify-center py-12">
             <div className="relative mb-6">
               <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/30 shadow-lg shadow-primary/20">
-                <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
+                <img src={angelAvatar} alt="Angel AI" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center border-2 border-background">
                 <Sparkles className="w-4 h-4 text-primary-foreground" />
@@ -361,7 +361,7 @@ const GrokStyleChat = () => {
               >
                 {message.role === 'assistant' && (
                   <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-primary/30">
-                    <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
+                    <img src={angelAvatar} alt="Angel AI" className="w-full h-full object-cover" />
                   </div>
                 )}
                 

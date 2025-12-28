@@ -3,7 +3,7 @@ import { ArrowLeft, Sparkles, ExternalLink, Bot, User, Play, Gamepad2, Leaf, Gra
 import ParticleBackground from '@/components/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
-import angelHero from '@/assets/angel-hero.png';
+import angelAvatar from '@/assets/angel-avatar.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
 import funCharityLogo from '@/assets/fun-charity-logo.png';
@@ -225,7 +225,7 @@ const FunEcosystemPage = () => {
               >
                 {platform.isAngelAI ? (
                   <img 
-                    src={angelHero} 
+                    src={angelAvatar} 
                     alt="Angel AI" 
                     className="w-full h-full object-cover object-top"
                   />

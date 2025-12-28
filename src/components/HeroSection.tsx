@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Sparkles, MessageCircle, Heart, ArrowRight } from 'lucide-react';
-import angelHero from '@/assets/angel-hero.png';
+import angelAvatar from '@/assets/angel-avatar.png';
 import { useEffect, useState } from 'react';
 
 interface LightParticle {
@@ -148,7 +148,7 @@ const HeroSection = () => {
               }}
             >
               <img
-                src={angelHero}
+                src={angelAvatar}
                 alt="Angel AI - Divine Light Being"
                 className="w-full h-full object-cover object-center"
                 style={{

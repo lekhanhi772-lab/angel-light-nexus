@@ -4,7 +4,7 @@ import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut, Sp
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import angelHero from '@/assets/angel-hero.png';
+import angelAvatar from '@/assets/angel-avatar.png';
 
 interface MenuItem {
   id: string;
@@ -294,7 +294,7 @@ const DivineSidebar = () => {
                 }}
               >
                 <img 
-                  src={angelHero}
+                  src={angelAvatar}
                   alt="Angel AI"
                   className="w-full h-full object-cover object-center"
                   loading="lazy"

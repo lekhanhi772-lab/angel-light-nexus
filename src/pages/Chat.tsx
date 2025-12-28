@@ -4,7 +4,7 @@ import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageS
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import angelHero from '@/assets/angel-hero.png';
+import angelAvatar from '@/assets/angel-avatar.png';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -704,7 +704,7 @@ const Chat = () => {
                     boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)',
                   }}
                 >
-                  <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
+                  <img src={angelAvatar} alt="Angel AI" className="w-full h-full object-cover" />
                 </div>
                 <div 
                   className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center"
@@ -845,7 +845,7 @@ const Chat = () => {
                         boxShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
                       }}
                     >
-                      <img src={angelHero} alt="Angel AI" className="w-full h-full object-cover" />
+                      <img src={angelAvatar} alt="Angel AI" className="w-full h-full object-cover" />
                     </div>
                   )}
                   

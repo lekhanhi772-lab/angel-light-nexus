@@ -28,34 +28,18 @@ const pillars: Pillar[] = [
   },
 ];
 
-const getGradientStyle = (gradient: Pillar['gradient']) => {
-  switch (gradient) {
-    case 'gold':
-      return {
-        background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        filter: 'drop-shadow(0 0 20px hsl(43 100% 50% / 0.9)) drop-shadow(0 0 40px hsl(197 71% 73% / 0.4))',
-      };
-    case 'rainbow':
-      return {
-        background: 'linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 73%) 75%, hsl(43 100% 55%) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        filter: 'drop-shadow(0 0 25px hsl(197 71% 70% / 0.6)) drop-shadow(0 0 15px hsl(43 100% 55% / 0.5))',
-      };
-    case 'divine':
-      return {
-        background: 'linear-gradient(135deg, hsl(60 100% 98%) 0%, hsl(43 100% 55%) 50%, hsl(60 100% 95%) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        filter: 'drop-shadow(0 0 30px hsl(43 100% 55% / 0.95)) drop-shadow(0 0 60px hsl(197 71% 80% / 0.5))',
-      };
-  }
-};
+// Card title style - dark gold (#B8860B) with subtle shadow
+const getCardTitleStyle = () => ({
+  color: '#B8860B',
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.2), 0 0 8px rgba(184, 134, 11, 0.3)',
+});
+
+// Card description style - warm brown-gold (#A67C00)
+const getCardDescStyle = () => ({
+  color: '#A67C00',
+  textShadow: '0 1px 3px rgba(0, 0, 0, 0.15)',
+  fontWeight: 600,
+});
 
 const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -165,18 +149,18 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
             {pillar.icon}
           </div>
 
-          {/* Title - Playfair Display Bold, Gold with Blue shadow */}
+          {/* Title - Dark Gold with subtle shadow */}
           <h3 
             className="relative z-10 font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-3 text-center leading-tight"
-            style={getGradientStyle(pillar.gradient)}
+            style={getCardTitleStyle()}
           >
             {pillar.title}
           </h3>
 
-          {/* Subtitle - Lora, Black or Deep Teal for absolute readability */}
+          {/* Subtitle - Warm Brown-Gold for readability */}
           <p 
-            className="relative z-10 font-lora text-sm md:text-base lg:text-lg text-center leading-relaxed font-medium"
-            style={{ color: 'hsl(180 100% 15%)' }}
+            className="relative z-10 font-lora text-sm md:text-base lg:text-lg text-center leading-relaxed"
+            style={getCardDescStyle()}
           >
             {pillar.subtitle}
           </p>
@@ -240,39 +224,23 @@ const SacredPillars = () => {
             <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
           </div>
           
-          {/* Main Title - Playfair Display Black, reduced size */}
+          {/* Main Title - Dark Warm Gold (#D4AF37) with reduced glow */}
           <h2 
             className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
             style={{
-              background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              textShadow: 'none',
-              filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
+              color: '#D4AF37',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.2), 0 0 15px rgba(184, 134, 11, 0.4)',
             }}
           >
             Ba Trụ Cột Trí Tuệ Thiêng Liêng
           </h2>
-
-          {/* White outline effect layer */}
-          <div 
-            className="absolute left-1/2 -translate-x-1/2 font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black pointer-events-none opacity-20 -z-10"
-            style={{
-              WebkitTextStroke: '1px hsl(60 100% 98%)',
-              color: 'transparent',
-              top: 'calc(50% - 2rem)',
-            }}
-          >
-            Ba Trụ Cột Trí Tuệ Thiêng Liêng
-          </div>
           
-          {/* Subtitle - reduced size */}
+          {/* Subtitle - Warm Brown-Gold with bold weight and shadow */}
           <p 
-            className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
+            className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-bold"
             style={{ 
-              color: 'hsl(180 100% 25%)',
-              textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
+              color: '#A67C00',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
             }}
           >
             Angel AI là sự hợp nhất hoàn hảo

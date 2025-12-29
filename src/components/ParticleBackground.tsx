@@ -7,7 +7,7 @@ interface Particle {
   size: number;
   delay: number;
   duration: number;
-  type: 'gold' | 'blue' | 'white' | 'mint' | 'purple' | 'pink';
+  type: 'gold' | 'rose' | 'violet' | 'teal' | 'white';
 }
 
 interface Star {
@@ -16,322 +16,220 @@ interface Star {
   y: number;
   size: number;
   delay: number;
-  color: 'gold' | 'blue' | 'white' | 'mint' | 'purple' | 'pink';
+  color: 'gold' | 'rose' | 'violet' | 'white';
   parallaxSpeed: number;
 }
 
-interface ShootingStar {
-  id: number;
-  x: number;
-  y: number;
-  delay: number;
-  duration: number;
-  angle: number;
-  length: number;
-  color: 'gold' | 'blue';
-}
-
-interface MiniPlanet {
+interface CosmicOrb {
   id: number;
   x: number;
   y: number;
   size: number;
   color: string;
-  orbitDuration: number;
-  delay: number;
   glowColor: string;
+  duration: number;
+  delay: number;
 }
 
 const ParticleBackground = () => {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [stars, setStars] = useState<Star[]>([]);
-  const [shootingStars, setShootingStars] = useState<ShootingStar[]>([]);
-  const [miniPlanets, setMiniPlanets] = useState<MiniPlanet[]>([]);
+  const [orbs, setOrbs] = useState<CosmicOrb[]>([]);
 
   useEffect(() => {
-    // Generate floating particles with multi colors - increased by 30%
+    // Generate floating particles
+    const types: ('gold' | 'rose' | 'violet' | 'teal' | 'white')[] = ['gold', 'rose', 'violet', 'teal', 'white'];
     const newParticles: Particle[] = [];
-    const types: ('gold' | 'blue' | 'white' | 'mint' | 'purple' | 'pink')[] = ['gold', 'blue', 'white', 'mint', 'purple', 'pink'];
     
-    for (let i = 0; i < 105; i++) { // Increased from 80 to 105 (+30%)
+    for (let i = 0; i < 80; i++) {
       newParticles.push({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 8 + 4, // Slightly larger
-        delay: Math.random() * 10,
-        duration: Math.random() * 12 + 15,
+        size: Math.random() * 6 + 2,
+        delay: Math.random() * 15,
+        duration: Math.random() * 20 + 15,
         type: types[Math.floor(Math.random() * types.length)],
       });
     }
     setParticles(newParticles);
 
-    // Generate twinkling stars - multi colors with parallax - increased
-    const starColors: ('gold' | 'blue' | 'white' | 'mint' | 'purple' | 'pink')[] = ['gold', 'blue', 'white', 'mint', 'purple', 'pink'];
+    // Generate twinkling stars
+    const starColors: ('gold' | 'rose' | 'violet' | 'white')[] = ['gold', 'rose', 'violet', 'white'];
     const newStars: Star[] = [];
-    for (let i = 0; i < 160; i++) { // Increased from 120 to 160
+    for (let i = 0; i < 120; i++) {
       newStars.push({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 4 + 2, // Larger stars
-        delay: Math.random() * 5,
+        size: Math.random() * 3 + 1,
+        delay: Math.random() * 8,
         color: starColors[Math.floor(Math.random() * starColors.length)],
         parallaxSpeed: Math.random() * 0.5 + 0.2,
       });
     }
     setStars(newStars);
 
-    // Generate mini planets - brighter colors
-    const planetColors = [
-      { color: 'hsl(43 100% 65%)', glow: 'hsl(43 100% 75%)' }, // Gold - brighter
-      { color: 'hsl(197 71% 75%)', glow: 'hsl(197 71% 85%)' }, // Blue - brighter
-      { color: 'hsl(157 52% 75%)', glow: 'hsl(157 52% 85%)' }, // Mint - brighter
-      { color: 'hsl(280 60% 80%)', glow: 'hsl(280 60% 90%)' }, // Purple - brighter
-      { color: 'hsl(340 80% 85%)', glow: 'hsl(340 80% 92%)' }, // Pink - brighter
-      { color: 'hsl(0 0% 100%)', glow: 'hsl(43 100% 90%)' }, // White with gold glow
+    // Generate cosmic orbs
+    const orbColors = [
+      { color: 'hsl(38 95% 60%)', glow: 'hsl(38 95% 70%)' },
+      { color: 'hsl(330 70% 70%)', glow: 'hsl(330 70% 80%)' },
+      { color: 'hsl(270 60% 65%)', glow: 'hsl(270 60% 75%)' },
+      { color: 'hsl(175 70% 50%)', glow: 'hsl(175 70% 60%)' },
     ];
     
-    const newPlanets: MiniPlanet[] = [];
-    for (let i = 0; i < 15; i++) { // Increased from 12 to 15
-      const colorSet = planetColors[Math.floor(Math.random() * planetColors.length)];
-      newPlanets.push({
+    const newOrbs: CosmicOrb[] = [];
+    for (let i = 0; i < 8; i++) {
+      const colorSet = orbColors[Math.floor(Math.random() * orbColors.length)];
+      newOrbs.push({
         id: i,
         x: Math.random() * 90 + 5,
         y: Math.random() * 90 + 5,
-        size: Math.random() * 14 + 8, // Larger planets
+        size: Math.random() * 20 + 10,
         color: colorSet.color,
-        orbitDuration: Math.random() * 30 + 40,
-        delay: Math.random() * 10,
         glowColor: colorSet.glow,
+        duration: Math.random() * 30 + 25,
+        delay: Math.random() * 10,
       });
     }
-    setMiniPlanets(newPlanets);
-
-    // Generate shooting stars - 2-3 at a time with brighter glow
-    const generateShootingStars = () => {
-      const newShootingStars: ShootingStar[] = [];
-      const count = Math.floor(Math.random() * 2) + 2;
-      
-      for (let i = 0; i < count; i++) {
-        newShootingStars.push({
-          id: i,
-          x: Math.random() * 80,
-          y: Math.random() * 40,
-          delay: Math.random() * 3 + i * 1.5,
-          duration: Math.random() * 1.5 + 2,
-          angle: 25 + Math.random() * 25,
-          length: 140 + Math.random() * 120, // Longer trails
-          color: Math.random() > 0.5 ? 'gold' : 'blue',
-        });
-      }
-      setShootingStars(newShootingStars);
-    };
-
-    generateShootingStars();
-    const interval = setInterval(generateShootingStars, 6000);
-
-    return () => clearInterval(interval);
+    setOrbs(newOrbs);
   }, []);
 
   const getParticleColor = (type: string) => {
     switch (type) {
-      case 'gold':
-        return 'hsl(43 100% 70% / 1)';
-      case 'blue':
-        return 'hsl(197 71% 80% / 0.95)';
-      case 'white':
-        return 'hsl(60 100% 99% / 1)';
-      case 'mint':
-        return 'hsl(157 52% 80% / 0.9)';
-      case 'purple':
-        return 'hsl(280 60% 80% / 0.9)';
-      case 'pink':
-        return 'hsl(340 80% 85% / 0.9)';
-      default:
-        return 'hsl(43 100% 70% / 0.95)';
+      case 'gold': return 'hsl(38 95% 65% / 0.9)';
+      case 'rose': return 'hsl(330 70% 75% / 0.85)';
+      case 'violet': return 'hsl(270 60% 70% / 0.8)';
+      case 'teal': return 'hsl(175 70% 55% / 0.75)';
+      case 'white': return 'hsl(0 0% 100% / 0.9)';
+      default: return 'hsl(38 95% 65% / 0.9)';
     }
   };
 
   const getStarColor = (color: string) => {
     switch (color) {
-      case 'gold':
-        return 'hsl(43 100% 75%)';
-      case 'blue':
-        return 'hsl(197 71% 85%)';
-      case 'white':
-        return 'hsl(0 0% 100%)';
-      case 'mint':
-        return 'hsl(157 52% 85%)';
-      case 'purple':
-        return 'hsl(280 60% 85%)';
-      case 'pink':
-        return 'hsl(340 80% 90%)';
-      default:
-        return 'hsl(43 100% 75%)';
+      case 'gold': return 'hsl(38 95% 70%)';
+      case 'rose': return 'hsl(330 70% 80%)';
+      case 'violet': return 'hsl(270 60% 75%)';
+      case 'white': return 'hsl(0 0% 100%)';
+      default: return 'hsl(38 95% 70%)';
     }
   };
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* BRIGHT 5D Galaxy Base Gradient - Sky Blue → Gold → White */}
+      {/* 🌌 Deep Cosmic Galaxy Gradient */}
       <div 
         className="absolute inset-0"
         style={{
           background: `
+            radial-gradient(ellipse 120% 80% at 50% 0%, hsl(270 40% 15% / 0.8) 0%, transparent 50%),
+            radial-gradient(ellipse 100% 60% at 20% 100%, hsl(330 50% 12% / 0.6) 0%, transparent 50%),
+            radial-gradient(ellipse 80% 50% at 80% 80%, hsl(38 60% 15% / 0.5) 0%, transparent 40%),
             linear-gradient(180deg, 
-              hsl(197 71% 85%) 0%, 
-              hsl(197 60% 88%) 15%,
-              hsl(50 80% 92%) 35%, 
-              hsl(45 90% 94%) 50%,
-              hsl(60 100% 97%) 70%,
-              hsl(0 0% 100%) 100%
+              hsl(240 30% 6%) 0%, 
+              hsl(260 35% 10%) 20%,
+              hsl(270 30% 12%) 40%,
+              hsl(260 25% 10%) 60%,
+              hsl(240 30% 8%) 80%,
+              hsl(240 35% 5%) 100%
             )
           `,
         }}
       />
 
-      {/* Light Nebula Effects - Cosmic Clouds with bright glow */}
+      {/* 💫 Ethereal Light Rays */}
       <div 
-        className="absolute top-[10%] left-[5%] w-[60vw] h-[50vw] animate-pulse-slow"
+        className="absolute top-0 left-1/4 w-[60vw] h-[80vh] animate-pulse-slow"
         style={{
-          background: 'radial-gradient(ellipse at center, hsl(197 71% 80% / 0.4) 0%, hsl(197 60% 85% / 0.2) 40%, transparent 70%)',
+          background: 'linear-gradient(180deg, hsl(38 95% 58% / 0.08) 0%, hsl(38 95% 60% / 0.02) 50%, transparent 100%)',
           filter: 'blur(60px)',
-        }}
-      />
-      <div 
-        className="absolute top-[30%] right-[10%] w-[45vw] h-[45vw] animate-pulse-slow"
-        style={{
-          background: 'radial-gradient(ellipse at center, hsl(43 100% 75% / 0.35) 0%, hsl(43 90% 80% / 0.15) 40%, transparent 70%)',
-          filter: 'blur(70px)',
-          animationDelay: '3s',
-        }}
-      />
-      <div 
-        className="absolute bottom-[15%] left-[20%] w-[40vw] h-[35vw] animate-pulse-slow"
-        style={{
-          background: 'radial-gradient(ellipse at center, hsl(340 80% 85% / 0.25) 0%, hsl(340 70% 88% / 0.12) 40%, transparent 70%)',
-          filter: 'blur(55px)',
-          animationDelay: '5s',
-        }}
-      />
-      <div 
-        className="absolute top-[60%] right-[30%] w-[35vw] h-[30vw] animate-pulse-slow"
-        style={{
-          background: 'radial-gradient(ellipse at center, hsl(157 52% 80% / 0.3) 0%, hsl(157 45% 85% / 0.15) 40%, transparent 70%)',
-          filter: 'blur(50px)',
-          animationDelay: '7s',
-        }}
-      />
-
-      {/* Golden Light Rays from top */}
-      <div 
-        className="absolute top-0 left-1/4 w-[50vw] h-[80vh]"
-        style={{
-          background: 'linear-gradient(180deg, hsl(43 100% 70% / 0.15) 0%, hsl(43 100% 80% / 0.05) 50%, transparent 100%)',
-          filter: 'blur(40px)',
           transform: 'skewX(-15deg)',
         }}
       />
       <div 
-        className="absolute top-0 right-1/4 w-[40vw] h-[70vh]"
+        className="absolute top-0 right-1/3 w-[40vw] h-[70vh] animate-pulse-slow"
         style={{
-          background: 'linear-gradient(180deg, hsl(197 71% 80% / 0.12) 0%, hsl(197 60% 85% / 0.04) 50%, transparent 100%)',
-          filter: 'blur(35px)',
+          background: 'linear-gradient(180deg, hsl(330 70% 75% / 0.06) 0%, hsl(330 70% 75% / 0.02) 50%, transparent 100%)',
+          filter: 'blur(50px)',
           transform: 'skewX(10deg)',
+          animationDelay: '3s',
         }}
       />
 
-      {/* Cosmic Dust Layer - Brighter */}
+      {/* 🌸 Nebula Clouds - Rose & Violet */}
       <div 
-        className="absolute inset-0 opacity-50"
+        className="absolute top-[15%] left-[10%] w-[50vw] h-[40vw] animate-pulse-slow"
         style={{
-          backgroundImage: `
-            radial-gradient(2px 2px at 10% 20%, hsl(43 100% 60% / 0.6) 1px, transparent 1px),
-            radial-gradient(2px 2px at 30% 50%, hsl(43 100% 70% / 0.5) 1px, transparent 1px),
-            radial-gradient(2px 2px at 50% 30%, hsl(197 71% 80% / 0.5) 1px, transparent 1px),
-            radial-gradient(2px 2px at 70% 60%, hsl(0 0% 100% / 0.6) 1px, transparent 1px),
-            radial-gradient(2px 2px at 90% 40%, hsl(43 100% 75% / 0.5) 1px, transparent 1px)
-          `,
-          backgroundSize: '200px 200px, 300px 300px, 250px 250px, 180px 180px, 220px 220px',
+          background: 'radial-gradient(ellipse at center, hsl(330 70% 60% / 0.15) 0%, hsl(330 60% 50% / 0.05) 40%, transparent 70%)',
+          filter: 'blur(80px)',
+          animationDelay: '2s',
+        }}
+      />
+      <div 
+        className="absolute top-[40%] right-[5%] w-[45vw] h-[45vw] animate-pulse-slow"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(270 60% 55% / 0.12) 0%, hsl(270 50% 45% / 0.04) 40%, transparent 70%)',
+          filter: 'blur(90px)',
+          animationDelay: '4s',
+        }}
+      />
+      <div 
+        className="absolute bottom-[10%] left-[20%] w-[40vw] h-[35vw] animate-pulse-slow"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(38 95% 55% / 0.1) 0%, hsl(38 80% 45% / 0.03) 40%, transparent 70%)',
+          filter: 'blur(70px)',
+          animationDelay: '6s',
         }}
       />
 
-      {/* Sacred Geometry Background - Ethereal Light */}
-      <div className="absolute inset-0 opacity-[0.08]">
+      {/* 🔮 Sacred Geometry - Flower of Life */}
+      <div className="absolute inset-0 opacity-[0.04]">
         <svg className="w-full h-full animate-rotate-slow" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice">
-          <circle cx="400" cy="400" r="380" fill="none" stroke="hsl(43 100% 50%)" strokeWidth="0.8" />
-          <circle cx="400" cy="400" r="300" fill="none" stroke="hsl(197 71% 60%)" strokeWidth="0.6" />
-          <circle cx="400" cy="400" r="220" fill="none" stroke="hsl(43 100% 55%)" strokeWidth="0.8" />
-          <circle cx="400" cy="400" r="140" fill="none" stroke="hsl(197 71% 55%)" strokeWidth="0.6" />
-          <polygon points="400,20 780,400 400,780 20,400" fill="none" stroke="hsl(43 100% 50%)" strokeWidth="0.6" />
-          <polygon points="400,100 700,400 400,700 100,400" fill="none" stroke="hsl(197 71% 50%)" strokeWidth="0.5" />
+          {/* Central circles */}
+          <circle cx="400" cy="400" r="350" fill="none" stroke="hsl(38 95% 58%)" strokeWidth="0.5" />
+          <circle cx="400" cy="400" r="280" fill="none" stroke="hsl(330 70% 75%)" strokeWidth="0.4" />
+          <circle cx="400" cy="400" r="210" fill="none" stroke="hsl(270 60% 65%)" strokeWidth="0.5" />
+          <circle cx="400" cy="400" r="140" fill="none" stroke="hsl(38 95% 58%)" strokeWidth="0.4" />
+          <circle cx="400" cy="400" r="70" fill="none" stroke="hsl(330 70% 75%)" strokeWidth="0.3" />
+          
+          {/* Flower of Life pattern */}
+          <circle cx="400" cy="200" r="100" fill="none" stroke="hsl(270 60% 65%)" strokeWidth="0.3" />
+          <circle cx="313" cy="350" r="100" fill="none" stroke="hsl(38 95% 58%)" strokeWidth="0.3" />
+          <circle cx="487" cy="350" r="100" fill="none" stroke="hsl(330 70% 75%)" strokeWidth="0.3" />
+          <circle cx="400" cy="500" r="100" fill="none" stroke="hsl(270 60% 65%)" strokeWidth="0.3" />
+          <circle cx="313" cy="450" r="100" fill="none" stroke="hsl(38 95% 58%)" strokeWidth="0.3" />
+          <circle cx="487" cy="450" r="100" fill="none" stroke="hsl(330 70% 75%)" strokeWidth="0.3" />
+          
+          {/* Sacred triangles */}
+          <polygon points="400,50 750,550 50,550" fill="none" stroke="hsl(38 95% 58%)" strokeWidth="0.4" />
+          <polygon points="400,750 50,250 750,250" fill="none" stroke="hsl(330 70% 75%)" strokeWidth="0.4" />
         </svg>
       </div>
 
-      {/* Shooting Stars with Enhanced Gold/White Glow */}
-      {shootingStars.map((star) => (
+      {/* ✨ Cosmic Orbs with Divine Glow */}
+      {orbs.map((orb) => (
         <div
-          key={`shooting-${star.id}-${Math.random()}`}
-          className="absolute"
-          style={{
-            left: `${star.x}%`,
-            top: `${star.y}%`,
-            transform: `rotate(${star.angle}deg)`,
-            animation: `shooting-star ${star.duration}s ease-out ${star.delay}s forwards`,
-            animationIterationCount: 'infinite',
-          }}
-        >
-          {/* Star head - brighter */}
-          <div 
-            className="absolute w-6 h-6 rounded-full"
-            style={{
-              background: star.color === 'gold' 
-                ? 'radial-gradient(circle, hsl(60 100% 100%) 0%, hsl(43 100% 70%) 50%, transparent 100%)'
-                : 'radial-gradient(circle, hsl(0 0% 100%) 0%, hsl(197 71% 80%) 50%, transparent 100%)',
-              boxShadow: star.color === 'gold'
-                ? '0 0 35px hsl(43 100% 70%), 0 0 70px hsl(43 100% 60%), 0 0 100px hsl(43 100% 55%)'
-                : '0 0 35px hsl(197 71% 85%), 0 0 70px hsl(197 71% 75%), 0 0 100px hsl(197 71% 65%)',
-            }}
-          />
-          {/* Star trail - brighter */}
-          <div 
-            className="absolute top-1/2 right-full -translate-y-1/2"
-            style={{
-              width: `${star.length}px`,
-              height: '6px',
-              background: star.color === 'gold'
-                ? 'linear-gradient(90deg, transparent 0%, hsl(197 71% 90% / 0.4) 20%, hsl(43 100% 85% / 0.8) 60%, hsl(60 100% 98%) 100%)'
-                : 'linear-gradient(90deg, transparent 0%, hsl(43 100% 80% / 0.4) 20%, hsl(197 71% 90% / 0.8) 60%, hsl(0 0% 100%) 100%)',
-              borderRadius: '0 4px 4px 0',
-            }}
-          />
-        </div>
-      ))}
-
-      {/* Mini Planets with Enhanced Halo Effect */}
-      {miniPlanets.map((planet) => (
-        <div
-          key={`planet-${planet.id}`}
+          key={`orb-${orb.id}`}
           className="absolute rounded-full animate-float-gentle"
           style={{
-            left: `${planet.x}%`,
-            top: `${planet.y}%`,
-            width: `${planet.size}px`,
-            height: `${planet.size}px`,
-            background: `radial-gradient(circle at 30% 30%, hsl(0 0% 100% / 0.6), ${planet.color} 60%, hsl(43 100% 70% / 0.3) 100%)`,
+            left: `${orb.x}%`,
+            top: `${orb.y}%`,
+            width: `${orb.size}px`,
+            height: `${orb.size}px`,
+            background: `radial-gradient(circle at 30% 30%, hsl(0 0% 100% / 0.4), ${orb.color} 60%, transparent 100%)`,
             boxShadow: `
-              0 0 ${planet.size * 1.5}px ${planet.glowColor}, 
-              0 0 ${planet.size * 2.5}px hsl(43 100% 70% / 0.5),
-              inset -2px -2px ${planet.size / 3}px hsl(43 100% 50% / 0.3)
+              0 0 ${orb.size}px ${orb.glowColor}, 
+              0 0 ${orb.size * 2}px ${orb.color},
+              0 0 ${orb.size * 3}px hsl(38 95% 60% / 0.2)
             `,
-            animationDuration: `${planet.orbitDuration}s`,
-            animationDelay: `${planet.delay}s`,
+            animationDuration: `${orb.duration}s`,
+            animationDelay: `${orb.delay}s`,
           }}
         />
       ))}
 
-      {/* Twinkling Stars - Multi Colors with Gold Halo */}
+      {/* ⭐ Twinkling Stars - Multi-colored */}
       {stars.map((star) => (
         <div
           key={`star-${star.id}`}
@@ -340,16 +238,16 @@ const ParticleBackground = () => {
             left: `${star.x}%`,
             top: `${star.y}%`,
             animationDelay: `${star.delay}s`,
-            animationDuration: `${2 + star.parallaxSpeed * 2}s`,
+            animationDuration: `${2.5 + star.parallaxSpeed * 2}s`,
           }}
         >
           <svg 
-            width={star.size * 3.5} 
-            height={star.size * 3.5} 
+            width={star.size * 3} 
+            height={star.size * 3} 
             viewBox="0 0 24 24"
             style={{ 
               color: getStarColor(star.color),
-              filter: `drop-shadow(0 0 ${star.size * 3}px ${getStarColor(star.color)}) drop-shadow(0 0 ${star.size * 5}px hsl(43 100% 70% / 0.5))`,
+              filter: `drop-shadow(0 0 ${star.size * 3}px ${getStarColor(star.color)})`,
             }}
           >
             <path
@@ -360,7 +258,7 @@ const ParticleBackground = () => {
         </div>
       ))}
 
-      {/* Floating Light Particles - Enhanced Brightness */}
+      {/* 💫 Floating Light Particles */}
       {particles.map((particle) => (
         <div
           key={particle.id}
@@ -373,63 +271,65 @@ const ParticleBackground = () => {
             background: `radial-gradient(circle, ${getParticleColor(particle.type)} 0%, transparent 70%)`,
             animationDelay: `${particle.delay}s`,
             animationDuration: `${particle.duration}s`,
-            boxShadow: `0 0 ${particle.size * 6}px ${getParticleColor(particle.type)}, 0 0 ${particle.size * 10}px hsl(43 100% 75% / 0.4)`,
+            boxShadow: `0 0 ${particle.size * 4}px ${getParticleColor(particle.type)}`,
           }}
         />
       ))}
 
-      {/* Sparkle Clusters - Brighter */}
+      {/* 🌟 Sparkle Clusters */}
       <div className="absolute top-1/4 left-1/4 animate-sparkle-cluster">
-        <div className="relative w-56 h-56">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-3 h-3 rounded-full animate-twinkle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 0.25}s`,
-                background: ['hsl(43 100% 75%)', 'hsl(197 71% 85%)', 'hsl(280 60% 85%)', 'hsl(340 80% 90%)', 'hsl(0 0% 100%)'][i % 5],
-                boxShadow: `0 0 15px 6px ${['hsl(43 100% 70% / 1)', 'hsl(197 71% 80% / 0.9)', 'hsl(280 60% 80% / 0.9)', 'hsl(340 80% 85% / 0.9)', 'hsl(0 0% 100% / 1)'][i % 5]}, 0 0 25px 10px hsl(43 100% 75% / 0.5)`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="absolute top-2/3 right-1/4 animate-sparkle-cluster" style={{ animationDelay: '3s' }}>
         <div className="relative w-48 h-48">
-          {[...Array(10)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
               className="absolute w-2 h-2 rounded-full animate-twinkle"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 0.4}s`,
-                background: ['hsl(43 100% 70%)', 'hsl(157 52% 80%)', 'hsl(197 71% 85%)', 'hsl(0 0% 100%)'][i % 4],
-                boxShadow: `0 0 12px 5px ${['hsl(43 100% 65% / 0.9)', 'hsl(157 52% 75% / 0.9)', 'hsl(197 71% 80% / 0.9)', 'hsl(0 0% 100% / 1)'][i % 4]}, 0 0 20px 8px hsl(43 100% 70% / 0.4)`,
+                animationDelay: `${i * 0.3}s`,
+                background: ['hsl(38 95% 70%)', 'hsl(330 70% 80%)', 'hsl(270 60% 75%)', 'hsl(0 0% 100%)'][i % 4],
+                boxShadow: `0 0 12px 4px ${['hsl(38 95% 60% / 0.8)', 'hsl(330 70% 70% / 0.7)', 'hsl(270 60% 65% / 0.7)', 'hsl(0 0% 100% / 0.8)'][i % 4]}`,
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* Top Edge Glow - Golden Light */}
+      <div className="absolute top-2/3 right-1/4 animate-sparkle-cluster" style={{ animationDelay: '4s' }}>
+        <div className="relative w-40 h-40">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1.5 h-1.5 rounded-full animate-twinkle"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 0.5}s`,
+                background: ['hsl(38 95% 70%)', 'hsl(330 70% 80%)', 'hsl(175 70% 60%)'][i % 3],
+                boxShadow: `0 0 10px 3px ${['hsl(38 95% 60% / 0.7)', 'hsl(330 70% 70% / 0.6)', 'hsl(175 70% 50% / 0.6)'][i % 3]}`,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* 🔝 Top Edge Glow - Divine Light */}
       <div 
-        className="absolute top-0 left-0 right-0 h-3 opacity-70"
+        className="absolute top-0 left-0 right-0 h-2"
         style={{
-          background: 'linear-gradient(90deg, hsl(197 71% 70%) 0%, hsl(43 100% 65%) 25%, hsl(43 100% 70%) 50%, hsl(43 100% 65%) 75%, hsl(197 71% 70%) 100%)',
-          filter: 'blur(3px)',
+          background: 'linear-gradient(90deg, hsl(270 60% 55%) 0%, hsl(330 70% 65%) 25%, hsl(38 95% 58%) 50%, hsl(330 70% 65%) 75%, hsl(270 60% 55%) 100%)',
+          filter: 'blur(4px)',
+          opacity: 0.6,
         }}
       />
 
-      {/* Bottom Edge Glow - Soft White */}
+      {/* 🔻 Bottom Edge Glow */}
       <div 
-        className="absolute bottom-0 left-0 right-0 h-2 opacity-50"
+        className="absolute bottom-0 left-0 right-0 h-1"
         style={{
-          background: 'linear-gradient(90deg, hsl(197 71% 85%) 0%, hsl(0 0% 100%) 50%, hsl(197 71% 85%) 100%)',
-          filter: 'blur(2px)',
+          background: 'linear-gradient(90deg, hsl(38 95% 55%) 0%, hsl(330 70% 70%) 50%, hsl(38 95% 55%) 100%)',
+          filter: 'blur(3px)',
+          opacity: 0.4,
         }}
       />
     </div>

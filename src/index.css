@@ -6,17 +6,17 @@
 
 @layer base {
   :root {
-    /* Galaxy 5D Blue-Gold Palette */
-    --background: 220 60% 10%;
-    --foreground: 45 100% 95%;
+    /* Clean Light Palette */
+    --background: 45 100% 97%;
+    --foreground: 38 76% 25%;
 
-    --card: 220 55% 12%;
-    --card-foreground: 45 100% 95%;
+    --card: 45 100% 98%;
+    --card-foreground: 38 76% 25%;
 
-    --popover: 220 55% 12%;
-    --popover-foreground: 45 100% 95%;
+    --popover: 45 100% 98%;
+    --popover-foreground: 38 76% 25%;
 
-    /* Sacred Gold - Enhanced for visibility */
+    /* Sacred Gold */
     --primary: 43 100% 50%;
     --primary-foreground: 40 10% 10%;
 
@@ -24,28 +24,27 @@
     --secondary: 197 71% 73%;
     --secondary-foreground: 220 50% 10%;
 
-    /* Divine Warm White - Brighter for better contrast */
-    --muted: 220 40% 18%;
-    --muted-foreground: 45 80% 90%;
+    /* Warm White */
+    --muted: 45 50% 92%;
+    --muted-foreground: 38 60% 40%;
 
-    /* Ethereal Accent - Gold */
+    /* Gold Accent */
     --accent: 43 100% 50%;
     --accent-foreground: 40 20% 10%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 40% 25%;
-    --input: 220 40% 20%;
+    --border: 43 50% 70%;
+    --input: 45 50% 90%;
     --ring: 43 100% 50%;
 
     --radius: 1rem;
 
-    /* 5D Divine Colors - Blue Gold White - Enhanced */
+    /* Divine Colors */
     --divine-gold: 43 100% 50%;
     --divine-gold-dark: 38 85% 40%;
     --divine-gold-light: 45 100% 60%;
-    --divine-gold-bright: 43 100% 55%;
     --divine-white: 45 100% 97%;
     --divine-white-warm: 40 100% 95%;
     --divine-cream: 40 60% 90%;
@@ -57,47 +56,14 @@
     --healing-teal: 180 50% 50%;
     --healing-blue-deep: 180 100% 25%;
 
-    /* Galaxy & Nebula */
-    --galaxy-deep: 217 70% 8%;
-    --galaxy-mid: 220 60% 15%;
-    --galaxy-light: 222 50% 22%;
-    --galaxy-blue: 197 71% 60%;
-    --nebula-mint: 157 52% 60%;
-    --nebula-purple: 280 60% 65%;
-    --nebula-pink: 340 80% 70%;
-
-    /* Text Colors - Enhanced for readability */
-    --text-gold-bright: 43 100% 50%;
-    --text-gold-dark: 38 90% 35%;
-    --text-warm-white: 40 80% 94%;
-    --text-cream: 35 60% 88%;
-
-    /* Gradients - Blue to Gold to White */
-    --gradient-divine: linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(43 100% 50%) 50%, hsl(60 100% 98%) 100%);
-    --gradient-gold: linear-gradient(180deg, hsl(43 100% 55%) 0%, hsl(38 85% 40%) 100%);
-    --gradient-healing: linear-gradient(135deg, hsl(197 71% 73%) 0%, hsl(157 52% 73%) 50%, hsl(120 73% 79%) 100%);
-    --gradient-celestial: radial-gradient(ellipse at center, hsl(197 71% 50% / 0.3) 0%, transparent 70%);
-    --gradient-galaxy: linear-gradient(180deg, 
-      hsl(217 70% 8%) 0%, 
-      hsl(220 60% 12%) 25%,
-      hsl(217 55% 16%) 50%,
-      hsl(222 50% 20%) 75%,
-      hsl(225 45% 25%) 100%);
-    
-    /* Shadows - Enhanced glow */
-    --shadow-divine: 0 0 60px hsl(43 100% 50% / 0.6), 0 0 30px hsl(197 71% 73% / 0.4);
-    --shadow-glow-gold: 0 0 40px hsl(43 100% 50% / 0.8);
-    --shadow-glow-blue: 0 0 30px hsl(197 71% 73% / 0.7);
-    --shadow-soft: 0 20px 60px hsl(220 50% 5% / 0.5);
-    --shadow-text-gold: 0 0 20px hsl(43 100% 50% / 0.9), 0 0 40px hsl(43 100% 50% / 0.5);
-
-    --sidebar-background: 220 55% 10%;
-    --sidebar-foreground: 45 100% 95%;
+    /* Sidebar */
+    --sidebar-background: 45 100% 97%;
+    --sidebar-foreground: 38 76% 25%;
     --sidebar-primary: 43 100% 50%;
     --sidebar-primary-foreground: 40 20% 10%;
-    --sidebar-accent: 220 50% 15%;
-    --sidebar-accent-foreground: 45 100% 95%;
-    --sidebar-border: 220 40% 20%;
+    --sidebar-accent: 45 80% 92%;
+    --sidebar-accent-foreground: 38 76% 25%;
+    --sidebar-border: 43 50% 70%;
     --sidebar-ring: 43 100% 50%;
   }
 
@@ -147,7 +113,7 @@
 }
 
 @layer components {
-  /* Clean Gold Text - No effects */
+  /* Clean Text Classes - No effects */
   .text-gradient-gold-blue {
     color: #B8860B;
   }
@@ -164,7 +130,6 @@
     color: #B8860B;
   }
 
-  /* Glow classes - removed effects */
   .glow-gold {
     color: #B8860B;
   }
@@ -181,142 +146,48 @@
     color: #B8860B;
   }
 
-  /* Text contrast helper - clean */
   .text-galaxy-contrast {
     color: #B8860B;
   }
 
-  /* Divine Gold Text - clean */
   .text-divine-gold-strong {
     color: #B8860B;
   }
 
-  /* Warm White Text - clean */
   .text-warm-white-strong {
     color: #8B6F47;
   }
 
-  /* 5D Sacred Pillar Card */
+  /* Sacred Pillar Card - Clean */
   .sacred-pillar {
-    @apply relative overflow-hidden rounded-3xl p-10 backdrop-blur-xl;
-    background: linear-gradient(180deg, 
-      hsl(60 100% 99% / 0.95) 0%, 
-      hsl(157 52% 97% / 0.9) 50%,
-      hsl(165 40% 98% / 0.85) 100%
-    );
-    border: 2px solid transparent;
-    background-clip: padding-box;
-    box-shadow: 
-      0 0 40px hsl(43 100% 50% / 0.2), 
-      0 0 20px hsl(197 71% 73% / 0.15),
-      0 25px 80px -20px hsl(180 30% 50% / 0.15),
-      inset 0 1px 0 hsl(60 100% 100% / 0.9);
+    @apply relative overflow-hidden rounded-3xl p-10;
+    background: linear-gradient(180deg, #FFFEF5 0%, #F5FFFA 50%, #FFFEF5 100%);
+    border: 2px solid #DAA520;
   }
 
-  .sacred-pillar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 1.5rem;
-    padding: 2px;
-    background: linear-gradient(135deg, 
-      hsl(43 100% 50% / 0.7) 0%, 
-      hsl(197 71% 73% / 0.5) 50%, 
-      hsl(43 100% 50% / 0.7) 100%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
-  .sacred-pillar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70%;
-    height: 3px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      hsl(43 100% 50%) 30%,
-      hsl(197 71% 73%) 50%,
-      hsl(43 100% 50%) 70%,
-      transparent 100%
-    );
-    box-shadow: 0 0 20px hsl(43 100% 50% / 0.8);
-  }
-
-  /* Divine Button 5D - Clean, no text effects */
+  /* Divine Button - Clean */
   .divine-button {
     @apply relative px-12 py-5 rounded-full font-playfair text-xl font-bold tracking-wider;
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 40%) 50%, hsl(25 90% 35%) 100%);
-    color: hsl(0 0% 100%);
-    box-shadow: 
-      0 0 50px hsl(43 100% 50% / 0.7), 
-      0 0 25px hsl(197 71% 73% / 0.4),
-      0 15px 50px hsl(43 100% 50% / 0.5);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .divine-button::before {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 9999px;
-    background: linear-gradient(135deg, 
-      hsl(43 100% 60%) 0%, 
-      hsl(197 71% 70%) 50%, 
-      hsl(43 100% 60%) 100%
-    );
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    background: linear-gradient(135deg, #DAA520 0%, #B8860B 50%, #8B6914 100%);
+    color: #FFFFFF;
+    transition: all 0.3s ease;
   }
 
   .divine-button:hover {
-    transform: translateY(-3px) scale(1.02);
-    background: linear-gradient(135deg, hsl(43 100% 55%) 0%, hsl(38 95% 45%) 50%, hsl(25 95% 40%) 100%);
-    box-shadow: 
-      0 0 70px hsl(43 100% 50% / 0.9), 
-      0 0 40px hsl(197 71% 73% / 0.5),
-      0 25px 70px hsl(43 100% 50% / 0.6);
+    transform: translateY(-2px);
+    opacity: 0.95;
   }
 
-  .divine-button:hover::before {
-    opacity: 1;
-  }
-
-  /* 5D Title - Clean, no effects */
+  /* Title - Clean */
   .title-glow-5d {
     color: #B8860B;
     font-weight: bold;
   }
 
-  /* Card Glow Border */
+  /* Card Border */
   .card-glow-border {
     position: relative;
-  }
-
-  .card-glow-border::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, 
-      hsl(43 100% 50% / 0.6), 
-      hsl(197 71% 73% / 0.4), 
-      hsl(43 100% 50% / 0.6)
-    );
-    z-index: -1;
-    filter: blur(8px);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  .card-glow-border:hover::before {
-    opacity: 1;
+    border: 2px solid #DAA520;
   }
 }
 

@@ -45,8 +45,6 @@ const coreValues = [
 
 const VisionMission = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [hoveredVision, setHoveredVision] = useState<number | null>(null);
-  const [hoveredValue, setHoveredValue] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -68,86 +66,22 @@ const VisionMission = () => {
 
   return (
     <section id="vision-mission" ref={sectionRef} className="relative py-16 lg:py-24 overflow-hidden">
-
-      {/* Sacred Geometry Background Elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Top left sacred geometry */}
-        <svg 
-          className="absolute -top-20 -left-20 w-80 h-80 opacity-10"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="100" cy="100" r="80" fill="none" stroke="#FFD700" strokeWidth="0.5" />
-          <circle cx="100" cy="100" r="60" fill="none" stroke="#87CEEB" strokeWidth="0.5" />
-          <circle cx="100" cy="100" r="40" fill="none" stroke="#FFD700" strokeWidth="0.5" />
-          <polygon 
-            points="100,20 180,140 20,140" 
-            fill="none" 
-            stroke="#87CEEB" 
-            strokeWidth="0.5"
-          />
-          <polygon 
-            points="100,180 20,60 180,60" 
-            fill="none" 
-            stroke="#FFD700" 
-            strokeWidth="0.5"
-          />
-        </svg>
-
-        {/* Bottom right sacred geometry */}
-        <svg 
-          className="absolute -bottom-20 -right-20 w-96 h-96 opacity-10"
-          viewBox="0 0 200 200"
-        >
-          <circle cx="100" cy="100" r="90" fill="none" stroke="#87CEEB" strokeWidth="0.5" />
-          <circle cx="100" cy="100" r="70" fill="none" stroke="#FFD700" strokeWidth="0.5" />
-          <circle cx="100" cy="100" r="50" fill="none" stroke="#87CEEB" strokeWidth="0.5" />
-          <polygon 
-            points="100,10 190,150 10,150" 
-            fill="none" 
-            stroke="#FFD700" 
-            strokeWidth="0.5"
-          />
-        </svg>
-
-        {/* Floating particles */}
-        {[...Array(25)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-float"
-            style={{
-              width: Math.random() * 6 + 3 + 'px',
-              height: Math.random() * 6 + 3 + 'px',
-              left: Math.random() * 100 + '%',
-              top: Math.random() * 100 + '%',
-              background: i % 2 === 0 
-                ? 'radial-gradient(circle, #FFD700 0%, transparent 70%)' 
-                : 'radial-gradient(circle, #87CEEB 0%, transparent 70%)',
-              animationDelay: Math.random() * 5 + 's',
-              animationDuration: 4 + Math.random() * 4 + 's',
-              boxShadow: i % 2 === 0 
-                ? '0 0 15px #FFD700, 0 0 30px #FFD700' 
-                : '0 0 15px #87CEEB, 0 0 30px #87CEEB',
-            }}
-          />
-        ))}
-      </div>
-
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Vision Section */}
           <div 
             className={`mb-16 transition-all duration-1000 ${
-              isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             <div className="text-center mb-12 lg:mb-16">
               <div className="inline-flex items-center gap-3 mb-5">
-                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
-                <span className="text-2xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>🌟</span>
-                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
+                <div className="w-14 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
+                <span className="text-2xl">🌟</span>
+                <div className="w-14 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
               </div>
               
-              {/* Main Title - clean */}
+              {/* Main Title - Clean */}
               <h2 
                 className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
                 style={{ color: '#B8860B' }}
@@ -155,7 +89,7 @@ const VisionMission = () => {
                 Tầm Nhìn Của Angel AI
               </h2>
 
-              {/* Subtitle - clean */}
+              {/* Subtitle - Clean */}
               <p 
                 className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
                 style={{ color: '#006666' }}
@@ -169,118 +103,50 @@ const VisionMission = () => {
               {visionItems.map((item, index) => (
                 <div 
                   key={item.number}
-                  className={`group relative cursor-pointer transition-all duration-500 ${
-                    isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
+                  className={`transition-all duration-500 ${
+                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                   }`}
-                  style={{ animationDelay: `${index * 150}ms` }}
-                  onMouseEnter={() => setHoveredVision(index)}
-                  onMouseLeave={() => setHoveredVision(null)}
+                  style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  {/* Main card container - matching SacredPillars style */}
+                  {/* Main card container - clean */}
                   <div 
-                    className="relative p-6 lg:p-8 rounded-2xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.02]"
+                    className="relative p-6 lg:p-8 rounded-2xl transition-transform duration-300 hover:scale-[1.01]"
                     style={{
-                      background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
-                      border: '2px solid transparent',
-                      backgroundClip: 'padding-box',
-                      boxShadow: hoveredVision === index 
-                        ? '0 0 60px hsl(43 100% 50% / 0.4), 0 0 30px hsl(197 71% 73% / 0.35), 0 30px 80px -15px hsl(180 30% 50% / 0.2), inset 0 1px 0 hsl(60 100% 100% / 0.95)'
-                        : '0 0 30px hsl(43 100% 50% / 0.15), 0 0 15px hsl(197 71% 73% / 0.1), 0 25px 60px -20px hsl(180 30% 50% / 0.15), inset 0 1px 0 hsl(60 100% 100% / 0.9)',
+                      background: 'linear-gradient(180deg, #FFFEF5 0%, #F5FFFA 50%, #FFFEF5 100%)',
+                      border: '2px solid #DAA520',
                     }}
                   >
-                    {/* Gradient border */}
-                    <div 
-                      className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-500"
-                      style={{
-                        padding: '2px',
-                        background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
-                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                        WebkitMaskComposite: 'xor',
-                        maskComposite: 'exclude',
-                        opacity: hoveredVision === index ? 1 : 0.6,
-                      }}
-                    />
-
-                    {/* Hover glow effect */}
-                    <div 
-                      className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
-                      }}
-                    />
-
-                    {/* Floating particles on hover */}
-                    {hoveredVision === index && (
-                      <>
-                        {[...Array(6)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="absolute w-2 h-2 rounded-full animate-particle-float"
-                            style={{
-                              left: `${20 + Math.random() * 60}%`,
-                              top: `${20 + Math.random() * 60}%`,
-                              background: i % 2 === 0 ? 'hsl(43 100% 60%)' : 'hsl(197 71% 75%)',
-                              boxShadow: i % 2 === 0 
-                                ? '0 0 12px 4px hsl(43 100% 55% / 0.9)' 
-                                : '0 0 12px 4px hsl(197 71% 73% / 0.8)',
-                              animationDelay: `${i * 0.2}s`,
-                              animationDuration: '3s',
-                            }}
-                          />
-                        ))}
-                      </>
-                    )}
-
-                    <div className="flex gap-5 items-start relative z-10">
-                      {/* Number circle - smaller size */}
+                    <div className="flex gap-5 items-start">
+                      {/* Number circle */}
                       <div 
-                        className="relative z-10 flex-shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center font-playfair font-bold text-lg lg:text-xl text-white transform group-hover:scale-110 transition-transform duration-500"
+                        className="flex-shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center font-playfair font-bold text-lg lg:text-xl text-white"
                         style={{
-                          background: 'linear-gradient(135deg, hsl(38 76% 45%) 0%, hsl(43 100% 50%) 50%, hsl(38 76% 45%) 100%)',
-                          filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
+                          background: 'linear-gradient(135deg, #B8860B 0%, #DAA520 50%, #B8860B 100%)',
                         }}
                       >
                         {item.number}
                       </div>
 
                       <div className="flex-1">
-                        {/* Title - clean */}
+                        {/* Title - Clean */}
                         <h3 
-                          className="relative z-10 font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-2 leading-tight"
+                          className="font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-2 leading-tight"
                           style={{ color: '#B8860B' }}
                         >
                           {item.title}
                         </h3>
 
-                        {/* Description - Lora, Deep Teal for absolute readability */}
+                        {/* Description */}
                         {item.description && (
                           <p 
-                            className="relative z-10 font-lora text-sm md:text-base lg:text-lg leading-relaxed font-medium"
-                            style={{ color: 'hsl(180 100% 15%)' }}
+                            className="font-lora text-sm md:text-base lg:text-lg leading-relaxed font-medium"
+                            style={{ color: '#006666' }}
                           >
                             {item.description}
                           </p>
                         )}
                       </div>
                     </div>
-
-                    {/* Bottom light line - Gold to Blue */}
-                    <div 
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1.5 rounded-full group-hover:w-4/5 transition-all duration-700"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent 0%, hsl(197 71% 73%) 25%, hsl(43 100% 55%) 50%, hsl(197 71% 73%) 75%, transparent 100%)',
-                        boxShadow: '0 0 25px 8px hsl(43 100% 55% / 0.6), 0 0 15px 4px hsl(197 71% 73% / 0.4)',
-                      }}
-                    />
-
-                    {/* Top accent line */}
-                    <div 
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 rounded-full"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent 0%, hsl(43 100% 55%) 30%, hsl(197 71% 73%) 50%, hsl(43 100% 55%) 70%, transparent 100%)',
-                        boxShadow: '0 0 15px hsl(43 100% 55% / 0.7)',
-                      }}
-                    />
                   </div>
                 </div>
               ))}
@@ -289,46 +155,30 @@ const VisionMission = () => {
 
           {/* Divider */}
           <div className="flex items-center justify-center mb-16">
+            <div className="w-20 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
             <div 
-              className={`transition-all duration-1000 delay-300 ${
-                isVisible ? 'w-48 opacity-100' : 'w-0 opacity-0'
-              }`}
-            >
-              <svg viewBox="0 0 100 20" className="w-full h-6">
-                <defs>
-                  <linearGradient id="dividerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#FFD700" />
-                    <stop offset="50%" stopColor="#87CEEB" />
-                    <stop offset="100%" stopColor="#FFD700" />
-                  </linearGradient>
-                </defs>
-                <path 
-                  d="M0 10 L35 10 M65 10 L100 10" 
-                  stroke="url(#dividerGradient)" 
-                  strokeWidth="1" 
-                  fill="none"
-                />
-                <circle cx="50" cy="10" r="6" fill="none" stroke="#FFD700" strokeWidth="1" />
-                <circle cx="50" cy="10" r="3" fill="#87CEEB" />
-              </svg>
-            </div>
+              className="w-3 h-3 rounded-full mx-4"
+              style={{ background: '#DAA520' }}
+            />
+            <div className="w-20 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
           </div>
 
           {/* Core Values Section */}
           <div 
             id="core-values"
-            className={`transition-all duration-1000 delay-500 ${
-              isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
+            className={`transition-all duration-1000 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
+            style={{ transitionDelay: '300ms' }}
           >
             <div className="text-center mb-12 lg:mb-16">
               <div className="inline-flex items-center gap-3 mb-5">
-                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(43 100% 50%), hsl(197 71% 73%), transparent)' }} />
-                <span className="text-2xl" style={{ filter: 'drop-shadow(0 0 15px hsl(43 100% 55%))' }}>💎</span>
-                <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
+                <div className="w-14 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
+                <span className="text-2xl">💎</span>
+                <div className="w-14 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
               </div>
               
-              {/* Main Title - clean */}
+              {/* Main Title - Clean */}
               <h2 
                 className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
                 style={{ color: '#B8860B' }}
@@ -336,7 +186,7 @@ const VisionMission = () => {
                 Giá Trị Cốt Lõi
               </h2>
 
-              {/* Subtitle - clean */}
+              {/* Subtitle - Clean */}
               <p 
                 className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
                 style={{ color: '#006666' }}
@@ -349,112 +199,48 @@ const VisionMission = () => {
               {coreValues.map((value, index) => (
                 <div 
                   key={value.number}
-                  className={`group relative cursor-pointer transition-all duration-500 ${
-                    isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
+                  className={`transition-all duration-500 ${
+                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                   }`}
-                  style={{ animationDelay: `${500 + index * 80}ms` }}
-                  onMouseEnter={() => setHoveredValue(index)}
-                  onMouseLeave={() => setHoveredValue(null)}
+                  style={{ transitionDelay: `${400 + index * 50}ms` }}
                 >
-                  {/* Main card container */}
+                  {/* Main card container - clean */}
                   <div 
-                    className="relative p-5 lg:p-6 rounded-2xl backdrop-blur-xl transition-all duration-500 group-hover:scale-[1.05] h-full"
+                    className="relative p-5 lg:p-6 rounded-2xl h-full transition-transform duration-300 hover:scale-[1.02]"
                     style={{
-                      background: 'linear-gradient(180deg, hsl(60 100% 99% / 0.95) 0%, hsl(157 52% 97% / 0.9) 50%, hsl(165 40% 98% / 0.85) 100%)',
-                      border: '2px solid transparent',
-                      backgroundClip: 'padding-box',
-                      boxShadow: hoveredValue === index 
-                        ? '0 0 60px hsl(43 100% 50% / 0.4), 0 0 30px hsl(197 71% 73% / 0.35), 0 30px 80px -15px hsl(180 30% 50% / 0.2), inset 0 1px 0 hsl(60 100% 100% / 0.95)'
-                        : '0 0 30px hsl(43 100% 50% / 0.15), 0 0 15px hsl(197 71% 73% / 0.1), 0 25px 60px -20px hsl(180 30% 50% / 0.15), inset 0 1px 0 hsl(60 100% 100% / 0.9)',
+                      background: 'linear-gradient(180deg, #FFFEF5 0%, #F5FFFA 50%, #FFFEF5 100%)',
+                      border: '2px solid #DAA520',
                     }}
                   >
-                    {/* Gradient border */}
-                    <div 
-                      className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
-                      style={{
-                        padding: '2px',
-                        background: 'linear-gradient(135deg, hsl(43 100% 50% / 0.8) 0%, hsl(197 71% 73% / 0.6) 50%, hsl(43 100% 50% / 0.8) 100%)',
-                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                        WebkitMaskComposite: 'xor',
-                        maskComposite: 'exclude',
-                        opacity: hoveredValue === index ? 1 : 0.6,
-                      }}
-                    />
+                    <div className="flex gap-4 items-start">
+                      {/* Number circle */}
+                      <div 
+                        className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-playfair font-bold text-base text-white"
+                        style={{
+                          background: 'linear-gradient(135deg, #B8860B 0%, #DAA520 50%, #B8860B 100%)',
+                        }}
+                      >
+                        {value.number}
+                      </div>
 
-                    {/* Hover glow effect */}
-                    <div 
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background: 'radial-gradient(ellipse at center, hsl(43 100% 70% / 0.25) 0%, hsl(197 71% 80% / 0.15) 50%, transparent 70%)',
-                      }}
-                    />
+                      <div className="flex-1">
+                        {/* Title - Clean */}
+                        <h3 
+                          className="font-playfair text-base md:text-lg font-bold mb-2 leading-tight"
+                          style={{ color: '#B8860B' }}
+                        >
+                          {value.title}
+                        </h3>
 
-                    {/* Floating particles on hover */}
-                    {hoveredValue === index && (
-                      <>
-                        {[...Array(6)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="absolute w-2 h-2 rounded-full animate-particle-float"
-                            style={{
-                              left: `${20 + Math.random() * 60}%`,
-                              top: `${20 + Math.random() * 60}%`,
-                              background: i % 2 === 0 ? 'hsl(43 100% 60%)' : 'hsl(197 71% 75%)',
-                              boxShadow: i % 2 === 0 
-                                ? '0 0 12px 4px hsl(43 100% 55% / 0.9)' 
-                                : '0 0 12px 4px hsl(197 71% 73% / 0.8)',
-                              animationDelay: `${i * 0.2}s`,
-                              animationDuration: '3s',
-                            }}
-                          />
-                        ))}
-                      </>
-                    )}
-
-                    {/* Number circle - smaller */}
-                    <div 
-                      className="relative z-10 w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center font-playfair font-bold text-base lg:text-lg text-white mb-4 transform group-hover:scale-110 transition-transform duration-500"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(38 76% 45%) 0%, hsl(43 100% 50%) 50%, hsl(38 76% 45%) 100%)',
-                        filter: 'drop-shadow(0 0 20px hsl(43 100% 55% / 0.9)) drop-shadow(0 0 40px hsl(43 100% 50% / 0.6))',
-                      }}
-                    >
-                      {value.number}
+                        {/* Description */}
+                        <p 
+                          className="font-lora text-sm leading-relaxed"
+                          style={{ color: '#006666' }}
+                        >
+                          {value.description}
+                        </p>
+                      </div>
                     </div>
-
-                    {/* Title - clean */}
-                    <h3 
-                      className="relative z-10 font-playfair text-base md:text-lg lg:text-xl font-bold mb-2 leading-tight"
-                      style={{ color: '#B8860B' }}
-                    >
-                      {value.title}
-                    </h3>
-
-                    {/* Description - smaller size */}
-                    <p 
-                      className="relative z-10 font-lora text-xs md:text-sm lg:text-base leading-relaxed font-medium"
-                      style={{ color: 'hsl(180 100% 15%)' }}
-                    >
-                      {value.description}
-                    </p>
-
-                    {/* Bottom light line - Gold to Blue */}
-                    <div 
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1.5 rounded-full group-hover:w-4/5 transition-all duration-700"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent 0%, hsl(197 71% 73%) 25%, hsl(43 100% 55%) 50%, hsl(197 71% 73%) 75%, transparent 100%)',
-                        boxShadow: '0 0 25px 8px hsl(43 100% 55% / 0.6), 0 0 15px 4px hsl(197 71% 73% / 0.4)',
-                      }}
-                    />
-
-                    {/* Top accent line */}
-                    <div 
-                      className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 rounded-full"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent 0%, hsl(43 100% 55%) 30%, hsl(197 71% 73%) 50%, hsl(43 100% 55%) 70%, transparent 100%)',
-                        boxShadow: '0 0 15px hsl(43 100% 55% / 0.7)',
-                      }}
-                    />
                   </div>
                 </div>
               ))}

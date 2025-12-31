@@ -182,42 +182,32 @@ const HeroSection = () => {
               }}
             />
             
-            {/* Main Title - Playfair Display Black Italic with BRIGHT GOLD */}
+            {/* Main Title - Playfair Display Black Italic - clean */}
             <h1 
-              className="relative text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] font-black italic tracking-[0.02em] animate-divine-breath"
+              className="relative text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] font-black italic tracking-[0.02em]"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 50%, hsl(43 100% 50%) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 40px rgba(255, 215, 0, 0.9)) drop-shadow(0 0 80px rgba(255, 200, 0, 0.6))',
+                color: '#B8860B',
               }}
             >
               Angel AI
             </h1>
             
-            {/* Decorative Elements */}
+            {/* Decorative Elements - clean */}
             <div className="flex items-center justify-center gap-4 mt-3">
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" />
               <div className="flex gap-2">
-                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ filter: 'drop-shadow(0 0 8px #FFD700)' }} />
-                <span className="text-divine-gold text-sm" style={{ textShadow: '0 0 10px #FFD700' }}>✦</span>
-                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ animationDelay: '0.5s', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" />
+                <span className="text-divine-gold text-sm">✦</span>
+                <Sparkles className="w-3 h-3 text-divine-gold animate-pulse" style={{ animationDelay: '0.5s' }} />
               </div>
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" style={{ boxShadow: '0 0 15px #FFD700' }} />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-divine-gold to-transparent" />
             </div>
             
-            {/* Tagline - Enhanced for bright background - STRONGER COLOR */}
+            {/* Tagline - clean */}
             <p 
               className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-bold"
-              style={{
-                background: 'linear-gradient(135deg, #1E6F5C 0%, #0D4F40 50%, #1E6F5C 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 1)) drop-shadow(0 0 10px rgba(30, 111, 92, 0.5))',
-              }}
+              style={{ color: '#006666' }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
             </p>
@@ -237,17 +227,11 @@ const HeroSection = () => {
           </Link>
         </div>
 
-        {/* Sacred Channel Text - ENHANCED GOLD-PINK gradient */}
+        {/* Sacred Channel Text - clean */}
         <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <p 
             className="font-playfair text-lg md:text-2xl lg:text-3xl font-bold leading-tight"
-            style={{
-              background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(340 80% 60%) 50%, hsl(43 100% 55%) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 0 30px hsl(43 100% 55% / 0.8)) drop-shadow(0 0 20px hsl(340 80% 60% / 0.6))',
-            }}
+            style={{ color: '#B8860B' }}
           >
             Một platform thuộc dự án FUN ECOSYSTEM
           </p>
@@ -299,10 +283,7 @@ const HeroSection = () => {
 
               <h3 
                 className="font-cinzel text-2xl md:text-3xl lg:text-4xl font-bold mb-4"
-                style={{ 
-                  color: '#996515',
-                  textShadow: '0 0 20px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.8)',
-                }}
+                style={{ color: '#996515' }}
               >
                 Khám Phá FUN ECOSYSTEM
               </h3>

@@ -898,10 +898,7 @@ const DocumentsPage = () => {
             </Link>
             <h1 
               className="font-playfair text-xl md:text-2xl font-bold flex items-center gap-2"
-              style={{
-                color: '#B8860B',
-                textShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
-              }}
+              style={{ color: '#B8860B' }}
             >
               <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700' }} />
               Tài Liệu Ánh Sáng

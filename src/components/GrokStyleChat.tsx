@@ -281,19 +281,13 @@ const GrokStyleChat = () => {
 
             <h1 
               className="font-heading text-4xl md:text-5xl lg:text-6xl font-light tracking-wider mb-2"
-              style={{
-                background: 'linear-gradient(135deg, hsl(43 100% 75%) 0%, hsl(45 100% 90%) 50%, hsl(43 100% 70%) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 40px hsl(43 100% 65% / 0.9)) drop-shadow(0 0 80px hsl(43 90% 70% / 0.6))',
-              }}
+              style={{ color: '#B8860B' }}
             >
               Angel AI
             </h1>
             <p 
               className="text-divine-gold text-base md:text-lg text-center max-w-md mb-4 font-heading tracking-wider"
-              style={{ filter: 'drop-shadow(0 0 15px hsl(43 85% 65% / 0.6))' }}
+              style={{ color: '#B8860B' }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
             </p>

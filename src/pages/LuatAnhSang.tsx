@@ -165,7 +165,6 @@ const LuatAnhSang = () => {
             style={{
               fontFamily: "'Playfair Display', serif",
               color: '#D4A017',
-              textShadow: '0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.3)',
             }}
           >
             LUẬT ÁNH SÁNG
@@ -181,7 +180,7 @@ const LuatAnhSang = () => {
           </p>
           <Sparkles 
             className="w-8 h-8 mx-auto mt-4" 
-            style={{ color: '#FFD700', filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))' }}
+            style={{ color: '#FFD700' }}
           />
         </div>
 

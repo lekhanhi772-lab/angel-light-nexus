@@ -147,93 +147,53 @@
 }
 
 @layer components {
-  /* 5D Gold-Blue Gradient Text - Enhanced for bright background - BOLD & VISIBLE */
+  /* Clean Gold Text - No effects */
   .text-gradient-gold-blue {
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(197 71% 50%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 8px hsl(43 100% 50% / 0.6));
+    color: #B8860B;
   }
 
   .text-gradient-gold {
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 50%, hsl(43 100% 50%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 10px hsl(43 100% 50% / 0.7));
+    color: #B8860B;
   }
 
   .text-gradient-rainbow {
-    background: linear-gradient(90deg, hsl(197 71% 50%) 0%, hsl(157 52% 50%) 25%, hsl(43 100% 50%) 50%, hsl(197 71% 50%) 75%, hsl(43 100% 50%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #B8860B;
   }
 
   .text-gradient-divine {
-    background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 38%) 50%, hsl(43 100% 50%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 12px hsl(43 100% 50% / 0.8));
+    color: #B8860B;
   }
 
-  /* Multi-layer Glow Effects - STRONGER for visibility */
+  /* Glow classes - removed effects */
   .glow-gold {
-    text-shadow: 
-      0 0 4px hsl(0 0% 100% / 1),
-      0 0 20px hsl(43 100% 50% / 1), 
-      0 0 40px hsl(43 100% 50% / 0.8), 
-      0 0 60px hsl(43 100% 50% / 0.5);
+    color: #B8860B;
   }
 
   .glow-blue {
-    text-shadow: 
-      0 0 4px hsl(0 0% 100% / 1),
-      0 0 20px hsl(197 71% 50% / 1), 
-      0 0 40px hsl(197 71% 50% / 0.8), 
-      0 0 60px hsl(197 71% 50% / 0.5);
+    color: #006666;
   }
 
   .glow-gold-blue {
-    text-shadow: 
-      0 0 6px hsl(0 0% 100% / 1),
-      0 0 25px hsl(43 100% 50% / 1), 
-      0 0 50px hsl(197 71% 55% / 0.7),
-      0 0 80px hsl(43 100% 50% / 0.4);
+    color: #B8860B;
   }
 
   .glow-white {
-    text-shadow: 
-      0 0 4px hsl(43 100% 55% / 0.9),
-      0 0 20px hsl(0 0% 100% / 1), 
-      0 0 40px hsl(0 0% 100% / 0.8);
+    color: #B8860B;
   }
 
-  /* Text contrast helper for bright 5D background - ENHANCED */
+  /* Text contrast helper - clean */
   .text-galaxy-contrast {
-    text-shadow: 
-      0 0 6px hsl(0 0% 100% / 1),
-      0 2px 4px hsl(0 0% 100% / 0.9),
-      0 0 30px hsl(43 100% 50% / 0.8);
+    color: #B8860B;
   }
 
-  /* Divine Gold Text - Strong visibility */
+  /* Divine Gold Text - clean */
   .text-divine-gold-strong {
-    color: hsl(43 100% 50%);
-    text-shadow: 
-      0 0 4px hsl(0 0% 100% / 0.8),
-      0 0 15px hsl(43 100% 50% / 0.9),
-      0 0 30px hsl(43 100% 50% / 0.5);
+    color: #B8860B;
   }
 
-  /* Warm White Text - For secondary content */
+  /* Warm White Text - clean */
   .text-warm-white-strong {
-    color: hsl(40 80% 94%);
-    text-shadow: 
-      0 0 8px hsl(43 100% 50% / 0.4),
-      0 1px 2px hsl(0 0% 0% / 0.1);
+    color: #8B6F47;
   }
 
   /* 5D Sacred Pillar Card */
@@ -288,12 +248,11 @@
     box-shadow: 0 0 20px hsl(43 100% 50% / 0.8);
   }
 
-  /* Divine Button 5D - ENHANCED with white text on strong gradient */
+  /* Divine Button 5D - Clean, no text effects */
   .divine-button {
     @apply relative px-12 py-5 rounded-full font-playfair text-xl font-bold tracking-wider;
     background: linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 90% 40%) 50%, hsl(25 90% 35%) 100%);
     color: hsl(0 0% 100%);
-    text-shadow: 0 2px 4px hsl(0 0% 0% / 0.3), 0 0 15px hsl(43 100% 60% / 0.5);
     box-shadow: 
       0 0 50px hsl(43 100% 50% / 0.7), 
       0 0 25px hsl(197 71% 73% / 0.4),
@@ -329,14 +288,10 @@
     opacity: 1;
   }
 
-  /* 5D Title Glow Effect - STRONGER */
+  /* 5D Title - Clean, no effects */
   .title-glow-5d {
-    text-shadow: 
-      0 0 40px hsl(43 100% 50% / 1), 
-      0 0 80px hsl(197 71% 70% / 0.7),
-      0 0 120px hsl(43 100% 50% / 0.5),
-      0 3px 6px hsl(0 0% 100% / 0.4);
-    filter: drop-shadow(0 0 15px hsl(43 100% 50% / 0.7));
+    color: #B8860B;
+    font-weight: bold;
   }
 
   /* Card Glow Border */

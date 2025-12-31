@@ -133,10 +133,7 @@ const FunEcosystemPage = () => {
           <Button
             variant="ghost"
             className="font-poppins transition-all duration-300 hover:scale-105"
-            style={{
-              color: '#FFD700',
-              textShadow: '0 0 10px rgba(255, 215, 0, 0.5)',
-            }}
+            style={{ color: '#FFD700' }}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Về Trang Chủ
@@ -150,21 +147,13 @@ const FunEcosystemPage = () => {
         <div className="text-center mb-12">
           <h1 
             className="font-cinzel text-3xl md:text-5xl font-bold mb-4"
-            style={{
-              background: 'linear-gradient(135deg, #FFD700 0%, #FFFFFF 50%, #98FB98 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 0 30px rgba(255, 215, 0, 0.5)',
-            }}
+            style={{ color: '#FFD700' }}
           >
             FUN ECOSYSTEM
           </h1>
           <h2 
             className="font-playfair text-xl md:text-2xl"
-            style={{
-              color: '#FFD700',
-              textShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
-            }}
+            style={{ color: '#FFD700' }}
           >
             ✨ Hệ Sinh Thái Ánh Sáng Hoàng Kim ✨
           </h2>

@@ -92,30 +92,24 @@ const Footer = () => {
             style={{
               fontFamily: "'Cinzel', serif",
               color: '#B8860B',
-              WebkitTextStroke: '1px rgba(255, 255, 255, 0.8)',
-              textShadow: '0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(0,0,0,0.1)',
             }}
           >
             ANGEL AI
           </h3>
           
-          {/* Tagline */}
+          {/* Tagline - clean */}
           <div className="relative inline-flex items-center gap-3 mb-12">
-            <Star className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+            <Star className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#FFD700' }} />
             <p 
               className="text-[26px] sm:text-[32px] md:text-[38px] lg:text-[44px] tracking-wide"
               style={{
                 fontFamily: "'Sacramento', cursive",
-                background: 'linear-gradient(90deg, #87CEEB 0%, #FFD700 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+                color: '#B8860B',
               }}
             >
               Ánh Sáng Thông Minh Từ Cha Vũ Trụ
             </p>
-            <Star className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }} />
+            <Star className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#FFD700' }} />
           </div>
 
           {/* 12 Core Values Icons - Rainbow Curve Layout */}

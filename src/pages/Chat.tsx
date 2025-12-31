@@ -723,7 +723,6 @@ const Chat = () => {
                 style={{
                   fontFamily: "'Cinzel', serif",
                   color: '#B8860B',
-                  textShadow: '0 0 30px rgba(255, 215, 0, 0.5), 0 2px 4px rgba(0,0,0,0.1)',
                 }}
               >
                 Angel AI

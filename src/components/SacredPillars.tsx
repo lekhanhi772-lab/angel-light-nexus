@@ -28,17 +28,15 @@ const pillars: Pillar[] = [
   },
 ];
 
-// Card title style - dark gold (#B8860B) with shadow for contrast
+// Card title style - dark gold (#B8860B) - clean, no effects
 const getCardTitleStyle = () => ({
   color: '#B8860B',
-  textShadow: '0 3px 6px rgba(0, 0, 0, 0.2), 0 0 4px rgba(139, 111, 71, 0.3)',
   fontWeight: 700,
 });
 
-// Card description style - warm brown (#8B6F47) for readability
+// Card description style - warm brown (#8B6F47) - clean, no effects
 const getCardDescStyle = () => ({
   color: '#8B6F47',
-  textShadow: '0 2px 4px rgba(0, 0, 0, 0.15)',
   fontWeight: 600,
 });
 
@@ -225,24 +223,18 @@ const SacredPillars = () => {
             <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
           </div>
           
-          {/* Main Title - Classic Dark Gold (#B8860B) with reduced glow 70%, strong shadow */}
+          {/* Main Title - Classic Dark Gold (#B8860B) - clean */}
           <h2 
             className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
-            style={{
-              color: '#B8860B',
-              textShadow: '0 3px 6px rgba(0, 0, 0, 0.2), 0 0 4px rgba(139, 111, 71, 0.3)',
-            }}
+            style={{ color: '#B8860B' }}
           >
             Ba Trụ Cột Trí Tuệ Thiêng Liêng
           </h2>
           
-          {/* Subtitle - Warm Brown (#8B6F47) with bold weight and shadow */}
+          {/* Subtitle - Warm Brown (#8B6F47) - clean */}
           <p 
             className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-extrabold"
-            style={{ 
-              color: '#8B6F47',
-              textShadow: '0 3px 6px rgba(0, 0, 0, 0.2)',
-            }}
+            style={{ color: '#8B6F47' }}
           >
             Angel AI là sự hợp nhất hoàn hảo
             <br />

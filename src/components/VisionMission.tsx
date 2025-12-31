@@ -147,28 +147,18 @@ const VisionMission = () => {
                 <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
               </div>
               
-              {/* Main Title - Playfair Display Black, reduced size */}
+              {/* Main Title - clean */}
               <h2 
                 className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
-                style={{
-                  background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  textShadow: 'none',
-                  filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
-                }}
+                style={{ color: '#B8860B' }}
               >
                 Tầm Nhìn Của Angel AI
               </h2>
 
-              {/* Subtitle - reduced size */}
+              {/* Subtitle - clean */}
               <p 
                 className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
-                style={{ 
-                  color: 'hsl(180 100% 25%)',
-                  textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
-                }}
+                style={{ color: '#006666' }}
               >
                 Kiến tạo một kỷ nguyên mới<br />
                 nơi AI phụng sự nhân loại bằng ánh sáng và tình yêu!
@@ -254,16 +244,10 @@ const VisionMission = () => {
                       </div>
 
                       <div className="flex-1">
-                        {/* Title - Playfair Display Bold, Gold with Blue shadow */}
+                        {/* Title - clean */}
                         <h3 
                           className="relative z-10 font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-2 leading-tight"
-                          style={{
-                            background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
-                            filter: 'drop-shadow(0 0 20px hsl(43 100% 50% / 0.9)) drop-shadow(0 0 40px hsl(197 71% 73% / 0.4))',
-                          }}
+                          style={{ color: '#B8860B' }}
                         >
                           {item.title}
                         </h3>
@@ -344,28 +328,18 @@ const VisionMission = () => {
                 <div className="w-14 h-px" style={{ background: 'linear-gradient(90deg, transparent, hsl(197 71% 73%), hsl(43 100% 50%), transparent)' }} />
               </div>
               
-              {/* Main Title - reduced size */}
+              {/* Main Title - clean */}
               <h2 
                 className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
-                style={{
-                  background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(43 100% 55%) 40%, hsl(197 71% 73%) 70%, hsl(43 100% 50%) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  textShadow: 'none',
-                  filter: 'drop-shadow(0 0 30px hsl(43 100% 50% / 0.8)) drop-shadow(0 0 60px hsl(197 71% 73% / 0.5))',
-                }}
+                style={{ color: '#B8860B' }}
               >
                 Giá Trị Cốt Lõi
               </h2>
 
-              {/* Subtitle - reduced size */}
+              {/* Subtitle - clean */}
               <p 
                 className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-medium"
-                style={{ 
-                  color: 'hsl(180 100% 25%)',
-                  textShadow: '0 0 30px hsl(60 100% 98% / 0.6), 0 0 60px hsl(60 100% 98% / 0.3)',
-                }}
+                style={{ color: '#006666' }}
               >
                 12 giá trị thiêng liêng dẫn lối Angel AI phụng sự nhân loại
               </p>
@@ -448,16 +422,10 @@ const VisionMission = () => {
                       {value.number}
                     </div>
 
-                    {/* Title - smaller size */}
+                    {/* Title - clean */}
                     <h3 
                       className="relative z-10 font-playfair text-base md:text-lg lg:text-xl font-bold mb-2 leading-tight"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(43 100% 50%) 0%, hsl(38 76% 45%) 50%, hsl(43 100% 55%) 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        filter: 'drop-shadow(0 0 20px hsl(43 100% 50% / 0.9)) drop-shadow(0 0 40px hsl(197 71% 73% / 0.4))',
-                      }}
+                      style={{ color: '#B8860B' }}
                     >
                       {value.title}
                     </h3>

@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Web3Provider } from '@/components/Web3Provider';
 import { WalletConnect } from '@/components/WalletConnect';
+import { WalletBalances } from '@/components/WalletBalances';
 import { Sparkles, MessageCircle, Calendar, ScrollText, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -272,6 +273,11 @@ const Profile = () => {
               Kết nối ví để nhận Camly Coin và phước lành từ Vũ Trụ ✨
             </p>
             <WalletConnect onWalletChange={handleWalletChange} />
+            
+            {/* Wallet Balances - hiển thị sau khi kết nối */}
+            <div className="mt-6">
+              <WalletBalances />
+            </div>
           </div>
 
           {/* Recent Chat History */}

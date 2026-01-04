@@ -478,43 +478,43 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Toggle Sidebar Button - Always visible */}
+      {/* Toggle Sidebar Button - Positioned in chat header area, right side */}
       <button
         onClick={toggleSidebar}
-        className="fixed z-[60] p-2.5 rounded-lg transition-all duration-300 hover:scale-105"
+        className="fixed z-[60] hidden md:flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-300"
         style={{
-          top: '12px',
-          left: showSidebar ? 'calc(70px + 18rem + 8px)' : 'calc(70px + 8px)',
-          background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 248, 220, 0.9) 100%)',
-          border: '1px solid rgba(184, 134, 11, 0.3)',
+          top: '10px',
+          right: '16px',
+          background: 'rgba(255, 215, 0, 0.15)',
+          border: '1px solid rgba(184, 134, 11, 0.2)',
           color: '#B8860B',
         }}
         title={showSidebar ? 'Ẩn menu' : 'Mở menu'}
       >
         {showSidebar ? (
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronRight className="w-5 h-5" />
         ) : (
-          <Menu className="w-5 h-5" />
+          <ChevronLeft className="w-5 h-5" />
         )}
       </button>
 
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle Button - Larger for touch */}
       <button
         onClick={toggleSidebar}
-        className="fixed z-[60] p-2.5 rounded-lg transition-all duration-300 hover:scale-105 md:hidden"
+        className="fixed z-[60] flex md:hidden items-center justify-center w-11 h-11 rounded-lg transition-all duration-300"
         style={{
-          top: '12px',
-          left: showSidebar ? 'calc(100vw - 50px)' : '78px',
-          background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 248, 220, 0.9) 100%)',
-          border: '1px solid rgba(184, 134, 11, 0.3)',
+          top: '10px',
+          right: '12px',
+          background: 'rgba(255, 215, 0, 0.15)',
+          border: '1px solid rgba(184, 134, 11, 0.2)',
           color: '#B8860B',
         }}
         title={showSidebar ? 'Ẩn menu' : 'Mở menu'}
       >
         {showSidebar ? (
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronRight className="w-6 h-6" />
         ) : (
-          <Menu className="w-5 h-5" />
+          <ChevronLeft className="w-6 h-6" />
         )}
       </button>
 

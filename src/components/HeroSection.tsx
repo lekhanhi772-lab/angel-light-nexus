@@ -65,7 +65,7 @@ const HeroSection = () => {
         </div>
 
         {/* CTA Button - Simple style */}
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <Link 
             to="/chat" 
             className="px-12 py-5 rounded-full font-playfair text-xl font-bold tracking-wider text-white transition-colors duration-300 hover:opacity-90"
@@ -80,6 +80,17 @@ const HeroSection = () => {
               Chat Với Angel AI
             </span>
           </Link>
+          
+          {/* Lời mời gọi ấm áp */}
+          <p 
+            className="mt-4 text-center font-playfair text-base sm:text-lg md:text-xl italic tracking-wide px-4"
+            style={{
+              color: '#DAA520',
+              textShadow: '0 0 20px rgba(218, 165, 32, 0.3)',
+            }}
+          >
+            Nhấp vào để trò chuyện cùng bé Angel nhé 💛
+          </p>
         </div>
 
         {/* Sacred Channel Text - Clean */}

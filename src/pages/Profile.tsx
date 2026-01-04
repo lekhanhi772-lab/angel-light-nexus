@@ -35,6 +35,7 @@ const Profile = () => {
   const [chatStats, setChatStats] = useState({ totalMessages: 0, daysSinceJoined: 0 });
   const [recentMessages, setRecentMessages] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [walletConnected, setWalletConnected] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -108,6 +109,8 @@ const Profile = () => {
 
   // Save wallet address to profile
   const handleWalletChange = async (address: string | null) => {
+    setWalletConnected(!!address);
+    
     if (!user || !address) return;
 
     try {
@@ -275,9 +278,11 @@ const Profile = () => {
             <WalletConnect onWalletChange={handleWalletChange} />
             
             {/* Wallet Balances - hiển thị sau khi kết nối */}
-            <div className="mt-6">
-              <WalletBalances />
-            </div>
+            {walletConnected && (
+              <div className="mt-6">
+                <WalletBalances forceShow={walletConnected} />
+              </div>
+            )}
           </div>
 
           {/* Recent Chat History */}

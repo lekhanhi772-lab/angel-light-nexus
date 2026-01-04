@@ -75,6 +75,87 @@ const GrokStyleChat = () => {
     }
   };
 
+  // Constants for message splitting
+  const MAX_CHARS_PER_MESSAGE = 2500;
+  const MANTRAS_MARKER = '⭐️Con là ánh sáng';
+  
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const splitResponseIntoMessages = (fullContent: string): string[] => {
+    // Check if content contains mantras
+    const mantrasIndex = fullContent.indexOf(MANTRAS_MARKER);
+    let mainContent = fullContent;
+    let mantrasSection = '';
+    
+    if (mantrasIndex !== -1) {
+      mainContent = fullContent.substring(0, mantrasIndex).trim();
+      mantrasSection = fullContent.substring(mantrasIndex).trim();
+    }
+    
+    // If content is short enough, return as single message
+    if (mainContent.length <= MAX_CHARS_PER_MESSAGE) {
+      return mantrasSection ? [mainContent, mantrasSection] : [mainContent];
+    }
+    
+    // Split main content into chunks
+    const chunks: string[] = [];
+    let remaining = mainContent;
+    
+    while (remaining.length > MAX_CHARS_PER_MESSAGE) {
+      // Find a good break point (paragraph, sentence, or word boundary)
+      let breakPoint = MAX_CHARS_PER_MESSAGE;
+      
+      // Try to break at paragraph
+      const paragraphBreak = remaining.lastIndexOf('\n\n', MAX_CHARS_PER_MESSAGE);
+      if (paragraphBreak > MAX_CHARS_PER_MESSAGE * 0.5) {
+        breakPoint = paragraphBreak;
+      } else {
+        // Try to break at sentence
+        const sentenceBreak = remaining.lastIndexOf('. ', MAX_CHARS_PER_MESSAGE);
+        if (sentenceBreak > MAX_CHARS_PER_MESSAGE * 0.5) {
+          breakPoint = sentenceBreak + 1;
+        } else {
+          // Break at word boundary
+          const wordBreak = remaining.lastIndexOf(' ', MAX_CHARS_PER_MESSAGE);
+          if (wordBreak > MAX_CHARS_PER_MESSAGE * 0.5) {
+            breakPoint = wordBreak;
+          }
+        }
+      }
+      
+      chunks.push(remaining.substring(0, breakPoint).trim());
+      remaining = remaining.substring(breakPoint).trim();
+    }
+    
+    if (remaining) {
+      chunks.push(remaining);
+    }
+    
+    // Add mantras to the last chunk or as separate message
+    if (mantrasSection) {
+      chunks.push(mantrasSection);
+    }
+    
+    return chunks;
+  };
+
+  const addMessageIndicators = (chunks: string[]): string[] => {
+    if (chunks.length <= 1) return chunks;
+    
+    return chunks.map((chunk, index) => {
+      const partNum = index + 1;
+      const total = chunks.length;
+      
+      if (index === chunks.length - 1) {
+        // Last message - add completion indicator
+        return `${chunk}\n\n✨ Hoàn tất (${partNum}/${total}) 💛`;
+      } else {
+        // Intermediate message - add continuation indicator
+        return `${chunk}\n\n✨ Tiếp theo (${partNum}/${total}) ✨`;
+      }
+    });
+  };
+
   const sendChatMessage = async (newMessages: Message[]) => {
     let assistantContent = '';
 
@@ -123,6 +204,27 @@ const GrokStyleChat = () => {
               });
             }
           } catch { /* ignore */ }
+        }
+      }
+    }
+
+    // After streaming completes, check if we need to split into multiple messages
+    if (assistantContent.length > MAX_CHARS_PER_MESSAGE) {
+      const chunks = splitResponseIntoMessages(assistantContent);
+      const chunksWithIndicators = addMessageIndicators(chunks);
+      
+      if (chunksWithIndicators.length > 1) {
+        // Replace the last message with first chunk
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'assistant', content: chunksWithIndicators[0] };
+          return updated;
+        });
+        
+        // Add remaining chunks with delay
+        for (let i = 1; i < chunksWithIndicators.length; i++) {
+          await delay(800); // 0.8 second delay between messages
+          setMessages(prev => [...prev, { role: 'assistant', content: chunksWithIndicators[i] }]);
         }
       }
     }

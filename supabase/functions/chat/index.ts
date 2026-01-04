@@ -360,24 +360,29 @@ async function searchDocuments(supabase: any, query: string, isDeepDive: boolean
 }
 
 // Extract conversation memory từ lịch sử chat
+// 🌟 NÂNG CẤP: 50 messages thay vì 10 - đồng hành sâu sắc hơn
+const MAX_MEMORY_MESSAGES = 50;
+
 function extractConversationMemory(messages: any[]): ConversationMemory {
   if (!messages || messages.length <= 1) {
     return { context: '', hasHistory: false, recentTopics: [] };
   }
 
-  // Lấy tối đa 10 messages gần nhất (không tính message hiện tại)
-  const recentMessages = messages.slice(-11, -1);
+  // Lấy tối đa 50 messages gần nhất (không tính message hiện tại)
+  const recentMessages = messages.slice(-(MAX_MEMORY_MESSAGES + 1), -1);
   if (recentMessages.length === 0) {
     return { context: '', hasHistory: false, recentTopics: [] };
   }
 
-  let context = '💭 LỊCH SỬ TRÒ CHUYỆN GẦN ĐÂY (ngữ cảnh cá nhân):\n';
+  let context = '💭 LỊCH SỬ TRÒ CHUYỆN GẦN ĐÂY (ngữ cảnh cá nhân - ' + recentMessages.length + ' tin nhắn):\n';
   const topics: string[] = [];
 
+  // Tối ưu: Chỉ đưa content ngắn gọn để giữ tốc độ
   recentMessages.forEach((msg: any, i: number) => {
     const role = msg.role === 'user' ? 'User' : 'Angel';
-    const content = msg.content.substring(0, 200);
-    context += `${role}: ${content}${msg.content.length > 200 ? '...' : ''}\n`;
+    // Giới hạn mỗi message 150 ký tự để không quá nặng
+    const content = msg.content.substring(0, 150);
+    context += `${role}: ${content}${msg.content.length > 150 ? '...' : ''}\n`;
     
     // Extract keywords làm topics
     if (msg.role === 'user') {
@@ -386,11 +391,11 @@ function extractConversationMemory(messages: any[]): ConversationMemory {
     }
   });
 
-  console.log('💭 Memory: Found', recentMessages.length, 'recent messages');
+  console.log('💭 Memory: Found', recentMessages.length, 'recent messages (max:', MAX_MEMORY_MESSAGES, ')');
   return {
     context,
     hasHistory: true,
-    recentTopics: [...new Set(topics)].slice(0, 5)
+    recentTopics: [...new Set(topics)].slice(0, 10) // Tăng topics lên 10
   };
 }
 

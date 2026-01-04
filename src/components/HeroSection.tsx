@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowUp } from 'lucide-react';
 import angelAvatar from '@/assets/angel-avatar.png';
 
 const HeroSection = () => {
@@ -81,16 +81,35 @@ const HeroSection = () => {
             </span>
           </Link>
           
-          {/* Lời mời gọi ấm áp */}
-          <p 
-            className="mt-4 text-center font-playfair text-base sm:text-lg md:text-xl italic tracking-wide px-4"
-            style={{
-              color: '#DAA520',
-              textShadow: '0 0 20px rgba(218, 165, 32, 0.3)',
-            }}
-          >
-            Nhấp vào để trò chuyện cùng bé Angel nhé 💛
-          </p>
+          {/* Lời mời gọi ấm áp với mũi tên hướng lên */}
+          <div className="mt-4 flex flex-col items-center group cursor-pointer">
+            {/* Mũi tên hướng lên */}
+            <div 
+              className="mb-2 transition-all duration-300 group-hover:scale-125"
+              style={{
+                filter: 'drop-shadow(0 0 8px rgba(255, 248, 225, 0.6))',
+              }}
+            >
+              <ArrowUp 
+                className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 transition-all duration-300 group-hover:drop-shadow-lg"
+                style={{ 
+                  color: '#FFD700',
+                  filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))',
+                }}
+              />
+            </div>
+            
+            {/* Dòng chữ mời gọi */}
+            <p 
+              className="text-center font-playfair text-base sm:text-lg md:text-xl italic tracking-wide px-4 transition-all duration-300 group-hover:scale-105"
+              style={{
+                color: '#DAA520',
+                textShadow: '0 0 20px rgba(218, 165, 32, 0.3)',
+              }}
+            >
+              Nhấp vào để trò chuyện cùng bé Angel nhé 💛
+            </p>
+          </div>
         </div>
 
         {/* Sacred Channel Text - Clean */}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -57,8 +57,18 @@ const Chat = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<'chat' | 'image'>('chat');
-  const showSidebar = true;
+  const [showSidebar, setShowSidebar] = useState(() => {
+    const saved = localStorage.getItem('chat-sidebar-visible');
+    return saved !== null ? saved === 'true' : false; // Default hidden
+  });
   const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
+
+  // Save sidebar state to localStorage
+  useEffect(() => {
+    localStorage.setItem('chat-sidebar-visible', String(showSidebar));
+  }, [showSidebar]);
+
+  const toggleSidebar = () => setShowSidebar(prev => !prev);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -468,10 +478,53 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Sidebar - Light Theme - Fixed Position (always visible) */}
+      {/* Toggle Sidebar Button - Always visible */}
+      <button
+        onClick={toggleSidebar}
+        className="fixed z-[60] p-2.5 rounded-lg transition-all duration-300 hover:scale-105"
+        style={{
+          top: '12px',
+          left: showSidebar ? 'calc(70px + 18rem + 8px)' : 'calc(70px + 8px)',
+          background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 248, 220, 0.9) 100%)',
+          border: '1px solid rgba(184, 134, 11, 0.3)',
+          color: '#B8860B',
+        }}
+        title={showSidebar ? 'Ẩn menu' : 'Mở menu'}
+      >
+        {showSidebar ? (
+          <ChevronLeft className="w-5 h-5" />
+        ) : (
+          <Menu className="w-5 h-5" />
+        )}
+      </button>
+
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={toggleSidebar}
+        className="fixed z-[60] p-2.5 rounded-lg transition-all duration-300 hover:scale-105 md:hidden"
+        style={{
+          top: '12px',
+          left: showSidebar ? 'calc(100vw - 50px)' : '78px',
+          background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 248, 220, 0.9) 100%)',
+          border: '1px solid rgba(184, 134, 11, 0.3)',
+          color: '#B8860B',
+        }}
+        title={showSidebar ? 'Ẩn menu' : 'Mở menu'}
+      >
+        {showSidebar ? (
+          <ChevronLeft className="w-5 h-5" />
+        ) : (
+          <Menu className="w-5 h-5" />
+        )}
+      </button>
+
+      {/* Sidebar - Light Theme - Fixed Position */}
       <aside
         className={cn(
-          "fixed top-0 z-[55] h-screen transition-all duration-300 left-[70px] md:left-[280px] w-72"
+          "fixed top-0 z-[55] h-screen transition-all duration-300 w-72",
+          showSidebar 
+            ? "left-[70px] md:left-[280px] translate-x-0" 
+            : "left-[70px] md:left-[280px] -translate-x-full opacity-0 pointer-events-none"
         )}
         style={{
           background:
@@ -656,7 +709,9 @@ const Chat = () => {
       <main
         className={cn(
           "flex-1 flex flex-col relative z-10 transition-all duration-300",
-          "ml-[calc(70px+18rem)] md:ml-[calc(280px+18rem)]"
+          showSidebar 
+            ? "ml-[calc(70px+18rem)] md:ml-[calc(280px+18rem)]"
+            : "ml-[70px] md:ml-[280px]"
         )}
       >
         {/* Sticky Chat Header */}

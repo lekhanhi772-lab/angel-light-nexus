@@ -89,7 +89,11 @@ const TokenRow = ({ token }: { token: TokenBalance }) => {
   );
 };
 
-export const WalletBalances = () => {
+interface WalletBalancesProps {
+  forceShow?: boolean;
+}
+
+export const WalletBalances = ({ forceShow = false }: WalletBalancesProps) => {
   const { 
     tokenBalances, 
     totalUsdValue, 
@@ -106,7 +110,10 @@ export const WalletBalances = () => {
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
-  if (!isConnected) {
+  // Show if wagmi says connected OR if parent forces it
+  const shouldShow = isConnected || forceShow;
+
+  if (!shouldShow) {
     return null;
   }
 

@@ -214,6 +214,7 @@ export type Database = {
           id: string
           updated_at: string
           user_id: string
+          wallet_address: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -223,6 +224,7 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id: string
+          wallet_address?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -232,6 +234,7 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+          wallet_address?: string | null
         }
         Relationships: []
       }

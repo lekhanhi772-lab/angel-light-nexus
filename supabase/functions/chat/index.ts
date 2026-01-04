@@ -223,133 +223,232 @@ function detectCryptoPriceQuery(query: string): CryptoPriceQuery {
   return { isCryptoPrice: false, coinName: null, coinSymbol: null };
 }
 
-// 🪙 SEARCH CRYPTO PRICE - Ưu tiên CoinGecko cho TẤT CẢ coin
-async function searchCryptoPrice(coinName: string | null, coinSymbol: string | null, originalQuery: string): Promise<{ context: string; hasResults: boolean; priceData: any }> {
-  const TAVILY_API_KEY = Deno.env.get('TAVILY_API_KEY');
-  
-  if (!TAVILY_API_KEY) {
-    console.log('Crypto Price: Tavily API key not configured');
-    return { context: '', hasResults: false, priceData: null };
-  }
-  
-  try {
-    // Xây dựng query tối ưu cho CoinGecko
-    let searchQuery: string;
-    let coinIdentifier = coinName || coinSymbol || 'cryptocurrency';
-    
-    if (coinName === 'Camly Coin' || coinSymbol === 'CML') {
-      searchQuery = 'Camly Coin CML price USDT USD today site:coingecko.com';
-    } else if (coinName) {
-      searchQuery = `${coinName} ${coinSymbol || ''} price USD USDT today site:coingecko.com`;
-    } else {
-      // Generic query từ user
-      searchQuery = `${originalQuery} price USD site:coingecko.com OR site:coinmarketcap.com`;
-    }
-    
-    console.log(`🪙 Fetching ${coinIdentifier} price from CoinGecko...`);
-    console.log('🔍 Search query:', searchQuery);
-    
-    const response = await fetch('https://api.tavily.com/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        api_key: TAVILY_API_KEY,
-        query: searchQuery,
-        search_depth: 'advanced',
-        include_answer: true,
-        max_results: 5,
-        include_domains: ['coingecko.com', 'coinmarketcap.com', 'binance.com']
-      }),
-    });
-    
-    if (!response.ok) {
-      console.error('Crypto Price API error:', response.status);
-      return { context: '', hasResults: false, priceData: null };
-    }
-    
-    const data = await response.json();
-    console.log('🪙 Crypto price results:', data.results?.length || 0);
-    
-    if (!data.results?.length) {
-      return { context: '', hasResults: false, priceData: null };
-    }
-    
-    // Phân tích và tổng hợp giá từ nguồn uy tín
-    let context = `🪙 GIÁ ${coinIdentifier.toUpperCase()} REALTIME (NGUỒN UY TÍN):\n\n`;
-    let priceData: any = {
-      coinName: coinName,
-      coinSymbol: coinSymbol,
-      sources: [],
-      prices: [],
-      primarySource: null,
-      primaryPrice: null,
-      change24h: null,
-      marketCap: null
-    };
-    
-    // Ưu tiên CoinGecko > CoinMarketCap > Binance
-    const priorityOrder = ['coingecko.com', 'coinmarketcap.com', 'binance.com'];
-    
-    data.results.forEach((r: any) => {
-      const url = r.url || '';
-      const content = r.content || r.snippet || '';
-      const title = r.title || '';
-      
-      // Tìm giá trong content - cải tiến regex
-      const priceMatches = content.match(/\$[\d,]+\.?\d*|\d+\.?\d*\s*USD|\d+\.?\d*\s*USDT/gi) || [];
-      const percentMatches = content.match(/[+-]?\d+\.?\d*%/gi) || [];
-      const marketCapMatches = content.match(/\$[\d.]+\s*(billion|million|B|M)/gi) || [];
-      
-      let source = 'Unknown';
-      let priority = 999;
-      
-      priorityOrder.forEach((domain, idx) => {
-        if (url.includes(domain)) {
-          source = domain.replace('.com', '');
-          priority = idx;
-        }
+// 🪙 SEARCH CRYPTO PRICE - Ưu tiên CoinGecko API (KHÔNG cache, realtime)
+async function searchCryptoPrice(
+  coinName: string | null,
+  coinSymbol: string | null,
+  originalQuery: string
+): Promise<{ context: string; hasResults: boolean; priceData: any }> {
+  const COINGECKO_BASE = 'https://api.coingecko.com/api/v3';
+
+  const fetchJson = async (url: string) => {
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      const res = await fetch(url, {
+        signal: ctrl.signal,
+        headers: {
+          'Accept': 'application/json',
+          // cố gắng tránh cache lớp trung gian
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        },
       });
-      
-      if (priceMatches.length > 0 || content.length > 50) {
-        const priceInfo = {
-          source,
-          url,
-          price: priceMatches[0] || 'N/A',
-          change24h: percentMatches[0] || null,
-          marketCap: marketCapMatches[0] || null,
-          priority,
-          rawContent: content.substring(0, 400)
-        };
-        
-        priceData.prices.push(priceInfo);
-        priceData.sources.push(source);
-        
-        context += `--- ${source.toUpperCase()} ---\n`;
-        context += `Nội dung: ${content.substring(0, 400)}\n`;
-        if (priceMatches[0]) context += `Giá tìm thấy: ${priceMatches[0]}\n`;
-        if (percentMatches[0]) context += `Thay đổi 24h: ${percentMatches[0]}\n`;
-        if (marketCapMatches[0]) context += `Vốn hóa: ${marketCapMatches[0]}\n`;
-        context += `\n`;
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`HTTP ${res.status} ${text.substring(0, 200)}`);
       }
-    });
-    
-    // Chọn nguồn ưu tiên nhất
-    if (priceData.prices.length > 0) {
-      priceData.prices.sort((a: any, b: any) => a.priority - b.priority);
-      priceData.primarySource = priceData.prices[0].source;
-      priceData.primaryPrice = priceData.prices[0].price;
-      priceData.change24h = priceData.prices[0].change24h;
-      priceData.marketCap = priceData.prices[0].marketCap;
+      return await res.json();
+    } finally {
+      clearTimeout(timeout);
     }
-    
-    console.log(`✅ ${coinIdentifier} price from:`, priceData.primarySource, '| Price:', priceData.primaryPrice);
-    
+  };
+
+  const getUsdVndRate = async (): Promise<number> => {
+    // Nguồn FX realtime không cần key
+    try {
+      const fx = await fetchJson('https://open.er-api.com/v6/latest/USD');
+      const vnd = fx?.rates?.VND;
+      if (typeof vnd === 'number' && isFinite(vnd) && vnd > 1000) return vnd;
+    } catch (e) {
+      console.log('FX rate fallback (open.er-api) error:', e);
+    }
+    // Fallback an toàn nếu FX API tạm lỗi
+    return 25400;
+  };
+
+  const normalize = (s: string) => s.trim().toLowerCase();
+
+  const resolveCoinGeckoId = async (): Promise<string | null> => {
+    // Camly Coin: ép cứng ID chuẩn từ CoinGecko
+    if (coinName === 'Camly Coin' || coinSymbol === 'CML') return 'camly-coin';
+
+    const symbolUpper = (coinSymbol || '').toUpperCase().trim();
+    const hardMap: Record<string, string> = {
+      BTC: 'bitcoin',
+      ETH: 'ethereum',
+      SOL: 'solana',
+      BNB: 'binancecoin',
+      XRP: 'ripple',
+      ADA: 'cardano',
+      DOGE: 'dogecoin',
+      DOT: 'polkadot',
+      AVAX: 'avalanche-2',
+      MATIC: 'polygon-pos',
+      LINK: 'chainlink',
+      LTC: 'litecoin',
+      TRX: 'tron',
+      UNI: 'uniswap',
+      SHIB: 'shiba-inu',
+      TON: 'the-open-network',
+    };
+    if (symbolUpper && hardMap[symbolUpper]) return hardMap[symbolUpper];
+
+    const q = coinName || coinSymbol || originalQuery;
+    if (!q) return null;
+
+    const query = normalize(q).replace(/\bgiá\b|\bprice\b|\busd\b|\busdt\b|\bvnd\b|\bhôm nay\b|\btoday\b|\bhiện tại\b|\bcurrent\b/g, '').trim();
+    if (!query) return null;
+
+    const search = await fetchJson(`${COINGECKO_BASE}/search?query=${encodeURIComponent(query)}`);
+    const coins: Array<any> = Array.isArray(search?.coins) ? search.coins : [];
+    if (!coins.length) return null;
+
+    // Ưu tiên match theo symbol nếu có
+    if (symbolUpper) {
+      const exact = coins.find((c) => (c?.symbol || '').toUpperCase() === symbolUpper);
+      if (exact?.id) return exact.id;
+    }
+
+    // Nếu query gần giống "Camly" nhưng user viết khác
+    const camlyLike = coins.find((c) => normalize(c?.name || '').includes('camly') || normalize(c?.id || '').includes('camly'));
+    if (camlyLike?.id) return camlyLike.id;
+
+    return coins[0]?.id ?? null;
+  };
+
+  try {
+    const id = await resolveCoinGeckoId();
+    if (!id) {
+      console.log('🪙 CoinGecko: cannot resolve coin id for', coinName || coinSymbol || originalQuery);
+      return { context: '', hasResults: false, priceData: null };
+    }
+
+    const fx = await getUsdVndRate();
+
+    console.log(`🪙 Fetching price from CoinGecko API: id=${id}`);
+
+    // coins/markets trả về đủ: current_price, market_cap, change 24h, volume
+    const markets = await fetchJson(
+      `${COINGECKO_BASE}/coins/markets?vs_currency=usd&ids=${encodeURIComponent(id)}&price_change_percentage=24h`
+    );
+
+    const row = Array.isArray(markets) ? markets[0] : null;
+    const priceUsd = typeof row?.current_price === 'number' ? row.current_price : null;
+    if (priceUsd === null) {
+      console.log('🪙 CoinGecko: missing current_price for', id);
+      return { context: '', hasResults: false, priceData: null };
+    }
+
+    const priceVnd = priceUsd * fx;
+    const change24h = typeof row?.price_change_percentage_24h === 'number' ? row.price_change_percentage_24h : null;
+    const marketCapUsd = typeof row?.market_cap === 'number' ? row.market_cap : null;
+    const volumeUsd = typeof row?.total_volume === 'number' ? row.total_volume : null;
+
+    const displayName = (coinName || row?.name || id).toString();
+    const displaySymbol = (coinSymbol || row?.symbol || '').toString().toUpperCase();
+
+    const priceData = {
+      coinName: displayName,
+      coinSymbol: displaySymbol,
+      source: 'CoinGecko',
+      coingeckoId: id,
+      priceUsd,
+      priceVnd,
+      usdVndRate: fx,
+      change24h,
+      marketCapUsd,
+      volumeUsd,
+    };
+
+    // Context CHỈ 1 nguồn - tránh nhiễu/sai
+    const context =
+      `🪙 DỮ LIỆU GIÁ CRYPTO REALTIME (CHỈ 1 NGUỒN CHUẨN):\n` +
+      `COIN=${displayName} (${displaySymbol})\n` +
+      `PRICE_USD=${priceUsd}\n` +
+      `PRICE_VND=${priceVnd}\n` +
+      `CHANGE_24H_PERCENT=${change24h ?? 'N/A'}\n` +
+      `MARKET_CAP_USD=${marketCapUsd ?? 'N/A'}\n` +
+      `VOLUME_USD=${volumeUsd ?? 'N/A'}\n` +
+      `USD_VND_RATE=${fx}\n` +
+      `SOURCE=CoinGecko\n`;
+
+    console.log(`✅ CoinGecko OK: ${displayName} ${displaySymbol} | USD=${priceUsd} | VND=${priceVnd}`);
     return { context, hasResults: true, priceData };
   } catch (e) {
-    console.error('Crypto price search error:', e);
-    return { context: '', hasResults: false, priceData: null };
+    console.error('Crypto price (CoinGecko) error:', e);
+
+    // Fallback nhẹ: nếu CoinGecko tạm lỗi, thử Tavily (nếu có key) nhưng vẫn ép query CoinGecko
+    const TAVILY_API_KEY = Deno.env.get('TAVILY_API_KEY');
+    if (!TAVILY_API_KEY) return { context: '', hasResults: false, priceData: null };
+
+    try {
+      const searchQuery = (coinName === 'Camly Coin' || coinSymbol === 'CML')
+        ? 'Camly Coin price USD site:coingecko.com/en/coins/camly-coin'
+        : `${coinName || coinSymbol || originalQuery} price USD site:coingecko.com`;
+
+      console.log('🪙 Fallback Tavily query:', searchQuery);
+
+      const response = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: TAVILY_API_KEY,
+          query: searchQuery,
+          search_depth: 'advanced',
+          include_answer: false, // tránh Tavily LLM tóm tắt sai/cũ
+          max_results: 5,
+          include_domains: ['coingecko.com'],
+        }),
+      });
+
+      if (!response.ok) return { context: '', hasResults: false, priceData: null };
+      const data = await response.json();
+      const first = data?.results?.[0];
+      const snippet = (first?.content || first?.snippet || '').toString();
+      const priceMatches = snippet.match(/\$[\d,]+\.?\d*/g) || [];
+
+      if (!priceMatches.length) return { context: '', hasResults: false, priceData: null };
+
+      const fx = await getUsdVndRate();
+      const raw = priceMatches[0].replace(/\$|,/g, '');
+      const priceUsd = Number(raw);
+      if (!isFinite(priceUsd)) return { context: '', hasResults: false, priceData: null };
+
+      const priceVnd = priceUsd * fx;
+      const displayName = coinName || 'Cryptocurrency';
+      const displaySymbol = (coinSymbol || '').toUpperCase();
+
+      const priceData = {
+        coinName: displayName,
+        coinSymbol: displaySymbol,
+        source: 'CoinGecko (fallback)',
+        priceUsd,
+        priceVnd,
+        usdVndRate: fx,
+        change24h: null,
+        marketCapUsd: null,
+        volumeUsd: null,
+      };
+
+      const context =
+        `🪙 DỮ LIỆU GIÁ CRYPTO REALTIME (FALLBACK - ƯU TIÊN COINGECKO):\n` +
+        `COIN=${displayName} (${displaySymbol})\n` +
+        `PRICE_USD=${priceUsd}\n` +
+        `PRICE_VND=${priceVnd}\n` +
+        `CHANGE_24H_PERCENT=N/A\n` +
+        `MARKET_CAP_USD=N/A\n` +
+        `USD_VND_RATE=${fx}\n` +
+        `SOURCE=CoinGecko\n`;
+
+      return { context, hasResults: true, priceData };
+    } catch (fallbackErr) {
+      console.error('Crypto price fallback error:', fallbackErr);
+      return { context: '', hasResults: false, priceData: null };
+    }
   }
 }
+
 
 // Detect if user is asking for more/deeper explanation
 function isDeepDiveRequest(query: string): boolean {
@@ -849,7 +948,7 @@ Rồi viết CHÍNH XÁC 8 câu này (KHÔNG THAY ĐỔI MỘT CHỮ):
 1️⃣ CHỈ HIỂN THỊ 1 GIÁ CHÍNH XÁC (không liệt kê nhiều nguồn):
    - Lấy giá từ nguồn ưu tiên nhất: CoinGecko > CoinMarketCap > Binance
    - Giá USD/USDT làm chuẩn chính
-   - Quy đổi VND chính xác (dùng tỷ giá ~25,400 VND/USD)
+   - Quy đổi VND chính xác theo tỷ giá USD_VND_RATE realtime trong context
 
 2️⃣ FORMAT TRẢ LỜI CHUẨN:
    

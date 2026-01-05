@@ -6,6 +6,8 @@ import { Web3Provider } from '@/components/Web3Provider';
 import { WalletConnect } from '@/components/WalletConnect';
 import { WalletBalances } from '@/components/WalletBalances';
 import { AngelCursorSettings } from '@/components/AngelCursorSettings';
+import { ReferralCard } from '@/components/ReferralCard';
+import { NotificationBell } from '@/components/NotificationBell';
 import { useAngelCursor } from '@/hooks/useAngelCursor';
 import { Sparkles, MessageCircle, Calendar, ScrollText, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
@@ -170,7 +172,12 @@ const Profile = () => {
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto">
-          {/* Header */}
+          {/* Header with Notification Bell */}
+          <div className="flex justify-end mb-4">
+            <NotificationBell userId={user?.id} />
+          </div>
+          
+          {/* Title */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Sparkles className="w-6 h-6" style={{ color: '#DAA520' }} />
@@ -284,6 +291,11 @@ const Profile = () => {
             <div className="mt-6">
               <WalletBalances />
             </div>
+          </div>
+
+          {/* Referral Card - Mời Linh Hồn Mới */}
+          <div className="mb-8">
+            <ReferralCard userId={user?.id} />
           </div>
 
           {/* Angel Cursor Settings */}

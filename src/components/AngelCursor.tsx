@@ -275,45 +275,57 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             </radialGradient>
           </defs>
 
-          {/* Hair back (behind head) - longer flowing */}
+          {/* Hair back (behind head) - voluminous */}
           <ellipse
             cx="30"
-            cy="22"
-            rx="18"
-            ry="16"
+            cy="20"
+            rx="20"
+            ry="18"
             fill="url(#shizukaHair)"
           />
           
-          {/* Long flowing hair strands - left side */}
+          {/* Flowing hair - left side (mid-back length, loose & flying) */}
           <path
-            d={`M12 18 Q6 ${28 + hairSwing * 1.5} 8 ${45 + hairSwing * 1.2} Q10 ${60 + hairSwing} 14 ${70 + hairSwing * 0.8}`}
-            fill="url(#shizukaHair)"
-            stroke={colors.hairHighlight}
-            strokeWidth="0.3"
-          />
-          <path
-            d={`M14 20 Q10 ${32 + hairSwing * 1.3} 12 ${50 + hairSwing} Q14 ${62 + hairSwing * 0.9} 16 ${68 + hairSwing * 0.7}`}
+            d={`M10 20 Q4 ${30 + hairSwing * 2} 6 ${42 + hairSwing * 1.5} Q8 ${52 + hairSwing} 12 ${58 + hairSwing * 0.6}`}
             fill="url(#shizukaHair)"
           />
           <path
-            d={`M16 22 Q12 ${35 + hairSwing} 14 ${48 + hairSwing * 0.8}`}
+            d={`M13 22 Q8 ${32 + hairSwing * 1.8} 10 ${45 + hairSwing * 1.3} Q12 ${54 + hairSwing * 0.8} 16 ${56 + hairSwing * 0.5}`}
+            fill="url(#shizukaHair)"
+          />
+          <path
+            d={`M16 24 Q12 ${36 + hairSwing * 1.5} 14 ${48 + hairSwing}`}
             fill="url(#shizukaHair)"
           />
           
-          {/* Long flowing hair strands - right side */}
+          {/* Flowing hair - right side (mid-back length, loose & flying) */}
           <path
-            d={`M48 18 Q54 ${28 - hairSwing * 1.5} 52 ${45 - hairSwing * 1.2} Q50 ${60 - hairSwing} 46 ${70 - hairSwing * 0.8}`}
+            d={`M50 20 Q56 ${30 - hairSwing * 2} 54 ${42 - hairSwing * 1.5} Q52 ${52 - hairSwing} 48 ${58 - hairSwing * 0.6}`}
             fill="url(#shizukaHair)"
+          />
+          <path
+            d={`M47 22 Q52 ${32 - hairSwing * 1.8} 50 ${45 - hairSwing * 1.3} Q48 ${54 - hairSwing * 0.8} 44 ${56 - hairSwing * 0.5}`}
+            fill="url(#shizukaHair)"
+          />
+          <path
+            d={`M44 24 Q48 ${36 - hairSwing * 1.5} 46 ${48 - hairSwing}`}
+            fill="url(#shizukaHair)"
+          />
+          
+          {/* Hair highlight strands for flowing effect */}
+          <path
+            d={`M12 25 Q7 ${35 + hairSwing * 1.6} 10 ${50 + hairSwing}`}
             stroke={colors.hairHighlight}
-            strokeWidth="0.3"
+            strokeWidth="1.5"
+            fill="none"
+            opacity="0.4"
           />
           <path
-            d={`M46 20 Q50 ${32 - hairSwing * 1.3} 48 ${50 - hairSwing} Q46 ${62 - hairSwing * 0.9} 44 ${68 - hairSwing * 0.7}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M44 22 Q48 ${35 - hairSwing} 46 ${48 - hairSwing * 0.8}`}
-            fill="url(#shizukaHair)"
+            d={`M48 25 Q53 ${35 - hairSwing * 1.6} 50 ${50 - hairSwing}`}
+            stroke={colors.hairHighlight}
+            strokeWidth="1.5"
+            fill="none"
+            opacity="0.4"
           />
 
           {/* Face */}

@@ -533,85 +533,142 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
 
           {/* Neck */}
           <path
-            d="M26 37 L26 40 Q30 41 34 40 L34 37"
+            d="M24 34 L24 38 Q28 39 32 38 L32 34"
             fill="url(#shizukaSkin)"
           />
 
-          {/* Angel Dress body - flowing white */}
+          {/* Angel Dress body - flowing layered dress like reference */}
+          {/* Main dress body */}
           <path
-            d={`M22 40 Q30 38 38 40 L${44 + dressSwing} 72 Q30 78 ${16 - dressSwing} 72 Z`}
+            d={`M20 38 Q28 36 36 38 L${42 + dressSwing * 0.5} 52 Q28 54 ${18 - dressSwing * 0.5} 52 Z`}
             fill="url(#shizukaDress)"
           />
           
-          {/* Dress golden trim at top */}
+          {/* First ruffle layer */}
           <path
-            d="M24 40 Q30 43 36 40"
+            d={`M${16 - dressSwing} 52 Q22 56 28 54 Q34 56 ${44 + dressSwing} 52 
+               Q${46 + dressSwing * 1.2} 60 ${42 + dressSwing} 62 
+               Q28 66 ${18 - dressSwing} 62 
+               Q${14 - dressSwing * 1.2} 60 ${16 - dressSwing} 52 Z`}
+            fill="url(#shizukaDress)"
+          />
+          
+          {/* Second ruffle layer */}
+          <path
+            d={`M${14 - dressSwing * 1.2} 62 Q22 66 28 64 Q34 66 ${46 + dressSwing * 1.2} 62 
+               Q${50 + dressSwing * 1.5} 70 ${44 + dressSwing * 1.2} 74 
+               Q28 78 ${16 - dressSwing * 1.2} 74 
+               Q${10 - dressSwing * 1.5} 70 ${14 - dressSwing * 1.2} 62 Z`}
+            fill="url(#shizukaDress)"
+          />
+          
+          {/* Dress collar/neckline trim */}
+          <path
+            d="M22 38 Q28 41 34 38"
             stroke={colors.dressAccent}
             strokeWidth="1.5"
             fill="none"
             strokeLinecap="round"
           />
           
-          {/* Dress fold details */}
+          {/* Dress fold details on ruffles */}
           <path
-            d={`M26 48 Q28 ${58 + dressSwing * 0.3} 24 70`}
+            d={`M20 54 Q22 58 20 62`}
             stroke={colors.dressAccent}
             strokeWidth="0.4"
             fill="none"
             opacity="0.3"
           />
           <path
-            d={`M30 45 Q30 ${60} 30 72`}
+            d={`M28 52 Q28 58 28 64`}
             stroke={colors.dressAccent}
             strokeWidth="0.4"
             fill="none"
             opacity="0.25"
           />
           <path
-            d={`M34 48 Q32 ${58 - dressSwing * 0.3} 36 70`}
+            d={`M36 54 Q34 58 36 62`}
             stroke={colors.dressAccent}
             strokeWidth="0.4"
             fill="none"
             opacity="0.3"
           />
           
-          {/* Dress hem - golden wavy */}
+          {/* Ruffle edge highlights */}
           <path
-            d={`M${16 - dressSwing} 72 Q22 75 30 73 Q38 75 ${44 + dressSwing} 72`}
+            d={`M${16 - dressSwing} 52 Q22 55 28 53 Q34 55 ${44 + dressSwing} 52`}
             stroke={colors.dressAccent}
-            strokeWidth="1.5"
+            strokeWidth="0.8"
             fill="none"
-            strokeLinecap="round"
+            opacity="0.4"
+          />
+          <path
+            d={`M${14 - dressSwing * 1.2} 62 Q22 65 28 63 Q34 65 ${46 + dressSwing * 1.2} 62`}
+            stroke={colors.dressAccent}
+            strokeWidth="0.8"
+            fill="none"
+            opacity="0.4"
           />
 
-          {/* Arms */}
-          {/* Left arm */}
-          <path
-            d={`M22 42 Q${16 - armSwing} 50 ${14 - armSwing} 58`}
-            stroke="url(#shizukaSkin)"
-            strokeWidth="5"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <circle cx={14 - armSwing} cy="58" r="3" fill="url(#shizukaSkin)" />
+          {/* Arms - dancing pose like reference */}
+          {/* Left arm - extended outward and down gracefully */}
+          <g transform={`rotate(${armSwing * 0.5}, 20, 40)`}>
+            <path
+              d={`M20 40 Q8 48 2 56`}
+              stroke="url(#shizukaSkin)"
+              strokeWidth="4.5"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Left hand - open palm */}
+            <ellipse cx="1" cy="57" rx="3" ry="2.5" fill="url(#shizukaSkin)" transform="rotate(-30, 1, 57)" />
+            {/* Fingers hint */}
+            <path d="M-1 56 L-3 54" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+            <path d="M0 55 L-1 52.5" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+            <path d="M2 55 L2 52.5" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+          </g>
           
-          {/* Right arm */}
-          <path
-            d={`M38 42 Q${44 + armSwing} 50 ${46 + armSwing} 58`}
-            stroke="url(#shizukaSkin)"
-            strokeWidth="5"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <circle cx={46 + armSwing} cy="58" r="3" fill="url(#shizukaSkin)" />
+          {/* Right arm - raised up gracefully */}
+          <g transform={`rotate(${-armSwing * 0.5}, 36, 40)`}>
+            <path
+              d={`M36 40 Q48 36 54 28`}
+              stroke="url(#shizukaSkin)"
+              strokeWidth="4.5"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Right hand - open palm facing up */}
+            <ellipse cx="55" cy="27" rx="3" ry="2.5" fill="url(#shizukaSkin)" transform="rotate(40, 55, 27)" />
+            {/* Fingers hint */}
+            <path d="M56 25 L58 23" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+            <path d="M57 26 L60 25" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+            <path d="M57 28 L60 28" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+          </g>
 
-          {/* Legs */}
-          <path d="M26 68 L24 78" stroke="url(#shizukaSkin)" strokeWidth="4" fill="none" strokeLinecap="round" />
-          <path d="M34 68 L36 78" stroke="url(#shizukaSkin)" strokeWidth="4" fill="none" strokeLinecap="round" />
+          {/* Legs - dancing pose, one leg slightly lifted */}
+          {/* Left leg - straight down with pointed toe */}
+          <path 
+            d="M24 70 L22 80 L20 84" 
+            stroke="url(#shizukaSkin)" 
+            strokeWidth="4" 
+            fill="none" 
+            strokeLinecap="round" 
+          />
           
-          {/* Shoes */}
-          <ellipse cx="24" cy="79" rx="4" ry="2" fill={colors.dress} />
-          <ellipse cx="36" cy="79" rx="4" ry="2" fill={colors.dress} />
+          {/* Right leg - lifted/bent gracefully */}
+          <path 
+            d={`M32 70 Q38 74 40 ${78 + dressSwing * 0.2}`} 
+            stroke="url(#shizukaSkin)" 
+            strokeWidth="4" 
+            fill="none" 
+            strokeLinecap="round" 
+          />
+          
+          {/* Ballet shoes - pointed toe style */}
+          <ellipse cx="19" cy="85" rx="3.5" ry="1.8" fill={colors.ribbon} transform="rotate(-15, 19, 85)" />
+          <path d="M17 84 Q19 86 21 84" stroke={colors.dressAccent} strokeWidth="0.5" fill="none" opacity="0.6" />
+          
+          <ellipse cx={41 + dressSwing * 0.2} cy={79 + dressSwing * 0.2} rx="3" ry="1.5" fill={colors.ribbon} transform={`rotate(25, ${41 + dressSwing * 0.2}, ${79 + dressSwing * 0.2})`} />
         </svg>
       </div>
     </>

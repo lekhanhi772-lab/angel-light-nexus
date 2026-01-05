@@ -1,72 +1,83 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
-// 4 color variants - Cute cartoon fairy style like the reference image
+// 4 color variants - Elegant Angel style matching the avatar
 const ANGEL_VARIANTS = {
   default: { 
-    // Pink Fairy - like the left one in reference
-    hair: '#3D2314', 
-    hairHighlight: '#5C3A2E',
-    hairBow: '#FF69B4',
-    skin: '#FFE5D4',
-    cheek: '#FFB6C1',
-    dress: '#FFB6C1', 
-    dressLight: '#FFD1DC',
-    dressDark: '#FF69B4',
-    wings: '#FFB6C1',
-    wingsLight: '#FFD1DC',
-    shoes: '#FF69B4',
-    name: 'Tiên Hồng Dễ Thương' 
+    // Golden Angel - like the avatar
+    hair: '#F5DEB3',
+    hairHighlight: '#FFFACD',
+    hairGlow: '#FFD700',
+    skin: '#FFF5EB',
+    cheek: '#FFE4E1',
+    dress: '#FFFFFF', 
+    dressGold: '#FFD700',
+    dressShimmer: '#FFFACD',
+    wings: '#FFE4B5',
+    wingsLight: '#FFFAF0',
+    wingsSparkle: '#FFD700',
+    heart: '#FFD700',
+    heartGlow: '#FFF8DC',
+    halo: '#FFD700',
+    name: 'Thiên Thần Ánh Sáng' 
   },
   pink: { 
-    // Yellow/Orange Fairy - like the middle one
-    hair: '#E67E22', 
-    hairHighlight: '#F39C12',
-    hairBow: '#27AE60',
-    skin: '#FFE5D4',
-    cheek: '#FFCBA4',
-    dress: '#F1C40F', 
-    dressLight: '#F7DC6F',
-    dressDark: '#D4AC0D',
-    dressLeaves: '#27AE60',
-    wings: '#FFFACD',
-    wingsLight: '#FFFFFF',
-    shoes: '#F1C40F',
-    name: 'Tiên Vàng Rực Rỡ' 
+    // Rose Angel
+    hair: '#DDA0DD',
+    hairHighlight: '#E6E6FA',
+    hairGlow: '#FF69B4',
+    skin: '#FFF5EB',
+    cheek: '#FFB6C1',
+    dress: '#FFF0F5', 
+    dressGold: '#FFB6C1',
+    dressShimmer: '#FFC0CB',
+    wings: '#FFD1DC',
+    wingsLight: '#FFF0F5',
+    wingsSparkle: '#FF69B4',
+    heart: '#FF69B4',
+    heartGlow: '#FFB6C1',
+    halo: '#FF69B4',
+    name: 'Thiên Thần Hồng' 
   },
   golden: { 
-    // Purple Fairy - like the right one
-    hair: '#F4D03F', 
-    hairHighlight: '#F7DC6F',
-    hairBow: '#85C1E9',
-    skin: '#FFE5D4',
-    cheek: '#E8DAEF',
-    dress: '#BB8FCE', 
-    dressLight: '#D7BDE2',
-    dressDark: '#8E44AD',
-    wings: '#D6EAF8',
-    wingsLight: '#FFFFFF',
-    shoes: '#BB8FCE',
-    name: 'Tiên Tím Huyền Bí' 
+    // Celestial Gold Angel
+    hair: '#FFD700',
+    hairHighlight: '#FFEC8B',
+    hairGlow: '#FFA500',
+    skin: '#FFF5EB',
+    cheek: '#FFDAB9',
+    dress: '#FFFAF0', 
+    dressGold: '#FFD700',
+    dressShimmer: '#FFE4B5',
+    wings: '#FFE4B5',
+    wingsLight: '#FFFACD',
+    wingsSparkle: '#FFA500',
+    heart: '#FFA500',
+    heartGlow: '#FFD700',
+    halo: '#FFD700',
+    name: 'Thiên Thần Vàng' 
   },
   mint: { 
-    // Mint/Green Fairy variant
-    hair: '#1ABC9C', 
-    hairHighlight: '#48C9B0',
-    hairBow: '#FF69B4',
-    skin: '#FFE5D4',
-    cheek: '#ABEBC6',
-    dress: '#58D68D', 
-    dressLight: '#ABEBC6',
-    dressDark: '#27AE60',
-    wings: '#D5F5E3',
-    wingsLight: '#FFFFFF',
-    shoes: '#27AE60',
-    name: 'Tiên Xanh Lá' 
+    // Ethereal Mint Angel
+    hair: '#B0E0E6',
+    hairHighlight: '#E0FFFF',
+    hairGlow: '#40E0D0',
+    skin: '#FFF5EB',
+    cheek: '#E0FFFF',
+    dress: '#F0FFFF', 
+    dressGold: '#40E0D0',
+    dressShimmer: '#AFEEEE',
+    wings: '#E0FFFF',
+    wingsLight: '#F0FFFF',
+    wingsSparkle: '#00CED1',
+    heart: '#40E0D0',
+    heartGlow: '#7FFFD4',
+    halo: '#40E0D0',
+    name: 'Thiên Thần Ngọc' 
   },
 };
 
-type VariantKey = keyof typeof ANGEL_VARIANTS;
+export type VariantKey = keyof typeof ANGEL_VARIANTS;
 
 interface StarTrail {
   id: number;
@@ -110,7 +121,7 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
     if (trails.length === 0) return;
     const interval = setInterval(() => {
       setTrails((prev) => 
-        prev.map((t) => ({ ...t, opacity: t.opacity - 0.06 })).filter((t) => t.opacity > 0)
+        prev.map((t) => ({ ...t, opacity: t.opacity - 0.05 })).filter((t) => t.opacity > 0)
       );
     }, 30);
     return () => clearInterval(interval);
@@ -127,15 +138,15 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
       setIsIdle(true);
     }, 3000);
 
-    if (!isMobileRef.current && Math.random() > 0.5) {
+    if (!isMobileRef.current && Math.random() > 0.4) {
       const newTrail: StarTrail = {
         id: trailIdRef.current++,
-        x: e.clientX + (Math.random() - 0.5) * 30,
-        y: e.clientY + (Math.random() - 0.5) * 30,
+        x: e.clientX + (Math.random() - 0.5) * 40,
+        y: e.clientY + (Math.random() - 0.5) * 40,
         opacity: 1,
-        size: 8 + Math.random() * 8,
+        size: 6 + Math.random() * 10,
       };
-      setTrails((prev) => [...prev.slice(-15), newTrail]);
+      setTrails((prev) => [...prev.slice(-20), newTrail]);
     }
   }, []);
 
@@ -187,19 +198,18 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
 
   const currentPos = isIdle ? idlePosition : position;
   
-  // Animations
-  const wingFlap = Math.sin(phase * 0.2) * (isHovering ? 14 : 10);
-  const floatY = Math.sin(phase * 0.06) * 2;
-  const bodyBounce = Math.sin(phase * 0.08) * 1;
-  const hairSwing = Math.sin(phase * 0.1) * 4;
-  const dressWave = Math.sin(phase * 0.07) * 3;
-  const legDance = Math.sin(phase * 0.12) * 8;
-  const armWave = Math.sin(phase * 0.09) * 5;
-  const wandGlow = 0.7 + Math.sin(phase * 0.15) * 0.3;
+  // Smooth animations
+  const wingFlap = Math.sin(phase * 0.15) * (isHovering ? 12 : 8);
+  const floatY = Math.sin(phase * 0.05) * 3;
+  const hairFlow = Math.sin(phase * 0.08) * 6;
+  const dressFlow = Math.sin(phase * 0.06) * 4;
+  const heartPulse = 0.9 + Math.sin(phase * 0.12) * 0.15;
+  const haloGlow = 0.6 + Math.sin(phase * 0.1) * 0.3;
+  const sparklePhase = phase * 0.2;
 
   const ui = (
     <>
-      {/* Magical star trails */}
+      {/* Golden sparkle trails */}
       {trails.map((trail) => (
         <div
           key={trail.id}
@@ -208,322 +218,357 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             left: trail.x,
             top: trail.y,
             opacity: trail.opacity,
-            transform: `translate(-50%, -50%) scale(${trail.opacity})`,
+            transform: `translate(-50%, -50%) scale(${trail.opacity}) rotate(${trail.id * 45}deg)`,
           }}
         >
           <svg width={trail.size} height={trail.size} viewBox="0 0 16 16">
+            <defs>
+              <radialGradient id={`sparkle-${trail.id}`} cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#FFFFFF" />
+                <stop offset="50%" stopColor={colors.wingsSparkle} />
+                <stop offset="100%" stopColor={colors.wingsSparkle} stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="8" cy="8" r="6" fill={`url(#sparkle-${trail.id})`} />
             <path
-              d="M8 0L9.5 6L16 8L9.5 10L8 16L6.5 10L0 8L6.5 6L8 0Z"
-              fill="#FFD700"
-              filter="drop-shadow(0 0 3px rgba(255, 215, 0, 0.9))"
+              d="M8 0L9 6L16 8L9 10L8 16L7 10L0 8L7 6L8 0Z"
+              fill={colors.wingsSparkle}
+              opacity="0.8"
+              transform="scale(0.5) translate(8, 8)"
             />
           </svg>
         </div>
       ))}
 
-      {/* Cute Cartoon Fairy */}
+      {/* Elegant Angel */}
       <div
         className="fixed pointer-events-none z-[9999]"
         style={{
           left: currentPos.x,
           top: currentPos.y,
-          transform: `translate(-50%, -50%) translateY(${floatY + bodyBounce}px)`,
+          transform: `translate(-50%, -50%) translateY(${floatY}px)`,
           transition: isIdle ? 'left 3s ease-in-out, top 3s ease-in-out' : 'none',
         }}
       >
-        <svg width="65" height="80" viewBox="0 0 65 80" className="overflow-visible" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))' }}>
+        <svg width="75" height="95" viewBox="0 0 75 95" className="overflow-visible" style={{ filter: 'drop-shadow(0 4px 12px rgba(255, 215, 0, 0.3))' }}>
           <defs>
-            <radialGradient id="skinTone" cx="40%" cy="30%" r="60%">
-              <stop offset="0%" stopColor="#FFF5EB" />
-              <stop offset="100%" stopColor={colors.skin} />
+            {/* Skin gradient */}
+            <radialGradient id="angelSkin" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="60%" stopColor={colors.skin} />
+              <stop offset="100%" stopColor="#FFE4D4" />
             </radialGradient>
-            <radialGradient id="wingGrad" cx="30%" cy="30%" r="70%">
+            
+            {/* Crystal wing gradient */}
+            <linearGradient id="crystalWing" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={colors.wingsLight} stopOpacity="0.95" />
-              <stop offset="100%" stopColor={colors.wings} stopOpacity="0.6" />
-            </radialGradient>
-            <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={colors.hairHighlight} />
-              <stop offset="100%" stopColor={colors.hair} />
+              <stop offset="30%" stopColor={colors.wings} stopOpacity="0.7" />
+              <stop offset="70%" stopColor={colors.wingsSparkle} stopOpacity="0.5" />
+              <stop offset="100%" stopColor={colors.wingsLight} stopOpacity="0.3" />
             </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="blur" />
+            
+            {/* Hair gradient - flowing gold */}
+            <linearGradient id="goldenHair" x1="0%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stopColor={colors.hairHighlight} />
+              <stop offset="40%" stopColor={colors.hair} />
+              <stop offset="100%" stopColor={colors.hairGlow} />
+            </linearGradient>
+            
+            {/* Dress shimmer */}
+            <linearGradient id="dressShimmer" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={colors.dress} />
+              <stop offset="50%" stopColor={colors.dressShimmer} />
+              <stop offset="100%" stopColor={colors.dress} />
+            </linearGradient>
+            
+            {/* Heart glow */}
+            <radialGradient id="heartGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="40%" stopColor={colors.heartGlow} />
+              <stop offset="100%" stopColor={colors.heart} />
+            </radialGradient>
+            
+            {/* Halo gradient */}
+            <linearGradient id="haloGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={colors.halo} stopOpacity="0.3" />
+              <stop offset="50%" stopColor={colors.halo} stopOpacity="0.9" />
+              <stop offset="100%" stopColor={colors.halo} stopOpacity="0.3" />
+            </linearGradient>
+            
+            {/* Glow filter */}
+            <filter id="angelGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+            
+            <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
 
-          {/* Wings - Rounded cartoon style */}
-          <g transform={`rotate(${-wingFlap}, 26, 32)`}>
-            <ellipse cx="10" cy="28" rx="14" ry="20" fill="url(#wingGrad)" />
-            <ellipse cx="8" cy="24" rx="8" ry="12" fill={colors.wingsLight} opacity="0.5" />
-            <ellipse cx="6" cy="20" rx="4" ry="6" fill="white" opacity="0.6" />
+          {/* Ethereal Aura */}
+          <ellipse 
+            cx="37.5" cy="50" rx="35" ry="40" 
+            fill="none" 
+            stroke={colors.wingsSparkle} 
+            strokeWidth="0.5" 
+            opacity={0.2 + haloGlow * 0.2}
+          />
+
+          {/* Halo */}
+          <ellipse 
+            cx="37.5" cy="8" rx="14" ry="4" 
+            fill="none" 
+            stroke="url(#haloGrad)" 
+            strokeWidth="2.5"
+            opacity={haloGlow}
+            filter="url(#softGlow)"
+          />
+
+          {/* Crystal Wings - Left */}
+          <g transform={`rotate(${-wingFlap}, 30, 35)`} filter="url(#softGlow)">
+            {/* Main wing */}
+            <path
+              d="M28 35 Q5 20 3 40 Q5 55 15 58 Q22 55 28 45 Z"
+              fill="url(#crystalWing)"
+              opacity="0.85"
+            />
+            {/* Wing detail lines */}
+            <path d="M28 38 Q15 30 8 40" stroke={colors.wingsSparkle} strokeWidth="0.5" fill="none" opacity="0.6" />
+            <path d="M28 42 Q18 38 12 48" stroke={colors.wingsSparkle} strokeWidth="0.5" fill="none" opacity="0.6" />
+            <path d="M26 48 Q20 48 16 55" stroke={colors.wingsSparkle} strokeWidth="0.5" fill="none" opacity="0.6" />
+            {/* Sparkles on wing */}
+            <circle cx="10" cy="38" r="1.5" fill={colors.wingsSparkle} opacity={0.5 + Math.sin(sparklePhase) * 0.4} />
+            <circle cx="15" cy="50" r="1" fill={colors.wingsSparkle} opacity={0.5 + Math.sin(sparklePhase + 1) * 0.4} />
+            <circle cx="8" cy="45" r="0.8" fill="#FFFFFF" opacity={0.6 + Math.sin(sparklePhase + 2) * 0.3} />
           </g>
-          <g transform={`rotate(${wingFlap}, 39, 32)`}>
-            <ellipse cx="55" cy="28" rx="14" ry="20" fill="url(#wingGrad)" />
-            <ellipse cx="57" cy="24" rx="8" ry="12" fill={colors.wingsLight} opacity="0.5" />
-            <ellipse cx="59" cy="20" rx="4" ry="6" fill="white" opacity="0.6" />
+          
+          {/* Crystal Wings - Right */}
+          <g transform={`rotate(${wingFlap}, 45, 35)`} filter="url(#softGlow)">
+            <path
+              d="M47 35 Q70 20 72 40 Q70 55 60 58 Q53 55 47 45 Z"
+              fill="url(#crystalWing)"
+              opacity="0.85"
+            />
+            <path d="M47 38 Q60 30 67 40" stroke={colors.wingsSparkle} strokeWidth="0.5" fill="none" opacity="0.6" />
+            <path d="M47 42 Q57 38 63 48" stroke={colors.wingsSparkle} strokeWidth="0.5" fill="none" opacity="0.6" />
+            <path d="M49 48 Q55 48 59 55" stroke={colors.wingsSparkle} strokeWidth="0.5" fill="none" opacity="0.6" />
+            <circle cx="65" cy="38" r="1.5" fill={colors.wingsSparkle} opacity={0.5 + Math.sin(sparklePhase + 0.5) * 0.4} />
+            <circle cx="60" cy="50" r="1" fill={colors.wingsSparkle} opacity={0.5 + Math.sin(sparklePhase + 1.5) * 0.4} />
+            <circle cx="67" cy="45" r="0.8" fill="#FFFFFF" opacity={0.6 + Math.sin(sparklePhase + 2.5) * 0.3} />
           </g>
 
-          {/* Hair back - flowing ponytail */}
+          {/* Long flowing hair - back layer */}
           <path
-            d={`M38 14 Q48 ${18 + hairSwing} 50 ${30 + hairSwing * 1.2} Q52 ${42 + hairSwing} 48 ${52 + hairSwing * 0.8}`}
-            stroke="url(#hairGrad)"
-            strokeWidth="8"
+            d={`M22 18 Q15 ${35 + hairFlow} 12 ${55 + hairFlow * 1.2} Q10 ${70 + hairFlow} 15 ${80 + hairFlow * 0.8}`}
+            stroke="url(#goldenHair)"
+            strokeWidth="10"
             fill="none"
             strokeLinecap="round"
+            opacity="0.9"
           />
           <path
-            d={`M40 12 Q52 ${16 + hairSwing * 0.8} 54 ${26 + hairSwing}`}
-            stroke="url(#hairGrad)"
-            strokeWidth="5"
+            d={`M25 16 Q18 ${30 + hairFlow * 0.8} 16 ${48 + hairFlow} Q14 ${62 + hairFlow * 0.9} 18 ${75 + hairFlow * 0.7}`}
+            stroke="url(#goldenHair)"
+            strokeWidth="7"
             fill="none"
             strokeLinecap="round"
             opacity="0.8"
           />
+          <path
+            d={`M53 18 Q60 ${35 - hairFlow * 0.6} 63 ${55 - hairFlow * 0.8} Q65 ${70 - hairFlow * 0.5} 60 ${80 - hairFlow * 0.6}`}
+            stroke="url(#goldenHair)"
+            strokeWidth="10"
+            fill="none"
+            strokeLinecap="round"
+            opacity="0.9"
+          />
+          <path
+            d={`M50 16 Q57 ${30 - hairFlow * 0.5} 59 ${48 - hairFlow * 0.7}`}
+            stroke="url(#goldenHair)"
+            strokeWidth="6"
+            fill="none"
+            strokeLinecap="round"
+            opacity="0.7"
+          />
 
-          {/* Petal Dress - Layered flower style like reference */}
+          {/* Elegant White Dress */}
           <g>
-            {/* Back dress petals */}
-            <ellipse 
-              cx={24 - dressWave * 0.4} cy="54" rx="10" ry="12" 
-              fill={colors.dressLight}
-              transform={`rotate(${-15 + dressWave}, ${24 - dressWave * 0.4}, 54)`}
-            />
-            <ellipse 
-              cx={41 + dressWave * 0.4} cy="54" rx="10" ry="12" 
-              fill={colors.dressLight}
-              transform={`rotate(${15 - dressWave}, ${41 + dressWave * 0.4}, 54)`}
-            />
-            
-            {/* Middle petals */}
-            <ellipse 
-              cx={20 - dressWave * 0.3} cy="52" rx="9" ry="11" 
-              fill={colors.dress}
-              transform={`rotate(${-25 + dressWave * 0.8}, ${20 - dressWave * 0.3}, 52)`}
-            />
-            <ellipse 
-              cx={45 + dressWave * 0.3} cy="52" rx="9" ry="11" 
-              fill={colors.dress}
-              transform={`rotate(${25 - dressWave * 0.8}, ${45 + dressWave * 0.3}, 52)`}
-            />
-            
-            {/* Front center petals */}
-            <ellipse cx="32.5" cy="56" rx="12" ry="14" fill={colors.dress} />
-            <ellipse cx="28" cy="54" rx="9" ry="12" fill={colors.dressDark} opacity="0.7" transform={`rotate(-8, 28, 54)`} />
-            <ellipse cx="37" cy="54" rx="9" ry="12" fill={colors.dressDark} opacity="0.7" transform={`rotate(8, 37, 54)`} />
-            
-            {/* Dress bodice */}
+            {/* Dress body */}
             <path
-              d="M25 32 Q32.5 30 40 32 L43 48 Q32.5 52 22 48 Z"
-              fill={colors.dress}
+              d={`M28 42 Q37.5 38 47 42 L${52 + dressFlow} ${75 + dressFlow * 0.5} Q37.5 80 ${23 - dressFlow} ${75 + dressFlow * 0.5} Z`}
+              fill="url(#dressShimmer)"
+              opacity="0.95"
+            />
+            {/* Dress folds */}
+            <path
+              d={`M32 50 Q35 ${65 + dressFlow * 0.3} 30 ${78 + dressFlow * 0.4}`}
+              stroke={colors.dressGold}
+              strokeWidth="0.8"
+              fill="none"
+              opacity="0.4"
             />
             <path
-              d="M28 34 Q32.5 32 37 34 L38 46 Q32.5 48 27 46 Z"
-              fill={colors.dressLight}
-              opacity="0.6"
+              d={`M43 50 Q40 ${65 - dressFlow * 0.3} 45 ${78 - dressFlow * 0.4}`}
+              stroke={colors.dressGold}
+              strokeWidth="0.8"
+              fill="none"
+              opacity="0.4"
             />
-            
-            {/* Green leaves for yellow fairy variant */}
-            {'dressLeaves' in colors && (
-              <>
-                <ellipse cx="20" cy="56" rx="6" ry="10" fill={(colors as { dressLeaves: string }).dressLeaves} opacity="0.8" transform="rotate(-30, 20, 56)" />
-                <ellipse cx="45" cy="56" rx="6" ry="10" fill={(colors as { dressLeaves: string }).dressLeaves} opacity="0.8" transform="rotate(30, 45, 56)" />
-              </>
-            )}
+            {/* Golden trim */}
+            <path
+              d={`M${23 - dressFlow} ${75 + dressFlow * 0.5} Q37.5 82 ${52 + dressFlow} ${75 + dressFlow * 0.5}`}
+              stroke={colors.dressGold}
+              strokeWidth="1.5"
+              fill="none"
+              opacity="0.7"
+            />
+            {/* Bodice detail */}
+            <ellipse cx="37.5" cy="44" rx="7" ry="3" fill={colors.dressShimmer} opacity="0.5" />
           </g>
 
-          {/* Cute legs - dancing pose */}
+          {/* Delicate Arms */}
+          {/* Left arm - holding heart */}
           <path
-            d={`M28 58 Q26 ${64 + legDance * 0.3} 24 ${70 + legDance * 0.5}`}
-            stroke={colors.skin}
-            strokeWidth="5"
+            d={`M28 45 Q22 50 20 55 Q18 60 22 62`}
+            stroke="url(#angelSkin)"
+            strokeWidth="4"
             fill="none"
             strokeLinecap="round"
           />
-          <ellipse cx={23} cy={72 + legDance * 0.5} rx="4" ry="2.5" fill={colors.shoes} />
+          <circle cx="22" cy="63" r="2.5" fill="url(#angelSkin)" />
           
+          {/* Right arm */}
           <path
-            d={`M37 58 Q39 ${64 - legDance * 0.4} 42 ${68 - legDance * 0.6}`}
-            stroke={colors.skin}
-            strokeWidth="5"
+            d={`M47 45 Q53 50 55 55 Q57 60 53 62`}
+            stroke="url(#angelSkin)"
+            strokeWidth="4"
             fill="none"
             strokeLinecap="round"
           />
-          <ellipse cx={43} cy={69 - legDance * 0.6} rx="4" ry="2.5" fill={colors.shoes} />
+          <circle cx="53" cy="63" r="2.5" fill="url(#angelSkin)" />
 
-          {/* Arms */}
-          {/* Left arm holding magic wand */}
+          {/* Glowing Heart in hands */}
+          <g transform={`translate(37.5, 68) scale(${heartPulse})`} filter="url(#angelGlow)">
+            {/* Heart glow aura */}
+            <ellipse cx="0" cy="0" rx="12" ry="10" fill={colors.heartGlow} opacity="0.3" />
+            {/* Heart shape */}
+            <path
+              d="M0 4 C-4 0 -8 -4 -8 -7 C-8 -11 -4 -12 0 -8 C4 -12 8 -11 8 -7 C8 -4 4 0 0 4Z"
+              fill="url(#heartGlow)"
+            />
+            {/* Heart shine */}
+            <ellipse cx="-3" cy="-6" rx="2" ry="1.5" fill="#FFFFFF" opacity="0.7" />
+            {/* Heart sparkles */}
+            {[...Array(5)].map((_, i) => (
+              <circle
+                key={i}
+                cx={Math.cos((sparklePhase + i * 72 * Math.PI / 180) * 2) * 10}
+                cy={Math.sin((sparklePhase + i * 72 * Math.PI / 180) * 2) * 8}
+                r={1 + Math.sin(sparklePhase + i) * 0.5}
+                fill={colors.wingsSparkle}
+                opacity={0.6 + Math.sin(sparklePhase + i * 0.5) * 0.4}
+              />
+            ))}
+          </g>
+
+          {/* Elegant Face */}
+          <ellipse cx="37.5" cy="26" rx="10" ry="12" fill="url(#angelSkin)" />
+          
+          {/* Delicate jawline */}
+          <ellipse cx="37.5" cy="34" rx="6" ry="4" fill="url(#angelSkin)" />
+
+          {/* Hair top - crown with golden sparkles */}
+          <ellipse cx="37.5" cy="16" rx="11" ry="7" fill="url(#goldenHair)" />
+          <ellipse cx="37.5" cy="14" rx="8" ry="4" fill={colors.hairHighlight} opacity="0.7" />
+          
+          {/* Hair strands framing face */}
           <path
-            d={`M24 36 Q18 ${38 + armWave * 0.3} 14 ${34 + armWave * 0.5}`}
-            stroke={colors.skin}
-            strokeWidth="5"
+            d={`M27 17 Q23 ${22 + hairFlow * 0.3} 22 ${30 + hairFlow * 0.4}`}
+            stroke="url(#goldenHair)"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+          />
+          <path
+            d={`M48 17 Q52 ${22 - hairFlow * 0.2} 53 ${30 - hairFlow * 0.3}`}
+            stroke="url(#goldenHair)"
+            strokeWidth="4"
             fill="none"
             strokeLinecap="round"
           />
           
-          {/* Magic Wand */}
-          <line 
-            x1={14} y1={34 + armWave * 0.5} 
-            x2={4} y2={18 + armWave * 0.3} 
-            stroke="#C4A35A" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-          />
-          
-          {/* Wand Star with glow */}
-          <g filter="url(#glow)">
-            <path
-              d={`M4 ${18 + armWave * 0.3} 
-                  L6 ${13 + armWave * 0.3} 
-                  L4 ${8 + armWave * 0.3} 
-                  L9 ${11 + armWave * 0.3} 
-                  L14 ${8 + armWave * 0.3} 
-                  L11 ${13 + armWave * 0.3} 
-                  L14 ${18 + armWave * 0.3} 
-                  L9 ${15 + armWave * 0.3} Z`}
-              fill="#FFD700"
-              opacity={wandGlow}
-            />
-            <circle cx="9" cy={13 + armWave * 0.3} r="2" fill="#FFFACD" opacity={wandGlow} />
-          </g>
-          
-          {/* Sparkles from wand */}
-          {[...Array(isHovering ? 6 : 4)].map((_, i) => (
+          {/* Hair sparkles */}
+          {[...Array(6)].map((_, i) => (
             <circle
               key={i}
-              cx={5 + Math.cos((phase + i * 60) * 0.12) * (8 + i * 3)}
-              cy={12 + armWave * 0.3 + Math.sin((phase + i * 60) * 0.12) * (6 + i * 2)}
-              r={1 + Math.sin((phase + i * 45) * 0.15) * 0.5}
-              fill="#FFD700"
-              opacity={0.9 - i * 0.12}
+              cx={25 + i * 5}
+              cy={12 + Math.sin(i * 0.8) * 3}
+              r={0.8 + Math.sin(sparklePhase + i) * 0.4}
+              fill={colors.hairGlow}
+              opacity={0.5 + Math.sin(sparklePhase + i * 0.7) * 0.4}
             />
           ))}
 
-          {/* Right arm */}
-          <path
-            d={`M41 36 Q47 ${38 - armWave * 0.2} 50 ${42 - armWave * 0.3}`}
-            stroke={colors.skin}
-            strokeWidth="5"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <circle cx={51} cy={43 - armWave * 0.3} r="3" fill={colors.skin} />
-
-          {/* Fairy Face - Oval delicate shape */}
-          <ellipse cx="32.5" cy="21" rx="12" ry="14" fill="url(#skinTone)" />
-          
-          {/* Soft chin curve for feminine look */}
-          <ellipse cx="32.5" cy="30" rx="7" ry="5" fill="url(#skinTone)" />
-
-          {/* Hair top - fuller and elegant */}
-          <ellipse cx="32.5" cy="11" rx="13" ry="8" fill="url(#hairGrad)" />
-          <ellipse cx="32.5" cy="9" rx="10" ry="5" fill={colors.hairHighlight} opacity="0.6" />
-          
-          {/* Side hair strands - flowing elegantly */}
-          <path
-            d={`M19 13 Q14 ${18 + hairSwing * 0.4} 13 ${28 + hairSwing * 0.6}`}
-            stroke="url(#hairGrad)"
-            strokeWidth="7"
-            fill="none"
-            strokeLinecap="round"
-          />
-          <path
-            d={`M21 11 Q15 ${14 + hairSwing * 0.3} 14 ${22 + hairSwing * 0.4}`}
-            stroke="url(#hairGrad)"
-            strokeWidth="5"
-            fill="none"
-            strokeLinecap="round"
-          />
-          
-          {/* Right side hair */}
-          <path
-            d={`M46 13 Q50 ${17 + hairSwing * 0.3} 49 ${25 + hairSwing * 0.5}`}
-            stroke="url(#hairGrad)"
-            strokeWidth="5"
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* Cute Hair Bow */}
-          <g transform="translate(46, 8)">
-            <ellipse cx="-5" cy="0" rx="6" ry="4" fill={colors.hairBow} transform="rotate(-25)" />
-            <ellipse cx="5" cy="0" rx="6" ry="4" fill={colors.hairBow} transform="rotate(25)" />
-            <circle cx="0" cy="0" r="3" fill={colors.hairBow} />
-            {/* Bow shine */}
-            <ellipse cx="-4" cy="-1.5" rx="2" ry="1" fill="white" opacity="0.5" />
-            <ellipse cx="4" cy="-1.5" rx="2" ry="1" fill="white" opacity="0.5" />
-          </g>
-
-          {/* Beautiful Anime Eyes - Larger and more expressive */}
+          {/* Closed serene eyes - like the avatar */}
           <g>
-            {/* Eye whites - larger almond shape */}
-            <ellipse cx="26" cy="21" rx="5.5" ry="6" fill="white" />
-            <ellipse cx="39" cy="21" rx="5.5" ry="6" fill="white" />
+            {/* Left eye - closed, peaceful curve */}
+            <path
+              d="M30 26 Q33 28 36 26"
+              stroke="#5D4E37"
+              strokeWidth="1.2"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Delicate lashes */}
+            <path d="M30 26 Q29 24 28 24" stroke="#5D4E37" strokeWidth="0.6" fill="none" />
+            <path d="M32 27 Q31 25 30 24.5" stroke="#5D4E37" strokeWidth="0.6" fill="none" />
+            <path d="M34 27 Q34 25 33.5 24.5" stroke="#5D4E37" strokeWidth="0.6" fill="none" />
             
-            {/* Colored irises - deep and sparkling */}
-            <ellipse cx="27" cy="22" rx="4" ry="4.5" fill="#4A2C1A" />
-            <ellipse cx="40" cy="22" rx="4" ry="4.5" fill="#4A2C1A" />
-            
-            {/* Inner iris glow */}
-            <ellipse cx="27" cy="23" rx="2.5" ry="3" fill="#2C1810" />
-            <ellipse cx="40" cy="23" rx="2.5" ry="3" fill="#2C1810" />
-            
-            {/* Big sparkling eye shine - anime style */}
-            <ellipse cx="29" cy="20" rx="2" ry="2.5" fill="white" />
-            <ellipse cx="42" cy="20" rx="2" ry="2.5" fill="white" />
-            <circle cx="25.5" cy="24" r="1" fill="white" opacity="0.8" />
-            <circle cx="38.5" cy="24" r="1" fill="white" opacity="0.8" />
-            
-            {/* Delicate eyelashes */}
-            <path d="M21 18 Q22 16.5 24 17" stroke="#2C1810" strokeWidth="0.8" fill="none" />
-            <path d="M23 16.5 Q25 15.5 27 16.5" stroke="#2C1810" strokeWidth="0.8" fill="none" />
-            <path d="M26 16 Q28 15 30 16" stroke="#2C1810" strokeWidth="0.8" fill="none" />
-            
-            <path d="M44 18 Q43 16.5 41 17" stroke="#2C1810" strokeWidth="0.8" fill="none" />
-            <path d="M42 16.5 Q40 15.5 38 16.5" stroke="#2C1810" strokeWidth="0.8" fill="none" />
-            <path d="M39 16 Q37 15 35 16" stroke="#2C1810" strokeWidth="0.8" fill="none" />
+            {/* Right eye - closed, peaceful curve */}
+            <path
+              d="M39 26 Q42 28 45 26"
+              stroke="#5D4E37"
+              strokeWidth="1.2"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Delicate lashes */}
+            <path d="M45 26 Q46 24 47 24" stroke="#5D4E37" strokeWidth="0.6" fill="none" />
+            <path d="M43 27 Q44 25 45 24.5" stroke="#5D4E37" strokeWidth="0.6" fill="none" />
+            <path d="M41 27 Q41 25 41.5 24.5" stroke="#5D4E37" strokeWidth="0.6" fill="none" />
           </g>
 
-          {/* Delicate eyebrows */}
-          <path d="M23 16 Q26 14.5 29 15.5" stroke={colors.hair} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6" />
-          <path d="M42 16 Q39 14.5 36 15.5" stroke={colors.hair} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6" />
+          {/* Soft cheek blush */}
+          <ellipse cx="29" cy="30" rx="3.5" ry="1.8" fill={colors.cheek} opacity="0.35" />
+          <ellipse cx="46" cy="30" rx="3.5" ry="1.8" fill={colors.cheek} opacity="0.35" />
 
-          {/* Rosy cheeks - softer and more fairy-like */}
-          <ellipse cx="20" cy="26" rx="4" ry="2.5" fill={colors.cheek} opacity="0.45" />
-          <ellipse cx="45" cy="26" rx="4" ry="2.5" fill={colors.cheek} opacity="0.45" />
-
-          {/* Cute small nose */}
-          <path d="M32.5 25 L33 27 L32 27.5" stroke="#E8C4B8" strokeWidth="1" fill="none" strokeLinecap="round" />
-
-          {/* Sweet lips - fairy smile */}
+          {/* Gentle smile */}
           <path 
-            d={isHovering ? "M29 30 Q32.5 34 36 30" : "M29 30 Q32.5 32.5 36 30"} 
-            stroke="#E88B8B" 
-            strokeWidth="1.5" 
-            fill="none" 
-            strokeLinecap="round"
-          />
-          {/* Upper lip detail */}
-          <path 
-            d="M30 30 Q32.5 29 35 30" 
-            stroke="#D77B7B" 
-            strokeWidth="0.8" 
+            d={isHovering ? "M34 33 Q37.5 36 41 33" : "M34 33 Q37.5 35 41 33"} 
+            stroke="#D4A5A5" 
+            strokeWidth="1" 
             fill="none" 
             strokeLinecap="round"
           />
 
-          {/* Floating fairy dust */}
-          {!isMobileRef.current && [...Array(5)].map((_, i) => (
+          {/* Floating sparkles around angel */}
+          {!isMobileRef.current && [...Array(8)].map((_, i) => (
             <circle
               key={i}
-              cx={32.5 + Math.cos((phase + i * 72) * 0.04) * 30}
-              cy={40 + Math.sin((phase + i * 72) * 0.04) * 25}
-              r={0.8 + Math.sin((phase + i * 55) * 0.08) * 0.4}
-              fill="#FFD700"
-              opacity={0.5 + Math.sin((phase + i * 40) * 0.06) * 0.3}
+              cx={37.5 + Math.cos((sparklePhase + i * 45) * 0.08) * (25 + i * 3)}
+              cy={45 + Math.sin((sparklePhase + i * 45) * 0.08) * (20 + i * 2)}
+              r={1 + Math.sin((sparklePhase + i * 30) * 0.15) * 0.6}
+              fill={colors.wingsSparkle}
+              opacity={0.4 + Math.sin(sparklePhase * 0.1 + i) * 0.3}
             />
           ))}
         </svg>
@@ -534,5 +579,4 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   return createPortal(ui, document.body);
 };
 
-export const ANGEL_VARIANTS_LIST = ANGEL_VARIANTS;
-export type { VariantKey };
+export { ANGEL_VARIANTS };

@@ -4,64 +4,80 @@ import { createPortal } from 'react-dom';
 // Shizuka-style color variants - cute anime girl design
 const ANGEL_VARIANTS = {
   default: { 
-    // Classic Shizuka - pink dress, black hair
+    // Classic Angel - white dress, golden wings
     hair: '#1a1a2e',
     hairHighlight: '#2a2a4e',
     hairGlow: '#3a3a5e',
     skin: '#FFECD2',
     cheek: '#FFB6C1',
-    dress: '#FF69B4', 
-    dressLight: '#FFB6C1',
-    dressAccent: '#FF1493',
-    ribbon: '#FF69B4',
+    dress: '#FFFFFF', 
+    dressLight: '#FFFAF0',
+    dressAccent: '#FFD700',
+    ribbon: '#FFD700',
+    wings: '#FFE4B5',
+    wingsLight: '#FFFAF0',
+    wingsGlow: '#FFD700',
+    halo: '#FFD700',
     eyes: '#2a2a4e',
     eyeshine: '#FFFFFF',
-    name: 'Shizuka Hồng' 
+    name: 'Thiên Thần Vàng' 
   },
   pink: { 
-    // Sweet Pink Version
+    // Pink Angel
     hair: '#4a3728',
     hairHighlight: '#5a4738',
     hairGlow: '#6a5748',
     skin: '#FFECD2',
     cheek: '#FFC0CB',
-    dress: '#FF85C0', 
-    dressLight: '#FFADD2',
-    dressAccent: '#FF69B4',
+    dress: '#FFF0F5', 
+    dressLight: '#FFFFFF',
+    dressAccent: '#FFB6C1',
     ribbon: '#FF69B4',
+    wings: '#FFD1DC',
+    wingsLight: '#FFF0F5',
+    wingsGlow: '#FF69B4',
+    halo: '#FF69B4',
     eyes: '#4a3728',
     eyeshine: '#FFFFFF',
-    name: 'Shizuka Ngọt Ngào' 
+    name: 'Thiên Thần Hồng' 
   },
   golden: { 
-    // Yellow Dress Version
+    // Golden Angel
     hair: '#1a1a2e',
     hairHighlight: '#2a2a4e',
     hairGlow: '#3a3a5e',
     skin: '#FFECD2',
     cheek: '#FFDAB9',
-    dress: '#FFD700', 
-    dressLight: '#FFEC8B',
-    dressAccent: '#FFA500',
-    ribbon: '#FF6347',
+    dress: '#FFFAF0', 
+    dressLight: '#FFFFFF',
+    dressAccent: '#FFD700',
+    ribbon: '#FFA500',
+    wings: '#FFE4B5',
+    wingsLight: '#FFFACD',
+    wingsGlow: '#FFA500',
+    halo: '#FFD700',
     eyes: '#2a2a4e',
     eyeshine: '#FFFFFF',
-    name: 'Shizuka Vàng' 
+    name: 'Thiên Thần Hoàng Kim' 
   },
   mint: { 
-    // Blue Dress Version
+    // Mint Angel
     hair: '#1a1a2e',
     hairHighlight: '#2a2a4e',
     hairGlow: '#3a3a5e',
     skin: '#FFECD2',
     cheek: '#E0FFFF',
-    dress: '#87CEEB', 
-    dressLight: '#B0E0E6',
-    dressAccent: '#4682B4',
-    ribbon: '#87CEEB',
+    dress: '#F0FFFF', 
+    dressLight: '#FFFFFF',
+    dressAccent: '#40E0D0',
+    ribbon: '#40E0D0',
+    wings: '#E0FFFF',
+    wingsLight: '#F0FFFF',
+    wingsGlow: '#00CED1',
+    halo: '#40E0D0',
     eyes: '#2a2a4e',
     eyeshine: '#FFFFFF',
-    name: 'Shizuka Xanh' 
+    name: 'Thiên Thần Ngọc' 
   },
 };
 
@@ -194,6 +210,8 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   const isBlinking = blinkPhase < 5;
   const ribbonBounce = Math.sin(phase * 0.12) * 2;
   const armSwing = Math.sin(phase * 0.07) * 5;
+  const wingFlap = Math.sin(phase * 0.15) * (isHovering ? 10 : 6);
+  const haloGlow = 0.6 + Math.sin(phase * 0.1) * 0.3;
   const scale = isHovering ? 1.1 : 1;
 
   const ui = (
@@ -254,11 +272,25 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
               <stop offset="100%" stopColor={colors.hairGlow} />
             </linearGradient>
             
-            {/* Dress gradient */}
+            {/* Dress gradient - angel white */}
             <linearGradient id="shizukaDress" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={colors.dressLight} />
               <stop offset="50%" stopColor={colors.dress} />
               <stop offset="100%" stopColor={colors.dressAccent} />
+            </linearGradient>
+            
+            {/* Wing gradient */}
+            <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={colors.wingsLight} stopOpacity="0.95" />
+              <stop offset="50%" stopColor={colors.wings} stopOpacity="0.8" />
+              <stop offset="100%" stopColor={colors.wingsGlow} stopOpacity="0.6" />
+            </linearGradient>
+            
+            {/* Halo gradient */}
+            <linearGradient id="haloGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor={colors.halo} stopOpacity="0.3" />
+              <stop offset="50%" stopColor={colors.halo} stopOpacity="0.9" />
+              <stop offset="100%" stopColor={colors.halo} stopOpacity="0.3" />
             </linearGradient>
             
             {/* Ribbon gradient */}
@@ -273,7 +305,48 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
               <stop offset="0%" stopColor={colors.hairHighlight} />
               <stop offset="100%" stopColor={colors.eyes} />
             </radialGradient>
+            
+            {/* Glow filter */}
+            <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
+
+          {/* Halo */}
+          <ellipse 
+            cx="30" cy="6" rx="10" ry="3" 
+            fill="none" 
+            stroke="url(#haloGrad)" 
+            strokeWidth="2"
+            opacity={haloGlow}
+            filter="url(#softGlow)"
+          />
+
+          {/* Angel Wings - Left */}
+          <g transform={`rotate(${-wingFlap}, 22, 38)`} filter="url(#softGlow)">
+            <path
+              d="M22 38 Q5 28 2 38 Q5 52 12 55 Q18 52 22 45 Z"
+              fill="url(#wingGrad)"
+              opacity="0.9"
+            />
+            <path d="M20 40 Q12 35 6 40" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M20 44 Q14 42 9 48" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+          </g>
+          
+          {/* Angel Wings - Right */}
+          <g transform={`rotate(${wingFlap}, 38, 38)`} filter="url(#softGlow)">
+            <path
+              d="M38 38 Q55 28 58 38 Q55 52 48 55 Q42 52 38 45 Z"
+              fill="url(#wingGrad)"
+              opacity="0.9"
+            />
+            <path d="M40 40 Q48 35 54 40" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M40 44 Q46 42 51 48" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+          </g>
 
           {/* Hair back (behind head) - voluminous */}
           <ellipse
@@ -407,42 +480,49 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             fill="url(#shizukaSkin)"
           />
 
-          {/* Dress body */}
+          {/* Angel Dress body - flowing white */}
           <path
-            d={`M22 40 Q30 38 38 40 L${42 + dressSwing} 70 Q30 75 ${18 - dressSwing} 70 Z`}
+            d={`M22 40 Q30 38 38 40 L${44 + dressSwing} 72 Q30 78 ${16 - dressSwing} 72 Z`}
             fill="url(#shizukaDress)"
           />
           
-          {/* Dress collar/neckline */}
+          {/* Dress golden trim at top */}
           <path
             d="M24 40 Q30 43 36 40"
-            stroke={colors.dressLight}
-            strokeWidth="2"
+            stroke={colors.dressAccent}
+            strokeWidth="1.5"
             fill="none"
             strokeLinecap="round"
           />
           
           {/* Dress fold details */}
           <path
-            d={`M26 48 Q28 ${58 + dressSwing * 0.3} 24 68`}
+            d={`M26 48 Q28 ${58 + dressSwing * 0.3} 24 70`}
             stroke={colors.dressAccent}
-            strokeWidth="0.5"
+            strokeWidth="0.4"
             fill="none"
-            opacity="0.4"
+            opacity="0.3"
           />
           <path
-            d={`M34 48 Q32 ${58 - dressSwing * 0.3} 36 68`}
+            d={`M30 45 Q30 ${60} 30 72`}
             stroke={colors.dressAccent}
-            strokeWidth="0.5"
+            strokeWidth="0.4"
             fill="none"
-            opacity="0.4"
+            opacity="0.25"
+          />
+          <path
+            d={`M34 48 Q32 ${58 - dressSwing * 0.3} 36 70`}
+            stroke={colors.dressAccent}
+            strokeWidth="0.4"
+            fill="none"
+            opacity="0.3"
           />
           
-          {/* Dress hem decoration */}
+          {/* Dress hem - golden wavy */}
           <path
-            d={`M${18 - dressSwing} 70 Q30 73 ${42 + dressSwing} 70`}
-            stroke={colors.dressLight}
-            strokeWidth="2"
+            d={`M${16 - dressSwing} 72 Q22 75 30 73 Q38 75 ${44 + dressSwing} 72`}
+            stroke={colors.dressAccent}
+            strokeWidth="1.5"
             fill="none"
             strokeLinecap="round"
           />

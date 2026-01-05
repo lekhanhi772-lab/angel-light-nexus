@@ -238,6 +238,10 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   const blinkPhase = phase % 150;
   const isBlinking = blinkPhase < 4;
   const scale = isHovering ? 1.08 : 1;
+  
+  // Wand arm wave animation - gentle swaying motion
+  const wandArmWave = Math.sin(phase * 0.1) * 5;
+  const wandRotate = Math.sin(phase * 0.15) * 8;
 
   const ui = (
     <>
@@ -540,30 +544,90 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
           {/* Left hand */}
           <ellipse cx="15" cy="59" rx="2.5" ry="2" fill="url(#fairySkin)" />
           
-          {/* Right arm - holding wand up */}
-          <path
-            d="M42 40 Q50 35 55 28"
-            stroke="url(#fairySkin)"
-            strokeWidth="4"
-            fill="none"
-            strokeLinecap="round"
-          />
-          {/* Right hand */}
-          <ellipse cx="56" cy="27" rx="2.5" ry="2" fill="url(#fairySkin)" transform="rotate(30, 56, 27)" />
-          
-          {/* Magic Wand */}
-          <g filter="url(#sparkleGlow)">
-            <line x1="56" y1="26" x2="62" y2="14" stroke={colors.wand} strokeWidth="1.5" strokeLinecap="round" />
-            {/* Wand star */}
+          {/* Right arm - holding wand up with wave animation */}
+          <g style={{ transform: `rotate(${wandArmWave}deg)`, transformOrigin: '42px 40px' }}>
             <path
-              d="M62 10 L63 13 L66 14 L63 15 L62 18 L61 15 L58 14 L61 13 Z"
-              fill={colors.wand}
-              opacity={wandSparkle}
+              d={`M42 40 Q${50 + wandArmWave * 0.3} ${35 - Math.abs(wandArmWave) * 0.2} ${55 + wandArmWave * 0.4} ${28 - Math.abs(wandArmWave) * 0.3}`}
+              stroke="url(#fairySkin)"
+              strokeWidth="4"
+              fill="none"
+              strokeLinecap="round"
             />
-            {/* Sparkles around wand */}
-            <circle cx="60" cy="12" r="1" fill={colors.sparkle} opacity={wandSparkle * 0.8} />
-            <circle cx="64" cy="16" r="0.8" fill={colors.sparkle} opacity={wandSparkle * 0.6} />
-            <circle cx="58" cy="16" r="0.6" fill={colors.sparkle} opacity={wandSparkle * 0.7} />
+            {/* Right hand */}
+            <ellipse 
+              cx={56 + wandArmWave * 0.4} 
+              cy={27 - Math.abs(wandArmWave) * 0.3} 
+              rx="2.5" 
+              ry="2" 
+              fill="url(#fairySkin)" 
+              transform={`rotate(${30 + wandArmWave}, ${56 + wandArmWave * 0.4}, ${27 - Math.abs(wandArmWave) * 0.3})`} 
+            />
+            
+            {/* Magic Wand with wave animation */}
+            <g 
+              filter="url(#sparkleGlow)"
+              style={{ transform: `rotate(${wandRotate}deg)`, transformOrigin: `${56 + wandArmWave * 0.4}px ${26 - Math.abs(wandArmWave) * 0.3}px` }}
+            >
+              <line 
+                x1={56 + wandArmWave * 0.4} 
+                y1={26 - Math.abs(wandArmWave) * 0.3} 
+                x2={62 + wandArmWave * 0.5 + wandRotate * 0.1} 
+                y2={14 - Math.abs(wandArmWave) * 0.4} 
+                stroke={colors.wand} 
+                strokeWidth="1.5" 
+                strokeLinecap="round" 
+              />
+              {/* Wand star */}
+              <path
+                d={`M${62 + wandArmWave * 0.5} ${10 - Math.abs(wandArmWave) * 0.4} 
+                    L${63 + wandArmWave * 0.5} ${13 - Math.abs(wandArmWave) * 0.4} 
+                    L${66 + wandArmWave * 0.5} ${14 - Math.abs(wandArmWave) * 0.4} 
+                    L${63 + wandArmWave * 0.5} ${15 - Math.abs(wandArmWave) * 0.4} 
+                    L${62 + wandArmWave * 0.5} ${18 - Math.abs(wandArmWave) * 0.4} 
+                    L${61 + wandArmWave * 0.5} ${15 - Math.abs(wandArmWave) * 0.4} 
+                    L${58 + wandArmWave * 0.5} ${14 - Math.abs(wandArmWave) * 0.4} 
+                    L${61 + wandArmWave * 0.5} ${13 - Math.abs(wandArmWave) * 0.4} Z`}
+                fill={colors.wand}
+                opacity={wandSparkle}
+              />
+              {/* Sparkles around wand - animated */}
+              <circle 
+                cx={60 + wandArmWave * 0.5 + Math.sin(phase * 0.3) * 2} 
+                cy={12 - Math.abs(wandArmWave) * 0.4 + Math.cos(phase * 0.25) * 2} 
+                r={1 + Math.sin(phase * 0.2) * 0.3} 
+                fill={colors.sparkle} 
+                opacity={wandSparkle * 0.8} 
+              />
+              <circle 
+                cx={64 + wandArmWave * 0.5 + Math.cos(phase * 0.35) * 1.5} 
+                cy={16 - Math.abs(wandArmWave) * 0.4 + Math.sin(phase * 0.3) * 1.5} 
+                r={0.8 + Math.cos(phase * 0.25) * 0.2} 
+                fill={colors.sparkle} 
+                opacity={wandSparkle * 0.6} 
+              />
+              <circle 
+                cx={58 + wandArmWave * 0.5 + Math.sin(phase * 0.4) * 1.5} 
+                cy={16 - Math.abs(wandArmWave) * 0.4 + Math.cos(phase * 0.35) * 1.5} 
+                r={0.6 + Math.sin(phase * 0.3) * 0.2} 
+                fill={colors.sparkle} 
+                opacity={wandSparkle * 0.7} 
+              />
+              {/* Extra magical sparkles */}
+              <circle 
+                cx={65 + wandArmWave * 0.5 + Math.sin(phase * 0.5) * 3} 
+                cy={10 - Math.abs(wandArmWave) * 0.4 + Math.cos(phase * 0.4) * 3} 
+                r={0.5 + Math.sin(phase * 0.35) * 0.2} 
+                fill={colors.sparkle} 
+                opacity={wandSparkle * 0.5} 
+              />
+              <circle 
+                cx={56 + wandArmWave * 0.5 + Math.cos(phase * 0.45) * 2.5} 
+                cy={8 - Math.abs(wandArmWave) * 0.4 + Math.sin(phase * 0.5) * 2.5} 
+                r={0.4 + Math.cos(phase * 0.4) * 0.15} 
+                fill={colors.sparkle} 
+                opacity={wandSparkle * 0.4} 
+              />
+            </g>
           </g>
 
           {/* Feet/Shoes - dainty */}

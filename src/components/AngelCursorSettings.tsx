@@ -7,10 +7,10 @@ interface AngelCursorSettingsProps {
 }
 
 const VARIANT_COLORS: Record<VariantKey, { bg: string; border: string }> = {
-  default: { bg: 'linear-gradient(135deg, #FFFFFF 50%, #FFD700 50%)', border: '#FFD700' },
-  pink: { bg: 'linear-gradient(135deg, #FFB6C1 50%, #9370DB 50%)', border: '#9370DB' },
-  golden: { bg: 'linear-gradient(135deg, #FFD700 50%, #FFA500 50%)', border: '#FFA500' },
-  mint: { bg: 'linear-gradient(135deg, #98FF98 50%, #FFFFFF 50%)', border: '#98FF98' },
+  default: { bg: 'linear-gradient(135deg, #FF69B4 50%, #1a1a2e 50%)', border: '#FF69B4' },
+  pink: { bg: 'linear-gradient(135deg, #FF85C0 50%, #4a3728 50%)', border: '#FF85C0' },
+  golden: { bg: 'linear-gradient(135deg, #FFD700 50%, #1a1a2e 50%)', border: '#FFD700' },
+  mint: { bg: 'linear-gradient(135deg, #87CEEB 50%, #1a1a2e 50%)', border: '#87CEEB' },
 };
 
 export const AngelCursorSettings = ({ currentVariant, onVariantChange }: AngelCursorSettingsProps) => {
@@ -90,20 +90,36 @@ export const AngelCursorSettings = ({ currentVariant, onVariantChange }: AngelCu
   );
 };
 
-// Mini preview angel
+// Mini Shizuka preview
 const MiniAngelPreview = ({ variant }: { variant: VariantKey }) => {
   const colors = ANGEL_VARIANTS[variant];
   
   return (
     <svg width="32" height="38" viewBox="0 0 40 48" className="animate-bounce">
-      <ellipse cx="20" cy="4" rx="6" ry="2" fill="none" stroke="#FFD700" strokeWidth="1.5" />
-      <path d="M12 20 C2 18 0 28 10 32" fill={colors.wings} opacity="0.9" />
-      <path d="M28 20 C38 18 40 28 30 32" fill={colors.wings} opacity="0.9" />
-      <circle cx="20" cy="12" r="6" fill="#FFE4C4" />
-      <ellipse cx="20" cy="9" rx="5.5" ry="3" fill="#8B4513" />
-      <circle cx="18" cy="12" r="0.8" fill="#333" />
-      <circle cx="22" cy="12" r="0.8" fill="#333" />
-      <path d="M15 18 L20 17 L25 18 L27 38 L20 40 L13 38 Z" fill={colors.dress} stroke={colors.wings} strokeWidth="0.5" />
+      {/* Hair back */}
+      <ellipse cx="20" cy="10" rx="10" ry="9" fill={colors.hair} />
+      {/* Face */}
+      <ellipse cx="20" cy="12" rx="8" ry="7" fill={colors.skin} />
+      {/* Hair bangs */}
+      <path d="M10 10 Q14 4 20 6 Q26 4 30 10 L28 14 Q24 8 20 10 Q16 8 12 14 Z" fill={colors.hair} />
+      {/* Eyes */}
+      <ellipse cx="16" cy="12" rx="2" ry="2.5" fill="#fff" />
+      <ellipse cx="24" cy="12" rx="2" ry="2.5" fill="#fff" />
+      <circle cx="16" cy="12" r="1.5" fill={colors.eyes} />
+      <circle cx="24" cy="12" r="1.5" fill={colors.eyes} />
+      <circle cx="15.5" cy="11" r="0.6" fill="#fff" />
+      <circle cx="23.5" cy="11" r="0.6" fill="#fff" />
+      {/* Cheeks */}
+      <ellipse cx="13" cy="14" rx="2" ry="1" fill={colors.cheek} opacity="0.5" />
+      <ellipse cx="27" cy="14" rx="2" ry="1" fill={colors.cheek} opacity="0.5" />
+      {/* Mouth */}
+      <path d="M18 16 Q20 18 22 16" stroke="#D4736C" strokeWidth="0.8" fill="none" />
+      {/* Ribbon */}
+      <path d="M28 8 Q32 6 30 8 Q32 10 28 8" fill={colors.ribbon} />
+      {/* Dress */}
+      <path d="M14 20 L20 18 L26 20 L29 42 L20 44 L11 42 Z" fill={colors.dress} />
+      {/* Dress collar */}
+      <path d="M16 20 Q20 22 24 20" stroke={colors.dressLight} strokeWidth="1" fill="none" />
     </svg>
   );
 };

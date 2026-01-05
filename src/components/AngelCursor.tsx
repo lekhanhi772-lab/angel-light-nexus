@@ -420,64 +420,74 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
 
           {/* Face - 3/4 view (slightly rotated oval) */}
           <ellipse
-            cx="30"
+            cx="28"
             cy="24"
-            rx="13"
-            ry="12"
+            rx="12"
+            ry="11"
             fill="url(#shizukaSkin)"
-            transform="rotate(-8, 30, 24)"
+            transform="rotate(-5, 28, 24)"
           />
           
-          {/* Left cheek (more visible in 3/4 view) */}
-          <ellipse cx="20" cy="28" rx="4" ry="2.5" fill={colors.cheek} opacity="0.6" />
+          {/* Left cheek (more visible in 3/4 view) - soft pink blush */}
+          <ellipse cx="20" cy="27" rx="3.5" ry="2" fill={colors.cheek} opacity="0.5" />
           {/* Right cheek (less visible) */}
-          <ellipse cx="38" cy="27" rx="2.5" ry="2" fill={colors.cheek} opacity="0.4" />
+          <ellipse cx="35" cy="26" rx="2" ry="1.5" fill={colors.cheek} opacity="0.35" />
           
-          {/* Eyes - 3/4 view positioning */}
+          {/* Eyes - 3/4 view, bigger and more expressive */}
           {isBlinking ? (
             <>
-              {/* Closed eyes - happy curved expression */}
-              <path d="M20 23 Q23 21 26 23" stroke={colors.eyes} strokeWidth="1.2" fill="none" strokeLinecap="round" />
-              <path d="M32 22 Q34 20.5 36 22" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
+              {/* Closed eyes - happy curved smile expression */}
+              <path d="M19 23 Q22 20.5 25 23" stroke={colors.eyes} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path d="M30 22.5 Q32.5 20.5 35 22.5" stroke={colors.eyes} strokeWidth="1.2" fill="none" strokeLinecap="round" />
             </>
           ) : (
             <>
-              {/* Left eye - larger (closer to viewer) */}
-              <ellipse cx="23" cy="23" rx="3" ry="3.5" fill="#FFFFFF" />
-              <ellipse cx="23.5" cy="23" rx="2.2" ry="2.8" fill="url(#eyeGrad)" />
-              <circle cx="22.3" cy="22" r="1.2" fill={colors.eyeshine} />
-              <circle cx="24.2" cy="23.5" r="0.5" fill={colors.eyeshine} opacity="0.8" />
+              {/* Left eye - larger, sparkling anime style */}
+              <ellipse cx="22" cy="22" rx="3.5" ry="4" fill="#FFFFFF" />
+              <ellipse cx="22.5" cy="22.2" rx="2.8" ry="3.2" fill="url(#eyeGrad)" />
+              {/* Multiple sparkles for lively look */}
+              <circle cx="21" cy="20.5" r="1.3" fill={colors.eyeshine} />
+              <circle cx="23.5" cy="21.5" r="0.7" fill={colors.eyeshine} opacity="0.9" />
+              <circle cx="21.5" cy="23.5" r="0.4" fill={colors.eyeshine} opacity="0.6" />
+              {/* Eyelashes */}
+              <path d="M18.5 20 Q19.5 19.5 20 20.5" stroke={colors.hair} strokeWidth="0.5" fill="none" />
+              <path d="M24.5 20 Q25 19 25.5 20" stroke={colors.hair} strokeWidth="0.5" fill="none" />
               
-              {/* Right eye - smaller (further from viewer) */}
-              <ellipse cx="34" cy="22.5" rx="2" ry="2.5" fill="#FFFFFF" />
-              <ellipse cx="34.3" cy="22.5" rx="1.5" ry="2" fill="url(#eyeGrad)" />
-              <circle cx="33.5" cy="21.8" r="0.8" fill={colors.eyeshine} />
+              {/* Right eye - smaller for 3/4 perspective */}
+              <ellipse cx="33" cy="21.8" rx="2.5" ry="3" fill="#FFFFFF" />
+              <ellipse cx="33.3" cy="22" rx="2" ry="2.5" fill="url(#eyeGrad)" />
+              <circle cx="32.2" cy="20.5" r="0.9" fill={colors.eyeshine} />
+              <circle cx="34" cy="21.5" r="0.5" fill={colors.eyeshine} opacity="0.8" />
+              {/* Eyelashes */}
+              <path d="M35 20 Q35.5 19.5 36 20.5" stroke={colors.hair} strokeWidth="0.4" fill="none" />
             </>
           )}
           
-          {/* Eyebrows - angled for 3/4 view */}
-          <path d="M18 19 Q22 17.5 26 19" stroke={colors.hair} strokeWidth="0.8" fill="none" strokeLinecap="round" />
-          <path d="M31 18.5 Q34 17.5 37 18.5" stroke={colors.hair} strokeWidth="0.6" fill="none" strokeLinecap="round" />
+          {/* Eyebrows - soft, friendly arched brows */}
+          <path d="M17.5 18 Q21 16.5 25 18" stroke={colors.hair} strokeWidth="0.7" fill="none" strokeLinecap="round" opacity="0.8" />
+          <path d="M30 17.5 Q33 16.5 36 18" stroke={colors.hair} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.7" />
           
-          {/* Nose - side profile hint */}
-          <path d="M28 25 Q29 26.5 28 28" stroke="#E8B4A0" strokeWidth="1" fill="none" strokeLinecap="round" />
+          {/* Nose - cute small button nose */}
+          <circle cx="26" cy="25.5" r="0.6" fill="#E8B4A0" opacity="0.7" />
           
-          {/* Mouth - cute open smile like reference */}
-          <ellipse 
-            cx="25" 
-            cy="31" 
-            rx={isHovering ? 3.5 : 2.5} 
-            ry={isHovering ? 2.5 : 1.8} 
-            fill="#D4736C"
+          {/* Mouth - sweet cheerful smile */}
+          <path 
+            d={isHovering 
+              ? "M22 29 Q26 33 30 29" 
+              : "M23 29 Q26 31.5 29 29"
+            } 
+            stroke="#E85A6B" 
+            strokeWidth="1.3" 
+            fill="none" 
+            strokeLinecap="round" 
           />
-          <ellipse 
-            cx="25" 
-            cy={isHovering ? 30 : 30.5} 
-            rx={isHovering ? 2.5 : 1.8} 
-            ry={isHovering ? 1.5 : 1} 
-            fill="#FFFFFF"
-            opacity="0.9"
-          />
+          {/* Inner mouth highlight for happy expression when hovering */}
+          {isHovering && (
+            <>
+              <path d="M23.5 29.5 Q26 32 28.5 29.5" fill="#D4545F" />
+              <ellipse cx="26" cy="30.5" rx="2" ry="1" fill="#FFFFFF" opacity="0.4" />
+            </>
+          )}
 
           {/* Hair front bangs - wavy framing face (3/4 view) */}
           <path

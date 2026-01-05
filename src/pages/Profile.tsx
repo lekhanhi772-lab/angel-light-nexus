@@ -5,6 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Web3Provider } from '@/components/Web3Provider';
 import { WalletConnect } from '@/components/WalletConnect';
 import { WalletBalances } from '@/components/WalletBalances';
+import { AngelCursorSettings } from '@/components/AngelCursorSettings';
+import { useAngelCursor } from '@/hooks/useAngelCursor';
 import { Sparkles, MessageCircle, Calendar, ScrollText, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -31,6 +33,7 @@ const MANTRAS = [
 const Profile = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
+  const { variant: angelVariant, changeVariant: setAngelVariant } = useAngelCursor();
   
   const [chatStats, setChatStats] = useState({ totalMessages: 0, daysSinceJoined: 0 });
   const [recentMessages, setRecentMessages] = useState<any[]>([]);
@@ -281,6 +284,14 @@ const Profile = () => {
             <div className="mt-6">
               <WalletBalances />
             </div>
+          </div>
+
+          {/* Angel Cursor Settings */}
+          <div className="mb-8">
+            <AngelCursorSettings 
+              currentVariant={angelVariant} 
+              onVariantChange={setAngelVariant} 
+            />
           </div>
 
           {/* Recent Chat History */}

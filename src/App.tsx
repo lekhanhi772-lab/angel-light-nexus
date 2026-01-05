@@ -12,12 +12,17 @@ import Profile from "./pages/Profile";
 import TestR2Upload from "./pages/TestR2Upload";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
+import { AngelCursor } from "./components/AngelCursor";
+import { useAngelCursor } from "./hooks/useAngelCursor";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+const AppContent = () => {
+  const { variant } = useAngelCursor();
+  
+  return (
+    <>
+      <AngelCursor variant={variant} />
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -36,6 +41,14 @@ const App = () => (
           </Routes>
         </div>
       </BrowserRouter>
+    </>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );

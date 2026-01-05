@@ -275,7 +275,7 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             </radialGradient>
           </defs>
 
-          {/* Hair back (behind head) */}
+          {/* Hair back (behind head) - longer flowing */}
           <ellipse
             cx="30"
             cy="22"
@@ -284,13 +284,35 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             fill="url(#shizukaHair)"
           />
           
-          {/* Hair side tufts - Shizuka's signature short hair */}
+          {/* Long flowing hair strands - left side */}
           <path
-            d={`M12 18 Q8 ${22 + hairSwing} 10 ${30 + hairSwing} Q12 32 15 28`}
+            d={`M12 18 Q6 ${28 + hairSwing * 1.5} 8 ${45 + hairSwing * 1.2} Q10 ${60 + hairSwing} 14 ${70 + hairSwing * 0.8}`}
+            fill="url(#shizukaHair)"
+            stroke={colors.hairHighlight}
+            strokeWidth="0.3"
+          />
+          <path
+            d={`M14 20 Q10 ${32 + hairSwing * 1.3} 12 ${50 + hairSwing} Q14 ${62 + hairSwing * 0.9} 16 ${68 + hairSwing * 0.7}`}
             fill="url(#shizukaHair)"
           />
           <path
-            d={`M48 18 Q52 ${22 - hairSwing} 50 ${30 - hairSwing} Q48 32 45 28`}
+            d={`M16 22 Q12 ${35 + hairSwing} 14 ${48 + hairSwing * 0.8}`}
+            fill="url(#shizukaHair)"
+          />
+          
+          {/* Long flowing hair strands - right side */}
+          <path
+            d={`M48 18 Q54 ${28 - hairSwing * 1.5} 52 ${45 - hairSwing * 1.2} Q50 ${60 - hairSwing} 46 ${70 - hairSwing * 0.8}`}
+            fill="url(#shizukaHair)"
+            stroke={colors.hairHighlight}
+            strokeWidth="0.3"
+          />
+          <path
+            d={`M46 20 Q50 ${32 - hairSwing * 1.3} 48 ${50 - hairSwing} Q46 ${62 - hairSwing * 0.9} 44 ${68 - hairSwing * 0.7}`}
+            fill="url(#shizukaHair)"
+          />
+          <path
+            d={`M44 22 Q48 ${35 - hairSwing} 46 ${48 - hairSwing * 0.8}`}
             fill="url(#shizukaHair)"
           />
 
@@ -307,26 +329,28 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
           <ellipse cx="20" cy="28" rx="4" ry="2.5" fill={colors.cheek} opacity="0.6" />
           <ellipse cx="40" cy="28" rx="4" ry="2.5" fill={colors.cheek} opacity="0.6" />
           
-          {/* Eyes */}
+          {/* Eyes - smaller but sparkly */}
           {isBlinking ? (
             <>
               {/* Closed eyes - happy expression */}
-              <path d="M22 24 Q25 22 28 24" stroke={colors.eyes} strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              <path d="M32 24 Q35 22 38 24" stroke={colors.eyes} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path d="M23 24 Q25 22.5 27 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
+              <path d="M33 24 Q35 22.5 37 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
             </>
           ) : (
             <>
-              {/* Left eye */}
-              <ellipse cx="24" cy="24" rx="4" ry="5" fill="#FFFFFF" />
-              <ellipse cx="24.5" cy="24" rx="3" ry="4" fill="url(#eyeGrad)" />
-              <circle cx="23" cy="22.5" r="1.5" fill={colors.eyeshine} />
-              <circle cx="25.5" cy="24" r="0.8" fill={colors.eyeshine} opacity="0.7" />
+              {/* Left eye - smaller */}
+              <ellipse cx="25" cy="24" rx="2.5" ry="3" fill="#FFFFFF" />
+              <ellipse cx="25.2" cy="24" rx="2" ry="2.5" fill="url(#eyeGrad)" />
+              <circle cx="24.3" cy="23" r="1" fill={colors.eyeshine} />
+              <circle cx="25.8" cy="24.2" r="0.5" fill={colors.eyeshine} opacity="0.8" />
+              <circle cx="24.8" cy="25" r="0.3" fill={colors.eyeshine} opacity="0.5" />
               
-              {/* Right eye */}
-              <ellipse cx="36" cy="24" rx="4" ry="5" fill="#FFFFFF" />
-              <ellipse cx="36.5" cy="24" rx="3" ry="4" fill="url(#eyeGrad)" />
-              <circle cx="35" cy="22.5" r="1.5" fill={colors.eyeshine} />
-              <circle cx="37.5" cy="24" r="0.8" fill={colors.eyeshine} opacity="0.7" />
+              {/* Right eye - smaller */}
+              <ellipse cx="35" cy="24" rx="2.5" ry="3" fill="#FFFFFF" />
+              <ellipse cx="35.2" cy="24" rx="2" ry="2.5" fill="url(#eyeGrad)" />
+              <circle cx="34.3" cy="23" r="1" fill={colors.eyeshine} />
+              <circle cx="35.8" cy="24.2" r="0.5" fill={colors.eyeshine} opacity="0.8" />
+              <circle cx="34.8" cy="25" r="0.3" fill={colors.eyeshine} opacity="0.5" />
             </>
           )}
           

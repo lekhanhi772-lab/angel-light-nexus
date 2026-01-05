@@ -1,4 +1,4 @@
-import { ANGEL_VARIANTS_LIST, VariantKey } from './AngelCursor';
+import { ANGEL_VARIANTS, VariantKey } from './AngelCursor';
 import { Sparkles } from 'lucide-react';
 
 interface AngelCursorSettingsProps {
@@ -34,8 +34,8 @@ export const AngelCursorSettings = ({ currentVariant, onVariantChange }: AngelCu
       </p>
 
       <div className="grid grid-cols-2 gap-3">
-        {(Object.keys(ANGEL_VARIANTS_LIST) as VariantKey[]).map((key) => {
-          const variant = ANGEL_VARIANTS_LIST[key];
+        {(Object.keys(ANGEL_VARIANTS) as VariantKey[]).map((key) => {
+          const variant = ANGEL_VARIANTS[key];
           const colors = VARIANT_COLORS[key];
           const isSelected = currentVariant === key;
           
@@ -92,7 +92,7 @@ export const AngelCursorSettings = ({ currentVariant, onVariantChange }: AngelCu
 
 // Mini preview angel
 const MiniAngelPreview = ({ variant }: { variant: VariantKey }) => {
-  const colors = ANGEL_VARIANTS_LIST[variant];
+  const colors = ANGEL_VARIANTS[variant];
   
   return (
     <svg width="32" height="38" viewBox="0 0 40 48" className="animate-bounce">

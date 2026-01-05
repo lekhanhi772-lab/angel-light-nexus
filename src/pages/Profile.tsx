@@ -277,12 +277,10 @@ const Profile = () => {
             </p>
             <WalletConnect onWalletChange={handleWalletChange} />
             
-            {/* Wallet Balances - hiển thị sau khi kết nối */}
-            {walletConnected && (
-              <div className="mt-6">
-                <WalletBalances forceShow={walletConnected} />
-              </div>
-            )}
+            {/* Wallet Balances - tự động hiển thị khi ví đã kết nối */}
+            <div className="mt-6">
+              <WalletBalances />
+            </div>
           </div>
 
           {/* Recent Chat History */}

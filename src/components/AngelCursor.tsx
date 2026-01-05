@@ -412,64 +412,105 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
           />
           <circle cx={51} cy={43 - armWave * 0.3} r="3" fill={colors.skin} />
 
-          {/* Big round head - cartoon style */}
-          <circle cx="32.5" cy="20" r="14" fill="url(#skinTone)" />
-
-          {/* Hair top */}
-          <ellipse cx="32.5" cy="12" rx="12" ry="7" fill="url(#hairGrad)" />
+          {/* Fairy Face - Oval delicate shape */}
+          <ellipse cx="32.5" cy="21" rx="12" ry="14" fill="url(#skinTone)" />
           
-          {/* Side hair strands */}
+          {/* Soft chin curve for feminine look */}
+          <ellipse cx="32.5" cy="30" rx="7" ry="5" fill="url(#skinTone)" />
+
+          {/* Hair top - fuller and elegant */}
+          <ellipse cx="32.5" cy="11" rx="13" ry="8" fill="url(#hairGrad)" />
+          <ellipse cx="32.5" cy="9" rx="10" ry="5" fill={colors.hairHighlight} opacity="0.6" />
+          
+          {/* Side hair strands - flowing elegantly */}
           <path
-            d={`M20 14 Q16 ${18 + hairSwing * 0.4} 15 ${26 + hairSwing * 0.6}`}
+            d={`M19 13 Q14 ${18 + hairSwing * 0.4} 13 ${28 + hairSwing * 0.6}`}
             stroke="url(#hairGrad)"
-            strokeWidth="6"
+            strokeWidth="7"
             fill="none"
             strokeLinecap="round"
           />
           <path
-            d={`M22 12 Q17 ${15 + hairSwing * 0.3} 16 ${20 + hairSwing * 0.4}`}
+            d={`M21 11 Q15 ${14 + hairSwing * 0.3} 14 ${22 + hairSwing * 0.4}`}
             stroke="url(#hairGrad)"
-            strokeWidth="4"
+            strokeWidth="5"
+            fill="none"
+            strokeLinecap="round"
+          />
+          
+          {/* Right side hair */}
+          <path
+            d={`M46 13 Q50 ${17 + hairSwing * 0.3} 49 ${25 + hairSwing * 0.5}`}
+            stroke="url(#hairGrad)"
+            strokeWidth="5"
             fill="none"
             strokeLinecap="round"
           />
 
           {/* Cute Hair Bow */}
-          <g transform="translate(44, 10)">
-            <ellipse cx="-4" cy="0" rx="5" ry="3.5" fill={colors.hairBow} transform="rotate(-25)" />
-            <ellipse cx="4" cy="0" rx="5" ry="3.5" fill={colors.hairBow} transform="rotate(25)" />
-            <circle cx="0" cy="0" r="2.5" fill={colors.hairBow} />
+          <g transform="translate(46, 8)">
+            <ellipse cx="-5" cy="0" rx="6" ry="4" fill={colors.hairBow} transform="rotate(-25)" />
+            <ellipse cx="5" cy="0" rx="6" ry="4" fill={colors.hairBow} transform="rotate(25)" />
+            <circle cx="0" cy="0" r="3" fill={colors.hairBow} />
             {/* Bow shine */}
-            <ellipse cx="-3" cy="-1" rx="1.5" ry="0.8" fill="white" opacity="0.5" />
-            <ellipse cx="3" cy="-1" rx="1.5" ry="0.8" fill="white" opacity="0.5" />
+            <ellipse cx="-4" cy="-1.5" rx="2" ry="1" fill="white" opacity="0.5" />
+            <ellipse cx="4" cy="-1.5" rx="2" ry="1" fill="white" opacity="0.5" />
           </g>
 
-          {/* Big Cute Eyes - Cartoon style */}
+          {/* Beautiful Anime Eyes - Larger and more expressive */}
           <g>
-            {/* Eye whites */}
-            <ellipse cx="27" cy="20" rx="5" ry="5.5" fill="white" />
-            <ellipse cx="38" cy="20" rx="5" ry="5.5" fill="white" />
+            {/* Eye whites - larger almond shape */}
+            <ellipse cx="26" cy="21" rx="5.5" ry="6" fill="white" />
+            <ellipse cx="39" cy="21" rx="5.5" ry="6" fill="white" />
             
-            {/* Irises */}
-            <ellipse cx="28" cy="21" rx="3.5" ry="4" fill="#2C1810" />
-            <ellipse cx="39" cy="21" rx="3.5" ry="4" fill="#2C1810" />
+            {/* Colored irises - deep and sparkling */}
+            <ellipse cx="27" cy="22" rx="4" ry="4.5" fill="#4A2C1A" />
+            <ellipse cx="40" cy="22" rx="4" ry="4.5" fill="#4A2C1A" />
             
-            {/* Big eye shine - anime style */}
-            <ellipse cx="29.5" cy="19" rx="1.8" ry="2" fill="white" />
-            <ellipse cx="40.5" cy="19" rx="1.8" ry="2" fill="white" />
-            <circle cx="26.5" cy="22.5" r="0.8" fill="white" />
-            <circle cx="37.5" cy="22.5" r="0.8" fill="white" />
+            {/* Inner iris glow */}
+            <ellipse cx="27" cy="23" rx="2.5" ry="3" fill="#2C1810" />
+            <ellipse cx="40" cy="23" rx="2.5" ry="3" fill="#2C1810" />
+            
+            {/* Big sparkling eye shine - anime style */}
+            <ellipse cx="29" cy="20" rx="2" ry="2.5" fill="white" />
+            <ellipse cx="42" cy="20" rx="2" ry="2.5" fill="white" />
+            <circle cx="25.5" cy="24" r="1" fill="white" opacity="0.8" />
+            <circle cx="38.5" cy="24" r="1" fill="white" opacity="0.8" />
+            
+            {/* Delicate eyelashes */}
+            <path d="M21 18 Q22 16.5 24 17" stroke="#2C1810" strokeWidth="0.8" fill="none" />
+            <path d="M23 16.5 Q25 15.5 27 16.5" stroke="#2C1810" strokeWidth="0.8" fill="none" />
+            <path d="M26 16 Q28 15 30 16" stroke="#2C1810" strokeWidth="0.8" fill="none" />
+            
+            <path d="M44 18 Q43 16.5 41 17" stroke="#2C1810" strokeWidth="0.8" fill="none" />
+            <path d="M42 16.5 Q40 15.5 38 16.5" stroke="#2C1810" strokeWidth="0.8" fill="none" />
+            <path d="M39 16 Q37 15 35 16" stroke="#2C1810" strokeWidth="0.8" fill="none" />
           </g>
 
-          {/* Rosy cheeks */}
-          <ellipse cx="22" cy="24" rx="3.5" ry="2" fill={colors.cheek} opacity="0.5" />
-          <ellipse cx="43" cy="24" rx="3.5" ry="2" fill={colors.cheek} opacity="0.5" />
+          {/* Delicate eyebrows */}
+          <path d="M23 16 Q26 14.5 29 15.5" stroke={colors.hair} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6" />
+          <path d="M42 16 Q39 14.5 36 15.5" stroke={colors.hair} strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.6" />
 
-          {/* Happy smile - like the reference fairies */}
+          {/* Rosy cheeks - softer and more fairy-like */}
+          <ellipse cx="20" cy="26" rx="4" ry="2.5" fill={colors.cheek} opacity="0.45" />
+          <ellipse cx="45" cy="26" rx="4" ry="2.5" fill={colors.cheek} opacity="0.45" />
+
+          {/* Cute small nose */}
+          <path d="M32.5 25 L33 27 L32 27.5" stroke="#E8C4B8" strokeWidth="1" fill="none" strokeLinecap="round" />
+
+          {/* Sweet lips - fairy smile */}
           <path 
-            d={isHovering ? "M28 28 Q32.5 33 37 28" : "M28 28 Q32.5 31 37 28"} 
-            stroke="#D35400" 
-            strokeWidth="1.8" 
+            d={isHovering ? "M29 30 Q32.5 34 36 30" : "M29 30 Q32.5 32.5 36 30"} 
+            stroke="#E88B8B" 
+            strokeWidth="1.5" 
+            fill="none" 
+            strokeLinecap="round"
+          />
+          {/* Upper lip detail */}
+          <path 
+            d="M30 30 Q32.5 29 35 30" 
+            stroke="#D77B7B" 
+            strokeWidth="0.8" 
             fill="none" 
             strokeLinecap="round"
           />

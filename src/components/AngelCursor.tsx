@@ -126,14 +126,16 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   }, [isIdle]);
 
   useEffect(() => {
-    // Hide default cursor
-    document.body.style.cursor = 'none';
+    // Hide default cursor globally using CSS class
+    document.documentElement.classList.add('angel-cursor-active');
+    document.body.classList.add('angel-cursor-active');
     
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseover', handleMouseOver);
 
     return () => {
-      document.body.style.cursor = 'auto';
+      document.documentElement.classList.remove('angel-cursor-active');
+      document.body.classList.remove('angel-cursor-active');
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseover', handleMouseOver);
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);

@@ -1,83 +1,107 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
-// Shizuka-style color variants - cute anime girl design
+// Elegant fairy angel color variants - classic painting style
 const ANGEL_VARIANTS = {
   default: { 
-    // Classic Angel - white dress, golden wings
-    hair: '#1a1a2e',
-    hairHighlight: '#2a2a4e',
-    hairGlow: '#3a3a5e',
-    skin: '#FFECD2',
-    cheek: '#FFB6C1',
+    // Golden Angel - warm, radiant
+    hair: '#8B6914',
+    hairHighlight: '#D4A84B',
+    hairGlow: '#F5D78E',
+    skin: '#FDE8D0',
+    skinShadow: '#E8C9A8',
+    cheek: '#FFCBC4',
     dress: '#FFFFFF', 
-    dressLight: '#FFFAF0',
+    dressLight: '#FFFEF5',
     dressAccent: '#FFD700',
+    dressShadow: '#F0E6D3',
     ribbon: '#FFD700',
-    wings: '#FFE4B5',
-    wingsLight: '#FFFAF0',
-    wingsGlow: '#FFD700',
+    wings: '#FFF8E7',
+    wingsLight: '#FFFFFF',
+    wingsGlow: '#FFE4B5',
+    wingsEdge: '#FFD700',
     halo: '#FFD700',
-    eyes: '#2a2a4e',
-    eyeshine: '#FFFFFF',
-    name: 'Thiên Thần Vàng' 
+    eyes: '#5D4E37',
+    eyeHighlight: '#8B7355',
+    lips: '#E8A0A0',
+    wand: '#FFD700',
+    sparkle: '#FFFACD',
+    name: 'Thiên Thần Ánh Vàng' 
   },
   pink: { 
-    // Pink Angel
-    hair: '#4a3728',
-    hairHighlight: '#5a4738',
-    hairGlow: '#6a5748',
-    skin: '#FFECD2',
-    cheek: '#FFC0CB',
+    // Rose Fairy - soft, dreamy
+    hair: '#6B4423',
+    hairHighlight: '#9B7B5B',
+    hairGlow: '#C4A882',
+    skin: '#FDE8D0',
+    skinShadow: '#E8C9A8',
+    cheek: '#FFB6C1',
     dress: '#FFF0F5', 
     dressLight: '#FFFFFF',
     dressAccent: '#FFB6C1',
+    dressShadow: '#F5E0E5',
     ribbon: '#FF69B4',
-    wings: '#FFD1DC',
-    wingsLight: '#FFF0F5',
-    wingsGlow: '#FF69B4',
+    wings: '#FFE4EC',
+    wingsLight: '#FFF5F8',
+    wingsGlow: '#FFD1DC',
+    wingsEdge: '#FF69B4',
     halo: '#FF69B4',
-    eyes: '#4a3728',
-    eyeshine: '#FFFFFF',
-    name: 'Thiên Thần Hồng' 
+    eyes: '#5D4E37',
+    eyeHighlight: '#8B7355',
+    lips: '#E88A9A',
+    wand: '#FF69B4',
+    sparkle: '#FFE4EC',
+    name: 'Nàng Tiên Hồng' 
   },
   golden: { 
-    // Golden Angel
-    hair: '#1a1a2e',
-    hairHighlight: '#2a2a4e',
-    hairGlow: '#3a3a5e',
-    skin: '#FFECD2',
+    // Celestial Gold - majestic
+    hair: '#C4A84B',
+    hairHighlight: '#E8D078',
+    hairGlow: '#FFF0B5',
+    skin: '#FDE8D0',
+    skinShadow: '#E8C9A8',
     cheek: '#FFDAB9',
-    dress: '#FFFAF0', 
+    dress: '#FFFEF5', 
     dressLight: '#FFFFFF',
     dressAccent: '#FFD700',
+    dressShadow: '#F5EED8',
     ribbon: '#FFA500',
-    wings: '#FFE4B5',
-    wingsLight: '#FFFACD',
-    wingsGlow: '#FFA500',
+    wings: '#FFF8DC',
+    wingsLight: '#FFFFFF',
+    wingsGlow: '#FFE4B5',
+    wingsEdge: '#FFA500',
     halo: '#FFD700',
-    eyes: '#2a2a4e',
-    eyeshine: '#FFFFFF',
+    eyes: '#5D4E37',
+    eyeHighlight: '#8B7355',
+    lips: '#DBA090',
+    wand: '#FFD700',
+    sparkle: '#FFFACD',
     name: 'Thiên Thần Hoàng Kim' 
   },
   mint: { 
-    // Mint Angel
-    hair: '#1a1a2e',
-    hairHighlight: '#2a2a4e',
-    hairGlow: '#3a3a5e',
-    skin: '#FFECD2',
-    cheek: '#E0FFFF',
+    // Forest Fairy - ethereal
+    hair: '#4A6B5B',
+    hairHighlight: '#7A9B8B',
+    hairGlow: '#A8C5B5',
+    skin: '#FDE8D0',
+    skinShadow: '#E8C9A8',
+    cheek: '#D4EBE4',
     dress: '#F0FFFF', 
     dressLight: '#FFFFFF',
     dressAccent: '#40E0D0',
+    dressShadow: '#E0F5F0',
     ribbon: '#40E0D0',
-    wings: '#E0FFFF',
-    wingsLight: '#F0FFFF',
-    wingsGlow: '#00CED1',
+    wings: '#E8FFF8',
+    wingsLight: '#FFFFFF',
+    wingsGlow: '#B8F0E8',
+    wingsEdge: '#20B2AA',
     halo: '#40E0D0',
-    eyes: '#2a2a4e',
-    eyeshine: '#FFFFFF',
-    name: 'Thiên Thần Ngọc' 
+    eyes: '#3D5E4E',
+    eyeHighlight: '#5B8B7B',
+    lips: '#C8A898',
+    wand: '#40E0D0',
+    sparkle: '#E8FFF8',
+    name: 'Nàng Tiên Rừng Xanh' 
   },
 };
 
@@ -89,6 +113,7 @@ interface StarTrail {
   y: number;
   opacity: number;
   size: number;
+  type: 'star' | 'sparkle';
 }
 
 interface AngelCursorProps {
@@ -125,7 +150,7 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
     if (trails.length === 0) return;
     const interval = setInterval(() => {
       setTrails((prev) => 
-        prev.map((t) => ({ ...t, opacity: t.opacity - 0.05 })).filter((t) => t.opacity > 0)
+        prev.map((t) => ({ ...t, opacity: t.opacity - 0.04 })).filter((t) => t.opacity > 0)
       );
     }, 30);
     return () => clearInterval(interval);
@@ -142,15 +167,16 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
       setIsIdle(true);
     }, 3000);
 
-    if (!isMobileRef.current && Math.random() > 0.5) {
+    if (!isMobileRef.current && Math.random() > 0.6) {
       const newTrail: StarTrail = {
         id: trailIdRef.current++,
-        x: e.clientX + (Math.random() - 0.5) * 30,
-        y: e.clientY + (Math.random() - 0.5) * 30,
+        x: e.clientX + (Math.random() - 0.5) * 25,
+        y: e.clientY + (Math.random() - 0.5) * 25,
         opacity: 1,
-        size: 8 + Math.random() * 8,
+        size: 6 + Math.random() * 6,
+        type: Math.random() > 0.5 ? 'star' : 'sparkle',
       };
-      setTrails((prev) => [...prev.slice(-15), newTrail]);
+      setTrails((prev) => [...prev.slice(-12), newTrail]);
     }
   }, []);
 
@@ -202,21 +228,20 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
 
   const currentPos = isIdle ? idlePosition : position;
   
-  // Smooth animations
-  const bounce = Math.sin(phase * 0.08) * 3;
-  const hairSwing = Math.sin(phase * 0.1) * 3;
-  const dressSwing = Math.sin(phase * 0.06) * 4;
-  const blinkPhase = phase % 120;
-  const isBlinking = blinkPhase < 5;
-  const ribbonBounce = Math.sin(phase * 0.12) * 2;
-  const armSwing = Math.sin(phase * 0.07) * 5;
-  const wingFlap = Math.sin(phase * 0.15) * (isHovering ? 10 : 6);
-  const haloGlow = 0.6 + Math.sin(phase * 0.1) * 0.3;
-  const scale = isHovering ? 1.1 : 1;
+  // Elegant, gentle animations
+  const floatY = Math.sin(phase * 0.05) * 2;
+  const hairFlow = Math.sin(phase * 0.08) * 2;
+  const dressFlow = Math.sin(phase * 0.06) * 3;
+  const wingFlutter = Math.sin(phase * 0.12) * 8;
+  const haloGlow = 0.7 + Math.sin(phase * 0.08) * 0.25;
+  const wandSparkle = Math.sin(phase * 0.2) * 0.3 + 0.7;
+  const blinkPhase = phase % 150;
+  const isBlinking = blinkPhase < 4;
+  const scale = isHovering ? 1.08 : 1;
 
   const ui = (
     <>
-      {/* Cute heart/star trails */}
+      {/* Magical sparkle trails */}
       {trails.map((trail) => (
         <div
           key={trail.id}
@@ -225,450 +250,329 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             left: trail.x,
             top: trail.y,
             opacity: trail.opacity,
-            transform: `translate(-50%, -50%) scale(${trail.opacity}) rotate(${trail.id * 30}deg)`,
+            transform: `translate(-50%, -50%) scale(${trail.opacity}) rotate(${trail.id * 45}deg)`,
           }}
         >
           <svg width={trail.size} height={trail.size} viewBox="0 0 16 16">
-            <defs>
-              <radialGradient id={`heart-trail-${trail.id}`} cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#FFFFFF" />
-                <stop offset="50%" stopColor={colors.dress} />
-                <stop offset="100%" stopColor={colors.dress} stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            {/* Heart shape */}
-            <path
-              d="M8 14 C4 10 0 7 0 4 C0 1 3 0 5 2 L8 5 L11 2 C13 0 16 1 16 4 C16 7 12 10 8 14Z"
-              fill={`url(#heart-trail-${trail.id})`}
-              transform="scale(1)"
-            />
+            {trail.type === 'star' ? (
+              <path
+                d="M8 0 L9.5 6 L16 8 L9.5 10 L8 16 L6.5 10 L0 8 L6.5 6 Z"
+                fill={colors.sparkle}
+                opacity="0.9"
+              />
+            ) : (
+              <circle cx="8" cy="8" r="4" fill={colors.sparkle} opacity="0.8" />
+            )}
           </svg>
         </div>
       ))}
 
-      {/* Shizuka-style Cute Girl Cursor */}
+      {/* Elegant Fairy Angel */}
       <div
         className="fixed pointer-events-none z-[9999]"
         style={{
           left: currentPos.x,
           top: currentPos.y,
-          transform: `translate(-50%, -50%) translateY(${bounce}px) scale(${scale})`,
+          transform: `translate(-50%, -50%) translateY(${floatY}px) scale(${scale})`,
           transition: isIdle ? 'left 3s ease-in-out, top 3s ease-in-out' : 'transform 0.2s ease-out',
         }}
       >
-        <svg width="60" height="80" viewBox="0 0 60 80" className="overflow-visible" style={{ filter: 'drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2))' }}>
+        <svg width="70" height="90" viewBox="0 0 70 90" className="overflow-visible" style={{ filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15))' }}>
           <defs>
-            {/* Skin gradient */}
-            <radialGradient id="shizukaSkin" cx="40%" cy="35%" r="60%">
-              <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="60%" stopColor={colors.skin} />
-              <stop offset="100%" stopColor="#FFD9B3" />
+            {/* Skin gradient - soft, natural */}
+            <radialGradient id="fairySkin" cx="45%" cy="30%" r="65%">
+              <stop offset="0%" stopColor="#FFF5EB" />
+              <stop offset="50%" stopColor={colors.skin} />
+              <stop offset="100%" stopColor={colors.skinShadow} />
             </radialGradient>
             
-            {/* Hair gradient */}
-            <linearGradient id="shizukaHair" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={colors.hairHighlight} />
-              <stop offset="50%" stopColor={colors.hair} />
-              <stop offset="100%" stopColor={colors.hairGlow} />
+            {/* Hair gradient - flowing, silky */}
+            <linearGradient id="fairyHair" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={colors.hairGlow} />
+              <stop offset="40%" stopColor={colors.hairHighlight} />
+              <stop offset="100%" stopColor={colors.hair} />
             </linearGradient>
             
-            {/* Dress gradient - angel white */}
-            <linearGradient id="shizukaDress" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Dress gradient - soft, flowing fabric */}
+            <linearGradient id="fairyDress" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor={colors.dressLight} />
-              <stop offset="50%" stopColor={colors.dress} />
-              <stop offset="100%" stopColor={colors.dressAccent} />
+              <stop offset="40%" stopColor={colors.dress} />
+              <stop offset="100%" stopColor={colors.dressShadow} />
             </linearGradient>
             
-            {/* Wing gradient */}
-            <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Wing gradient - ethereal, translucent */}
+            <radialGradient id="wingGrad" cx="30%" cy="30%" r="80%">
               <stop offset="0%" stopColor={colors.wingsLight} stopOpacity="0.95" />
-              <stop offset="50%" stopColor={colors.wings} stopOpacity="0.8" />
-              <stop offset="100%" stopColor={colors.wingsGlow} stopOpacity="0.6" />
-            </linearGradient>
+              <stop offset="60%" stopColor={colors.wingsGlow} stopOpacity="0.7" />
+              <stop offset="100%" stopColor={colors.wings} stopOpacity="0.4" />
+            </radialGradient>
             
             {/* Halo gradient */}
             <linearGradient id="haloGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={colors.halo} stopOpacity="0.3" />
-              <stop offset="50%" stopColor={colors.halo} stopOpacity="0.9" />
-              <stop offset="100%" stopColor={colors.halo} stopOpacity="0.3" />
+              <stop offset="0%" stopColor={colors.halo} stopOpacity="0.2" />
+              <stop offset="50%" stopColor={colors.halo} stopOpacity="0.85" />
+              <stop offset="100%" stopColor={colors.halo} stopOpacity="0.2" />
             </linearGradient>
             
-            {/* Ribbon gradient */}
-            <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={colors.ribbon} />
-              <stop offset="50%" stopColor={colors.dressLight} />
-              <stop offset="100%" stopColor={colors.ribbon} />
-            </linearGradient>
-            
-            {/* Eye gradient */}
-            <radialGradient id="eyeGrad" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stopColor={colors.hairHighlight} />
-              <stop offset="100%" stopColor={colors.eyes} />
-            </radialGradient>
-            
-            {/* Glow filter */}
-            <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
+            {/* Soft glow filter */}
+            <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2" result="blur" />
               <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            
+            {/* Sparkle glow */}
+            <filter id="sparkleGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
 
-          {/* Halo */}
+          {/* Halo - soft golden ring */}
           <ellipse 
-            cx="32" cy="4" rx="10" ry="3" 
+            cx="35" cy="5" rx="12" ry="3.5" 
             fill="none" 
             stroke="url(#haloGrad)" 
-            strokeWidth="2"
+            strokeWidth="2.5"
             opacity={haloGlow}
             filter="url(#softGlow)"
           />
 
-          {/* Angel Wings - Left (behind body) */}
-          <g transform={`rotate(${-wingFlap}, 20, 40)`} filter="url(#softGlow)">
+          {/* Wings - Left - elegant, detailed feathers */}
+          <g transform={`rotate(${-wingFlutter}, 25, 42)`} filter="url(#softGlow)">
+            {/* Main wing shape */}
             <path
-              d="M20 40 Q2 28 0 40 Q3 55 12 58 Q18 54 20 46 Z"
+              d="M25 42 Q5 25 2 42 Q5 58 15 62 Q22 58 25 48 Z"
               fill="url(#wingGrad)"
-              opacity="0.9"
             />
-            <path d="M18 42 Q10 36 4 42" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
-            <path d="M18 46 Q12 44 6 50" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            {/* Wing veins/details */}
+            <path d="M23 44 Q14 36 6 42" stroke={colors.wingsEdge} strokeWidth="0.6" fill="none" opacity="0.4" />
+            <path d="M22 48 Q15 44 8 50" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.35" />
+            <path d="M20 52 Q14 50 10 56" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.3" />
+            {/* Wing edge highlight */}
+            <path d="M25 42 Q5 25 2 42" stroke={colors.wingsEdge} strokeWidth="0.8" fill="none" opacity="0.5" />
           </g>
           
-          {/* Angel Wings - Right */}
-          <g transform={`rotate(${wingFlap}, 42, 40)`} filter="url(#softGlow)">
+          {/* Wings - Right */}
+          <g transform={`rotate(${wingFlutter}, 45, 42)`} filter="url(#softGlow)">
             <path
-              d="M42 40 Q60 28 62 40 Q59 55 50 58 Q44 54 42 46 Z"
+              d="M45 42 Q65 25 68 42 Q65 58 55 62 Q48 58 45 48 Z"
               fill="url(#wingGrad)"
-              opacity="0.9"
             />
-            <path d="M44 42 Q52 36 58 42" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
-            <path d="M44 46 Q50 44 56 50" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M47 44 Q56 36 64 42" stroke={colors.wingsEdge} strokeWidth="0.6" fill="none" opacity="0.4" />
+            <path d="M48 48 Q55 44 62 50" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.35" />
+            <path d="M50 52 Q56 50 60 56" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.3" />
+            <path d="M45 42 Q65 25 68 42" stroke={colors.wingsEdge} strokeWidth="0.8" fill="none" opacity="0.5" />
           </g>
 
-          {/* Hair back (behind head) - voluminous, shifted for 3/4 view */}
-          <ellipse
-            cx="32"
-            cy="18"
-            rx="17"
-            ry="15"
-            fill="url(#shizukaHair)"
+          {/* Hair - Back volume */}
+          <ellipse cx="35" cy="18" rx="16" ry="14" fill="url(#fairyHair)" />
+          
+          {/* Flowing hair strands - left side */}
+          <path
+            d={`M20 20 Q15 ${32 + hairFlow} 18 ${48 + hairFlow * 1.2} Q20 ${58 + hairFlow} 24 ${65 + hairFlow * 0.8}`}
+            fill="url(#fairyHair)"
+          />
+          <path
+            d={`M23 22 Q18 ${35 + hairFlow * 0.8} 20 ${50 + hairFlow} Q22 ${60 + hairFlow * 0.6} 26 ${68 + hairFlow * 0.5}`}
+            fill="url(#fairyHair)"
+          />
+          <path
+            d={`M26 24 Q22 ${38 + hairFlow * 0.6} 24 ${52 + hairFlow * 0.8}`}
+            fill="url(#fairyHair)"
           />
           
-          {/* High ponytail - wavy flowing hair on right side */}
+          {/* Flowing hair strands - right side */}
           <path
-            d={`M42 14 Q52 ${16 + hairSwing} 50 ${28 + hairSwing * 1.5} Q48 ${40 + hairSwing * 1.2} 44 ${52 + hairSwing}`}
-            fill="url(#shizukaHair)"
-            strokeWidth="8"
+            d={`M50 20 Q55 ${32 - hairFlow} 52 ${48 - hairFlow * 1.2} Q50 ${58 - hairFlow} 46 ${65 - hairFlow * 0.8}`}
+            fill="url(#fairyHair)"
           />
           <path
-            d={`M44 15 Q54 ${18 + hairSwing * 0.8} 52 ${30 + hairSwing * 1.3} Q50 ${42 + hairSwing} 46 ${54 + hairSwing * 0.8}`}
-            fill="url(#shizukaHair)"
-            strokeWidth="6"
-          />
-          <path
-            d={`M46 16 Q55 ${20 + hairSwing * 0.6} 53 ${32 + hairSwing} Q51 ${44 + hairSwing * 0.8} 48 ${55 + hairSwing * 0.6}`}
-            fill="url(#shizukaHair)"
-            strokeWidth="5"
-          />
-          {/* Extra wavy strand */}
-          <path
-            d={`M40 14 Q48 ${20 - hairSwing * 0.5} 47 ${35 + hairSwing * 1.2} Q45 ${48 + hairSwing} 42 ${56 + hairSwing * 0.7}`}
-            fill="url(#shizukaHair)"
-            strokeWidth="4"
+            d={`M47 22 Q52 ${35 - hairFlow * 0.8} 50 ${50 - hairFlow} Q48 ${60 - hairFlow * 0.6} 44 ${68 - hairFlow * 0.5}`}
+            fill="url(#fairyHair)"
           />
           
-          {/* Hair highlight on ponytail */}
+          {/* Hair highlights */}
           <path
-            d={`M45 18 Q52 ${25 + hairSwing * 0.8} 50 ${40 + hairSwing * 0.5}`}
-            stroke={colors.hairHighlight}
+            d={`M22 25 Q17 ${40 + hairFlow * 0.5} 20 ${55 + hairFlow * 0.3}`}
+            stroke={colors.hairGlow}
             strokeWidth="1.5"
             fill="none"
             opacity="0.5"
           />
-          
-          {/* Pink bow on ponytail */}
-          <g transform={`translate(42, ${12 + ribbonBounce})`}>
-            {/* Left bow loop */}
-            <path
-              d="M0 0 Q-6 -6 -3 0 Q-6 6 0 0"
-              fill={colors.ribbon}
-            />
-            {/* Right bow loop */}
-            <path
-              d="M0 0 Q6 -6 3 0 Q6 6 0 0"
-              fill={colors.ribbon}
-            />
-            {/* Bow center */}
-            <circle cx="0" cy="0" r="2" fill={colors.dressLight} />
-            {/* Ribbon tails */}
-            <path
-              d={`M-1 2 Q-3 ${6 + ribbonBounce * 0.5} -2 ${10 + ribbonBounce}`}
-              stroke={colors.ribbon}
-              strokeWidth="2"
-              fill="none"
-            />
-            <path
-              d={`M1 2 Q3 ${6 + ribbonBounce * 0.5} 2 ${10 + ribbonBounce}`}
-              stroke={colors.ribbon}
-              strokeWidth="2"
-              fill="none"
-            />
-          </g>
+          <path
+            d={`M48 25 Q53 ${40 - hairFlow * 0.5} 50 ${55 - hairFlow * 0.3}`}
+            stroke={colors.hairGlow}
+            strokeWidth="1.5"
+            fill="none"
+            opacity="0.5"
+          />
 
-          {/* Face - 3/4 view (slightly rotated oval) */}
+          {/* Face - oval, delicate proportions */}
           <ellipse
-            cx="28"
-            cy="24"
-            rx="12"
-            ry="11"
-            fill="url(#shizukaSkin)"
-            transform="rotate(-5, 28, 24)"
+            cx="35"
+            cy="25"
+            rx="11"
+            ry="10"
+            fill="url(#fairySkin)"
           />
           
-          {/* Left cheek (more visible in 3/4 view) - soft pink blush */}
-          <ellipse cx="20" cy="27" rx="3.5" ry="2" fill={colors.cheek} opacity="0.5" />
-          {/* Right cheek (less visible) */}
-          <ellipse cx="35" cy="26" rx="2" ry="1.5" fill={colors.cheek} opacity="0.35" />
+          {/* Soft cheek blush */}
+          <ellipse cx="27" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity="0.45" />
+          <ellipse cx="43" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity="0.45" />
           
-          {/* Eyes - 3/4 view, bigger and more expressive */}
+          {/* Eyes - natural, expressive (not anime) */}
           {isBlinking ? (
             <>
-              {/* Closed eyes - happy curved smile expression */}
-              <path d="M19 23 Q22 20.5 25 23" stroke={colors.eyes} strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              <path d="M30 22.5 Q32.5 20.5 35 22.5" stroke={colors.eyes} strokeWidth="1.2" fill="none" strokeLinecap="round" />
+              {/* Closed eyes - gentle curves */}
+              <path d="M28 24 Q31 22 34 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
+              <path d="M36 24 Q39 22 42 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
             </>
           ) : (
             <>
-              {/* Left eye - larger, sparkling anime style */}
-              <ellipse cx="22" cy="22" rx="3.5" ry="4" fill="#FFFFFF" />
-              <ellipse cx="22.5" cy="22.2" rx="2.8" ry="3.2" fill="url(#eyeGrad)" />
-              {/* Multiple sparkles for lively look */}
-              <circle cx="21" cy="20.5" r="1.3" fill={colors.eyeshine} />
-              <circle cx="23.5" cy="21.5" r="0.7" fill={colors.eyeshine} opacity="0.9" />
-              <circle cx="21.5" cy="23.5" r="0.4" fill={colors.eyeshine} opacity="0.6" />
-              {/* Eyelashes */}
-              <path d="M18.5 20 Q19.5 19.5 20 20.5" stroke={colors.hair} strokeWidth="0.5" fill="none" />
-              <path d="M24.5 20 Q25 19 25.5 20" stroke={colors.hair} strokeWidth="0.5" fill="none" />
+              {/* Left eye - almond shaped, natural */}
+              <ellipse cx="31" cy="23.5" rx="2.5" ry="2" fill="#FFFFFF" />
+              <ellipse cx="31.2" cy="23.6" rx="1.6" ry="1.4" fill={colors.eyes} />
+              <circle cx="31.5" cy="23.2" r="0.5" fill="#FFFFFF" />
+              {/* Eyelid line */}
+              <path d="M28 23 Q31 21.5 34 23" stroke={colors.hair} strokeWidth="0.6" fill="none" opacity="0.6" />
+              {/* Lower lash line */}
+              <path d="M28.5 24.5 Q31 25 33.5 24.5" stroke={colors.eyes} strokeWidth="0.3" fill="none" opacity="0.3" />
               
-              {/* Right eye - smaller for 3/4 perspective */}
-              <ellipse cx="33" cy="21.8" rx="2.5" ry="3" fill="#FFFFFF" />
-              <ellipse cx="33.3" cy="22" rx="2" ry="2.5" fill="url(#eyeGrad)" />
-              <circle cx="32.2" cy="20.5" r="0.9" fill={colors.eyeshine} />
-              <circle cx="34" cy="21.5" r="0.5" fill={colors.eyeshine} opacity="0.8" />
-              {/* Eyelashes */}
-              <path d="M35 20 Q35.5 19.5 36 20.5" stroke={colors.hair} strokeWidth="0.4" fill="none" />
+              {/* Right eye */}
+              <ellipse cx="39" cy="23.5" rx="2.5" ry="2" fill="#FFFFFF" />
+              <ellipse cx="39.2" cy="23.6" rx="1.6" ry="1.4" fill={colors.eyes} />
+              <circle cx="39.5" cy="23.2" r="0.5" fill="#FFFFFF" />
+              <path d="M36 23 Q39 21.5 42 23" stroke={colors.hair} strokeWidth="0.6" fill="none" opacity="0.6" />
+              <path d="M36.5 24.5 Q39 25 41.5 24.5" stroke={colors.eyes} strokeWidth="0.3" fill="none" opacity="0.3" />
             </>
           )}
           
-          {/* Eyebrows - soft, friendly arched brows */}
-          <path d="M17.5 18 Q21 16.5 25 18" stroke={colors.hair} strokeWidth="0.7" fill="none" strokeLinecap="round" opacity="0.8" />
-          <path d="M30 17.5 Q33 16.5 36 18" stroke={colors.hair} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.7" />
+          {/* Eyebrows - delicate, natural arch */}
+          <path d="M27 20.5 Q31 19.5 34 20.5" stroke={colors.hair} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
+          <path d="M36 20.5 Q39 19.5 43 20.5" stroke={colors.hair} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
           
-          {/* Nose - cute small button nose */}
-          <circle cx="26" cy="25.5" r="0.6" fill="#E8B4A0" opacity="0.7" />
+          {/* Nose - subtle, delicate */}
+          <path d="M35 25 L35.5 27" stroke={colors.skinShadow} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
           
-          {/* Mouth - sweet cheerful smile */}
+          {/* Lips - soft, natural smile */}
           <path 
             d={isHovering 
-              ? "M22 29 Q26 33 30 29" 
-              : "M23 29 Q26 31.5 29 29"
+              ? "M32 30 Q35 32 38 30" 
+              : "M32.5 30 Q35 31 37.5 30"
             } 
-            stroke="#E85A6B" 
-            strokeWidth="1.3" 
+            stroke={colors.lips} 
+            strokeWidth="1.2" 
             fill="none" 
             strokeLinecap="round" 
           />
-          {/* Inner mouth highlight for happy expression when hovering */}
-          {isHovering && (
-            <>
-              <path d="M23.5 29.5 Q26 32 28.5 29.5" fill="#D4545F" />
-              <ellipse cx="26" cy="30.5" rx="2" ry="1" fill="#FFFFFF" opacity="0.4" />
-            </>
-          )}
+          {/* Upper lip definition */}
+          <path d="M33 29.8 Q35 29 37 29.8" stroke={colors.lips} strokeWidth="0.4" fill="none" opacity="0.5" />
 
-          {/* Hair front bangs - wavy framing face (3/4 view) */}
+          {/* Hair bangs - soft, framing face */}
           <path
-            d={`M14 16 Q18 6 28 8 Q38 6 42 14`}
-            fill="url(#shizukaHair)"
+            d="M22 15 Q28 8 35 10 Q42 8 48 15"
+            fill="url(#fairyHair)"
           />
-          {/* Left side bangs - longer, wavy */}
-          <path
-            d={`M14 16 Q10 ${20 + hairSwing * 0.8} 12 ${28 + hairSwing * 0.6} Q14 ${34 + hairSwing * 0.4} 16 ${38 + hairSwing * 0.3}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M16 18 Q13 ${22 + hairSwing * 0.6} 14 ${30 + hairSwing * 0.5} Q16 ${36 + hairSwing * 0.3} 18 ${40 + hairSwing * 0.2}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M18 17 Q16 ${24 + hairSwing * 0.5} 17 ${32 + hairSwing * 0.4}`}
-            fill="url(#shizukaHair)"
-          />
-          {/* Center bangs */}
-          <path
-            d="M20 14 Q22 10 26 12 Q24 16 22 20"
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d="M24 13 Q27 9 30 11 Q28 15 26 18"
-            fill="url(#shizukaHair)"
-          />
-          {/* Right side bangs - shorter */}
-          <path
-            d="M32 12 Q36 10 40 14 Q38 18 36 20"
-            fill="url(#shizukaHair)"
-          />
-          
-          {/* Hair strand highlights */}
-          <path
-            d={`M15 20 Q12 ${26 + hairSwing * 0.5} 14 ${34 + hairSwing * 0.3}`}
-            stroke={colors.hairHighlight}
-            strokeWidth="1"
-            fill="none"
-            opacity="0.4"
-          />
+          {/* Side bangs */}
+          <path d="M22 15 Q20 20 22 26" fill="url(#fairyHair)" />
+          <path d="M25 14 Q23 18 24 24" fill="url(#fairyHair)" />
+          <path d="M48 15 Q50 20 48 26" fill="url(#fairyHair)" />
+          <path d="M45 14 Q47 18 46 24" fill="url(#fairyHair)" />
+          {/* Center parted bangs */}
+          <path d="M30 12 Q33 10 35 11 Q37 10 40 12 Q38 16 35 15 Q32 16 30 12" fill="url(#fairyHair)" />
 
           {/* Neck */}
-          <path
-            d="M24 34 L24 38 Q28 39 32 38 L32 34"
-            fill="url(#shizukaSkin)"
-          />
+          <path d="M32 34 L32 38 Q35 39 38 38 L38 34" fill="url(#fairySkin)" />
 
-          {/* Angel Dress body - flowing layered dress like reference */}
+          {/* Dress - flowing, elegant */}
           {/* Main dress body */}
           <path
-            d={`M20 38 Q28 36 36 38 L${42 + dressSwing * 0.5} 52 Q28 54 ${18 - dressSwing * 0.5} 52 Z`}
-            fill="url(#shizukaDress)"
+            d={`M28 38 Q35 36 42 38 L${48 + dressFlow * 0.4} 55 Q35 58 ${22 - dressFlow * 0.4} 55 Z`}
+            fill="url(#fairyDress)"
           />
           
-          {/* First ruffle layer */}
+          {/* Dress ruffles/layers */}
           <path
-            d={`M${16 - dressSwing} 52 Q22 56 28 54 Q34 56 ${44 + dressSwing} 52 
-               Q${46 + dressSwing * 1.2} 60 ${42 + dressSwing} 62 
-               Q28 66 ${18 - dressSwing} 62 
-               Q${14 - dressSwing * 1.2} 60 ${16 - dressSwing} 52 Z`}
-            fill="url(#shizukaDress)"
+            d={`M${20 - dressFlow * 0.6} 55 Q28 58 35 56 Q42 58 ${50 + dressFlow * 0.6} 55 
+               Q${54 + dressFlow * 0.8} 65 ${48 + dressFlow * 0.5} 70 
+               Q35 74 ${22 - dressFlow * 0.5} 70 
+               Q${16 - dressFlow * 0.8} 65 ${20 - dressFlow * 0.6} 55 Z`}
+            fill="url(#fairyDress)"
           />
           
-          {/* Second ruffle layer */}
+          {/* Bottom ruffle */}
           <path
-            d={`M${14 - dressSwing * 1.2} 62 Q22 66 28 64 Q34 66 ${46 + dressSwing * 1.2} 62 
-               Q${50 + dressSwing * 1.5} 70 ${44 + dressSwing * 1.2} 74 
-               Q28 78 ${16 - dressSwing * 1.2} 74 
-               Q${10 - dressSwing * 1.5} 70 ${14 - dressSwing * 1.2} 62 Z`}
-            fill="url(#shizukaDress)"
+            d={`M${18 - dressFlow * 0.8} 70 Q28 74 35 72 Q42 74 ${52 + dressFlow * 0.8} 70 
+               Q${56 + dressFlow} 78 ${50 + dressFlow * 0.6} 82 
+               Q35 86 ${20 - dressFlow * 0.6} 82 
+               Q${14 - dressFlow} 78 ${18 - dressFlow * 0.8} 70 Z`}
+            fill="url(#fairyDress)"
           />
           
-          {/* Dress collar/neckline trim */}
+          {/* Dress details - fold lines */}
+          <path d={`M28 45 Q30 55 28 65`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.4" />
+          <path d={`M35 42 Q35 58 35 75`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.35" />
+          <path d={`M42 45 Q40 55 42 65`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.4" />
+          
+          {/* Dress neckline decoration */}
+          <path d="M30 38 Q35 40 40 38" stroke={colors.dressAccent} strokeWidth="1" fill="none" opacity="0.7" />
+          
+          {/* Ribbon belt */}
+          <ellipse cx="35" cy="45" rx="8" ry="2" fill={colors.ribbon} opacity="0.8" />
+          <circle cx="35" cy="45" r="2" fill={colors.dressLight} opacity="0.9" />
+
+          {/* Arms - graceful pose */}
+          {/* Left arm - down, slightly out */}
           <path
-            d="M22 38 Q28 41 34 38"
-            stroke={colors.dressAccent}
-            strokeWidth="1.5"
+            d="M28 40 Q20 50 16 58"
+            stroke="url(#fairySkin)"
+            strokeWidth="4"
             fill="none"
             strokeLinecap="round"
           />
+          {/* Left hand */}
+          <ellipse cx="15" cy="59" rx="2.5" ry="2" fill="url(#fairySkin)" />
           
-          {/* Dress fold details on ruffles */}
+          {/* Right arm - holding wand up */}
           <path
-            d={`M20 54 Q22 58 20 62`}
-            stroke={colors.dressAccent}
-            strokeWidth="0.4"
+            d="M42 40 Q50 35 55 28"
+            stroke="url(#fairySkin)"
+            strokeWidth="4"
             fill="none"
-            opacity="0.3"
+            strokeLinecap="round"
           />
-          <path
-            d={`M28 52 Q28 58 28 64`}
-            stroke={colors.dressAccent}
-            strokeWidth="0.4"
-            fill="none"
-            opacity="0.25"
-          />
-          <path
-            d={`M36 54 Q34 58 36 62`}
-            stroke={colors.dressAccent}
-            strokeWidth="0.4"
-            fill="none"
-            opacity="0.3"
-          />
+          {/* Right hand */}
+          <ellipse cx="56" cy="27" rx="2.5" ry="2" fill="url(#fairySkin)" transform="rotate(30, 56, 27)" />
           
-          {/* Ruffle edge highlights */}
-          <path
-            d={`M${16 - dressSwing} 52 Q22 55 28 53 Q34 55 ${44 + dressSwing} 52`}
-            stroke={colors.dressAccent}
-            strokeWidth="0.8"
-            fill="none"
-            opacity="0.4"
-          />
-          <path
-            d={`M${14 - dressSwing * 1.2} 62 Q22 65 28 63 Q34 65 ${46 + dressSwing * 1.2} 62`}
-            stroke={colors.dressAccent}
-            strokeWidth="0.8"
-            fill="none"
-            opacity="0.4"
-          />
-
-          {/* Arms - dancing pose like reference */}
-          {/* Left arm - extended outward and down gracefully */}
-          <g transform={`rotate(${armSwing * 0.5}, 20, 40)`}>
+          {/* Magic Wand */}
+          <g filter="url(#sparkleGlow)">
+            <line x1="56" y1="26" x2="62" y2="14" stroke={colors.wand} strokeWidth="1.5" strokeLinecap="round" />
+            {/* Wand star */}
             <path
-              d={`M20 40 Q8 48 2 56`}
-              stroke="url(#shizukaSkin)"
-              strokeWidth="4.5"
-              fill="none"
-              strokeLinecap="round"
+              d="M62 10 L63 13 L66 14 L63 15 L62 18 L61 15 L58 14 L61 13 Z"
+              fill={colors.wand}
+              opacity={wandSparkle}
             />
-            {/* Left hand - open palm */}
-            <ellipse cx="1" cy="57" rx="3" ry="2.5" fill="url(#shizukaSkin)" transform="rotate(-30, 1, 57)" />
-            {/* Fingers hint */}
-            <path d="M-1 56 L-3 54" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
-            <path d="M0 55 L-1 52.5" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
-            <path d="M2 55 L2 52.5" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
-          </g>
-          
-          {/* Right arm - raised up gracefully */}
-          <g transform={`rotate(${-armSwing * 0.5}, 36, 40)`}>
-            <path
-              d={`M36 40 Q48 36 54 28`}
-              stroke="url(#shizukaSkin)"
-              strokeWidth="4.5"
-              fill="none"
-              strokeLinecap="round"
-            />
-            {/* Right hand - open palm facing up */}
-            <ellipse cx="55" cy="27" rx="3" ry="2.5" fill="url(#shizukaSkin)" transform="rotate(40, 55, 27)" />
-            {/* Fingers hint */}
-            <path d="M56 25 L58 23" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
-            <path d="M57 26 L60 25" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
-            <path d="M57 28 L60 28" stroke="url(#shizukaSkin)" strokeWidth="1" strokeLinecap="round" />
+            {/* Sparkles around wand */}
+            <circle cx="60" cy="12" r="1" fill={colors.sparkle} opacity={wandSparkle * 0.8} />
+            <circle cx="64" cy="16" r="0.8" fill={colors.sparkle} opacity={wandSparkle * 0.6} />
+            <circle cx="58" cy="16" r="0.6" fill={colors.sparkle} opacity={wandSparkle * 0.7} />
           </g>
 
-          {/* Legs - dancing pose, one leg slightly lifted */}
-          {/* Left leg - straight down with pointed toe */}
-          <path 
-            d="M24 70 L22 80 L20 84" 
-            stroke="url(#shizukaSkin)" 
-            strokeWidth="4" 
-            fill="none" 
-            strokeLinecap="round" 
-          />
+          {/* Feet/Shoes - dainty */}
+          <ellipse cx="30" cy="86" rx="4" ry="2" fill={colors.ribbon} opacity="0.85" />
+          <ellipse cx="40" cy="86" rx="4" ry="2" fill={colors.ribbon} opacity="0.85" />
           
-          {/* Right leg - lifted/bent gracefully */}
-          <path 
-            d={`M32 70 Q38 74 40 ${78 + dressSwing * 0.2}`} 
-            stroke="url(#shizukaSkin)" 
-            strokeWidth="4" 
-            fill="none" 
-            strokeLinecap="round" 
-          />
-          
-          {/* Ballet shoes - pointed toe style */}
-          <ellipse cx="19" cy="85" rx="3.5" ry="1.8" fill={colors.ribbon} transform="rotate(-15, 19, 85)" />
-          <path d="M17 84 Q19 86 21 84" stroke={colors.dressAccent} strokeWidth="0.5" fill="none" opacity="0.6" />
-          
-          <ellipse cx={41 + dressSwing * 0.2} cy={79 + dressSwing * 0.2} rx="3" ry="1.5" fill={colors.ribbon} transform={`rotate(25, ${41 + dressSwing * 0.2}, ${79 + dressSwing * 0.2})`} />
+          {/* Shoe bows */}
+          <circle cx="30" cy="85" r="1" fill={colors.dressLight} opacity="0.8" />
+          <circle cx="40" cy="85" r="1" fill={colors.dressLight} opacity="0.8" />
         </svg>
       </div>
     </>

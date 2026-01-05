@@ -5,10 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
+import { useReferral } from '@/hooks/useReferral';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const LuatAnhSang = () => {
   const { user } = useAuth();
+  const { processReferral, decodeReferralCode } = useReferral(user?.id);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [agreed, setAgreed] = useState(false);
@@ -21,16 +24,46 @@ const LuatAnhSang = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [pendingReferralCode, setPendingReferralCode] = useState<string | null>(null);
+
+  // Get referral code from URL
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setPendingReferralCode(refCode);
+      // Store in sessionStorage for after auth
+      sessionStorage.setItem('pending_referral', refCode);
+    }
+  }, [searchParams]);
 
   // Auto-open agreement modal when redirected from other pages with action=register
   useEffect(() => {
     const action = searchParams.get('action');
-    if (action === 'register' && !user) {
+    const refCode = searchParams.get('ref');
+    if ((action === 'register' || refCode) && !user) {
       setShowGuestAgreement(true);
-      // Clear the query param after showing modal
-      setSearchParams({});
+      // Clear action param but keep ref if present
+      if (action) {
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('action');
+        setSearchParams(newParams);
+      }
     }
   }, [searchParams, user, setSearchParams]);
+
+  // Process referral after user signs up
+  useEffect(() => {
+    if (user) {
+      const storedRef = sessionStorage.getItem('pending_referral');
+      if (storedRef) {
+        const referrerId = decodeReferralCode(storedRef);
+        if (referrerId && referrerId !== user.id) {
+          processReferral(user.id, storedRef);
+          sessionStorage.removeItem('pending_referral');
+        }
+      }
+    }
+  }, [user, processReferral, decodeReferralCode]);
 
   useEffect(() => {
     if (user) {
@@ -62,10 +95,17 @@ const LuatAnhSang = () => {
     setLoading(true);
     setError('');
     try {
+      // Preserve referral code in redirect URL
+      const refCode = pendingReferralCode || sessionStorage.getItem('pending_referral');
+      let redirectUrl = `${window.location.origin}/luat-anh-sang`;
+      if (refCode) {
+        redirectUrl += `?ref=${refCode}`;
+      }
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/luat-anh-sang`,
+          redirectTo: redirectUrl,
         },
       });
       if (error) throw error;

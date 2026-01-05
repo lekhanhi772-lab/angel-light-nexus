@@ -205,13 +205,48 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           created_at: string
           display_name: string | null
           email: string | null
+          has_light_spreader_badge: boolean | null
           id: string
+          last_referral_reset: string | null
+          monthly_referral_count: number | null
+          referral_count: number | null
+          referred_by: string | null
           updated_at: string
           user_id: string
           wallet_address: string | null
@@ -221,7 +256,12 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          has_light_spreader_badge?: boolean | null
           id?: string
+          last_referral_reset?: string | null
+          monthly_referral_count?: number | null
+          referral_count?: number | null
+          referred_by?: string | null
           updated_at?: string
           user_id: string
           wallet_address?: string | null
@@ -231,10 +271,39 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          has_light_spreader_badge?: boolean | null
           id?: string
+          last_referral_reset?: string | null
+          monthly_referral_count?: number | null
+          referral_count?: number | null
+          referred_by?: string | null
           updated_at?: string
           user_id?: string
           wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          referred_id: string
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referred_id: string
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referred_id?: string
+          referrer_id?: string
+          status?: string
         }
         Relationships: []
       }
@@ -272,6 +341,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      process_referral: {
+        Args: { p_referred_id: string; p_referrer_id: string }
+        Returns: undefined
+      }
       search_documents: {
         Args: { match_count?: number; search_query: string }
         Returns: {

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 
 // 4 color variants
 const ANGEL_VARIANTS = {
@@ -66,8 +67,8 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
     return () => clearInterval(interval);
   }, [trails.length]);
 
-  // Handle mouse move
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  // Handle pointer move (mouse + touch/pen)
+  const handlePointerMove = useCallback((e: PointerEvent) => {
     const now = Date.now();
     setPosition({ x: e.clientX, y: e.clientY });
     setIsMoving(true);
@@ -77,7 +78,7 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
     // Reset idle timeout
     if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
     if (idleAnimationRef.current) clearTimeout(idleAnimationRef.current);
-    
+
     idleTimeoutRef.current = setTimeout(() => {
       setIsMoving(false);
       setIsIdle(true);
@@ -94,6 +95,12 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
       setTrails((prev) => [...prev.slice(-12), newTrail]);
     }
   }, []);
+
+  // Mouse fallback (some environments may not emit pointer events)
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    // Reuse the same logic
+    handlePointerMove(e as unknown as PointerEvent);
+  }, [handlePointerMove]);
 
   // Check if hovering over interactive elements
   const handleMouseOver = useCallback((e: MouseEvent) => {
@@ -129,24 +136,27 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
     // Hide default cursor globally using CSS class
     document.documentElement.classList.add('angel-cursor-active');
     document.body.classList.add('angel-cursor-active');
-    
-    document.addEventListener('mousemove', handleMouseMove);
+
+    // Track pointer globally (more reliable across routes/modals)
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseover', handleMouseOver);
 
     return () => {
       document.documentElement.classList.remove('angel-cursor-active');
       document.body.classList.remove('angel-cursor-active');
+      window.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseover', handleMouseOver);
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
       if (idleAnimationRef.current) clearInterval(idleAnimationRef.current);
     };
-  }, [handleMouseMove, handleMouseOver]);
+  }, [handlePointerMove, handleMouseMove, handleMouseOver]);
 
   const currentPos = isIdle ? idlePosition : position;
   const wingOffset = Math.sin(wingPhase * 0.15) * (isHovering ? 8 : 5);
 
-  return (
+  const ui = (
     <>
       {/* Star trails */}
       {trails.map((trail) => (
@@ -308,6 +318,9 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
       </div>
     </>
   );
+
+  // Render into document.body to avoid z-index/stacking-context issues across layouts
+  return createPortal(ui, document.body);
 };
 
 export const ANGEL_VARIANTS_LIST = ANGEL_VARIANTS;

@@ -318,7 +318,7 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
 
           {/* Halo */}
           <ellipse 
-            cx="30" cy="6" rx="10" ry="3" 
+            cx="32" cy="4" rx="10" ry="3" 
             fill="none" 
             stroke="url(#haloGrad)" 
             strokeWidth="2"
@@ -326,169 +326,200 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             filter="url(#softGlow)"
           />
 
-          {/* Angel Wings - Left */}
-          <g transform={`rotate(${-wingFlap}, 22, 38)`} filter="url(#softGlow)">
+          {/* Angel Wings - Left (behind body) */}
+          <g transform={`rotate(${-wingFlap}, 20, 40)`} filter="url(#softGlow)">
             <path
-              d="M22 38 Q5 28 2 38 Q5 52 12 55 Q18 52 22 45 Z"
+              d="M20 40 Q2 28 0 40 Q3 55 12 58 Q18 54 20 46 Z"
               fill="url(#wingGrad)"
               opacity="0.9"
             />
-            <path d="M20 40 Q12 35 6 40" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
-            <path d="M20 44 Q14 42 9 48" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M18 42 Q10 36 4 42" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M18 46 Q12 44 6 50" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
           </g>
           
           {/* Angel Wings - Right */}
-          <g transform={`rotate(${wingFlap}, 38, 38)`} filter="url(#softGlow)">
+          <g transform={`rotate(${wingFlap}, 42, 40)`} filter="url(#softGlow)">
             <path
-              d="M38 38 Q55 28 58 38 Q55 52 48 55 Q42 52 38 45 Z"
+              d="M42 40 Q60 28 62 40 Q59 55 50 58 Q44 54 42 46 Z"
               fill="url(#wingGrad)"
               opacity="0.9"
             />
-            <path d="M40 40 Q48 35 54 40" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
-            <path d="M40 44 Q46 42 51 48" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M44 42 Q52 36 58 42" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
+            <path d="M44 46 Q50 44 56 50" stroke={colors.wingsGlow} strokeWidth="0.5" fill="none" opacity="0.5" />
           </g>
 
-          {/* Hair back (behind head) - voluminous but gathered */}
+          {/* Hair back (behind head) - voluminous, shifted for 3/4 view */}
           <ellipse
-            cx="30"
-            cy="20"
-            rx="18"
-            ry="16"
+            cx="32"
+            cy="18"
+            rx="17"
+            ry="15"
             fill="url(#shizukaHair)"
           />
           
-          {/* Ponytail tie (ribbon/band) */}
-          <ellipse 
-            cx="30" 
-            cy="36" 
-            rx="4" 
-            ry="2" 
-            fill={colors.ribbon}
+          {/* High ponytail - wavy flowing hair on right side */}
+          <path
+            d={`M42 14 Q52 ${16 + hairSwing} 50 ${28 + hairSwing * 1.5} Q48 ${40 + hairSwing * 1.2} 44 ${52 + hairSwing}`}
+            fill="url(#shizukaHair)"
+            strokeWidth="8"
+          />
+          <path
+            d={`M44 15 Q54 ${18 + hairSwing * 0.8} 52 ${30 + hairSwing * 1.3} Q50 ${42 + hairSwing} 46 ${54 + hairSwing * 0.8}`}
+            fill="url(#shizukaHair)"
+            strokeWidth="6"
+          />
+          <path
+            d={`M46 16 Q55 ${20 + hairSwing * 0.6} 53 ${32 + hairSwing} Q51 ${44 + hairSwing * 0.8} 48 ${55 + hairSwing * 0.6}`}
+            fill="url(#shizukaHair)"
+            strokeWidth="5"
+          />
+          {/* Extra wavy strand */}
+          <path
+            d={`M40 14 Q48 ${20 - hairSwing * 0.5} 47 ${35 + hairSwing * 1.2} Q45 ${48 + hairSwing} 42 ${56 + hairSwing * 0.7}`}
+            fill="url(#shizukaHair)"
+            strokeWidth="4"
           />
           
-          {/* Ponytail - gathered hair flowing down the back */}
+          {/* Hair highlight on ponytail */}
           <path
-            d={`M26 36 Q24 ${45 + hairSwing * 1.5} 22 ${55 + hairSwing}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M28 36 Q27 ${46 + hairSwing * 1.2} 25 ${58 + hairSwing * 0.8}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M30 36 Q30 ${48 + hairSwing} 30 ${60 + hairSwing * 0.6}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M32 36 Q33 ${46 + hairSwing * 1.2} 35 ${58 + hairSwing * 0.8}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M34 36 Q36 ${45 + hairSwing * 1.5} 38 ${55 + hairSwing}`}
-            fill="url(#shizukaHair)"
-          />
-          
-          {/* Hair strands framing face - left side */}
-          <path
-            d={`M14 22 Q12 ${28 + hairSwing * 0.8} 14 ${34 + hairSwing * 0.5}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M16 24 Q14 ${30 + hairSwing * 0.6} 16 ${35 + hairSwing * 0.4}`}
-            fill="url(#shizukaHair)"
-          />
-          
-          {/* Hair strands framing face - right side */}
-          <path
-            d={`M46 22 Q48 ${28 - hairSwing * 0.8} 46 ${34 - hairSwing * 0.5}`}
-            fill="url(#shizukaHair)"
-          />
-          <path
-            d={`M44 24 Q46 ${30 - hairSwing * 0.6} 44 ${35 - hairSwing * 0.4}`}
-            fill="url(#shizukaHair)"
-          />
-          
-          {/* Ponytail highlight */}
-          <path
-            d={`M30 38 Q30 ${50 + hairSwing * 0.8} 30 ${58 + hairSwing * 0.5}`}
+            d={`M45 18 Q52 ${25 + hairSwing * 0.8} 50 ${40 + hairSwing * 0.5}`}
             stroke={colors.hairHighlight}
             strokeWidth="1.5"
             fill="none"
-            opacity="0.4"
+            opacity="0.5"
           />
+          
+          {/* Pink bow on ponytail */}
+          <g transform={`translate(42, ${12 + ribbonBounce})`}>
+            {/* Left bow loop */}
+            <path
+              d="M0 0 Q-6 -6 -3 0 Q-6 6 0 0"
+              fill={colors.ribbon}
+            />
+            {/* Right bow loop */}
+            <path
+              d="M0 0 Q6 -6 3 0 Q6 6 0 0"
+              fill={colors.ribbon}
+            />
+            {/* Bow center */}
+            <circle cx="0" cy="0" r="2" fill={colors.dressLight} />
+            {/* Ribbon tails */}
+            <path
+              d={`M-1 2 Q-3 ${6 + ribbonBounce * 0.5} -2 ${10 + ribbonBounce}`}
+              stroke={colors.ribbon}
+              strokeWidth="2"
+              fill="none"
+            />
+            <path
+              d={`M1 2 Q3 ${6 + ribbonBounce * 0.5} 2 ${10 + ribbonBounce}`}
+              stroke={colors.ribbon}
+              strokeWidth="2"
+              fill="none"
+            />
+          </g>
 
-          {/* Face */}
+          {/* Face - 3/4 view (slightly rotated oval) */}
           <ellipse
             cx="30"
-            cy="25"
-            rx="14"
-            ry="13"
+            cy="24"
+            rx="13"
+            ry="12"
             fill="url(#shizukaSkin)"
+            transform="rotate(-8, 30, 24)"
           />
           
-          {/* Cheeks (blush) */}
+          {/* Left cheek (more visible in 3/4 view) */}
           <ellipse cx="20" cy="28" rx="4" ry="2.5" fill={colors.cheek} opacity="0.6" />
-          <ellipse cx="40" cy="28" rx="4" ry="2.5" fill={colors.cheek} opacity="0.6" />
+          {/* Right cheek (less visible) */}
+          <ellipse cx="38" cy="27" rx="2.5" ry="2" fill={colors.cheek} opacity="0.4" />
           
-          {/* Eyes - smaller but sparkly */}
+          {/* Eyes - 3/4 view positioning */}
           {isBlinking ? (
             <>
-              {/* Closed eyes - happy expression */}
-              <path d="M23 24 Q25 22.5 27 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
-              <path d="M33 24 Q35 22.5 37 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
+              {/* Closed eyes - happy curved expression */}
+              <path d="M20 23 Q23 21 26 23" stroke={colors.eyes} strokeWidth="1.2" fill="none" strokeLinecap="round" />
+              <path d="M32 22 Q34 20.5 36 22" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
             </>
           ) : (
             <>
-              {/* Left eye - smaller */}
-              <ellipse cx="25" cy="24" rx="2.5" ry="3" fill="#FFFFFF" />
-              <ellipse cx="25.2" cy="24" rx="2" ry="2.5" fill="url(#eyeGrad)" />
-              <circle cx="24.3" cy="23" r="1" fill={colors.eyeshine} />
-              <circle cx="25.8" cy="24.2" r="0.5" fill={colors.eyeshine} opacity="0.8" />
-              <circle cx="24.8" cy="25" r="0.3" fill={colors.eyeshine} opacity="0.5" />
+              {/* Left eye - larger (closer to viewer) */}
+              <ellipse cx="23" cy="23" rx="3" ry="3.5" fill="#FFFFFF" />
+              <ellipse cx="23.5" cy="23" rx="2.2" ry="2.8" fill="url(#eyeGrad)" />
+              <circle cx="22.3" cy="22" r="1.2" fill={colors.eyeshine} />
+              <circle cx="24.2" cy="23.5" r="0.5" fill={colors.eyeshine} opacity="0.8" />
               
-              {/* Right eye - smaller */}
-              <ellipse cx="35" cy="24" rx="2.5" ry="3" fill="#FFFFFF" />
-              <ellipse cx="35.2" cy="24" rx="2" ry="2.5" fill="url(#eyeGrad)" />
-              <circle cx="34.3" cy="23" r="1" fill={colors.eyeshine} />
-              <circle cx="35.8" cy="24.2" r="0.5" fill={colors.eyeshine} opacity="0.8" />
-              <circle cx="34.8" cy="25" r="0.3" fill={colors.eyeshine} opacity="0.5" />
+              {/* Right eye - smaller (further from viewer) */}
+              <ellipse cx="34" cy="22.5" rx="2" ry="2.5" fill="#FFFFFF" />
+              <ellipse cx="34.3" cy="22.5" rx="1.5" ry="2" fill="url(#eyeGrad)" />
+              <circle cx="33.5" cy="21.8" r="0.8" fill={colors.eyeshine} />
             </>
           )}
           
-          {/* Eyebrows */}
-          <path d="M20 19 Q24 18 28 19" stroke={colors.hair} strokeWidth="1" fill="none" strokeLinecap="round" />
-          <path d="M32 19 Q36 18 40 19" stroke={colors.hair} strokeWidth="1" fill="none" strokeLinecap="round" />
+          {/* Eyebrows - angled for 3/4 view */}
+          <path d="M18 19 Q22 17.5 26 19" stroke={colors.hair} strokeWidth="0.8" fill="none" strokeLinecap="round" />
+          <path d="M31 18.5 Q34 17.5 37 18.5" stroke={colors.hair} strokeWidth="0.6" fill="none" strokeLinecap="round" />
           
-          {/* Nose (simple dot) */}
-          <circle cx="30" cy="27" r="0.8" fill="#E8B4A0" />
+          {/* Nose - side profile hint */}
+          <path d="M28 25 Q29 26.5 28 28" stroke="#E8B4A0" strokeWidth="1" fill="none" strokeLinecap="round" />
           
-          {/* Mouth - cute smile */}
-          <path 
-            d={isHovering ? "M26 31 Q30 35 34 31" : "M27 31 Q30 33 33 31"} 
-            stroke="#D4736C" 
-            strokeWidth="1.2" 
-            fill="none" 
-            strokeLinecap="round" 
+          {/* Mouth - cute open smile like reference */}
+          <ellipse 
+            cx="25" 
+            cy="31" 
+            rx={isHovering ? 3.5 : 2.5} 
+            ry={isHovering ? 2.5 : 1.8} 
+            fill="#D4736C"
+          />
+          <ellipse 
+            cx="25" 
+            cy={isHovering ? 30 : 30.5} 
+            rx={isHovering ? 2.5 : 1.8} 
+            ry={isHovering ? 1.5 : 1} 
+            fill="#FFFFFF"
+            opacity="0.9"
           />
 
-          {/* Hair front bangs - Shizuka style */}
+          {/* Hair front bangs - wavy framing face (3/4 view) */}
           <path
-            d="M16 16 Q20 8 30 10 Q40 8 44 16 L42 22 Q38 15 30 16 Q22 15 18 22 Z"
+            d={`M14 16 Q18 6 28 8 Q38 6 42 14`}
+            fill="url(#shizukaHair)"
+          />
+          {/* Left side bangs - longer, wavy */}
+          <path
+            d={`M14 16 Q10 ${20 + hairSwing * 0.8} 12 ${28 + hairSwing * 0.6} Q14 ${34 + hairSwing * 0.4} 16 ${38 + hairSwing * 0.3}`}
+            fill="url(#shizukaHair)"
+          />
+          <path
+            d={`M16 18 Q13 ${22 + hairSwing * 0.6} 14 ${30 + hairSwing * 0.5} Q16 ${36 + hairSwing * 0.3} 18 ${40 + hairSwing * 0.2}`}
+            fill="url(#shizukaHair)"
+          />
+          <path
+            d={`M18 17 Q16 ${24 + hairSwing * 0.5} 17 ${32 + hairSwing * 0.4}`}
+            fill="url(#shizukaHair)"
+          />
+          {/* Center bangs */}
+          <path
+            d="M20 14 Q22 10 26 12 Q24 16 22 20"
+            fill="url(#shizukaHair)"
+          />
+          <path
+            d="M24 13 Q27 9 30 11 Q28 15 26 18"
+            fill="url(#shizukaHair)"
+          />
+          {/* Right side bangs - shorter */}
+          <path
+            d="M32 12 Q36 10 40 14 Q38 18 36 20"
             fill="url(#shizukaHair)"
           />
           
-          {/* Hair ribbon/bow on side */}
-          <g transform={`translate(42, ${14 + ribbonBounce})`}>
-            <path
-              d="M0 0 Q6 -4 4 0 Q6 4 0 0"
-              fill="url(#ribbonGrad)"
-            />
-            <path
-              d="M0 0 Q-3 -2 -1 0 Q-3 2 0 0"
-              fill="url(#ribbonGrad)"
-            />
-            <circle cx="0" cy="0" r="1.5" fill={colors.dressLight} />
-          </g>
+          {/* Hair strand highlights */}
+          <path
+            d={`M15 20 Q12 ${26 + hairSwing * 0.5} 14 ${34 + hairSwing * 0.3}`}
+            stroke={colors.hairHighlight}
+            strokeWidth="1"
+            fill="none"
+            opacity="0.4"
+          />
 
           {/* Neck */}
           <path

@@ -7,10 +7,10 @@ interface AngelCursorSettingsProps {
 }
 
 const VARIANT_COLORS: Record<VariantKey, { bg: string; border: string }> = {
-  default: { bg: 'linear-gradient(135deg, #FF69B4 50%, #1a1a2e 50%)', border: '#FF69B4' },
-  pink: { bg: 'linear-gradient(135deg, #FF85C0 50%, #4a3728 50%)', border: '#FF85C0' },
-  golden: { bg: 'linear-gradient(135deg, #FFD700 50%, #1a1a2e 50%)', border: '#FFD700' },
-  mint: { bg: 'linear-gradient(135deg, #87CEEB 50%, #1a1a2e 50%)', border: '#87CEEB' },
+  default: { bg: 'linear-gradient(135deg, #FFFFFF 50%, #FFD700 50%)', border: '#FFD700' },
+  pink: { bg: 'linear-gradient(135deg, #FFF0F5 50%, #FF69B4 50%)', border: '#FF69B4' },
+  golden: { bg: 'linear-gradient(135deg, #FFFAF0 50%, #FFA500 50%)', border: '#FFA500' },
+  mint: { bg: 'linear-gradient(135deg, #F0FFFF 50%, #40E0D0 50%)', border: '#40E0D0' },
 };
 
 export const AngelCursorSettings = ({ currentVariant, onVariantChange }: AngelCursorSettingsProps) => {
@@ -90,36 +90,55 @@ export const AngelCursorSettings = ({ currentVariant, onVariantChange }: AngelCu
   );
 };
 
-// Mini Shizuka preview
+// Mini Angel preview with wings
 const MiniAngelPreview = ({ variant }: { variant: VariantKey }) => {
   const colors = ANGEL_VARIANTS[variant];
   
   return (
-    <svg width="32" height="38" viewBox="0 0 40 48" className="animate-bounce">
+    <svg width="40" height="48" viewBox="0 0 50 55" className="animate-bounce">
+      {/* Halo */}
+      <ellipse cx="25" cy="4" rx="8" ry="2.5" fill="none" stroke={colors.halo} strokeWidth="1.5" opacity="0.8" />
+      
+      {/* Wings - Left */}
+      <path d="M18 24 Q5 18 4 26 Q6 35 12 37 Q16 34 18 28 Z" fill={colors.wings} opacity="0.85" />
+      {/* Wings - Right */}
+      <path d="M32 24 Q45 18 46 26 Q44 35 38 37 Q34 34 32 28 Z" fill={colors.wings} opacity="0.85" />
+      
       {/* Hair back */}
-      <ellipse cx="20" cy="10" rx="10" ry="9" fill={colors.hair} />
+      <ellipse cx="25" cy="14" rx="12" ry="10" fill={colors.hair} />
+      {/* Flowing hair left */}
+      <path d="M13 14 Q8 22 10 32 Q12 38 15 40" fill={colors.hair} />
+      {/* Flowing hair right */}
+      <path d="M37 14 Q42 22 40 32 Q38 38 35 40" fill={colors.hair} />
+      
       {/* Face */}
-      <ellipse cx="20" cy="12" rx="8" ry="7" fill={colors.skin} />
+      <ellipse cx="25" cy="16" rx="9" ry="8" fill={colors.skin} />
       {/* Hair bangs */}
-      <path d="M10 10 Q14 4 20 6 Q26 4 30 10 L28 14 Q24 8 20 10 Q16 8 12 14 Z" fill={colors.hair} />
+      <path d="M13 12 Q17 5 25 7 Q33 5 37 12 L35 17 Q30 10 25 12 Q20 10 15 17 Z" fill={colors.hair} />
+      
       {/* Eyes */}
-      <ellipse cx="16" cy="12" rx="2" ry="2.5" fill="#fff" />
-      <ellipse cx="24" cy="12" rx="2" ry="2.5" fill="#fff" />
-      <circle cx="16" cy="12" r="1.5" fill={colors.eyes} />
-      <circle cx="24" cy="12" r="1.5" fill={colors.eyes} />
-      <circle cx="15.5" cy="11" r="0.6" fill="#fff" />
-      <circle cx="23.5" cy="11" r="0.6" fill="#fff" />
+      <ellipse cx="21" cy="16" rx="1.8" ry="2.2" fill="#fff" />
+      <ellipse cx="29" cy="16" rx="1.8" ry="2.2" fill="#fff" />
+      <circle cx="21" cy="16" r="1.3" fill={colors.eyes} />
+      <circle cx="29" cy="16" r="1.3" fill={colors.eyes} />
+      <circle cx="20.5" cy="15" r="0.5" fill="#fff" />
+      <circle cx="28.5" cy="15" r="0.5" fill="#fff" />
+      
       {/* Cheeks */}
-      <ellipse cx="13" cy="14" rx="2" ry="1" fill={colors.cheek} opacity="0.5" />
-      <ellipse cx="27" cy="14" rx="2" ry="1" fill={colors.cheek} opacity="0.5" />
+      <ellipse cx="17" cy="18" rx="2" ry="1" fill={colors.cheek} opacity="0.5" />
+      <ellipse cx="33" cy="18" rx="2" ry="1" fill={colors.cheek} opacity="0.5" />
+      
       {/* Mouth */}
-      <path d="M18 16 Q20 18 22 16" stroke="#D4736C" strokeWidth="0.8" fill="none" />
+      <path d="M23 20 Q25 22 27 20" stroke="#D4736C" strokeWidth="0.7" fill="none" />
+      
       {/* Ribbon */}
-      <path d="M28 8 Q32 6 30 8 Q32 10 28 8" fill={colors.ribbon} />
-      {/* Dress */}
-      <path d="M14 20 L20 18 L26 20 L29 42 L20 44 L11 42 Z" fill={colors.dress} />
-      {/* Dress collar */}
-      <path d="M16 20 Q20 22 24 20" stroke={colors.dressLight} strokeWidth="1" fill="none" />
+      <path d="M35 10 Q39 8 37 10 Q39 12 35 10" fill={colors.ribbon} />
+      
+      {/* Angel Dress */}
+      <path d="M18 26 L25 24 L32 26 L36 50 L25 52 L14 50 Z" fill={colors.dress} />
+      {/* Dress golden trim */}
+      <path d="M20 26 Q25 28 30 26" stroke={colors.dressAccent} strokeWidth="1" fill="none" />
+      <path d="M14 50 Q25 53 36 50" stroke={colors.dressAccent} strokeWidth="1" fill="none" />
     </svg>
   );
 };

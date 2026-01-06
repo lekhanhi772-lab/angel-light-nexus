@@ -68,7 +68,14 @@
     "start_listening": "듣기 시작",
     "stop_listening": "듣기 중지",
     "start_speaking": "메시지 읽기",
-    "stop_speaking": "읽기 중지"
+    "stop_speaking": "읽기 중지",
+    "settings": "Voice I/O 설정",
+    "selectVoice": "음성 선택",
+    "noVoiceAvailable": "이 언어에 사용 가능한 음성이 없습니다",
+    "tryDifferentBrowser": "더 많은 음성을 위해 Chrome 또는 Edge를 사용해 보세요",
+    "speed": "읽기 속도",
+    "pitch": "피치",
+    "usingWebSpeech": "무료 Web Speech API 사용"
   },
   "language": {
     "select": "언어 선택"

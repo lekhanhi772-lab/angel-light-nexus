@@ -1,5 +1,6 @@
-import { Mic, MicOff, Volume2, VolumeX, Settings2, Loader2 } from 'lucide-react';
+import { Mic, MicOff, Volume2, VolumeX, Settings2, Loader2, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Popover,
   PopoverContent,
@@ -51,16 +52,8 @@ const VoiceControls = ({
   onVoiceChange,
   isLoading,
 }: VoiceControlsProps) => {
+  const { t } = useTranslation();
   const [showSettings, setShowSettings] = useState(false);
-
-  // Filter voices to show Vietnamese first
-  const sortedVoices = [...voices].sort((a, b) => {
-    const aIsVi = a.lang.includes('vi') || a.lang.includes('VI');
-    const bIsVi = b.lang.includes('vi') || b.lang.includes('VI');
-    if (aIsVi && !bIsVi) return -1;
-    if (!aIsVi && bIsVi) return 1;
-    return a.name.localeCompare(b.name);
-  });
 
   return (
     <div className="flex items-center gap-1">
@@ -81,7 +74,7 @@ const VoiceControls = ({
               ? '0 0 20px rgba(239, 68, 68, 0.5)'
               : '0 2px 8px rgba(255, 215, 0, 0.2)',
           }}
-          title={isListening ? 'Dừng ghi âm' : 'Nói để nhập (Tiếng Việt)'}
+          title={isListening ? t('voice.stop_listening') : t('voice.start_listening')}
         >
           {isListening ? (
             <>
@@ -111,7 +104,7 @@ const VoiceControls = ({
             border: '2px solid #8B5CF6',
             boxShadow: '0 0 15px rgba(139, 92, 246, 0.4)',
           }}
-          title="Dừng đọc"
+          title={t('voice.stop_speaking')}
         >
           <VolumeX className="w-5 h-5 text-white" />
         </button>
@@ -127,13 +120,13 @@ const VoiceControls = ({
                 background: 'rgba(255, 215, 0, 0.1)',
                 border: '1px solid rgba(184, 134, 11, 0.2)',
               }}
-              title="Cài đặt giọng nói"
+              title={t('voice.settings')}
             >
               <Settings2 className="w-4 h-4" style={{ color: '#B8860B' }} />
             </button>
           </PopoverTrigger>
           <PopoverContent 
-            className="w-72 p-4"
+            className="w-72 p-4 z-50"
             style={{
               background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 100%)',
               border: '1px solid rgba(184, 134, 11, 0.3)',
@@ -145,34 +138,53 @@ const VoiceControls = ({
                 className="font-medium text-sm"
                 style={{ color: '#B8860B' }}
               >
-                🔊 Cài đặt Voice I/O
+                🔊 {t('voice.settings')}
               </h4>
 
               {/* Voice Selection */}
-              {isTTSSupported && voices.length > 0 && (
+              {isTTSSupported && (
                 <div className="space-y-2">
                   <label className="text-xs font-medium" style={{ color: '#006666' }}>
-                    Giọng đọc
+                    {t('voice.selectVoice')}
                   </label>
-                  <select
-                    value={selectedVoice?.name || ''}
-                    onChange={(e) => {
-                      const voice = voices.find(v => v.name === e.target.value);
-                      onVoiceChange(voice || null);
-                    }}
-                    className="w-full px-3 py-2 rounded-lg text-xs"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.8)',
-                      border: '1px solid rgba(184, 134, 11, 0.2)',
-                      color: '#006666',
-                    }}
-                  >
-                    {sortedVoices.map((voice) => (
-                      <option key={voice.name} value={voice.name}>
-                        {voice.name} ({voice.lang})
-                      </option>
-                    ))}
-                  </select>
+                  
+                  {voices.length > 0 ? (
+                    <select
+                      value={selectedVoice?.name || ''}
+                      onChange={(e) => {
+                        const voice = voices.find(v => v.name === e.target.value);
+                        onVoiceChange(voice || null);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg text-xs"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        border: '1px solid rgba(184, 134, 11, 0.2)',
+                        color: '#006666',
+                      }}
+                    >
+                      {voices.map((voice) => (
+                        <option key={voice.name} value={voice.name}>
+                          {voice.name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div 
+                      className="p-3 rounded-lg text-center"
+                      style={{
+                        background: 'rgba(251, 191, 36, 0.15)',
+                        border: '1px solid rgba(251, 191, 36, 0.3)',
+                      }}
+                    >
+                      <AlertCircle className="w-5 h-5 mx-auto mb-1" style={{ color: '#D97706' }} />
+                      <p className="text-xs" style={{ color: '#92400E' }}>
+                        {t('voice.noVoiceAvailable')}
+                      </p>
+                      <p className="text-[10px] mt-1" style={{ color: '#B45309' }}>
+                        {t('voice.tryDifferentBrowser')}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -180,7 +192,7 @@ const VoiceControls = ({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <label className="text-xs font-medium" style={{ color: '#006666' }}>
-                    Tốc độ đọc
+                    {t('voice.speed')}
                   </label>
                   <span className="text-xs" style={{ color: '#87CEEB' }}>
                     {rate.toFixed(1)}x
@@ -200,7 +212,7 @@ const VoiceControls = ({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <label className="text-xs font-medium" style={{ color: '#006666' }}>
-                    Cao độ
+                    {t('voice.pitch')}
                   </label>
                   <span className="text-xs" style={{ color: '#87CEEB' }}>
                     {pitch.toFixed(1)}
@@ -218,7 +230,7 @@ const VoiceControls = ({
 
               {/* Info */}
               <p className="text-[10px] text-center" style={{ color: '#87CEEB' }}>
-                ✨ Sử dụng Web Speech API miễn phí
+                ✨ {t('voice.usingWebSpeech')}
               </p>
             </div>
           </PopoverContent>

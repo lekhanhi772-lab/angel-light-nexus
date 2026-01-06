@@ -79,8 +79,9 @@ interface UseVoiceIOReturn {
   stopSpeaking: () => void;
   isTTSSupported: boolean;
   
-  // Settings
+  // Settings - voices now returns filtered list by language
   voices: SpeechSynthesisVoice[];
+  allVoices: SpeechSynthesisVoice[];
   selectedVoice: SpeechSynthesisVoice | null;
   setSelectedVoice: (voice: SpeechSynthesisVoice | null) => void;
   rate: number;
@@ -106,7 +107,8 @@ export const useVoiceIO = (options: UseVoiceIOOptions = {}): UseVoiceIOReturn =>
   
   // TTS State
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [allVoices, setAllVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [filteredVoices, setFilteredVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [rate, setRate] = useState(initialRate);
   const [pitch, setPitch] = useState(initialPitch);
@@ -123,18 +125,7 @@ export const useVoiceIO = (options: UseVoiceIOOptions = {}): UseVoiceIOReturn =>
 
     const loadVoices = () => {
       const availableVoices = speechSynthesis.getVoices();
-      setVoices(availableVoices);
-      
-      // Try to select voice matching current language
-      const langPrefix = lang.split('-')[0]; // 'vi-VN' -> 'vi'
-      const matchingVoice = availableVoices.find(
-        v => v.lang.toLowerCase().includes(langPrefix.toLowerCase())
-      );
-      if (matchingVoice) {
-        setSelectedVoice(matchingVoice);
-      } else if (availableVoices.length > 0) {
-        setSelectedVoice(availableVoices[0]);
-      }
+      setAllVoices(availableVoices);
     };
 
     loadVoices();
@@ -143,20 +134,44 @@ export const useVoiceIO = (options: UseVoiceIOOptions = {}): UseVoiceIOReturn =>
     return () => {
       speechSynthesis.onvoiceschanged = null;
     };
-  }, [isTTSSupported, lang]);
+  }, [isTTSSupported]);
 
-  // Re-select voice when language changes
+  // Filter voices by language and prioritize Google/Microsoft
   useEffect(() => {
-    if (voices.length === 0) return;
+    if (allVoices.length === 0) return;
+
+    const langPrefix = lang.split('-')[0].toLowerCase(); // 'vi-VN' -> 'vi'
     
-    const langPrefix = lang.split('-')[0];
-    const matchingVoice = voices.find(
-      v => v.lang.toLowerCase().includes(langPrefix.toLowerCase())
+    // Filter voices matching current language
+    let matching = allVoices.filter(v => 
+      v.lang.toLowerCase().startsWith(langPrefix)
     );
-    if (matchingVoice && matchingVoice !== selectedVoice) {
-      setSelectedVoice(matchingVoice);
+    
+    // If no exact match, try partial match
+    if (matching.length === 0) {
+      matching = allVoices.filter(v => 
+        v.lang.toLowerCase().includes(langPrefix)
+      );
     }
-  }, [lang, voices]);
+    
+    // Sort: prioritize Google > Microsoft > others
+    matching.sort((a, b) => {
+      const aScore = a.name.includes('Google') ? 2 : a.name.includes('Microsoft') ? 1 : 0;
+      const bScore = b.name.includes('Google') ? 2 : b.name.includes('Microsoft') ? 1 : 0;
+      return bScore - aScore;
+    });
+    
+    setFilteredVoices(matching);
+    
+    // Auto-select first matching voice if current selection doesn't match language
+    if (matching.length > 0) {
+      const currentVoiceMatchesLang = selectedVoice && 
+        selectedVoice.lang.toLowerCase().startsWith(langPrefix);
+      if (!currentVoiceMatchesLang) {
+        setSelectedVoice(matching[0]);
+      }
+    }
+  }, [allVoices, lang]);
 
   // Initialize Speech Recognition
   const initRecognition = useCallback(() => {
@@ -330,8 +345,9 @@ export const useVoiceIO = (options: UseVoiceIOOptions = {}): UseVoiceIOReturn =>
     stopSpeaking,
     isTTSSupported,
     
-    // Settings
-    voices,
+    // Settings - voices returns filtered list by language
+    voices: filteredVoices,
+    allVoices,
     selectedVoice,
     setSelectedVoice,
     rate,

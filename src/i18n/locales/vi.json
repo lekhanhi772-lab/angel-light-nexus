@@ -68,7 +68,14 @@
     "start_listening": "Bắt đầu nghe",
     "stop_listening": "Dừng nghe",
     "start_speaking": "Đọc tin nhắn",
-    "stop_speaking": "Dừng đọc"
+    "stop_speaking": "Dừng đọc",
+    "settings": "Cài đặt Voice I/O",
+    "selectVoice": "Chọn giọng đọc",
+    "noVoiceAvailable": "Không có giọng đọc cho ngôn ngữ này",
+    "tryDifferentBrowser": "Thử dùng Chrome hoặc Edge để có nhiều giọng hơn",
+    "speed": "Tốc độ đọc",
+    "pitch": "Cao độ",
+    "usingWebSpeech": "Sử dụng Web Speech API miễn phí"
   },
   "language": {
     "select": "Chọn ngôn ngữ"

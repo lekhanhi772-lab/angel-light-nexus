@@ -257,9 +257,9 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
 
   const currentPos = isIdle ? idlePosition : position;
   
-  // Elegant, gentle animations
+  // Elegant, gentle animations for sitting pose
   const floatY = Math.sin(phase * 0.05) * 2;
-  const hairFlow = Math.sin(phase * 0.08) * 2;
+  const hairFlow = Math.sin(phase * 0.08) * 3; // More flow for relaxed sitting
   const dressFlow = Math.sin(phase * 0.06) * 3;
   const wingFlutter = Math.sin(phase * 0.12) * 8;
   const haloGlow = 0.7 + Math.sin(phase * 0.08) * 0.25;
@@ -268,16 +268,20 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   const isBlinking = blinkPhase < 4;
   const scale = isHovering ? 1.08 : 1;
   
-  // Wand arm wave animation - gentle swaying motion
-  const wandArmWave = Math.sin(phase * 0.1) * 5;
-  const wandRotate = Math.sin(phase * 0.15) * 8;
+  // Wand arm wave animation - playful waving motion
+  const wandArmWave = Math.sin(phase * 0.12) * 8;
+  const wandRotate = Math.sin(phase * 0.18) * 12;
+  
+  // Leg swinging animation - relaxed dangling
+  const legSwing = Math.sin(phase * 0.08) * 8; // Swing left-right
+  const legSwing2 = Math.sin(phase * 0.08 + 1.5) * 6; // Second leg offset
   
   // Face expressions - lively and dynamic
-  const eyeLookX = Math.sin(phase * 0.03) * 0.4; // Eyes look left-right
-  const eyeLookY = Math.cos(phase * 0.04) * 0.2; // Eyes look up-down
-  const eyebrowRaise = Math.sin(phase * 0.02) * 0.5; // Subtle eyebrow movement
-  const smileWidth = isHovering ? 1.2 : (0.9 + Math.sin(phase * 0.025) * 0.15); // Dynamic smile
-  const cheekGlow = 0.4 + Math.sin(phase * 0.06) * 0.1; // Cheek blush intensity
+  const eyeLookX = Math.sin(phase * 0.03) * 0.4;
+  const eyeLookY = Math.cos(phase * 0.04) * 0.2;
+  const eyebrowRaise = Math.sin(phase * 0.02) * 0.5;
+  const smileWidth = isHovering ? 1.2 : (0.9 + Math.sin(phase * 0.025) * 0.15);
+  const cheekGlow = 0.4 + Math.sin(phase * 0.06) * 0.1;
 
   const ui = (
     <>
@@ -329,7 +333,8 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
           transition: isIdle ? 'left 3s ease-in-out, top 3s ease-in-out' : 'transform 0.2s ease-out',
         }}
       >
-        <svg width="70" height="90" viewBox="0 0 70 90" className="overflow-visible" style={{ filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15))' }}>
+        {/* Sitting pose - body tilted, viewing from side angle */}
+        <svg width="85" height="95" viewBox="0 0 85 95" className="overflow-visible" style={{ filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15))' }}>
           <defs>
             {/* Skin gradient - soft, natural */}
             <radialGradient id="fairySkin" cx="45%" cy="30%" r="65%">
@@ -428,420 +433,340 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             </filter>
           </defs>
 
-          {/* Halo - soft golden ring */}
-          <ellipse 
-            cx="35" cy="3" rx="10" ry="2.5" 
+          {/* === SITTING FAIRY POSE - Side view, on a branch === */}
+          
+          {/* Tree branch/perch */}
+          <path 
+            d={`M5 62 Q25 58 45 60 Q65 62 80 58`} 
+            stroke="#8B5A2B" 
+            strokeWidth="4" 
             fill="none" 
-            stroke="url(#haloGrad)" 
-            strokeWidth="2"
-            opacity={haloGlow}
-            filter="url(#softGlow)"
+            strokeLinecap="round"
+          />
+          <path 
+            d={`M5 62 Q25 58 45 60 Q65 62 80 58`} 
+            stroke="#A0522D" 
+            strokeWidth="2" 
+            fill="none" 
+            strokeLinecap="round"
+            opacity="0.6"
           />
           
-          {/* Crown/Tiara - sparkling and beautiful */}
-          <g filter="url(#crownGlow)">
-            {/* Crown base band */}
-            <path 
-              d="M24 12 Q35 14 46 12" 
-              fill="none" 
-              stroke="url(#crownGrad)" 
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            
-            {/* Crown points - 5 elegant spires */}
-            <path 
-              d="M26 12 L27 7 L28 12" 
-              fill="url(#crownGrad)" 
-              stroke={colors.halo}
-              strokeWidth="0.3"
-            />
-            <path 
-              d="M30 13 L31.5 5 L33 13" 
-              fill="url(#crownGrad)" 
-              stroke={colors.halo}
-              strokeWidth="0.3"
-            />
-            <path 
-              d="M34 13.5 L35 3 L36 13.5" 
-              fill="url(#crownGrad)" 
-              stroke={colors.halo}
-              strokeWidth="0.3"
-            />
-            <path 
-              d="M37 13 L38.5 5 L40 13" 
-              fill="url(#crownGrad)" 
-              stroke={colors.halo}
-              strokeWidth="0.3"
-            />
-            <path 
-              d="M42 12 L43 7 L44 12" 
-              fill="url(#crownGrad)" 
-              stroke={colors.halo}
-              strokeWidth="0.3"
-            />
-            
-            {/* Crown jewels - sparkling gems */}
-            <circle cx="27" cy="8" r="1.2" fill="url(#jewelGrad)" opacity={0.8 + Math.sin(phase * 0.15) * 0.2} />
-            <circle cx="31.5" cy="6" r="1.4" fill="url(#jewelGrad)" opacity={0.85 + Math.sin(phase * 0.18) * 0.15} />
-            <circle cx="35" cy="4.5" r="1.8" fill="url(#jewelGrad)" opacity={0.9 + Math.sin(phase * 0.12) * 0.1} />
-            <circle cx="38.5" cy="6" r="1.4" fill="url(#jewelGrad)" opacity={0.85 + Math.sin(phase * 0.2) * 0.15} />
-            <circle cx="43" cy="8" r="1.2" fill="url(#jewelGrad)" opacity={0.8 + Math.sin(phase * 0.16) * 0.2} />
-            
-            {/* Jewel sparkle highlights */}
-            <circle cx="27" cy="7.5" r="0.4" fill="#FFFFFF" opacity={0.7 + Math.sin(phase * 0.25) * 0.3} />
-            <circle cx="31.5" cy="5.5" r="0.5" fill="#FFFFFF" opacity={0.75 + Math.sin(phase * 0.22) * 0.25} />
-            <circle cx="35" cy="4" r="0.6" fill="#FFFFFF" opacity={0.8 + Math.sin(phase * 0.18) * 0.2} />
-            <circle cx="38.5" cy="5.5" r="0.5" fill="#FFFFFF" opacity={0.75 + Math.sin(phase * 0.28) * 0.25} />
-            <circle cx="43" cy="7.5" r="0.4" fill="#FFFFFF" opacity={0.7 + Math.sin(phase * 0.2) * 0.3} />
-            
-            {/* Extra sparkles around crown */}
-            <circle cx="24" cy="10" r={0.5 + Math.sin(phase * 0.3) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.35) * 0.4} />
-            <circle cx="46" cy="10" r={0.5 + Math.sin(phase * 0.32) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.38) * 0.4} />
-            <circle cx="35" cy="1" r={0.6 + Math.sin(phase * 0.25) * 0.3} fill="#FFFFFF" opacity={0.6 + Math.sin(phase * 0.3) * 0.35} />
-          </g>
-
-          {/* Wings - Left - delicate and elegant */}
-          <g transform={`rotate(${-wingFlutter}, 28, 38)`} filter="url(#wingGlow)">
-            {/* Main wing shape - slender, fairy-like */}
+          {/* Wings - Behind body, larger for sitting pose */}
+          <g transform={`rotate(${-wingFlutter * 0.5}, 38, 42)`} filter="url(#wingGlow)">
             <path
-              d="M28 38 Q10 25 8 40 Q10 55 18 60 Q24 54 28 46 Z"
+              d="M38 42 Q15 28 10 45 Q12 62 25 70 Q34 60 38 50 Z"
               fill="url(#wingGrad)"
               stroke={colors.wingsEdge}
               strokeWidth="0.4"
               strokeOpacity="0.5"
             />
-            {/* Secondary wing layer for depth */}
-            <path
-              d="M27 39 Q14 28 12 40 Q14 52 19 56 Q24 52 27 45 Z"
-              fill="url(#wingGrad)"
-              opacity="0.6"
-            />
-            {/* Wing veins/details - delicate */}
-            <path d="M26 40 Q18 32 10 40" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.4" />
-            <path d="M25 45 Q18 42 12 50" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.35" />
-            <path d="M24 50 Q18 48 14 55" stroke={colors.wingsEdge} strokeWidth="0.3" fill="none" opacity="0.3" />
-            {/* Wing edge highlight */}
-            <path d="M28 38 Q10 25 8 40" stroke="#FFFFFF" strokeWidth="0.8" fill="none" opacity="0.6" />
-            {/* Sparkles on wing - smaller */}
-            <circle cx="14" cy="38" r={1 + Math.sin(phase * 0.15) * 0.3} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.2) * 0.2} />
-            <circle cx="12" cy="46" r={0.8 + Math.sin(phase * 0.18) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.25) * 0.2} />
-            <circle cx="16" cy="52" r={0.6 + Math.sin(phase * 0.12) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.22) * 0.2} />
+            <path d="M36 44 Q22 34 14 48" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.4" />
+            <path d="M35 50 Q22 48 16 60" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.35" />
+            <circle cx="18" cy="45" r={1 + Math.sin(phase * 0.15) * 0.3} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.2) * 0.2} />
+            <circle cx="16" cy="55" r={0.8 + Math.sin(phase * 0.18) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.25) * 0.2} />
           </g>
           
-          {/* Wings - Right - delicate and elegant */}
-          <g transform={`rotate(${wingFlutter}, 42, 38)`} filter="url(#wingGlow)">
-            {/* Main wing shape - slender, fairy-like */}
+          <g transform={`rotate(${wingFlutter * 0.5}, 48, 42)`} filter="url(#wingGlow)">
             <path
-              d="M42 38 Q60 25 62 40 Q60 55 52 60 Q46 54 42 46 Z"
+              d="M48 42 Q72 28 78 45 Q76 62 62 70 Q52 60 48 50 Z"
               fill="url(#wingGrad)"
               stroke={colors.wingsEdge}
               strokeWidth="0.4"
               strokeOpacity="0.5"
             />
-            {/* Secondary wing layer for depth */}
-            <path
-              d="M43 39 Q56 28 58 40 Q56 52 51 56 Q46 52 43 45 Z"
-              fill="url(#wingGrad)"
-              opacity="0.6"
-            />
-            {/* Wing veins/details - delicate */}
-            <path d="M44 40 Q52 32 60 40" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.4" />
-            <path d="M45 45 Q52 42 58 50" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.35" />
-            <path d="M46 50 Q52 48 56 55" stroke={colors.wingsEdge} strokeWidth="0.3" fill="none" opacity="0.3" />
-            {/* Wing edge highlight */}
-            <path d="M42 38 Q60 25 62 40" stroke="#FFFFFF" strokeWidth="0.8" fill="none" opacity="0.6" />
-            {/* Sparkles on wing - smaller */}
-            <circle cx="56" cy="38" r={1 + Math.sin(phase * 0.16) * 0.3} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.21) * 0.2} />
-            <circle cx="58" cy="46" r={0.8 + Math.sin(phase * 0.19) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.26) * 0.2} />
-            <circle cx="54" cy="52" r={0.6 + Math.sin(phase * 0.13) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.23) * 0.2} />
+            <path d="M50 44 Q65 34 72 48" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.4" />
+            <path d="M52 50 Q65 48 70 60" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.35" />
+            <circle cx="68" cy="45" r={1 + Math.sin(phase * 0.16) * 0.3} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.21) * 0.2} />
+            <circle cx="70" cy="55" r={0.8 + Math.sin(phase * 0.19) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.26) * 0.2} />
           </g>
 
-          {/* Hair - Back volume */}
-          <ellipse cx="35" cy="18" rx="16" ry="14" fill="url(#fairyHair)" />
+          {/* Hair - Back volume, tilted for sitting */}
+          <ellipse cx="43" cy="22" rx="14" ry="12" fill="url(#fairyHair)" />
           
-          {/* Flowing hair strands - left side */}
+          {/* Flowing hair - cascading down back */}
           <path
-            d={`M20 20 Q15 ${32 + hairFlow} 18 ${48 + hairFlow * 1.2} Q20 ${58 + hairFlow} 24 ${65 + hairFlow * 0.8}`}
+            d={`M30 24 Q25 ${38 + hairFlow} 28 ${52 + hairFlow * 1.2}`}
             fill="url(#fairyHair)"
           />
           <path
-            d={`M23 22 Q18 ${35 + hairFlow * 0.8} 20 ${50 + hairFlow} Q22 ${60 + hairFlow * 0.6} 26 ${68 + hairFlow * 0.5}`}
+            d={`M33 26 Q28 ${40 + hairFlow * 0.8} 30 ${55 + hairFlow}`}
             fill="url(#fairyHair)"
           />
           <path
-            d={`M26 24 Q22 ${38 + hairFlow * 0.6} 24 ${52 + hairFlow * 0.8}`}
-            fill="url(#fairyHair)"
-          />
-          
-          {/* Flowing hair strands - right side */}
-          <path
-            d={`M50 20 Q55 ${32 - hairFlow} 52 ${48 - hairFlow * 1.2} Q50 ${58 - hairFlow} 46 ${65 - hairFlow * 0.8}`}
-            fill="url(#fairyHair)"
-          />
-          <path
-            d={`M47 22 Q52 ${35 - hairFlow * 0.8} 50 ${50 - hairFlow} Q48 ${60 - hairFlow * 0.6} 44 ${68 - hairFlow * 0.5}`}
+            d={`M55 24 Q60 ${38 - hairFlow * 0.5} 58 ${50 - hairFlow * 0.8}`}
             fill="url(#fairyHair)"
           />
           
           {/* Hair highlights */}
           <path
-            d={`M22 25 Q17 ${40 + hairFlow * 0.5} 20 ${55 + hairFlow * 0.3}`}
+            d={`M32 28 Q27 ${42 + hairFlow * 0.5} 30 ${52 + hairFlow * 0.3}`}
             stroke={colors.hairGlow}
             strokeWidth="1.5"
             fill="none"
             opacity="0.5"
           />
-          <path
-            d={`M48 25 Q53 ${40 - hairFlow * 0.5} 50 ${55 - hairFlow * 0.3}`}
-            stroke={colors.hairGlow}
-            strokeWidth="1.5"
-            fill="none"
-            opacity="0.5"
+          
+          {/* Halo - tilted for sitting pose */}
+          <ellipse 
+            cx="43" cy="6" rx="9" ry="2.5" 
+            fill="none" 
+            stroke="url(#haloGrad)" 
+            strokeWidth="2"
+            opacity={haloGlow}
+            filter="url(#softGlow)"
+            transform="rotate(-5, 43, 6)"
           />
+          
+          {/* Crown/Tiara */}
+          <g filter="url(#crownGlow)" transform="rotate(-5, 43, 14)">
+            <path d="M32 16 Q43 18 54 16" fill="none" stroke="url(#crownGrad)" strokeWidth="2" strokeLinecap="round" />
+            <path d="M35 16 L36 11 L37 16" fill="url(#crownGrad)" stroke={colors.halo} strokeWidth="0.3" />
+            <path d="M39 17 L40.5 9 L42 17" fill="url(#crownGrad)" stroke={colors.halo} strokeWidth="0.3" />
+            <path d="M43 17.5 L44 7 L45 17.5" fill="url(#crownGrad)" stroke={colors.halo} strokeWidth="0.3" />
+            <path d="M46 17 L47.5 9 L49 17" fill="url(#crownGrad)" stroke={colors.halo} strokeWidth="0.3" />
+            <path d="M51 16 L52 11 L53 16" fill="url(#crownGrad)" stroke={colors.halo} strokeWidth="0.3" />
+            <circle cx="36" cy="12" r="1.2" fill="url(#jewelGrad)" opacity={0.8 + Math.sin(phase * 0.15) * 0.2} />
+            <circle cx="40.5" cy="10" r="1.4" fill="url(#jewelGrad)" opacity={0.85 + Math.sin(phase * 0.18) * 0.15} />
+            <circle cx="44" cy="8.5" r="1.6" fill="url(#jewelGrad)" opacity={0.9 + Math.sin(phase * 0.12) * 0.1} />
+            <circle cx="47.5" cy="10" r="1.4" fill="url(#jewelGrad)" opacity={0.85 + Math.sin(phase * 0.2) * 0.15} />
+            <circle cx="52" cy="12" r="1.2" fill="url(#jewelGrad)" opacity={0.8 + Math.sin(phase * 0.16) * 0.2} />
+          </g>
 
-          {/* Face - oval, delicate proportions */}
+          {/* Face - slightly tilted, relaxed expression */}
           <ellipse
-            cx="35"
-            cy="25"
-            rx="11"
-            ry="10"
+            cx="43"
+            cy="28"
+            rx="10"
+            ry="9"
             fill="url(#fairySkin)"
+            transform="rotate(-5, 43, 28)"
           />
           
-          {/* Soft cheek blush - animated */}
-          <ellipse cx="27" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity={cheekGlow + 0.05} />
-          <ellipse cx="43" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity={cheekGlow + 0.05} />
+          {/* Cheeks */}
+          <ellipse cx="36" cy="30" rx="2.5" ry="1.5" fill={colors.cheek} opacity={cheekGlow + 0.05} />
+          <ellipse cx="50" cy="29" rx="2.5" ry="1.5" fill={colors.cheek} opacity={cheekGlow + 0.05} />
           
-          {/* Eyes - natural, expressive with dynamic movement */}
+          {/* Eyes - relaxed, dreamy */}
           {isBlinking ? (
             <>
-              {/* Closed eyes - gentle curves */}
-              <path d="M28 24 Q31 22 34 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
-              <path d="M36 24 Q39 22 42 24" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
+              <path d="M37 27 Q39 25 41 27" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
+              <path d="M45 26 Q47 24 49 26" stroke={colors.eyes} strokeWidth="1" fill="none" strokeLinecap="round" />
             </>
           ) : (
             <>
-              {/* Left eye - almond shaped, with dynamic pupil */}
-              <ellipse cx="31" cy="23.5" rx="2.5" ry="2" fill="#FFFFFF" />
-              <ellipse 
-                cx={31.2 + eyeLookX} 
-                cy={23.6 + eyeLookY} 
-                rx="1.6" 
-                ry="1.4" 
-                fill={colors.eyes} 
-              />
-              <circle cx={31.5 + eyeLookX * 0.5} cy={23.2 + eyeLookY * 0.5} r="0.5" fill="#FFFFFF" />
-              {/* Eyelid line */}
-              <path d="M28 23 Q31 21.5 34 23" stroke={colors.hair} strokeWidth="0.6" fill="none" opacity="0.6" />
-              {/* Lower lash line */}
-              <path d="M28.5 24.5 Q31 25 33.5 24.5" stroke={colors.eyes} strokeWidth="0.3" fill="none" opacity="0.3" />
+              <ellipse cx="39" cy="26.5" rx="2.2" ry="1.8" fill="#FFFFFF" />
+              <ellipse cx={39.2 + eyeLookX} cy={26.6 + eyeLookY} rx="1.4" ry="1.2" fill={colors.eyes} />
+              <circle cx={39.4 + eyeLookX * 0.5} cy={26.2 + eyeLookY * 0.5} r="0.4" fill="#FFFFFF" />
+              <path d="M36.5 26 Q39 24.5 41.5 26" stroke={colors.hair} strokeWidth="0.5" fill="none" opacity="0.5" />
               
-              {/* Right eye - with dynamic pupil */}
-              <ellipse cx="39" cy="23.5" rx="2.5" ry="2" fill="#FFFFFF" />
-              <ellipse 
-                cx={39.2 + eyeLookX} 
-                cy={23.6 + eyeLookY} 
-                rx="1.6" 
-                ry="1.4" 
-                fill={colors.eyes} 
-              />
-              <circle cx={39.5 + eyeLookX * 0.5} cy={23.2 + eyeLookY * 0.5} r="0.5" fill="#FFFFFF" />
-              <path d="M36 23 Q39 21.5 42 23" stroke={colors.hair} strokeWidth="0.6" fill="none" opacity="0.6" />
-              <path d="M36.5 24.5 Q39 25 41.5 24.5" stroke={colors.eyes} strokeWidth="0.3" fill="none" opacity="0.3" />
+              <ellipse cx="47" cy="25.5" rx="2.2" ry="1.8" fill="#FFFFFF" />
+              <ellipse cx={47.2 + eyeLookX} cy={25.6 + eyeLookY} rx="1.4" ry="1.2" fill={colors.eyes} />
+              <circle cx={47.4 + eyeLookX * 0.5} cy={25.2 + eyeLookY * 0.5} r="0.4" fill="#FFFFFF" />
+              <path d="M44.5 25 Q47 23.5 49.5 25" stroke={colors.hair} strokeWidth="0.5" fill="none" opacity="0.5" />
             </>
           )}
           
-          {/* Eyebrows - delicate with subtle movement */}
-          <path 
-            d={`M27 ${20.5 - eyebrowRaise} Q31 ${19.5 - eyebrowRaise} 34 ${20.5 - eyebrowRaise}`} 
-            stroke={colors.hair} 
-            strokeWidth="0.5" 
-            fill="none" 
-            strokeLinecap="round" 
-            opacity="0.5" 
-          />
-          <path 
-            d={`M36 ${20.5 - eyebrowRaise} Q39 ${19.5 - eyebrowRaise} 43 ${20.5 - eyebrowRaise}`} 
-            stroke={colors.hair} 
-            strokeWidth="0.5" 
-            fill="none" 
-            strokeLinecap="round" 
-            opacity="0.5" 
-          />
+          {/* Eyebrows */}
+          <path d={`M36 ${24 - eyebrowRaise} Q39 ${23 - eyebrowRaise} 42 ${24 - eyebrowRaise}`} stroke={colors.hair} strokeWidth="0.4" fill="none" opacity="0.4" />
+          <path d={`M44 ${23 - eyebrowRaise} Q47 ${22 - eyebrowRaise} 50 ${23 - eyebrowRaise}`} stroke={colors.hair} strokeWidth="0.4" fill="none" opacity="0.4" />
           
-          {/* Nose - subtle, delicate */}
-          <path d="M35 25 L35.5 27" stroke={colors.skinShadow} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
+          {/* Nose */}
+          <path d="M43 28 L43.5 30" stroke={colors.skinShadow} strokeWidth="0.4" fill="none" opacity="0.4" />
           
-          {/* Lips - soft, dynamic smile */}
+          {/* Lips - gentle smile */}
           <path 
-            d={`M${33.5 - smileWidth} 30 Q35 ${29.5 + smileWidth * 1.5} ${36.5 + smileWidth} 30`} 
+            d={`M${40 - smileWidth * 0.5} 33 Q43 ${32 + smileWidth} ${46 + smileWidth * 0.5} 32.5`} 
             stroke={colors.lips} 
-            strokeWidth="1.2" 
+            strokeWidth="1" 
             fill="none" 
             strokeLinecap="round" 
           />
-          {/* Upper lip definition */}
-          <path d="M33 29.8 Q35 29 37 29.8" stroke={colors.lips} strokeWidth="0.4" fill="none" opacity="0.5" />
 
-          {/* Hair bangs - soft, framing face */}
-          <path
-            d="M22 15 Q28 8 35 10 Q42 8 48 15"
-            fill="url(#fairyHair)"
-          />
-          {/* Side bangs */}
-          <path d="M22 15 Q20 20 22 26" fill="url(#fairyHair)" />
-          <path d="M25 14 Q23 18 24 24" fill="url(#fairyHair)" />
-          <path d="M48 15 Q50 20 48 26" fill="url(#fairyHair)" />
-          <path d="M45 14 Q47 18 46 24" fill="url(#fairyHair)" />
-          {/* Center parted bangs */}
-          <path d="M30 12 Q33 10 35 11 Q37 10 40 12 Q38 16 35 15 Q32 16 30 12" fill="url(#fairyHair)" />
+          {/* Hair bangs */}
+          <path d="M32 19 Q38 12 44 14 Q50 12 56 19" fill="url(#fairyHair)" />
+          <path d="M32 19 Q30 24 32 30" fill="url(#fairyHair)" />
+          <path d="M35 18 Q33 22 34 28" fill="url(#fairyHair)" />
+          <path d="M56 19 Q58 24 56 30" fill="url(#fairyHair)" />
 
           {/* Neck */}
-          <path d="M32 34 L32 38 Q35 39 38 38 L38 34" fill="url(#fairySkin)" />
+          <path d="M40 36 Q43 38 46 36 L46 40 Q43 42 40 40 Z" fill="url(#fairySkin)" />
 
-          {/* Dress - flowing, elegant */}
-          {/* Main dress body */}
+          {/* Body/Dress - SITTING POSE */}
+          {/* Upper dress - torso */}
           <path
-            d={`M28 38 Q35 36 42 38 L${48 + dressFlow * 0.4} 55 Q35 58 ${22 - dressFlow * 0.4} 55 Z`}
+            d="M36 40 Q43 38 50 40 L52 52 Q43 55 34 52 Z"
             fill="url(#fairyDress)"
           />
           
-          {/* Dress ruffles/layers */}
+          {/* Dress skirt - flowing over legs */}
           <path
-            d={`M${20 - dressFlow * 0.6} 55 Q28 58 35 56 Q42 58 ${50 + dressFlow * 0.6} 55 
-               Q${54 + dressFlow * 0.8} 65 ${48 + dressFlow * 0.5} 70 
-               Q35 74 ${22 - dressFlow * 0.5} 70 
-               Q${16 - dressFlow * 0.8} 65 ${20 - dressFlow * 0.6} 55 Z`}
+            d={`M32 50 Q43 48 54 50 
+               Q${60 + dressFlow * 0.5} 58 ${55 + dressFlow * 0.3} 65 
+               Q43 68 ${30 - dressFlow * 0.3} 65 
+               Q${26 - dressFlow * 0.5} 58 32 50 Z`}
             fill="url(#fairyDress)"
           />
           
-          {/* Bottom ruffle */}
-          <path
-            d={`M${18 - dressFlow * 0.8} 70 Q28 74 35 72 Q42 74 ${52 + dressFlow * 0.8} 70 
-               Q${56 + dressFlow} 78 ${50 + dressFlow * 0.6} 82 
-               Q35 86 ${20 - dressFlow * 0.6} 82 
-               Q${14 - dressFlow} 78 ${18 - dressFlow * 0.8} 70 Z`}
-            fill="url(#fairyDress)"
-          />
-          
-          {/* Dress details - fold lines */}
-          <path d={`M28 45 Q30 55 28 65`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.4" />
-          <path d={`M35 42 Q35 58 35 75`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.35" />
-          <path d={`M42 45 Q40 55 42 65`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.4" />
-          
-          {/* Dress neckline decoration */}
-          <path d="M30 38 Q35 40 40 38" stroke={colors.dressAccent} strokeWidth="1" fill="none" opacity="0.7" />
+          {/* Dress fold lines */}
+          <path d="M38 52 Q40 58 38 64" stroke={colors.dressShadow} strokeWidth="0.4" fill="none" opacity="0.3" />
+          <path d="M48 52 Q46 58 48 64" stroke={colors.dressShadow} strokeWidth="0.4" fill="none" opacity="0.3" />
           
           {/* Ribbon belt */}
-          <ellipse cx="35" cy="45" rx="8" ry="2" fill={colors.ribbon} opacity="0.8" />
-          <circle cx="35" cy="45" r="2" fill={colors.dressLight} opacity="0.9" />
+          <ellipse cx="43" cy="50" rx="7" ry="1.8" fill={colors.ribbon} opacity="0.8" />
+          <circle cx="43" cy="50" r="1.8" fill={colors.dressLight} opacity="0.9" />
+          
+          {/* Dress neckline */}
+          <path d="M38 40 Q43 42 48 40" stroke={colors.dressAccent} strokeWidth="0.8" fill="none" opacity="0.6" />
 
-          {/* Arms - graceful pose */}
-          {/* Left arm - down, slightly out */}
+          {/* Left arm - resting on branch */}
           <path
-            d="M28 40 Q20 50 16 58"
+            d="M36 42 Q28 50 22 56"
             stroke="url(#fairySkin)"
-            strokeWidth="4"
+            strokeWidth="3.5"
             fill="none"
             strokeLinecap="round"
           />
-          {/* Left hand */}
-          <ellipse cx="15" cy="59" rx="2.5" ry="2" fill="url(#fairySkin)" />
+          <ellipse cx="21" cy="57" rx="2.2" ry="1.8" fill="url(#fairySkin)" />
           
-          {/* Right arm - holding wand up with wave animation */}
-          <g style={{ transform: `rotate(${wandArmWave}deg)`, transformOrigin: '42px 40px' }}>
+          {/* Right arm - waving wand with playful motion */}
+          <g style={{ transform: `rotate(${wandArmWave}deg)`, transformOrigin: '50px 42px' }}>
             <path
-              d={`M42 40 Q${50 + wandArmWave * 0.3} ${35 - Math.abs(wandArmWave) * 0.2} ${55 + wandArmWave * 0.4} ${28 - Math.abs(wandArmWave) * 0.3}`}
+              d={`M50 42 Q${58 + wandArmWave * 0.3} ${36 - Math.abs(wandArmWave) * 0.15} ${64 + wandArmWave * 0.4} ${28 - Math.abs(wandArmWave) * 0.2}`}
               stroke="url(#fairySkin)"
-              strokeWidth="4"
+              strokeWidth="3.5"
               fill="none"
               strokeLinecap="round"
             />
-            {/* Right hand */}
             <ellipse 
-              cx={56 + wandArmWave * 0.4} 
-              cy={27 - Math.abs(wandArmWave) * 0.3} 
-              rx="2.5" 
-              ry="2" 
+              cx={65 + wandArmWave * 0.4} 
+              cy={27 - Math.abs(wandArmWave) * 0.2} 
+              rx="2.2" 
+              ry="1.8" 
               fill="url(#fairySkin)" 
-              transform={`rotate(${30 + wandArmWave}, ${56 + wandArmWave * 0.4}, ${27 - Math.abs(wandArmWave) * 0.3})`} 
             />
             
-            {/* Magic Wand with wave animation */}
+            {/* Magic Wand */}
             <g 
               filter="url(#sparkleGlow)"
-              style={{ transform: `rotate(${wandRotate}deg)`, transformOrigin: `${56 + wandArmWave * 0.4}px ${26 - Math.abs(wandArmWave) * 0.3}px` }}
+              style={{ transform: `rotate(${wandRotate}deg)`, transformOrigin: `${65 + wandArmWave * 0.4}px ${26 - Math.abs(wandArmWave) * 0.2}px` }}
             >
               <line 
-                x1={56 + wandArmWave * 0.4} 
-                y1={26 - Math.abs(wandArmWave) * 0.3} 
-                x2={62 + wandArmWave * 0.5 + wandRotate * 0.1} 
-                y2={14 - Math.abs(wandArmWave) * 0.4} 
+                x1={65 + wandArmWave * 0.4} 
+                y1={26 - Math.abs(wandArmWave) * 0.2} 
+                x2={72 + wandArmWave * 0.5 + wandRotate * 0.1} 
+                y2={14 - Math.abs(wandArmWave) * 0.3} 
                 stroke={colors.wand} 
                 strokeWidth="1.5" 
                 strokeLinecap="round" 
               />
               {/* Wand star */}
               <path
-                d={`M${62 + wandArmWave * 0.5} ${10 - Math.abs(wandArmWave) * 0.4} 
-                    L${63 + wandArmWave * 0.5} ${13 - Math.abs(wandArmWave) * 0.4} 
-                    L${66 + wandArmWave * 0.5} ${14 - Math.abs(wandArmWave) * 0.4} 
-                    L${63 + wandArmWave * 0.5} ${15 - Math.abs(wandArmWave) * 0.4} 
-                    L${62 + wandArmWave * 0.5} ${18 - Math.abs(wandArmWave) * 0.4} 
-                    L${61 + wandArmWave * 0.5} ${15 - Math.abs(wandArmWave) * 0.4} 
-                    L${58 + wandArmWave * 0.5} ${14 - Math.abs(wandArmWave) * 0.4} 
-                    L${61 + wandArmWave * 0.5} ${13 - Math.abs(wandArmWave) * 0.4} Z`}
+                d={`M${72 + wandArmWave * 0.5} ${10 - Math.abs(wandArmWave) * 0.3} 
+                    L${73 + wandArmWave * 0.5} ${13 - Math.abs(wandArmWave) * 0.3} 
+                    L${76 + wandArmWave * 0.5} ${14 - Math.abs(wandArmWave) * 0.3} 
+                    L${73 + wandArmWave * 0.5} ${15 - Math.abs(wandArmWave) * 0.3} 
+                    L${72 + wandArmWave * 0.5} ${18 - Math.abs(wandArmWave) * 0.3} 
+                    L${71 + wandArmWave * 0.5} ${15 - Math.abs(wandArmWave) * 0.3} 
+                    L${68 + wandArmWave * 0.5} ${14 - Math.abs(wandArmWave) * 0.3} 
+                    L${71 + wandArmWave * 0.5} ${13 - Math.abs(wandArmWave) * 0.3} Z`}
                 fill={colors.wand}
                 opacity={wandSparkle}
               />
-              {/* Sparkles around wand - animated */}
+              {/* Sparkles around wand */}
               <circle 
-                cx={60 + wandArmWave * 0.5 + Math.sin(phase * 0.3) * 2} 
-                cy={12 - Math.abs(wandArmWave) * 0.4 + Math.cos(phase * 0.25) * 2} 
+                cx={70 + wandArmWave * 0.5 + Math.sin(phase * 0.3) * 2} 
+                cy={12 - Math.abs(wandArmWave) * 0.3 + Math.cos(phase * 0.25) * 2} 
                 r={1 + Math.sin(phase * 0.2) * 0.3} 
                 fill={colors.sparkle} 
                 opacity={wandSparkle * 0.8} 
               />
               <circle 
-                cx={64 + wandArmWave * 0.5 + Math.cos(phase * 0.35) * 1.5} 
-                cy={16 - Math.abs(wandArmWave) * 0.4 + Math.sin(phase * 0.3) * 1.5} 
+                cx={74 + wandArmWave * 0.5 + Math.cos(phase * 0.35) * 1.5} 
+                cy={16 - Math.abs(wandArmWave) * 0.3 + Math.sin(phase * 0.3) * 1.5} 
                 r={0.8 + Math.cos(phase * 0.25) * 0.2} 
                 fill={colors.sparkle} 
                 opacity={wandSparkle * 0.6} 
               />
               <circle 
-                cx={58 + wandArmWave * 0.5 + Math.sin(phase * 0.4) * 1.5} 
-                cy={16 - Math.abs(wandArmWave) * 0.4 + Math.cos(phase * 0.35) * 1.5} 
+                cx={68 + wandArmWave * 0.5 + Math.sin(phase * 0.4) * 1.5} 
+                cy={16 - Math.abs(wandArmWave) * 0.3 + Math.cos(phase * 0.35) * 1.5} 
                 r={0.6 + Math.sin(phase * 0.3) * 0.2} 
                 fill={colors.sparkle} 
                 opacity={wandSparkle * 0.7} 
               />
-              {/* Extra magical sparkles */}
               <circle 
-                cx={65 + wandArmWave * 0.5 + Math.sin(phase * 0.5) * 3} 
-                cy={10 - Math.abs(wandArmWave) * 0.4 + Math.cos(phase * 0.4) * 3} 
+                cx={75 + wandArmWave * 0.5 + Math.sin(phase * 0.5) * 3} 
+                cy={10 - Math.abs(wandArmWave) * 0.3 + Math.cos(phase * 0.4) * 3} 
                 r={0.5 + Math.sin(phase * 0.35) * 0.2} 
                 fill={colors.sparkle} 
                 opacity={wandSparkle * 0.5} 
               />
-              <circle 
-                cx={56 + wandArmWave * 0.5 + Math.cos(phase * 0.45) * 2.5} 
-                cy={8 - Math.abs(wandArmWave) * 0.4 + Math.sin(phase * 0.5) * 2.5} 
-                r={0.4 + Math.cos(phase * 0.4) * 0.15} 
-                fill={colors.sparkle} 
-                opacity={wandSparkle * 0.4} 
-              />
             </g>
           </g>
 
-          {/* Feet/Shoes - dainty */}
-          <ellipse cx="30" cy="86" rx="4" ry="2" fill={colors.ribbon} opacity="0.85" />
-          <ellipse cx="40" cy="86" rx="4" ry="2" fill={colors.ribbon} opacity="0.85" />
+          {/* LEGS - Dangling and swinging */}
+          {/* Left leg - swinging */}
+          <g style={{ transform: `rotate(${legSwing}deg)`, transformOrigin: '38px 58px' }}>
+            {/* Thigh */}
+            <path
+              d="M38 58 Q36 68 32 78"
+              stroke="url(#fairySkin)"
+              strokeWidth="4"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Calf */}
+            <path
+              d={`M32 78 Q30 84 ${28 + legSwing * 0.15} 90`}
+              stroke="url(#fairySkin)"
+              strokeWidth="3.5"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Foot/Shoe */}
+            <ellipse 
+              cx={27 + legSwing * 0.15} 
+              cy={91} 
+              rx="4" 
+              ry="2" 
+              fill={colors.ribbon} 
+              opacity="0.85" 
+              transform={`rotate(${-15 + legSwing * 0.5}, ${27 + legSwing * 0.15}, 91)`}
+            />
+            <circle cx={27 + legSwing * 0.15} cy={90} r="0.8" fill={colors.dressLight} opacity="0.8" />
+          </g>
           
-          {/* Shoe bows */}
-          <circle cx="30" cy="85" r="1" fill={colors.dressLight} opacity="0.8" />
-          <circle cx="40" cy="85" r="1" fill={colors.dressLight} opacity="0.8" />
+          {/* Right leg - swinging with offset */}
+          <g style={{ transform: `rotate(${legSwing2}deg)`, transformOrigin: '48px 58px' }}>
+            {/* Thigh */}
+            <path
+              d="M48 58 Q50 68 52 78"
+              stroke="url(#fairySkin)"
+              strokeWidth="4"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Calf */}
+            <path
+              d={`M52 78 Q54 84 ${56 + legSwing2 * 0.15} 90`}
+              stroke="url(#fairySkin)"
+              strokeWidth="3.5"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {/* Foot/Shoe */}
+            <ellipse 
+              cx={57 + legSwing2 * 0.15} 
+              cy={91} 
+              rx="4" 
+              ry="2" 
+              fill={colors.ribbon} 
+              opacity="0.85"
+              transform={`rotate(${-10 + legSwing2 * 0.5}, ${57 + legSwing2 * 0.15}, 91)`}
+            />
+            <circle cx={57 + legSwing2 * 0.15} cy={90} r="0.8" fill={colors.dressLight} opacity="0.8" />
+          </g>
         </svg>
       </div>
     </>

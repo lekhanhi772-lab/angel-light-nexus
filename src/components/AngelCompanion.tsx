@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-// Placeholder imports - will be replaced with actual GIFs when uploaded
-// Import your GIFs like this:
-// import idleGif from '@/assets/angel-gifs/idle.gif';
+// Import GIF assets
+import gif1 from '@/assets/angel-gifs/1.gif';
+import gif2 from '@/assets/angel-gifs/2.gif';
+import gif3 from '@/assets/angel-gifs/3.gif';
 
 interface StarTrail {
   id: number;
@@ -16,17 +17,24 @@ interface StarTrail {
   color: string;
 }
 
-type AngelState = 'idle' | 'sleeping' | 'waving' | 'flying';
+type AngelState = 'idle' | 'sleeping' | 'waving';
 
 interface AngelCompanionProps {
   enabled?: boolean;
 }
 
-// Configuration
-const OFFSET_X = -60; // Pixels to the left of cursor
-const OFFSET_Y = -20; // Pixels above cursor center
+// Configuration - Increased distance to not interfere with user actions
+const OFFSET_X = -100; // Pixels to the left of cursor
+const OFFSET_Y = -60;  // Pixels above cursor center
 const IDLE_TIMEOUT = 4000; // 4 seconds before sleeping
-const GIF_SIZE = 64; // Size of the GIF in pixels
+const GIF_SIZE = 80; // Size of the GIF in pixels
+
+// Map states to GIFs
+const GIF_STATES: Record<AngelState, string> = {
+  idle: gif1,
+  sleeping: gif2,
+  waving: gif3,
+};
 
 export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
   const [position, setPosition] = useState({ x: -200, y: -200 });
@@ -119,12 +127,12 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
       clearTimeout(idleTimeoutRef.current);
     }
 
-    // Set to flying when moving, then idle
+    // Wake up if sleeping
     if (angelState === 'sleeping') {
       setAngelState('idle');
     }
 
-    // Create fairy dust
+    // Create fairy dust from companion position
     if (Math.random() > 0.7) {
       createTrail(e.clientX + OFFSET_X + GIF_SIZE / 2, e.clientY + OFFSET_Y + GIF_SIZE / 2);
     }
@@ -235,17 +243,6 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
     );
   };
 
-  // Get current GIF based on state
-  // TODO: Replace with actual GIF imports when uploaded
-  const getStateLabel = () => {
-    switch (angelState) {
-      case 'sleeping': return '😴 Sleeping';
-      case 'waving': return '👋 Waving';
-      case 'flying': return '✨ Flying';
-      default: return '🧚 Idle';
-    }
-  };
-
   return createPortal(
     <>
       {/* Fairy dust trails */}
@@ -259,26 +256,13 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
           top: currentPos.y + OFFSET_Y + floatY,
         }}
       >
-        {/* Placeholder: Shows state text until GIFs are added */}
-        <div 
-          className="flex items-center justify-center rounded-full bg-gradient-to-br from-amber-200/90 to-pink-200/90 backdrop-blur-sm border-2 border-amber-300/50 shadow-lg"
-          style={{
-            width: GIF_SIZE,
-            height: GIF_SIZE,
-          }}
-        >
-          <span className="text-2xl">{angelState === 'sleeping' ? '😴' : angelState === 'waving' ? '👋' : '🧚'}</span>
-        </div>
-
-        {/* When you have GIFs, replace above with:
         <img 
           src={GIF_STATES[angelState]} 
           alt="Angel companion"
-          className="object-contain"
+          className="object-contain drop-shadow-lg"
           style={{ width: GIF_SIZE, height: GIF_SIZE }}
           draggable={false}
         />
-        */}
       </div>
     </>,
     document.body

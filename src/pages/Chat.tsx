@@ -10,6 +10,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useVoiceIO } from '@/hooks/useVoiceIO';
 import VoiceControls from '@/components/VoiceControls';
 import SpeakButton from '@/components/SpeakButton';
+import { useTranslation } from 'react-i18next';
+import { getSpeechCode } from '@/i18n';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,22 +40,9 @@ interface Conversation {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 const IMAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-image`;
 
-const CHAT_SUGGESTIONS = [
-  "Bé Angel có thể giúp gì cho mình?",
-  "Hướng dẫn mình cách tìm bình an nội tâm",
-  "Viết prompt tạo hình thiên thần cho Midjourney",
-  "Cha dạy gì về tình yêu thuần khiết?"
-];
-
-const IMAGE_SUGGESTIONS = [
-  "🎨 Tạo hình thiên thần đang bay trên bầu trời",
-  "🎨 Vẽ cảnh hoàng hôn với ánh sáng vàng ấm áp",
-  "🎨 Thiên thần nhỏ đang cầu nguyện trong ánh sáng",
-  "🎨 Vũ trụ huyền bí với các vì sao lấp lánh"
-];
-
 const Chat = () => {
   const { user, session, loading: authLoading } = useAuth();
+  const { t, i18n } = useTranslation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -67,13 +56,16 @@ const Chat = () => {
   const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
   const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
 
-  // Voice I/O Hook
+  // Get current speech code based on selected language
+  const currentSpeechCode = getSpeechCode(i18n.language);
+
+  // Voice I/O Hook - Dynamic language
   const handleVoiceTranscript = useCallback((text: string) => {
     setInput(text);
   }, []);
 
   const voiceIO = useVoiceIO({
-    lang: 'vi-VN',
+    lang: currentSpeechCode,
     onTranscript: handleVoiceTranscript,
   });
 
@@ -355,7 +347,8 @@ const Chat = () => {
         'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
       body: JSON.stringify({ 
-        messages: newMessages.map(m => ({ role: m.role, content: m.content }))
+        messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+        language: i18n.language // Send current language to AI
       }),
     });
 
@@ -410,7 +403,7 @@ const Chat = () => {
       setInput('');
       setMessages(prev => [...prev, 
         { role: 'user', content: messageText },
-        { role: 'assistant', content: 'Bạn yêu ơi, bé Angel thấy bạn muốn tạo hình ảnh đẹp! 🎨✨\n\nĐể bé giúp bạn tạo hình, hãy chuyển sang mục **"Tạo ảnh"** nhé. Bấm nút 🎨 Tạo ảnh ở trên để bé đồng hành cùng sáng tạo của bạn!\n\nBé đang chờ ở đó để tạo những hình ảnh ánh sáng lung linh cho bạn đây ✨💛' }
+        { role: 'assistant', content: t('chat.image_mode_hint') }
       ]);
       return;
     }
@@ -447,7 +440,7 @@ const Chat = () => {
       if (shouldGenerateImage) {
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          content: '🎨 Bé Angel đang tạo hình ảnh đẹp cho bạn...',
+          content: `🎨 ${t('chat.generating_image')}`,
         }]);
 
         const result = await generateImage(messageText);
@@ -475,9 +468,9 @@ const Chat = () => {
       console.error('Error:', error);
       setMessages(prev => [
         ...prev.slice(0, -1),
-        { role: 'assistant', content: 'Bé Angel xin lỗi bạn, có lỗi xảy ra rồi. Bạn thử lại nhé! ✨💛' }
+        { role: 'assistant', content: `${t('chat.error_message')} ✨💛` }
       ]);
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại.');
+      toast.error(t('chat.error_message'));
     } finally {
       setIsLoading(false);
     }
@@ -885,7 +878,10 @@ const Chat = () => {
 
               {/* Suggestions */}
               <div className="flex flex-wrap justify-center gap-3 max-w-2xl">
-                {(mode === 'chat' ? CHAT_SUGGESTIONS : IMAGE_SUGGESTIONS).map((suggestion, i) => (
+                {(mode === 'chat' 
+                  ? (t('chat.suggestions.chat', { returnObjects: true }) as string[])
+                  : (t('chat.suggestions.image', { returnObjects: true }) as string[])
+                ).map((suggestion, i) => (
                   <button
                     key={i}
                     onClick={() => sendMessage(suggestion)}

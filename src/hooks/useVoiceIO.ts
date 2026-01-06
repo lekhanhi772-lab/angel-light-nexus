@@ -125,12 +125,13 @@ export const useVoiceIO = (options: UseVoiceIOOptions = {}): UseVoiceIOReturn =>
       const availableVoices = speechSynthesis.getVoices();
       setVoices(availableVoices);
       
-      // Try to select Vietnamese voice by default
-      const vietnameseVoice = availableVoices.find(
-        v => v.lang.includes('vi') || v.lang.includes('VI')
+      // Try to select voice matching current language
+      const langPrefix = lang.split('-')[0]; // 'vi-VN' -> 'vi'
+      const matchingVoice = availableVoices.find(
+        v => v.lang.toLowerCase().includes(langPrefix.toLowerCase())
       );
-      if (vietnameseVoice) {
-        setSelectedVoice(vietnameseVoice);
+      if (matchingVoice) {
+        setSelectedVoice(matchingVoice);
       } else if (availableVoices.length > 0) {
         setSelectedVoice(availableVoices[0]);
       }
@@ -142,7 +143,20 @@ export const useVoiceIO = (options: UseVoiceIOOptions = {}): UseVoiceIOReturn =>
     return () => {
       speechSynthesis.onvoiceschanged = null;
     };
-  }, [isTTSSupported]);
+  }, [isTTSSupported, lang]);
+
+  // Re-select voice when language changes
+  useEffect(() => {
+    if (voices.length === 0) return;
+    
+    const langPrefix = lang.split('-')[0];
+    const matchingVoice = voices.find(
+      v => v.lang.toLowerCase().includes(langPrefix.toLowerCase())
+    );
+    if (matchingVoice && matchingVoice !== selectedVoice) {
+      setSelectedVoice(matchingVoice);
+    }
+  }, [lang, voices]);
 
   // Initialize Speech Recognition
   const initRecognition = useCallback(() => {

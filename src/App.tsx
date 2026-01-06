@@ -9,6 +9,7 @@ import Documents from "./pages/Documents";
 import FunEcosystem from "./pages/FunEcosystem";
 import LuatAnhSang from "./pages/LuatAnhSang";
 import Profile from "./pages/Profile";
+import UserProfile from "./pages/UserProfile";
 import Forum from "./pages/Forum";
 import ForumPostDetail from "./pages/ForumPostDetail";
 import NotFound from "./pages/NotFound";
@@ -33,6 +34,7 @@ const AppContent = () => {
             <Route path="/fun-ecosystem" element={<FunEcosystem />} />
             <Route path="/luat-anh-sang" element={<LuatAnhSang />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/user/:userId" element={<UserProfile />} />
             <Route path="/forum" element={<Forum />} />
             <Route path="/forum/:postId" element={<ForumPostDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

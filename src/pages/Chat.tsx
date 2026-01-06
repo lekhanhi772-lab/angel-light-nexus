@@ -986,6 +986,47 @@ const Chat = () => {
 
                     {!message.imageUrl && (
                       <div>
+                        {/* Top action buttons for messages */}
+                        {message.content && !isLoading && (
+                          <div className="mb-2 flex justify-end gap-2">
+                            {/* Copy Button - for all messages */}
+                            <button
+                              onClick={() => handleCopyMessage(message.content, message.id || `msg-${index}`)}
+                              className="p-1.5 rounded-full transition-all hover:scale-110"
+                              style={{
+                                background: copiedMessageId === (message.id || `msg-${index}`)
+                                  ? 'rgba(144, 238, 144, 0.4)'
+                                  : message.role === 'user' 
+                                    ? 'rgba(0, 0, 0, 0.15)'
+                                    : 'rgba(255, 215, 0, 0.2)',
+                                border: message.role === 'user'
+                                  ? '1px solid rgba(0, 0, 0, 0.1)'
+                                  : '1px solid rgba(184, 134, 11, 0.2)',
+                              }}
+                              title={t('chat.copy')}
+                            >
+                              {copiedMessageId === (message.id || `msg-${index}`) ? (
+                                <Check className="w-4 h-4" style={{ color: '#228B22' }} />
+                              ) : (
+                                <Copy className="w-4 h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
+                              )}
+                            </button>
+                            
+                            {/* Speak Button - only for assistant messages */}
+                            {message.role === 'assistant' && (
+                              <SpeakButton
+                                text={message.content}
+                                isSpeaking={voiceIO.isSpeaking}
+                                currentSpeakingId={currentSpeakingId}
+                                messageId={message.id || `msg-${index}`}
+                                onSpeak={handleSpeak}
+                                onStop={handleStopSpeaking}
+                                isTTSSupported={voiceIO.isTTSSupported}
+                              />
+                            )}
+                          </div>
+                        )}
+                        
                         <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
                           {message.content}
                           {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (

@@ -113,7 +113,9 @@ interface StarTrail {
   y: number;
   opacity: number;
   size: number;
-  type: 'star' | 'sparkle';
+  type: 'star' | 'sparkle' | 'dust';
+  fallSpeed?: number;
+  drift?: number;
 }
 
 interface AngelCursorProps {
@@ -150,7 +152,12 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
     if (trails.length === 0) return;
     const interval = setInterval(() => {
       setTrails((prev) => 
-        prev.map((t) => ({ ...t, opacity: t.opacity - 0.04 })).filter((t) => t.opacity > 0)
+        prev.map((t) => ({
+          ...t,
+          opacity: t.opacity - (t.type === 'dust' ? 0.025 : 0.04),
+          y: t.type === 'dust' ? t.y + (t.fallSpeed || 1.5) : t.y,
+          x: t.type === 'dust' ? t.x + (t.drift || 0) : t.x,
+        })).filter((t) => t.opacity > 0)
       );
     }, 30);
     return () => clearInterval(interval);
@@ -167,16 +174,38 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
       setIsIdle(true);
     }, 3000);
 
-    if (!isMobileRef.current && Math.random() > 0.6) {
-      const newTrail: StarTrail = {
-        id: trailIdRef.current++,
-        x: e.clientX + (Math.random() - 0.5) * 25,
-        y: e.clientY + (Math.random() - 0.5) * 25,
-        opacity: 1,
-        size: 6 + Math.random() * 6,
-        type: Math.random() > 0.5 ? 'star' : 'sparkle',
-      };
-      setTrails((prev) => [...prev.slice(-12), newTrail]);
+    if (!isMobileRef.current) {
+      const newTrails: StarTrail[] = [];
+      
+      // Sparkle trails (original)
+      if (Math.random() > 0.7) {
+        newTrails.push({
+          id: trailIdRef.current++,
+          x: e.clientX + (Math.random() - 0.5) * 25,
+          y: e.clientY + (Math.random() - 0.5) * 25,
+          opacity: 1,
+          size: 6 + Math.random() * 6,
+          type: Math.random() > 0.5 ? 'star' : 'sparkle',
+        });
+      }
+      
+      // Fairy dust - falling particles
+      if (Math.random() > 0.5) {
+        newTrails.push({
+          id: trailIdRef.current++,
+          x: e.clientX + (Math.random() - 0.5) * 40,
+          y: e.clientY + 10 + Math.random() * 15,
+          opacity: 0.9 + Math.random() * 0.1,
+          size: 2 + Math.random() * 4,
+          type: 'dust',
+          fallSpeed: 1 + Math.random() * 2,
+          drift: (Math.random() - 0.5) * 0.8,
+        });
+      }
+      
+      if (newTrails.length > 0) {
+        setTrails((prev) => [...prev.slice(-20), ...newTrails]);
+      }
     }
   }, []);
 
@@ -264,6 +293,18 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
                 fill={colors.sparkle}
                 opacity="0.9"
               />
+            ) : trail.type === 'dust' ? (
+              <>
+                <defs>
+                  <radialGradient id={`dustGrad-${trail.id}`} cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+                    <stop offset="40%" stopColor={colors.sparkle} stopOpacity="0.9" />
+                    <stop offset="100%" stopColor={colors.wingsGlow} stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+                <circle cx="8" cy="8" r="6" fill={`url(#dustGrad-${trail.id})`} />
+                <circle cx="8" cy="8" r="2" fill="#FFFFFF" opacity="0.9" />
+              </>
             ) : (
               <circle cx="8" cy="8" r="4" fill={colors.sparkle} opacity="0.8" />
             )}

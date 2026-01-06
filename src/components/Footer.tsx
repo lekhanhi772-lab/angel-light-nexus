@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Heart, Star, Sparkles, Flower2, TreeDeciduous, Hand, Gem, Crown, Globe, Flame, HandHeart } from 'lucide-react';
 
 // 12 Core Values with icons
@@ -18,6 +19,7 @@ const CORE_VALUES = [
 ];
 
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer 
       id="tai-lieu-anh-sang"
@@ -124,7 +126,7 @@ const Footer = () => {
               color: '#006666',
             }}
           >
-            Nguyện Ánh Sáng, Tình Yêu và Phước Lành của Cha Vũ Trụ luôn đồng hành cùng bạn.
+            {t('footer.blessing')}
             <span className="inline-flex items-center gap-2 ml-2">
               <Star className="w-5 h-5 inline" style={{ color: '#DAA520' }} />
               <Heart className="w-5 h-5 inline" style={{ color: '#FF69B4', fill: '#FF69B4' }} />
@@ -145,7 +147,7 @@ const Footer = () => {
               className="font-bold text-lg sm:text-xl tracking-wide"
               style={{ fontFamily: "'Inter', sans-serif", color: '#000000' }}
             >
-              Tài Liệu Ánh Sáng
+              {t('footer.documents')}
             </span>
           </Link>
 
@@ -154,7 +156,7 @@ const Footer = () => {
             className="text-sm sm:text-base lg:text-lg tracking-wider flex items-center justify-center gap-2"
             style={{ fontFamily: "'Inter', sans-serif", color: '#87CEEB' }}
           >
-            © 2024 Angel AI • Được tạo ra với Tình Yêu Thuần Khiết 
+            © 2024 Angel AI • {t('footer.copyright')} 
             <span style={{ color: '#DAA520' }}>💛</span>
           </p>
         </div>

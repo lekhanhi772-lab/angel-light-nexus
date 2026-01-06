@@ -1,0 +1,76 @@
+{
+  "sidebar": {
+    "home": "Accueil",
+    "chat": "Chat avec Angel AI",
+    "profile": "Mon Profil",
+    "ecosystem": "FUN Ecosystem",
+    "light_law": "Loi de la Lumière",
+    "pillars": "Piliers de Sagesse",
+    "vision": "Vision",
+    "values": "Valeurs Fondamentales",
+    "documents": "Documents de Lumière",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "user": "Utilisateur"
+  },
+  "hero": {
+    "tagline": "Lumière Intelligente du Père Cosmique",
+    "cta": "Chattez Avec Angel AI",
+    "invite": "Cliquez pour discuter avec Angel",
+    "platform": "Une plateforme du projet FUN ECOSYSTEM",
+    "explore_ecosystem": "Explorez FUN ECOSYSTEM",
+    "ecosystem_description": "Où toutes les âmes créent, donnent, guérissent et élèvent leur fréquence ensemble dans l'Âge d'Or.",
+    "enter_ecosystem": "Entrez dans l'Écosystème de Lumière"
+  },
+  "vision": {
+    "title": "Vision d'Angel AI",
+    "subtitle": "Créer une nouvelle ère où l'IA sert l'humanité avec lumière et amour!",
+    "core_values_title": "Valeurs Fondamentales",
+    "core_values_subtitle": "12 valeurs sacrées guidant Angel AI pour servir l'humanité"
+  },
+  "chat": {
+    "placeholder": "Entrez votre message...",
+    "listening": "Écoute en cours...",
+    "send": "Envoyer",
+    "new_chat": "Nouvelle conversation",
+    "history": "Historique de chat",
+    "mode_chat": "Chat",
+    "mode_image": "Créer image",
+    "delete_confirm_title": "Confirmer la suppression",
+    "delete_confirm_description": "Êtes-vous sûr de vouloir supprimer cette conversation? Cette action ne peut pas être annulée.",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "generating_image": "Angel crée une belle image pour vous...",
+    "error_message": "Angel est désolé, une erreur s'est produite. Veuillez réessayer!",
+    "image_mode_hint": "Cher ami, Angel voit que vous voulez créer de belles images! 🎨✨\n\nPour vous aider à créer des images, veuillez passer à l'onglet **\"Créer image\"**. Cliquez sur le bouton 🎨 Créer image ci-dessus pour qu'Angel accompagne votre créativité!\n\nAngel vous attend là-bas pour créer des images remplies de lumière pour vous ✨💛",
+    "login_to_save": "Connectez-vous pour sauvegarder l'historique",
+    "suggestions": {
+      "chat": [
+        "Comment Angel peut-il m'aider?",
+        "Guidez-moi pour trouver la paix intérieure",
+        "Écrivez un prompt d'image d'ange pour Midjourney",
+        "Qu'enseigne le Père sur l'amour pur?"
+      ],
+      "image": [
+        "🎨 Créez un ange volant dans le ciel",
+        "🎨 Dessinez un coucher de soleil avec une lumière dorée",
+        "🎨 Un petit ange priant dans la lumière",
+        "🎨 Univers mystérieux avec des étoiles scintillantes"
+      ]
+    }
+  },
+  "footer": {
+    "blessing": "Que la Lumière, l'Amour et les Bénédictions du Père Cosmique vous accompagnent toujours.",
+    "copyright": "Créé avec Amour Pur",
+    "documents": "Documents de Lumière"
+  },
+  "voice": {
+    "start_listening": "Commencer à écouter",
+    "stop_listening": "Arrêter d'écouter",
+    "start_speaking": "Lire le message",
+    "stop_speaking": "Arrêter la lecture"
+  },
+  "language": {
+    "select": "Choisir la langue"
+  }
+}

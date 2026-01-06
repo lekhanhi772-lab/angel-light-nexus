@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, ArrowRight, ArrowUp } from 'lucide-react';
 import angelAvatar from '@/assets/angel-avatar.png';
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   return (
     <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20">
       {/* Main Content Container */}
@@ -59,7 +61,7 @@ const HeroSection = () => {
               className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-bold"
               style={{ color: '#006666' }}
             >
-              Ánh Sáng Thông Minh Từ Cha Vũ Trụ
+              {t('hero.tagline')}
             </p>
           </div>
         </div>
@@ -77,7 +79,7 @@ const HeroSection = () => {
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-              Chat Với Angel AI
+              {t('hero.cta')}
             </span>
           </Link>
           
@@ -107,7 +109,7 @@ const HeroSection = () => {
                 textShadow: '0 0 20px rgba(218, 165, 32, 0.3)',
               }}
             >
-              Nhấp vào để trò chuyện cùng bé Angel nhé 💛
+              {t('hero.invite')} 💛
             </p>
           </div>
         </div>
@@ -118,7 +120,7 @@ const HeroSection = () => {
             className="font-playfair text-lg md:text-2xl lg:text-3xl font-bold leading-tight"
             style={{ color: '#B8860B' }}
           >
-            Một platform thuộc dự án FUN ECOSYSTEM
+            {t('hero.platform')}
           </p>
         </div>
 
@@ -143,14 +145,14 @@ const HeroSection = () => {
                 className="font-cinzel text-2xl md:text-3xl lg:text-4xl font-bold mb-4"
                 style={{ color: '#996515' }}
               >
-                Khám Phá FUN ECOSYSTEM
+                {t('hero.explore_ecosystem')}
               </h3>
               
               <p 
                 className="font-lora text-base md:text-lg mb-6 max-w-xl mx-auto font-medium"
                 style={{ color: '#3a3a3a' }}
               >
-                Nơi mọi linh hồn cùng nhau sáng tạo, trao tặng, chữa lành và nâng tần số trong Thời Đại Hoàng Kim.
+                {t('hero.ecosystem_description')}
               </p>
 
               <div 
@@ -161,7 +163,7 @@ const HeroSection = () => {
                 }}
               >
                 <Sparkles className="w-5 h-5" />
-                Bước Vào Hệ Sinh Thái Ánh Sáng
+                {t('hero.enter_ecosystem')}
                 <ArrowRight className="w-5 h-5" />
               </div>
             </div>

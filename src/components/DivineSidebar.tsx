@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User } from 'lucide-react';
+import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -115,6 +115,13 @@ const DivineSidebar = () => {
       target: '/profile'
     },
     {
+      id: 'forum',
+      label: t('sidebar.forum'),
+      icon: <Users className="w-6 h-6" />,
+      action: 'navigate' as const,
+      target: '/forum'
+    },
+    {
       id: 'fun-ecosystem',
       label: t('sidebar.ecosystem'),
       icon: <Sparkles className="w-6 h-6" />,
@@ -213,6 +220,7 @@ const DivineSidebar = () => {
     else if (location.pathname === '/documents') setActiveSection('documents');
     else if (location.pathname === '/luat-anh-sang') setActiveSection('luat-anh-sang');
     else if (location.pathname === '/fun-ecosystem') setActiveSection('fun-ecosystem');
+    else if (location.pathname.startsWith('/forum')) setActiveSection('forum');
     else if (location.pathname === '/') setActiveSection('home');
   }, [location.pathname]);
 

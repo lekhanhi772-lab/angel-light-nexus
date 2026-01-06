@@ -9,7 +9,6 @@ import Documents from "./pages/Documents";
 import FunEcosystem from "./pages/FunEcosystem";
 import LuatAnhSang from "./pages/LuatAnhSang";
 import Profile from "./pages/Profile";
-import TestR2Upload from "./pages/TestR2Upload";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
 import { AngelCursor } from "./components/AngelCursor";
@@ -35,7 +34,6 @@ const AppContent = () => {
             <Route path="/fun-ecosystem" element={<FunEcosystem />} />
             <Route path="/luat-anh-sang" element={<LuatAnhSang />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/test-r2" element={<TestR2Upload />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

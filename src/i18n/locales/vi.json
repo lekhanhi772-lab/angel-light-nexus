@@ -120,5 +120,34 @@
     "link_copied": "Đã sao chép link!",
     "copy_failed": "Không thể sao chép",
     "replying_to": "Đang trả lời"
+  },
+  "user_profile": {
+    "back": "Quay lại",
+    "not_found": "Không tìm thấy người dùng",
+    "days": "ngày",
+    "posts": "bài viết",
+    "light_spreader": "Người Lan Tỏa Ánh Sáng",
+    "send_gift": "Tặng Quà Ánh Sáng",
+    "no_wallet": "Người dùng chưa kết nối ví để nhận quà",
+    "recent_posts": "Bài viết gần đây",
+    "no_posts": "Chưa có bài viết nào"
+  },
+  "gift": {
+    "title": "Tặng Quà Ánh Sáng",
+    "connect_wallet": "Kết nối ví để gửi quà",
+    "select_token": "Chọn token để tặng",
+    "no_balance": "Ví của bạn chưa có token nào",
+    "amount": "Số lượng",
+    "send": "Gửi Quà",
+    "confirming": "Đang xác nhận giao dịch...",
+    "please_wait": "Vui lòng đợi trong giây lát",
+    "success_title": "Tặng quà thành công!",
+    "success_message": "Quà ánh sáng đã được gửi đến",
+    "error_title": "Có lỗi xảy ra",
+    "error_message": "Giao dịch không thành công. Vui lòng thử lại.",
+    "close": "Đóng",
+    "try_again": "Thử lại",
+    "tip_author": "Tặng quà cho tác giả",
+    "erc20_not_supported": "Hiện tại chỉ hỗ trợ gửi BNB/ETH"
   }
 }

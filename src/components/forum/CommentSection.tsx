@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Send, Trash2, Reply, Loader2 } from 'lucide-react';
 import { ForumComment } from '@/hooks/useForum';
@@ -41,12 +42,18 @@ function CommentItem({
 }) {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isAuthor = user?.id === comment.author_id;
 
   const timeAgo = formatDistanceToNow(new Date(comment.created_at), {
     addSuffix: true,
     locale
   });
+
+  const handleAuthorClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/user/${comment.author_id}`);
+  };
 
   return (
     <div
@@ -58,27 +65,36 @@ function CommentItem({
       }}
     >
       <div className="flex items-start gap-3">
-        {/* Avatar */}
-        {comment.author?.avatar_url ? (
-          <img
-            src={comment.author.avatar_url}
-            alt={comment.author.display_name || 'User'}
-            className="w-8 h-8 rounded-full border"
-            style={{ borderColor: '#DAA520' }}
-          />
-        ) : (
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-            style={{ background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)' }}
-          >
-            {(comment.author?.display_name || 'U').charAt(0).toUpperCase()}
-          </div>
-        )}
+        {/* Avatar - clickable */}
+        <div 
+          className="cursor-pointer transition-transform hover:scale-105"
+          onClick={handleAuthorClick}
+        >
+          {comment.author?.avatar_url ? (
+            <img
+              src={comment.author.avatar_url}
+              alt={comment.author.display_name || 'User'}
+              className="w-8 h-8 rounded-full border"
+              style={{ borderColor: '#DAA520' }}
+            />
+          ) : (
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+              style={{ background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)' }}
+            >
+              {(comment.author?.display_name || 'U').charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
 
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-sm" style={{ color: '#8B6914' }}>
+            <span 
+              className="font-semibold text-sm cursor-pointer hover:underline" 
+              style={{ color: '#8B6914' }}
+              onClick={handleAuthorClick}
+            >
               {comment.author?.display_name || t('forum.anonymous')}
             </span>
             <span className="text-xs" style={{ color: '#8B7355' }}>

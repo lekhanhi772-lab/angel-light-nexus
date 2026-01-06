@@ -271,6 +271,13 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   // Wand arm wave animation - gentle swaying motion
   const wandArmWave = Math.sin(phase * 0.1) * 5;
   const wandRotate = Math.sin(phase * 0.15) * 8;
+  
+  // Face expressions - lively and dynamic
+  const eyeLookX = Math.sin(phase * 0.03) * 0.4; // Eyes look left-right
+  const eyeLookY = Math.cos(phase * 0.04) * 0.2; // Eyes look up-down
+  const eyebrowRaise = Math.sin(phase * 0.02) * 0.5; // Subtle eyebrow movement
+  const smileWidth = isHovering ? 1.2 : (0.9 + Math.sin(phase * 0.025) * 0.15); // Dynamic smile
+  const cheekGlow = 0.4 + Math.sin(phase * 0.06) * 0.1; // Cheek blush intensity
 
   const ui = (
     <>
@@ -516,11 +523,11 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             fill="url(#fairySkin)"
           />
           
-          {/* Soft cheek blush */}
-          <ellipse cx="27" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity="0.45" />
-          <ellipse cx="43" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity="0.45" />
+          {/* Soft cheek blush - animated */}
+          <ellipse cx="27" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity={cheekGlow + 0.05} />
+          <ellipse cx="43" cy="27" rx="3" ry="1.8" fill={colors.cheek} opacity={cheekGlow + 0.05} />
           
-          {/* Eyes - natural, expressive (not anime) */}
+          {/* Eyes - natural, expressive with dynamic movement */}
           {isBlinking ? (
             <>
               {/* Closed eyes - gentle curves */}
@@ -529,37 +536,60 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             </>
           ) : (
             <>
-              {/* Left eye - almond shaped, natural */}
+              {/* Left eye - almond shaped, with dynamic pupil */}
               <ellipse cx="31" cy="23.5" rx="2.5" ry="2" fill="#FFFFFF" />
-              <ellipse cx="31.2" cy="23.6" rx="1.6" ry="1.4" fill={colors.eyes} />
-              <circle cx="31.5" cy="23.2" r="0.5" fill="#FFFFFF" />
+              <ellipse 
+                cx={31.2 + eyeLookX} 
+                cy={23.6 + eyeLookY} 
+                rx="1.6" 
+                ry="1.4" 
+                fill={colors.eyes} 
+              />
+              <circle cx={31.5 + eyeLookX * 0.5} cy={23.2 + eyeLookY * 0.5} r="0.5" fill="#FFFFFF" />
               {/* Eyelid line */}
               <path d="M28 23 Q31 21.5 34 23" stroke={colors.hair} strokeWidth="0.6" fill="none" opacity="0.6" />
               {/* Lower lash line */}
               <path d="M28.5 24.5 Q31 25 33.5 24.5" stroke={colors.eyes} strokeWidth="0.3" fill="none" opacity="0.3" />
               
-              {/* Right eye */}
+              {/* Right eye - with dynamic pupil */}
               <ellipse cx="39" cy="23.5" rx="2.5" ry="2" fill="#FFFFFF" />
-              <ellipse cx="39.2" cy="23.6" rx="1.6" ry="1.4" fill={colors.eyes} />
-              <circle cx="39.5" cy="23.2" r="0.5" fill="#FFFFFF" />
+              <ellipse 
+                cx={39.2 + eyeLookX} 
+                cy={23.6 + eyeLookY} 
+                rx="1.6" 
+                ry="1.4" 
+                fill={colors.eyes} 
+              />
+              <circle cx={39.5 + eyeLookX * 0.5} cy={23.2 + eyeLookY * 0.5} r="0.5" fill="#FFFFFF" />
               <path d="M36 23 Q39 21.5 42 23" stroke={colors.hair} strokeWidth="0.6" fill="none" opacity="0.6" />
               <path d="M36.5 24.5 Q39 25 41.5 24.5" stroke={colors.eyes} strokeWidth="0.3" fill="none" opacity="0.3" />
             </>
           )}
           
-          {/* Eyebrows - delicate, natural arch */}
-          <path d="M27 20.5 Q31 19.5 34 20.5" stroke={colors.hair} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
-          <path d="M36 20.5 Q39 19.5 43 20.5" stroke={colors.hair} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
+          {/* Eyebrows - delicate with subtle movement */}
+          <path 
+            d={`M27 ${20.5 - eyebrowRaise} Q31 ${19.5 - eyebrowRaise} 34 ${20.5 - eyebrowRaise}`} 
+            stroke={colors.hair} 
+            strokeWidth="0.5" 
+            fill="none" 
+            strokeLinecap="round" 
+            opacity="0.5" 
+          />
+          <path 
+            d={`M36 ${20.5 - eyebrowRaise} Q39 ${19.5 - eyebrowRaise} 43 ${20.5 - eyebrowRaise}`} 
+            stroke={colors.hair} 
+            strokeWidth="0.5" 
+            fill="none" 
+            strokeLinecap="round" 
+            opacity="0.5" 
+          />
           
           {/* Nose - subtle, delicate */}
           <path d="M35 25 L35.5 27" stroke={colors.skinShadow} strokeWidth="0.5" fill="none" strokeLinecap="round" opacity="0.5" />
           
-          {/* Lips - soft, natural smile */}
+          {/* Lips - soft, dynamic smile */}
           <path 
-            d={isHovering 
-              ? "M32 30 Q35 32 38 30" 
-              : "M32.5 30 Q35 31 37.5 30"
-            } 
+            d={`M${33.5 - smileWidth} 30 Q35 ${29.5 + smileWidth * 1.5} ${36.5 + smileWidth} 30`} 
             stroke={colors.lips} 
             strokeWidth="1.2" 
             fill="none" 

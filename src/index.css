@@ -210,7 +210,5 @@
 }
 
 /* Angel Cursor - Hide default cursor globally */
-.angel-cursor-active,
-.angel-cursor-active * {
-  cursor: none !important;
-}
+/* Angel cursor no longer hides system cursor - companion mode */
+/* .angel-cursor-active styles removed */

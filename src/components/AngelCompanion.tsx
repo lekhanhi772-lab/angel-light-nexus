@@ -24,10 +24,10 @@ interface AngelCompanionProps {
 }
 
 // Configuration - Increased distance to not interfere with user actions
-const OFFSET_X = -100; // Pixels to the left of cursor
-const OFFSET_Y = -60;  // Pixels above cursor center
+const OFFSET_X = -150; // Pixels to the left of cursor
+const OFFSET_Y = -120; // Pixels above cursor center
 const IDLE_TIMEOUT = 4000; // 4 seconds before sleeping
-const GIF_SIZE = 80; // Size of the GIF in pixels
+const GIF_SIZE = 160; // Size of the GIF in pixels (doubled)
 
 // Map states to GIFs
 const GIF_STATES: Record<AngelState, string> = {

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
+import LanguageSelector from './LanguageSelector';
 
 interface MenuItem {
   id: string;
@@ -81,12 +83,80 @@ const menuItems: MenuItem[] = [
 ];
 
 const DivineSidebar = () => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth();
+
+  // Translated menu items
+  const menuItems = [
+    {
+      id: 'home',
+      label: t('sidebar.home'),
+      icon: <Home className="w-6 h-6" />,
+      action: 'scroll' as const,
+      target: 'hero'
+    },
+    {
+      id: 'chat',
+      label: t('sidebar.chat'),
+      icon: <Heart className="w-7 h-7" />,
+      action: 'navigate' as const,
+      target: '/chat'
+    },
+    {
+      id: 'profile',
+      label: t('sidebar.profile'),
+      icon: <User className="w-6 h-6" />,
+      action: 'navigate' as const,
+      target: '/profile'
+    },
+    {
+      id: 'fun-ecosystem',
+      label: t('sidebar.ecosystem'),
+      icon: <Sparkles className="w-6 h-6" />,
+      action: 'navigate' as const,
+      target: '/fun-ecosystem'
+    },
+    {
+      id: 'luat-anh-sang',
+      label: t('sidebar.light_law'),
+      icon: <Star className="w-6 h-6" />,
+      action: 'navigate' as const,
+      target: '/luat-anh-sang'
+    },
+    {
+      id: 'pillars',
+      label: t('sidebar.pillars'),
+      icon: <Gem className="w-6 h-6" />,
+      action: 'scroll' as const,
+      target: 'sacred-pillars'
+    },
+    {
+      id: 'vision',
+      label: t('sidebar.vision'),
+      icon: <Star className="w-6 h-6" />,
+      action: 'scroll' as const,
+      target: 'vision-mission'
+    },
+    {
+      id: 'values',
+      label: t('sidebar.values'),
+      icon: <Star className="w-6 h-6" />,
+      action: 'scroll' as const,
+      target: 'core-values'
+    },
+    {
+      id: 'documents',
+      label: t('sidebar.documents'),
+      icon: <BookOpen className="w-6 h-6" />,
+      action: 'navigate' as const,
+      target: '/documents'
+    }
+  ];
 
   const handleGoogleSignIn = () => {
     navigate('/luat-anh-sang?action=register');
@@ -346,6 +416,14 @@ const DivineSidebar = () => {
           })}
         </nav>
 
+        {/* Language Selector */}
+        <div className={cn(
+          "px-3 py-2",
+          isMobile && !isExpanded ? "hidden" : "block"
+        )}>
+          <LanguageSelector />
+        </div>
+
         {/* Auth Section */}
         <div className={cn(
           "px-3 pt-4 border-t border-[#DAA520]/20",
@@ -379,7 +457,7 @@ const DivineSidebar = () => {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-[#8B6914] truncate">
-                    {profile?.display_name || profile?.email?.split('@')[0] || user.email?.split('@')[0] || 'Người dùng'}
+                    {profile?.display_name || profile?.email?.split('@')[0] || user.email?.split('@')[0] || t('sidebar.user')}
                   </p>
                   <p className="text-xs text-[#8B7355]/70 truncate">
                     {profile?.email || user.email}
@@ -391,7 +469,7 @@ const DivineSidebar = () => {
                 className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition-colors duration-300 hover:bg-[#FFFACD]/50 text-[#8B7355] hover:text-[#D4A017]"
               >
                 <LogOut className="w-4 h-4" />
-                Đăng xuất
+                {t('sidebar.logout')}
               </button>
             </div>
           ) : (
@@ -409,7 +487,7 @@ const DivineSidebar = () => {
                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Đăng Nhập
+              {t('sidebar.login')}
             </button>
           )}
         </div>

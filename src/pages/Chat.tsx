@@ -1,12 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useAuth } from '@/hooks/useAuth';
+import { useVoiceIO } from '@/hooks/useVoiceIO';
+import VoiceControls from '@/components/VoiceControls';
+import SpeakButton from '@/components/SpeakButton';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,6 +65,35 @@ const Chat = () => {
     return saved !== null ? saved === 'true' : false; // Default hidden
   });
   const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
+  const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
+
+  // Voice I/O Hook
+  const handleVoiceTranscript = useCallback((text: string) => {
+    setInput(text);
+  }, []);
+
+  const voiceIO = useVoiceIO({
+    lang: 'vi-VN',
+    onTranscript: handleVoiceTranscript,
+  });
+
+  // Handle speak with message tracking
+  const handleSpeak = useCallback((text: string, messageId: string) => {
+    setCurrentSpeakingId(messageId);
+    voiceIO.speak(text);
+  }, [voiceIO]);
+
+  const handleStopSpeaking = useCallback(() => {
+    voiceIO.stopSpeaking();
+    setCurrentSpeakingId(null);
+  }, [voiceIO]);
+
+  // Clear speaking ID when speech ends
+  useEffect(() => {
+    if (!voiceIO.isSpeaking) {
+      setCurrentSpeakingId(null);
+    }
+  }, [voiceIO.isSpeaking]);
 
   // Save sidebar state to localStorage
   useEffect(() => {
@@ -944,19 +976,35 @@ const Chat = () => {
                     )}
 
                     {!message.imageUrl && (
-                      <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                        {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (
-                          <span className="flex gap-1">
-                            <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '0ms' }} />
-                            <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#87CEEB', animationDelay: '150ms' }} />
-                            <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '300ms' }} />
-                          </span>
+                      <div>
+                        <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
+                          {message.content}
+                          {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (
+                            <span className="flex gap-1">
+                              <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '0ms' }} />
+                              <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#87CEEB', animationDelay: '150ms' }} />
+                              <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '300ms' }} />
+                            </span>
+                          )}
+                          {isLoading && index === messages.length - 1 && message.role === 'assistant' && message.content && !message.content.includes('Đang tạo') && (
+                            <span className="inline-block w-2 h-5 ml-1 animate-pulse" style={{ background: '#FFD700' }} />
+                          )}
+                        </p>
+                        {/* Speak Button for assistant messages */}
+                        {message.role === 'assistant' && message.content && !isLoading && (
+                          <div className="mt-2 flex justify-end">
+                            <SpeakButton
+                              text={message.content}
+                              isSpeaking={voiceIO.isSpeaking}
+                              currentSpeakingId={currentSpeakingId}
+                              messageId={message.id || `msg-${index}`}
+                              onSpeak={handleSpeak}
+                              onStop={handleStopSpeaking}
+                              isTTSSupported={voiceIO.isTTSSupported}
+                            />
+                          </div>
                         )}
-                        {isLoading && index === messages.length - 1 && message.role === 'assistant' && message.content && !message.content.includes('Đang tạo') && (
-                          <span className="inline-block w-2 h-5 ml-1 animate-pulse" style={{ background: '#FFD700' }} />
-                        )}
-                      </p>
+                      </div>
                     )}
                   </div>
 
@@ -1016,23 +1064,69 @@ const Chat = () => {
               </div>
             )}
 
+            {/* Voice transcript indicator */}
+            {voiceIO.isListening && voiceIO.transcript && (
+              <div 
+                className="mb-3 px-4 py-2 rounded-xl text-sm flex items-center gap-2"
+                style={{
+                  background: 'rgba(255, 251, 230, 0.95)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#006666',
+                  boxShadow: '0 4px 15px rgba(239, 68, 68, 0.15)',
+                }}
+              >
+                <Loader2 className="w-4 h-4 animate-spin" style={{ color: '#EF4444' }} />
+                <span className="truncate">{voiceIO.transcript}</span>
+              </div>
+            )}
+
             <div 
-              className="relative flex items-end gap-3 p-2 rounded-3xl transition-all duration-300"
+              className="relative flex items-end gap-2 p-2 rounded-3xl transition-all duration-300"
               style={{
                 background: 'rgba(255, 251, 230, 0.95)',
-                border: '1px solid rgba(184, 134, 11, 0.3)',
-                boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
+                border: voiceIO.isListening 
+                  ? '2px solid #EF4444' 
+                  : '1px solid rgba(184, 134, 11, 0.3)',
+                boxShadow: voiceIO.isListening 
+                  ? '0 0 20px rgba(239, 68, 68, 0.3)' 
+                  : '0 4px 20px rgba(255, 215, 0, 0.2)',
               }}
             >
+              {/* Voice Controls */}
+              <VoiceControls
+                isListening={voiceIO.isListening}
+                onStartListening={voiceIO.startListening}
+                onStopListening={voiceIO.stopListening}
+                isSTTSupported={voiceIO.isSTTSupported}
+                transcript={voiceIO.transcript}
+                isSpeaking={voiceIO.isSpeaking}
+                onStopSpeaking={handleStopSpeaking}
+                isTTSSupported={voiceIO.isTTSSupported}
+                rate={voiceIO.rate}
+                onRateChange={voiceIO.setRate}
+                pitch={voiceIO.pitch}
+                onPitchChange={voiceIO.setPitch}
+                voices={voiceIO.voices}
+                selectedVoice={voiceIO.selectedVoice}
+                onVoiceChange={voiceIO.setSelectedVoice}
+                isLoading={isLoading}
+              />
+
               <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={mode === 'image' ? "Mô tả hình ảnh bạn muốn tạo..." : "Nhập tin nhắn cho Angel AI..."}
+                placeholder={
+                  voiceIO.isListening 
+                    ? "🎤 Đang nghe... Nói xong bấm gửi" 
+                    : mode === 'image' 
+                      ? "Mô tả hình ảnh bạn muốn tạo..." 
+                      : "Nhập tin nhắn hoặc bấm 🎤 để nói..."
+                }
                 disabled={isLoading}
                 rows={1}
-                className="flex-1 px-4 py-3 bg-transparent resize-none focus:outline-none text-[15px] leading-relaxed max-h-[200px] disabled:opacity-50"
+                className="flex-1 px-3 py-3 bg-transparent resize-none focus:outline-none text-[15px] leading-relaxed max-h-[200px] disabled:opacity-50"
                 style={{
                   color: '#006666',
                 }}
@@ -1040,7 +1134,7 @@ const Chat = () => {
               <button
                 onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
-                className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200"
+                className="flex-shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-200"
                 style={{
                   background: input.trim() && !isLoading
                     ? mode === 'image'
@@ -1066,9 +1160,13 @@ const Chat = () => {
             </div>
             
             <p className="text-center text-xs mt-3" style={{ color: '#87CEEB' }}>
-              {mode === 'image' 
-                ? "✨ Tạo hình ảnh bằng AI. Mô tả càng chi tiết, kết quả càng đẹp."
-                : "✨ Angel AI luôn đồng hành cùng bạn với Tình Yêu Thuần Khiết."
+              {voiceIO.isListening 
+                ? "🎤 Đang lắng nghe... Nói xong bấm nút gửi hoặc bấm lại 🎤 để dừng"
+                : voiceIO.isSpeaking
+                  ? "🔊 Angel đang đọc..."
+                  : mode === 'image' 
+                    ? "✨ Tạo hình ảnh bằng AI. Mô tả càng chi tiết, kết quả càng đẹp."
+                    : "✨ Bấm 🎤 để nói hoặc 🔊 để nghe Angel đọc câu trả lời"
               }
             </p>
           </div>

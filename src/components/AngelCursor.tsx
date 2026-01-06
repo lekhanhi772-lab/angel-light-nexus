@@ -367,64 +367,60 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
             filter="url(#softGlow)"
           />
 
-          {/* Wings - Left - larger, more luminous with sparkles */}
-          <g transform={`rotate(${-wingFlutter}, 25, 40)`} filter="url(#wingGlow)">
-            {/* Main wing shape - larger */}
+          {/* Wings - Left - delicate and elegant */}
+          <g transform={`rotate(${-wingFlutter}, 28, 38)`} filter="url(#wingGlow)">
+            {/* Main wing shape - slender, fairy-like */}
             <path
-              d="M25 40 Q-2 15 -5 40 Q-2 65 12 72 Q20 65 25 50 Z"
+              d="M28 38 Q10 25 8 40 Q10 55 18 60 Q24 54 28 46 Z"
               fill="url(#wingGrad)"
               stroke={colors.wingsEdge}
-              strokeWidth="0.5"
-              strokeOpacity="0.6"
+              strokeWidth="0.4"
+              strokeOpacity="0.5"
             />
             {/* Secondary wing layer for depth */}
             <path
-              d="M24 42 Q5 22 2 42 Q5 60 14 66 Q21 60 24 48 Z"
+              d="M27 39 Q14 28 12 40 Q14 52 19 56 Q24 52 27 45 Z"
               fill="url(#wingGrad)"
-              opacity="0.7"
+              opacity="0.6"
             />
-            {/* Wing veins/details - more visible */}
-            <path d="M22 42 Q10 30 0 40" stroke={colors.wingsEdge} strokeWidth="0.8" fill="none" opacity="0.5" />
-            <path d="M21 48 Q12 42 4 52" stroke={colors.wingsEdge} strokeWidth="0.7" fill="none" opacity="0.45" />
-            <path d="M19 54 Q12 52 6 60" stroke={colors.wingsEdge} strokeWidth="0.6" fill="none" opacity="0.4" />
-            <path d="M17 60 Q10 58 4 66" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.35" />
+            {/* Wing veins/details - delicate */}
+            <path d="M26 40 Q18 32 10 40" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.4" />
+            <path d="M25 45 Q18 42 12 50" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.35" />
+            <path d="M24 50 Q18 48 14 55" stroke={colors.wingsEdge} strokeWidth="0.3" fill="none" opacity="0.3" />
             {/* Wing edge highlight */}
-            <path d="M25 40 Q-2 15 -5 40" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.7" />
-            {/* Sparkles on wing */}
-            <circle cx="8" cy="35" r={1.5 + Math.sin(phase * 0.15) * 0.5} fill="url(#wingSparkle)" opacity={0.8 + Math.sin(phase * 0.2) * 0.2} />
-            <circle cx="4" cy="45" r={1.2 + Math.sin(phase * 0.18) * 0.4} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.25) * 0.3} />
-            <circle cx="10" cy="55" r={1 + Math.sin(phase * 0.12) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.22) * 0.2} />
-            <circle cx="2" cy="55" r={0.8 + Math.sin(phase * 0.2) * 0.3} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.3) * 0.3} />
+            <path d="M28 38 Q10 25 8 40" stroke="#FFFFFF" strokeWidth="0.8" fill="none" opacity="0.6" />
+            {/* Sparkles on wing - smaller */}
+            <circle cx="14" cy="38" r={1 + Math.sin(phase * 0.15) * 0.3} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.2) * 0.2} />
+            <circle cx="12" cy="46" r={0.8 + Math.sin(phase * 0.18) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.25) * 0.2} />
+            <circle cx="16" cy="52" r={0.6 + Math.sin(phase * 0.12) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.22) * 0.2} />
           </g>
           
-          {/* Wings - Right - larger, more luminous with sparkles */}
-          <g transform={`rotate(${wingFlutter}, 45, 40)`} filter="url(#wingGlow)">
-            {/* Main wing shape - larger */}
+          {/* Wings - Right - delicate and elegant */}
+          <g transform={`rotate(${wingFlutter}, 42, 38)`} filter="url(#wingGlow)">
+            {/* Main wing shape - slender, fairy-like */}
             <path
-              d="M45 40 Q72 15 75 40 Q72 65 58 72 Q50 65 45 50 Z"
+              d="M42 38 Q60 25 62 40 Q60 55 52 60 Q46 54 42 46 Z"
               fill="url(#wingGrad)"
               stroke={colors.wingsEdge}
-              strokeWidth="0.5"
-              strokeOpacity="0.6"
+              strokeWidth="0.4"
+              strokeOpacity="0.5"
             />
             {/* Secondary wing layer for depth */}
             <path
-              d="M46 42 Q65 22 68 42 Q65 60 56 66 Q49 60 46 48 Z"
+              d="M43 39 Q56 28 58 40 Q56 52 51 56 Q46 52 43 45 Z"
               fill="url(#wingGrad)"
-              opacity="0.7"
+              opacity="0.6"
             />
-            {/* Wing veins/details - more visible */}
-            <path d="M48 42 Q60 30 70 40" stroke={colors.wingsEdge} strokeWidth="0.8" fill="none" opacity="0.5" />
-            <path d="M49 48 Q58 42 66 52" stroke={colors.wingsEdge} strokeWidth="0.7" fill="none" opacity="0.45" />
-            <path d="M51 54 Q58 52 64 60" stroke={colors.wingsEdge} strokeWidth="0.6" fill="none" opacity="0.4" />
-            <path d="M53 60 Q60 58 66 66" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.35" />
+            {/* Wing veins/details - delicate */}
+            <path d="M44 40 Q52 32 60 40" stroke={colors.wingsEdge} strokeWidth="0.5" fill="none" opacity="0.4" />
+            <path d="M45 45 Q52 42 58 50" stroke={colors.wingsEdge} strokeWidth="0.4" fill="none" opacity="0.35" />
+            <path d="M46 50 Q52 48 56 55" stroke={colors.wingsEdge} strokeWidth="0.3" fill="none" opacity="0.3" />
             {/* Wing edge highlight */}
-            <path d="M45 40 Q72 15 75 40" stroke="#FFFFFF" strokeWidth="1.2" fill="none" opacity="0.7" />
-            {/* Sparkles on wing */}
-            <circle cx="62" cy="35" r={1.5 + Math.sin(phase * 0.16) * 0.5} fill="url(#wingSparkle)" opacity={0.8 + Math.sin(phase * 0.21) * 0.2} />
-            <circle cx="66" cy="45" r={1.2 + Math.sin(phase * 0.19) * 0.4} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.26) * 0.3} />
-            <circle cx="60" cy="55" r={1 + Math.sin(phase * 0.13) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.23) * 0.2} />
-            <circle cx="68" cy="55" r={0.8 + Math.sin(phase * 0.21) * 0.3} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.31) * 0.3} />
+            <path d="M42 38 Q60 25 62 40" stroke="#FFFFFF" strokeWidth="0.8" fill="none" opacity="0.6" />
+            {/* Sparkles on wing - smaller */}
+            <circle cx="56" cy="38" r={1 + Math.sin(phase * 0.16) * 0.3} fill="url(#wingSparkle)" opacity={0.7 + Math.sin(phase * 0.21) * 0.2} />
+            <circle cx="58" cy="46" r={0.8 + Math.sin(phase * 0.19) * 0.3} fill="url(#wingSparkle)" opacity={0.6 + Math.sin(phase * 0.26) * 0.2} />
+            <circle cx="54" cy="52" r={0.6 + Math.sin(phase * 0.13) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.23) * 0.2} />
           </g>
 
           {/* Hair - Back volume */}

@@ -1,10 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-// Import GIF assets
+// Import all 10 GIF assets
 import gif1 from '@/assets/angel-gifs/1.gif';
 import gif2 from '@/assets/angel-gifs/2.gif';
 import gif3 from '@/assets/angel-gifs/3.gif';
+import gif4 from '@/assets/angel-gifs/4.gif';
+import gif5 from '@/assets/angel-gifs/5.gif';
+import gif6 from '@/assets/angel-gifs/6.gif';
+import gif7 from '@/assets/angel-gifs/7.gif';
+import gif8 from '@/assets/angel-gifs/8.gif';
+import gif9 from '@/assets/angel-gifs/9.gif';
+import gif10 from '@/assets/angel-gifs/10.gif';
 
 interface StarTrail {
   id: number;
@@ -17,7 +24,16 @@ interface StarTrail {
   color: string;
 }
 
-type AngelState = 'idle' | 'sleeping' | 'waving';
+// Extended angel states with new animations
+type AngelState = 
+  | 'idle' 
+  | 'sleeping' 
+  | 'waving' 
+  | 'leanLeft'   // Ngã sang trái
+  | 'leanRight'  // Ngã sang phải
+  | 'spinning'   // Xoay vòng tròn
+  | 'kickUp'     // Đá chân lên
+  | 'kickDown';  // Đá chân xuống
 
 interface AngelCompanionProps {
   enabled?: boolean;
@@ -29,25 +45,58 @@ const OFFSET_Y = -120; // Pixels above cursor center
 const IDLE_TIMEOUT = 4000; // 4 seconds before sleeping
 const GIF_SIZE = 160; // Size of the GIF in pixels (doubled)
 
-// Map states to GIFs
+// Map states to GIFs - using all 10 GIFs
 const GIF_STATES: Record<AngelState, string> = {
   idle: gif1,
   sleeping: gif2,
   waving: gif3,
+  leanLeft: gif4,
+  leanRight: gif5,
+  spinning: gif6,
+  kickUp: gif7,
+  kickDown: gif8,
+};
+
+// Random idle GIFs for variety
+const IDLE_GIFS = [gif1, gif9, gif10];
+
+// CSS transforms for each state
+const STATE_TRANSFORMS: Record<AngelState, string> = {
+  idle: 'rotate(0deg)',
+  sleeping: 'rotate(-5deg)',
+  waving: 'rotate(0deg) scale(1.05)',
+  leanLeft: 'rotate(-25deg) translateX(-10px)',
+  leanRight: 'rotate(25deg) translateX(10px)',
+  spinning: 'rotate(360deg)',
+  kickUp: 'translateY(-25px) rotate(-10deg)',
+  kickDown: 'translateY(25px) rotate(10deg)',
 };
 
 export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
   const [position, setPosition] = useState({ x: -200, y: -200 });
   const [currentPos, setCurrentPos] = useState({ x: -200, y: -200 });
   const [angelState, setAngelState] = useState<AngelState>('idle');
+  const [currentGif, setCurrentGif] = useState<string>(gif1);
   const [isHovering, setIsHovering] = useState(false);
   const [trails, setTrails] = useState<StarTrail[]>([]);
   const [floatY, setFloatY] = useState(0);
   
   const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastMoveRef = useRef<number>(Date.now());
+  const lastXRef = useRef<number>(0);
   const trailIdRef = useRef(0);
   const animationRef = useRef<number | null>(null);
+
+  // Update GIF when state changes
+  useEffect(() => {
+    if (angelState === 'idle') {
+      // Random idle GIF for variety
+      setCurrentGif(IDLE_GIFS[Math.floor(Math.random() * IDLE_GIFS.length)]);
+    } else {
+      setCurrentGif(GIF_STATES[angelState]);
+    }
+  }, [angelState]);
 
   // Smooth position interpolation
   useEffect(() => {
@@ -115,12 +164,30 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
     return () => clearInterval(interval);
   }, [trails.length, enabled]);
 
-  // Mouse move handler
+  // Helper to set temporary state
+  const setTemporaryState = useCallback((state: AngelState, duration: number) => {
+    if (stateTimeoutRef.current) {
+      clearTimeout(stateTimeoutRef.current);
+    }
+    setAngelState(state);
+    stateTimeoutRef.current = setTimeout(() => {
+      setAngelState('idle');
+    }, duration);
+  }, []);
+
+  // Mouse move handler with lean detection
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!enabled) return;
 
     setPosition({ x: e.clientX, y: e.clientY });
     lastMoveRef.current = Date.now();
+
+    // Detect fast horizontal movement for leaning
+    const deltaX = e.clientX - lastXRef.current;
+    if (Math.abs(deltaX) > 40 && angelState !== 'leanLeft' && angelState !== 'leanRight') {
+      setTemporaryState(deltaX > 0 ? 'leanRight' : 'leanLeft', 400);
+    }
+    lastXRef.current = e.clientX;
 
     // Reset idle timeout
     if (idleTimeoutRef.current) {
@@ -143,7 +210,7 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
         setAngelState('sleeping');
       }
     }, IDLE_TIMEOUT);
-  }, [enabled, angelState, isHovering, createTrail]);
+  }, [enabled, angelState, isHovering, createTrail, setTemporaryState]);
 
   // Hover detection for interactive elements
   const handleMouseOver = useCallback((e: MouseEvent) => {
@@ -166,21 +233,48 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
     }
   }, [angelState]);
 
+  // Click handler for kick up
+  const handleClick = useCallback(() => {
+    if (!enabled || angelState === 'kickUp') return;
+    setTemporaryState('kickUp', 350);
+  }, [enabled, angelState, setTemporaryState]);
+
+  // Double click handler for kick down
+  const handleDblClick = useCallback(() => {
+    if (!enabled || angelState === 'kickDown') return;
+    setTemporaryState('kickDown', 350);
+  }, [enabled, angelState, setTemporaryState]);
+
+  // Scroll handler for spinning
+  const handleScroll = useCallback(() => {
+    if (!enabled || angelState === 'spinning') return;
+    setTemporaryState('spinning', 600);
+  }, [enabled, angelState, setTemporaryState]);
+
   // Set up event listeners
   useEffect(() => {
     if (!enabled) return;
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('click', handleClick);
+    window.addEventListener('dblclick', handleDblClick);
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('click', handleClick);
+      window.removeEventListener('dblclick', handleDblClick);
+      window.removeEventListener('scroll', handleScroll);
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current);
       }
+      if (stateTimeoutRef.current) {
+        clearTimeout(stateTimeoutRef.current);
+      }
     };
-  }, [enabled, handleMouseMove, handleMouseOver]);
+  }, [enabled, handleMouseMove, handleMouseOver, handleClick, handleDblClick, handleScroll]);
 
   if (!enabled) return null;
 
@@ -257,10 +351,16 @@ export const AngelCompanion = ({ enabled = true }: AngelCompanionProps) => {
         }}
       >
         <img 
-          src={GIF_STATES[angelState]} 
+          src={currentGif} 
           alt="Angel companion"
-          className="object-contain drop-shadow-lg"
-          style={{ width: GIF_SIZE, height: GIF_SIZE }}
+          className={`object-contain drop-shadow-lg transition-transform duration-300 ease-out ${
+            angelState === 'spinning' ? 'animate-spin' : ''
+          }`}
+          style={{ 
+            width: GIF_SIZE, 
+            height: GIF_SIZE,
+            transform: STATE_TRANSFORMS[angelState],
+          }}
           draggable={false}
         />
       </div>

@@ -278,6 +278,14 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
   const eyebrowRaise = Math.sin(phase * 0.02) * 0.5; // Subtle eyebrow movement
   const smileWidth = isHovering ? 1.2 : (0.9 + Math.sin(phase * 0.025) * 0.15); // Dynamic smile
   const cheekGlow = 0.4 + Math.sin(phase * 0.06) * 0.1; // Cheek blush intensity
+  
+  // Dancing pose animations - graceful ballet-like movements
+  const dancePhase = phase * 0.04;
+  const bodyTilt = Math.sin(dancePhase) * 3; // Gentle body sway
+  const leftArmDance = Math.sin(dancePhase + 0.5) * 12; // Left arm flowing up/down
+  const rightLegLift = Math.sin(dancePhase) * 8; // Right leg graceful lift
+  const leftLegBend = Math.cos(dancePhase) * 5; // Left leg supporting
+  const headTilt = Math.sin(dancePhase * 0.8) * 2; // Gentle head movement
 
   const ui = (
     <>
@@ -697,57 +705,111 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
           {/* Center parted bangs */}
           <path d="M30 12 Q33 10 35 11 Q37 10 40 12 Q38 16 35 15 Q32 16 30 12" fill="url(#fairyHair)" />
 
-          {/* Neck */}
-          <path d="M32 34 L32 38 Q35 39 38 38 L38 34" fill="url(#fairySkin)" />
+          {/* Neck - with slight tilt */}
+          <path 
+            d={`M32 34 L32 38 Q35 39 38 38 L38 34`} 
+            fill="url(#fairySkin)" 
+            transform={`rotate(${headTilt}, 35, 36)`}
+          />
 
-          {/* Dress - flowing, elegant */}
-          {/* Main dress body */}
-          <path
-            d={`M28 38 Q35 36 42 38 L${48 + dressFlow * 0.4} 55 Q35 58 ${22 - dressFlow * 0.4} 55 Z`}
-            fill="url(#fairyDress)"
-          />
-          
-          {/* Dress ruffles/layers */}
-          <path
-            d={`M${20 - dressFlow * 0.6} 55 Q28 58 35 56 Q42 58 ${50 + dressFlow * 0.6} 55 
-               Q${54 + dressFlow * 0.8} 65 ${48 + dressFlow * 0.5} 70 
-               Q35 74 ${22 - dressFlow * 0.5} 70 
-               Q${16 - dressFlow * 0.8} 65 ${20 - dressFlow * 0.6} 55 Z`}
-            fill="url(#fairyDress)"
-          />
-          
-          {/* Bottom ruffle */}
-          <path
-            d={`M${18 - dressFlow * 0.8} 70 Q28 74 35 72 Q42 74 ${52 + dressFlow * 0.8} 70 
-               Q${56 + dressFlow} 78 ${50 + dressFlow * 0.6} 82 
-               Q35 86 ${20 - dressFlow * 0.6} 82 
-               Q${14 - dressFlow} 78 ${18 - dressFlow * 0.8} 70 Z`}
-            fill="url(#fairyDress)"
-          />
-          
-          {/* Dress details - fold lines */}
-          <path d={`M28 45 Q30 55 28 65`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.4" />
-          <path d={`M35 42 Q35 58 35 75`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.35" />
-          <path d={`M42 45 Q40 55 42 65`} stroke={colors.dressShadow} strokeWidth="0.5" fill="none" opacity="0.4" />
-          
-          {/* Dress neckline decoration */}
-          <path d="M30 38 Q35 40 40 38" stroke={colors.dressAccent} strokeWidth="1" fill="none" opacity="0.7" />
-          
-          {/* Ribbon belt */}
-          <ellipse cx="35" cy="45" rx="8" ry="2" fill={colors.ribbon} opacity="0.8" />
-          <circle cx="35" cy="45" r="2" fill={colors.dressLight} opacity="0.9" />
+          {/* Body/Torso - dancing pose with tilt */}
+          <g transform={`rotate(${bodyTilt}, 35, 45)`}>
+            {/* Dress - flowing, elegant ballet style */}
+            {/* Main dress body - shorter, dance-like */}
+            <path
+              d={`M28 38 Q35 36 42 38 L${46 + dressFlow * 0.5} 52 Q35 55 ${24 - dressFlow * 0.5} 52 Z`}
+              fill="url(#fairyDress)"
+            />
+            
+            {/* Tutu-style layered skirt */}
+            <path
+              d={`M${22 - dressFlow * 0.7} 52 Q28 55 35 53 Q42 55 ${48 + dressFlow * 0.7} 52 
+                 Q${52 + dressFlow} 58 ${48 + dressFlow * 0.6} 62 
+                 Q35 66 ${22 - dressFlow * 0.6} 62 
+                 Q${18 - dressFlow} 58 ${22 - dressFlow * 0.7} 52 Z`}
+              fill="url(#fairyDress)"
+              opacity="0.95"
+            />
+            
+            {/* Second tutu layer */}
+            <path
+              d={`M${20 - dressFlow * 0.9} 60 Q28 64 35 62 Q42 64 ${50 + dressFlow * 0.9} 60 
+                 Q${54 + dressFlow * 1.1} 66 ${50 + dressFlow * 0.7} 70 
+                 Q35 74 ${20 - dressFlow * 0.7} 70 
+                 Q${16 - dressFlow * 1.1} 66 ${20 - dressFlow * 0.9} 60 Z`}
+              fill="url(#fairyDress)"
+              opacity="0.9"
+            />
+            
+            {/* Dress details - fold lines */}
+            <path d={`M30 45 Q31 52 30 60`} stroke={colors.dressShadow} strokeWidth="0.4" fill="none" opacity="0.35" />
+            <path d={`M35 42 Q35 55 35 68`} stroke={colors.dressShadow} strokeWidth="0.4" fill="none" opacity="0.3" />
+            <path d={`M40 45 Q39 52 40 60`} stroke={colors.dressShadow} strokeWidth="0.4" fill="none" opacity="0.35" />
+            
+            {/* Dress neckline decoration */}
+            <path d="M30 38 Q35 40 40 38" stroke={colors.dressAccent} strokeWidth="1" fill="none" opacity="0.7" />
+            
+            {/* Ribbon belt with bow */}
+            <ellipse cx="35" cy="44" rx="7" ry="1.8" fill={colors.ribbon} opacity="0.85" />
+            <path d="M31 44 Q28 42 30 40 Q32 42 35 44 Q38 42 40 40 Q42 42 39 44" fill={colors.ribbon} opacity="0.9" />
+            <circle cx="35" cy="44" r="1.5" fill={colors.dressLight} opacity="0.95" />
+          </g>
 
-          {/* Arms - graceful pose */}
-          {/* Left arm - down, slightly out */}
+          {/* Legs - graceful dancing pose */}
+          {/* Left leg - supporting, slightly bent */}
           <path
-            d="M28 40 Q20 50 16 58"
+            d={`M33 ${68 + leftLegBend * 0.2} Q32 ${75 + leftLegBend * 0.3} 30 ${82 + leftLegBend * 0.2}`}
             stroke="url(#fairySkin)"
             strokeWidth="4"
             fill="none"
             strokeLinecap="round"
           />
-          {/* Left hand */}
-          <ellipse cx="15" cy="59" rx="2.5" ry="2" fill="url(#fairySkin)" />
+          {/* Left foot - pointed */}
+          <ellipse 
+            cx="29" 
+            cy={84 + leftLegBend * 0.2} 
+            rx="3" 
+            ry="1.5" 
+            fill={colors.ribbon}
+            transform={`rotate(-20, 29, ${84 + leftLegBend * 0.2})`}
+          />
+          
+          {/* Right leg - lifted gracefully (ballet pose) */}
+          <path
+            d={`M37 68 Q${42 + rightLegLift * 0.3} ${72 - rightLegLift * 0.4} ${48 + rightLegLift * 0.5} ${70 - rightLegLift * 0.6}`}
+            stroke="url(#fairySkin)"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {/* Right foot - pointed elegantly */}
+          <ellipse 
+            cx={50 + rightLegLift * 0.5} 
+            cy={69 - rightLegLift * 0.6} 
+            rx="3" 
+            ry="1.5" 
+            fill={colors.ribbon}
+            transform={`rotate(${30 + rightLegLift}, ${50 + rightLegLift * 0.5}, ${69 - rightLegLift * 0.6})`}
+          />
+
+          {/* Arms - graceful ballet pose */}
+          {/* Left arm - flowing up gracefully */}
+          <path
+            d={`M28 40 Q${20 - leftArmDance * 0.3} ${42 - leftArmDance * 0.5} ${14 - leftArmDance * 0.4} ${35 - leftArmDance * 0.8}`}
+            stroke="url(#fairySkin)"
+            strokeWidth="4"
+            fill="none"
+            strokeLinecap="round"
+          />
+          {/* Left hand - graceful fingers */}
+          <ellipse 
+            cx={13 - leftArmDance * 0.4} 
+            cy={34 - leftArmDance * 0.8} 
+            rx="2.5" 
+            ry="2" 
+            fill="url(#fairySkin)" 
+            transform={`rotate(${-45 + leftArmDance}, ${13 - leftArmDance * 0.4}, ${34 - leftArmDance * 0.8})`}
+          />
           
           {/* Right arm - holding wand up with wave animation */}
           <g style={{ transform: `rotate(${wandArmWave}deg)`, transformOrigin: '42px 40px' }}>

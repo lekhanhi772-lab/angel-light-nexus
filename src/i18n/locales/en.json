@@ -68,7 +68,14 @@
     "start_listening": "Start listening",
     "stop_listening": "Stop listening",
     "start_speaking": "Read message",
-    "stop_speaking": "Stop reading"
+    "stop_speaking": "Stop reading",
+    "settings": "Voice I/O Settings",
+    "selectVoice": "Select voice",
+    "noVoiceAvailable": "No voice available for this language",
+    "tryDifferentBrowser": "Try Chrome or Edge for more voices",
+    "speed": "Speech rate",
+    "pitch": "Pitch",
+    "usingWebSpeech": "Using free Web Speech API"
   },
   "language": {
     "select": "Select language"

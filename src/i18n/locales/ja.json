@@ -68,7 +68,14 @@
     "start_listening": "聴き始める",
     "stop_listening": "聴くのをやめる",
     "start_speaking": "メッセージを読む",
-    "stop_speaking": "読むのをやめる"
+    "stop_speaking": "読むのをやめる",
+    "settings": "Voice I/O設定",
+    "selectVoice": "音声を選択",
+    "noVoiceAvailable": "この言語の音声がありません",
+    "tryDifferentBrowser": "より多くの音声にはChromeまたはEdgeをお試しください",
+    "speed": "読み上げ速度",
+    "pitch": "ピッチ",
+    "usingWebSpeech": "無料のWeb Speech APIを使用"
   },
   "language": {
     "select": "言語を選択"

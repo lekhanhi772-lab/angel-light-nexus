@@ -403,17 +403,103 @@ export const AngelCursor = ({ variant = 'default' }: AngelCursorProps) => {
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+            
+            {/* Crown gradient */}
+            <linearGradient id="crownGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+              <stop offset="30%" stopColor={colors.halo} stopOpacity="1" />
+              <stop offset="100%" stopColor={colors.dressAccent} stopOpacity="0.9" />
+            </linearGradient>
+            
+            {/* Crown jewel gradient */}
+            <radialGradient id="jewelGrad" cx="50%" cy="30%" r="60%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="1" />
+              <stop offset="40%" stopColor={colors.wingsEdge} stopOpacity="0.9" />
+              <stop offset="100%" stopColor={colors.ribbon} stopOpacity="0.8" />
+            </radialGradient>
+            
+            {/* Crown glow filter */}
+            <filter id="crownGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
 
           {/* Halo - soft golden ring */}
           <ellipse 
-            cx="35" cy="5" rx="12" ry="3.5" 
+            cx="35" cy="3" rx="10" ry="2.5" 
             fill="none" 
             stroke="url(#haloGrad)" 
-            strokeWidth="2.5"
+            strokeWidth="2"
             opacity={haloGlow}
             filter="url(#softGlow)"
           />
+          
+          {/* Crown/Tiara - sparkling and beautiful */}
+          <g filter="url(#crownGlow)">
+            {/* Crown base band */}
+            <path 
+              d="M24 12 Q35 14 46 12" 
+              fill="none" 
+              stroke="url(#crownGrad)" 
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            
+            {/* Crown points - 5 elegant spires */}
+            <path 
+              d="M26 12 L27 7 L28 12" 
+              fill="url(#crownGrad)" 
+              stroke={colors.halo}
+              strokeWidth="0.3"
+            />
+            <path 
+              d="M30 13 L31.5 5 L33 13" 
+              fill="url(#crownGrad)" 
+              stroke={colors.halo}
+              strokeWidth="0.3"
+            />
+            <path 
+              d="M34 13.5 L35 3 L36 13.5" 
+              fill="url(#crownGrad)" 
+              stroke={colors.halo}
+              strokeWidth="0.3"
+            />
+            <path 
+              d="M37 13 L38.5 5 L40 13" 
+              fill="url(#crownGrad)" 
+              stroke={colors.halo}
+              strokeWidth="0.3"
+            />
+            <path 
+              d="M42 12 L43 7 L44 12" 
+              fill="url(#crownGrad)" 
+              stroke={colors.halo}
+              strokeWidth="0.3"
+            />
+            
+            {/* Crown jewels - sparkling gems */}
+            <circle cx="27" cy="8" r="1.2" fill="url(#jewelGrad)" opacity={0.8 + Math.sin(phase * 0.15) * 0.2} />
+            <circle cx="31.5" cy="6" r="1.4" fill="url(#jewelGrad)" opacity={0.85 + Math.sin(phase * 0.18) * 0.15} />
+            <circle cx="35" cy="4.5" r="1.8" fill="url(#jewelGrad)" opacity={0.9 + Math.sin(phase * 0.12) * 0.1} />
+            <circle cx="38.5" cy="6" r="1.4" fill="url(#jewelGrad)" opacity={0.85 + Math.sin(phase * 0.2) * 0.15} />
+            <circle cx="43" cy="8" r="1.2" fill="url(#jewelGrad)" opacity={0.8 + Math.sin(phase * 0.16) * 0.2} />
+            
+            {/* Jewel sparkle highlights */}
+            <circle cx="27" cy="7.5" r="0.4" fill="#FFFFFF" opacity={0.7 + Math.sin(phase * 0.25) * 0.3} />
+            <circle cx="31.5" cy="5.5" r="0.5" fill="#FFFFFF" opacity={0.75 + Math.sin(phase * 0.22) * 0.25} />
+            <circle cx="35" cy="4" r="0.6" fill="#FFFFFF" opacity={0.8 + Math.sin(phase * 0.18) * 0.2} />
+            <circle cx="38.5" cy="5.5" r="0.5" fill="#FFFFFF" opacity={0.75 + Math.sin(phase * 0.28) * 0.25} />
+            <circle cx="43" cy="7.5" r="0.4" fill="#FFFFFF" opacity={0.7 + Math.sin(phase * 0.2) * 0.3} />
+            
+            {/* Extra sparkles around crown */}
+            <circle cx="24" cy="10" r={0.5 + Math.sin(phase * 0.3) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.35) * 0.4} />
+            <circle cx="46" cy="10" r={0.5 + Math.sin(phase * 0.32) * 0.2} fill="#FFFFFF" opacity={0.5 + Math.sin(phase * 0.38) * 0.4} />
+            <circle cx="35" cy="1" r={0.6 + Math.sin(phase * 0.25) * 0.3} fill="#FFFFFF" opacity={0.6 + Math.sin(phase * 0.3) * 0.35} />
+          </g>
 
           {/* Wings - Left - delicate and elegant */}
           <g transform={`rotate(${-wingFlutter}, 28, 38)`} filter="url(#wingGlow)">

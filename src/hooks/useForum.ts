@@ -136,12 +136,35 @@ export function useForum() {
     }
   }, [user]);
 
+  // Upload image to storage
+  const uploadImage = useCallback(async (file: File, userId: string): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('forum-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('forum-images')
+        .getPublicUrl(fileName);
+
+      return urlData.publicUrl;
+    } catch (err: any) {
+      console.error('Error uploading image:', err);
+      return null;
+    }
+  }, []);
+
   // Create a new post
   const createPost = useCallback(async (
     title: string,
     content: string,
     categoryId?: string,
-    imageUrl?: string
+    imageFile?: File
   ): Promise<ForumPost | null> => {
     if (!user) {
       toast.error('Bạn cần đăng nhập để đăng bài');
@@ -149,6 +172,13 @@ export function useForum() {
     }
 
     try {
+      let imageUrl: string | null = null;
+
+      // Upload image if provided
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile, user.id);
+      }
+
       const { data, error } = await supabase
         .from('forum_posts')
         .insert({
@@ -156,7 +186,7 @@ export function useForum() {
           category_id: categoryId || null,
           title,
           content,
-          image_url: imageUrl || null
+          image_url: imageUrl
         })
         .select()
         .single();
@@ -171,7 +201,7 @@ export function useForum() {
       toast.error('Có lỗi khi đăng bài: ' + err.message);
       return null;
     }
-  }, [user, fetchPosts]);
+  }, [user, fetchPosts, uploadImage]);
 
   // Update a post
   const updatePost = useCallback(async (

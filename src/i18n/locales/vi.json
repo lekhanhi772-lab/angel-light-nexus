@@ -42,6 +42,8 @@
     "delete": "Xóa",
     "generating_image": "Bé Angel đang tạo hình ảnh đẹp cho bạn...",
     "error_message": "Bé Angel xin lỗi bạn, có lỗi xảy ra rồi. Bạn thử lại nhé!",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép!",
     "image_mode_hint": "Bạn yêu ơi, bé Angel thấy bạn muốn tạo hình ảnh đẹp! 🎨✨\n\nĐể bé giúp bạn tạo hình, hãy chuyển sang mục **\"Tạo ảnh\"** nhé. Bấm nút 🎨 Tạo ảnh ở trên để bé đồng hành cùng sáng tạo của bạn!\n\nBé đang chờ ở đó để tạo những hình ảnh ánh sáng lung linh cho bạn đây ✨💛",
     "login_to_save": "Đăng nhập để lưu lịch sử chat",
     "suggestions": {

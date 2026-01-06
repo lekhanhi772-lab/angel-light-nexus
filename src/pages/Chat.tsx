@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -55,6 +55,7 @@ const Chat = () => {
   });
   const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
   const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   // Get current speech code based on selected language
   const currentSpeechCode = getSpeechCode(i18n.language);
@@ -86,6 +87,18 @@ const Chat = () => {
       setCurrentSpeakingId(null);
     }
   }, [voiceIO.isSpeaking]);
+
+  // Handle copy message
+  const handleCopyMessage = async (text: string, messageId: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedMessageId(messageId);
+      toast.success(t('chat.copied'));
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (err) {
+      toast.error('Copy failed');
+    }
+  };
 
   // Save sidebar state to localStorage
   useEffect(() => {
@@ -986,18 +999,44 @@ const Chat = () => {
                             <span className="inline-block w-2 h-5 ml-1 animate-pulse" style={{ background: '#FFD700' }} />
                           )}
                         </p>
-                        {/* Speak Button for assistant messages */}
-                        {message.role === 'assistant' && message.content && !isLoading && (
-                          <div className="mt-2 flex justify-end">
-                            <SpeakButton
-                              text={message.content}
-                              isSpeaking={voiceIO.isSpeaking}
-                              currentSpeakingId={currentSpeakingId}
-                              messageId={message.id || `msg-${index}`}
-                              onSpeak={handleSpeak}
-                              onStop={handleStopSpeaking}
-                              isTTSSupported={voiceIO.isTTSSupported}
-                            />
+                        {/* Action buttons for messages */}
+                        {message.content && !isLoading && (
+                          <div className="mt-2 flex justify-end gap-2">
+                            {/* Copy Button - for all messages */}
+                            <button
+                              onClick={() => handleCopyMessage(message.content, message.id || `msg-${index}`)}
+                              className="p-1.5 rounded-full transition-all hover:scale-110"
+                              style={{
+                                background: copiedMessageId === (message.id || `msg-${index}`)
+                                  ? 'rgba(144, 238, 144, 0.4)'
+                                  : message.role === 'user' 
+                                    ? 'rgba(0, 0, 0, 0.15)'
+                                    : 'rgba(255, 215, 0, 0.2)',
+                                border: message.role === 'user'
+                                  ? '1px solid rgba(0, 0, 0, 0.1)'
+                                  : '1px solid rgba(184, 134, 11, 0.2)',
+                              }}
+                              title={t('chat.copy')}
+                            >
+                              {copiedMessageId === (message.id || `msg-${index}`) ? (
+                                <Check className="w-4 h-4" style={{ color: '#228B22' }} />
+                              ) : (
+                                <Copy className="w-4 h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
+                              )}
+                            </button>
+                            
+                            {/* Speak Button - only for assistant messages */}
+                            {message.role === 'assistant' && (
+                              <SpeakButton
+                                text={message.content}
+                                isSpeaking={voiceIO.isSpeaking}
+                                currentSpeakingId={currentSpeakingId}
+                                messageId={message.id || `msg-${index}`}
+                                onSpeak={handleSpeak}
+                                onStop={handleStopSpeaking}
+                                isTTSSupported={voiceIO.isTTSSupported}
+                              />
+                            )}
                           </div>
                         )}
                       </div>

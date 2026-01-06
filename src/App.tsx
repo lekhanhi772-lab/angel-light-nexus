@@ -11,17 +11,14 @@ import LuatAnhSang from "./pages/LuatAnhSang";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
-import { AngelCursor } from "./components/AngelCursor";
-import { useAngelCursor } from "./hooks/useAngelCursor";
+import { AngelCompanion } from "./components/AngelCompanion";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { variant } = useAngelCursor();
-  
   return (
     <>
-      <AngelCursor variant={variant} />
+      <AngelCompanion enabled={true} />
       <Toaster />
       <Sonner />
       <BrowserRouter>

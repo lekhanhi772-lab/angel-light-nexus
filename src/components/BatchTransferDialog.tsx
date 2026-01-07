@@ -83,6 +83,7 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
   const publicClient = usePublicClient();
 
   // Parse and validate recipients
+  // Supports: comma-separated, tab-separated (Excel/Google Sheets), space-separated
   const recipients = useMemo<Recipient[]>(() => {
     if (!inputText.trim()) return [];
     
@@ -94,8 +95,20 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
       const trimmed = line.trim();
       if (!trimmed) continue;
 
-      // Support both comma and space separators
-      const parts = trimmed.split(/[,\s]+/).filter(Boolean);
+      // Support tab (Excel/Google Sheets), comma, or multiple spaces as separators
+      // Priority: tab > comma > spaces
+      let parts: string[];
+      if (trimmed.includes('\t')) {
+        // Tab-separated (from Excel/Google Sheets copy-paste)
+        parts = trimmed.split('\t').map(p => p.trim()).filter(Boolean);
+      } else if (trimmed.includes(',')) {
+        // Comma-separated
+        parts = trimmed.split(',').map(p => p.trim()).filter(Boolean);
+      } else {
+        // Space-separated (fallback)
+        parts = trimmed.split(/\s+/).filter(Boolean);
+      }
+
       if (parts.length < 2) {
         parsed.push({ address: trimmed, amount: '0', isValid: false, error: 'Định dạng không hợp lệ' });
         continue;
@@ -288,12 +301,12 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
             <Textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={`Mỗi dòng 1 cặp: địa chỉ, số lượng\n\nVí dụ:\n0x1234...5678, 100\n0xabcd...efgh, 200`}
+              placeholder={`Mỗi dòng 1 cặp: địa chỉ, số lượng\n\nVí dụ:\n0x1234...5678, 100\n0xabcd...efgh, 200\n\n💡 Hỗ trợ paste từ Excel/Google Sheets`}
               className="min-h-[120px] border-[#DAA520]/40 bg-white/80 text-sm font-mono"
               disabled={isProcessing}
             />
             <p className="text-xs mt-1" style={{ color: '#8B6914' }}>
-              Format: địa chỉ, số lượng (mỗi dòng 1 cặp)
+              📋 Hỗ trợ paste từ Excel/Google Sheets (2 cột: địa chỉ, số lượng)
             </p>
           </div>
 

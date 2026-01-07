@@ -1,9 +1,27 @@
 import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
-import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle } from 'lucide-react';
+import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle, ChevronDown } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import { useSwitchChain } from 'wagmi';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import camlyLogo from '@/assets/fun-profile-logo.png';
+
+// Supported chains for network switching
+const SUPPORTED_CHAINS = [
+  { id: 56, name: 'BNB Chain', icon: '🔶' },
+  { id: 1, name: 'Ethereum', icon: '⟠' },
+  { id: 137, name: 'Polygon', icon: '💜' },
+  { id: 42161, name: 'Arbitrum', icon: '🔵' },
+  { id: 10, name: 'Optimism', icon: '🔴' },
+  { id: 8453, name: 'Base', icon: '🔷' },
+];
 
 // Chain names mapping
 const CHAIN_NAMES: Record<number, string> = {
@@ -14,6 +32,7 @@ const CHAIN_NAMES: Record<number, string> = {
   42161: 'Arbitrum',
   8453: 'Base',
 };
+
 // Token icons from CoinGecko/Trust Wallet
 const TOKEN_ICONS: Record<string, string> = {
   BNB: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
@@ -24,7 +43,7 @@ const TOKEN_ICONS: Record<string, string> = {
   BUSD: 'https://assets.coingecko.com/coins/images/9576/small/BUSD.png',
   DAI: 'https://assets.coingecko.com/coins/images/9956/small/Badge_Dai.png',
   DOGE: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png',
-  CAMLY: 'https://assets.coingecko.com/coins/images/24087/small/camly.png',
+  CAMLY: camlyLogo, // Use local asset for CAMLY
 };
 
 const formatUsd = (value: number): string => {
@@ -151,16 +170,6 @@ export const WalletBalances = () => {
           <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
             Tài Sản Ánh Sáng Trong Ví
           </h3>
-          <span 
-            className="px-2 py-0.5 rounded-full text-xs font-medium"
-            style={{ 
-              background: 'rgba(218, 165, 32, 0.2)', 
-              color: '#8B6914',
-              border: '1px solid rgba(218, 165, 32, 0.4)'
-            }}
-          >
-            {chainName}
-          </span>
         </div>
         <button
           onClick={handleRefresh}
@@ -174,39 +183,70 @@ export const WalletBalances = () => {
         </button>
       </div>
 
-      {/* Wrong Chain Warning */}
-      {!isOnBnbChain && (
-        <div 
-          className="p-4 rounded-xl mb-4 flex flex-col gap-3"
-          style={{
-            background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)',
-            border: '1px solid rgba(245, 158, 11, 0.4)',
+      {/* Network Selector */}
+      <div className="mb-4">
+        <Select
+          value={chainId?.toString()}
+          onValueChange={(value) => {
+            const newChainId = parseInt(value);
+            if (newChainId !== chainId) {
+              switchChain({ chainId: newChainId });
+            }
           }}
         >
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-600" />
-            <p className="text-sm font-medium text-amber-800">
-              Bạn đang ở mạng {chainName}
-            </p>
-          </div>
-          <p className="text-xs text-amber-700">
-            Để xem BNB và CAMLY Coin, vui lòng chuyển sang BNB Chain.
-          </p>
-          <Button
-            onClick={handleSwitchToBnb}
+          <SelectTrigger 
+            className="w-full border-[#DAA520]/40 bg-white/80 hover:bg-white focus:ring-[#DAA520]/20"
             disabled={isSwitching}
-            size="sm"
-            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
           >
-            {isSwitching ? (
-              <>
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                Đang chuyển...
-              </>
-            ) : (
-              '🔗 Chuyển sang BNB Chain'
-            )}
-          </Button>
+            <div className="flex items-center gap-2">
+              {isSwitching ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" style={{ color: '#DAA520' }} />
+                  <span style={{ color: '#8B6914' }}>Đang chuyển mạng...</span>
+                </>
+              ) : (
+                <>
+                  <span>{SUPPORTED_CHAINS.find(c => c.id === chainId)?.icon || '🔗'}</span>
+                  <span style={{ color: '#8B6914' }}>{chainName}</span>
+                </>
+              )}
+            </div>
+          </SelectTrigger>
+          <SelectContent className="bg-white border-[#DAA520]/40 z-50">
+            {SUPPORTED_CHAINS.map((chain) => (
+              <SelectItem 
+                key={chain.id} 
+                value={chain.id.toString()}
+                className="hover:bg-[#DAA520]/10 focus:bg-[#DAA520]/10"
+              >
+                <div className="flex items-center gap-2">
+                  <span>{chain.icon}</span>
+                  <span>{chain.name}</span>
+                  {chain.id === 56 && (
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                      Ưu tiên
+                    </span>
+                  )}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Info tip for non-BNB chains */}
+      {!isOnBnbChain && (
+        <div 
+          className="p-3 rounded-xl mb-4 flex items-center gap-2"
+          style={{
+            background: 'rgba(218, 165, 32, 0.08)',
+            border: '1px solid rgba(218, 165, 32, 0.2)',
+          }}
+        >
+          <span className="text-sm">💡</span>
+          <p className="text-xs" style={{ color: '#8B6914' }}>
+            Chọn BNB Chain để xem CAMLY Coin
+          </p>
         </div>
       )}
 

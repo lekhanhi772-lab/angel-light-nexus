@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useDisconnect } from 'wagmi';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Wallet, Check, X } from 'lucide-react';
 
 interface WalletConnectProps {
@@ -10,9 +10,16 @@ interface WalletConnectProps {
 export const WalletConnect = ({ onWalletChange }: WalletConnectProps) => {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const prevAddressRef = useRef<string | null>(null);
 
   useEffect(() => {
-    onWalletChange?.(isConnected && address ? address : null);
+    const currentAddress = isConnected && address ? address : null;
+    
+    // Only trigger callback when address actually changes
+    if (prevAddressRef.current !== currentAddress) {
+      prevAddressRef.current = currentAddress;
+      onWalletChange?.(currentAddress);
+    }
   }, [address, isConnected, onWalletChange]);
 
   return (

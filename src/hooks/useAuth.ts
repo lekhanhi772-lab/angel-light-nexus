@@ -8,6 +8,7 @@ interface Profile {
   display_name: string | null;
   avatar_url: string | null;
   email: string | null;
+  wallet_address: string | null;
 }
 
 export const useAuth = () => {

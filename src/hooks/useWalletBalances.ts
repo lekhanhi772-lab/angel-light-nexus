@@ -11,8 +11,8 @@ const CHAIN_TOKENS: Record<number, { address: `0x${string}`; symbol: string; nam
     { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', symbol: 'BUSD', name: 'Binance USD', decimals: 18 },
     { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', symbol: 'ETH', name: 'Ethereum', decimals: 18 },
     { address: '0xba2ae424d960c26247dd6c32edc70b295c744c43', symbol: 'DOGE', name: 'Dogecoin', decimals: 8 },
-    // Camly Coin - BEP20
-    { address: '0xDFCc97D5d5e1f9a82A34f9e6cB58e3f7F6cC8cB2', symbol: 'CAMLY', name: 'Camly Coin', decimals: 18 },
+    // Camly Coin - BEP20 (địa chỉ chính xác)
+    { address: '0x0910320181889feFDE0BB1Ca63962b0A8882e413', symbol: 'CAMLY', name: 'Camly Coin', decimals: 18 },
   ],
   // Ethereum (1)
   1: [

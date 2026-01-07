@@ -131,6 +131,7 @@ export default function Forum() {
                 onLike={toggleLike}
                 onDelete={deletePost}
                 onEdit={handleEditPost}
+                authorWalletAddress={post.author?.wallet_address || undefined}
               />
             ))}
           </div>

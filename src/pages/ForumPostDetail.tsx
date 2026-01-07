@@ -49,7 +49,7 @@ export default function ForumPostDetail() {
 
       // Fetch author and category
       const [{ data: profile }, { data: category }] = await Promise.all([
-        supabase.from('profiles').select('display_name, avatar_url').eq('user_id', postData.author_id).single(),
+        supabase.from('profiles').select('display_name, avatar_url, wallet_address').eq('user_id', postData.author_id).single(),
         postData.category_id 
           ? supabase.from('forum_categories').select('name, icon').eq('id', postData.category_id).single()
           : { data: null }
@@ -70,7 +70,7 @@ export default function ForumPostDetail() {
 
       setPost({
         ...postData,
-        author: profile || { display_name: null, avatar_url: null },
+        author: profile ? { display_name: profile.display_name, avatar_url: profile.avatar_url, wallet_address: profile.wallet_address } : { display_name: null, avatar_url: null },
         category: category || undefined,
         is_liked: isLiked
       });

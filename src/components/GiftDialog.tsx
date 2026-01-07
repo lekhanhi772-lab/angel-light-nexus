@@ -20,7 +20,7 @@ const TOKEN_ICONS: Record<string, string> = {
   BNB: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
   ETH: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png',
   MATIC: 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png',
-  CAMLY: 'https://assets.coingecko.com/coins/images/24087/small/camly.png',
+  CAMLY: 'https://bscscan.com/token/images/camlycoin_32.png',
 };
 
 interface GiftDialogProps {

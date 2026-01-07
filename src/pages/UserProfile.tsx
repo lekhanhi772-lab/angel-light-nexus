@@ -70,7 +70,7 @@ export default function UserProfile() {
 
           const postsWithDetails: ForumPost[] = postsData.map(post => ({
             ...post,
-            author: { display_name: profileData?.display_name, avatar_url: profileData?.avatar_url },
+            author: { display_name: profileData?.display_name, avatar_url: profileData?.avatar_url, wallet_address: profileData?.wallet_address },
             category: post.category_id ? categoryMap.get(post.category_id) : undefined,
           }));
 

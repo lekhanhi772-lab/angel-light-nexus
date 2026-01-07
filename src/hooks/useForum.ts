@@ -27,6 +27,7 @@ export interface ForumPost {
   author?: {
     display_name: string | null;
     avatar_url: string | null;
+    wallet_address?: string | null;
   };
   category?: {
     name: string;
@@ -96,7 +97,7 @@ export function useForum() {
       const categoryIds = [...new Set((postsData || []).filter(p => p.category_id).map(p => p.category_id))];
 
       const [{ data: profiles }, { data: categories }] = await Promise.all([
-        supabase.from('profiles').select('user_id, display_name, avatar_url').in('user_id', authorIds),
+        supabase.from('profiles').select('user_id, display_name, avatar_url, wallet_address').in('user_id', authorIds),
         categoryIds.length > 0 
           ? supabase.from('forum_categories').select('id, name, icon').in('id', categoryIds)
           : { data: [] }
@@ -121,7 +122,7 @@ export function useForum() {
         const category = post.category_id ? categoryMap.get(post.category_id) : null;
         return {
           ...post,
-          author: profile ? { display_name: profile.display_name, avatar_url: profile.avatar_url } : { display_name: null, avatar_url: null },
+          author: profile ? { display_name: profile.display_name, avatar_url: profile.avatar_url, wallet_address: profile.wallet_address } : { display_name: null, avatar_url: null, wallet_address: null },
           category: category ? { name: category.name, icon: category.icon } : undefined,
           is_liked: likedPostIds.includes(post.id)
         };

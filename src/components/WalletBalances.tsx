@@ -1,8 +1,9 @@
 import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
-import { Wallet, RefreshCw, TrendingUp, Coins } from 'lucide-react';
+import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
-import { useChainId } from 'wagmi';
+import { useSwitchChain } from 'wagmi';
+import { Button } from '@/components/ui/button';
 
 // Chain names mapping
 const CHAIN_NAMES: Record<number, string> = {
@@ -106,16 +107,27 @@ export const WalletBalances = () => {
     isLoading, 
     error, 
     refetch,
-    isConnected 
+    isConnected,
+    chainId
   } = useWalletBalances();
-  const chainId = useChainId();
+  const { switchChain, isPending: isSwitching } = useSwitchChain();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const chainName = CHAIN_NAMES[chainId] || `Chain ${chainId}`;
+  const isOnBnbChain = chainId === 56;
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await refetch();
     setTimeout(() => setIsRefreshing(false), 500);
+  };
+
+  const handleSwitchToBnb = async () => {
+    try {
+      await switchChain({ chainId: 56 });
+      // refetch will auto-trigger via useEffect when chainId changes
+    } catch (err) {
+      console.error('Không thể chuyển mạng:', err);
+    }
   };
 
   // Only show when wallet is connected
@@ -161,6 +173,42 @@ export const WalletBalances = () => {
           />
         </button>
       </div>
+
+      {/* Wrong Chain Warning */}
+      {!isOnBnbChain && (
+        <div 
+          className="p-4 rounded-xl mb-4 flex flex-col gap-3"
+          style={{
+            background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)',
+            border: '1px solid rgba(245, 158, 11, 0.4)',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-amber-600" />
+            <p className="text-sm font-medium text-amber-800">
+              Bạn đang ở mạng {chainName}
+            </p>
+          </div>
+          <p className="text-xs text-amber-700">
+            Để xem BNB và CAMLY Coin, vui lòng chuyển sang BNB Chain.
+          </p>
+          <Button
+            onClick={handleSwitchToBnb}
+            disabled={isSwitching}
+            size="sm"
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+          >
+            {isSwitching ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Đang chuyển...
+              </>
+            ) : (
+              '🔗 Chuyển sang BNB Chain'
+            )}
+          </Button>
+        </div>
+      )}
 
       {/* Total Portfolio Value */}
       <div 

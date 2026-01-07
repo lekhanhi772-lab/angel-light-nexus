@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -90,11 +90,19 @@ const Profile = () => {
     fetchStats();
   }, [user, profile]);
 
+  // Track saved wallet to avoid duplicate saves/toasts
+  const savedWalletRef = useRef<string | null>(profile?.wallet_address ?? null);
+
   // Save wallet address to profile
   const handleWalletChange = async (address: string | null) => {
     setWalletConnected(!!address);
     
     if (!user || !address) return;
+
+    // Skip if already saved this wallet address
+    if (savedWalletRef.current === address) {
+      return;
+    }
 
     try {
       const { error } = await supabase
@@ -105,6 +113,7 @@ const Profile = () => {
       if (error) {
         console.error('Error saving wallet:', error);
       } else {
+        savedWalletRef.current = address;
         toast.success('Đã lưu ví ánh sáng của con! ✨');
       }
     } catch (err) {

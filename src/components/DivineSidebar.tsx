@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Heart, Star, Gem, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users } from 'lucide-react';
+import { Home, Heart, Star, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -51,27 +51,6 @@ const menuItems: MenuItem[] = [
     icon: <Star className="w-6 h-6" />,
     action: 'navigate',
     target: '/luat-anh-sang'
-  },
-  {
-    id: 'pillars',
-    label: 'Trụ Cột Trí Tuệ',
-    icon: <Gem className="w-6 h-6" />,
-    action: 'scroll',
-    target: 'sacred-pillars'
-  },
-  {
-    id: 'vision',
-    label: 'Tầm Nhìn',
-    icon: <Star className="w-6 h-6" />,
-    action: 'scroll',
-    target: 'vision-mission'
-  },
-  {
-    id: 'values',
-    label: 'Giá Trị Cốt Lõi',
-    icon: <Star className="w-6 h-6" />,
-    action: 'scroll',
-    target: 'core-values'
   },
   {
     id: 'documents',
@@ -136,27 +115,6 @@ const DivineSidebar = () => {
       target: '/luat-anh-sang'
     },
     {
-      id: 'pillars',
-      label: t('sidebar.pillars'),
-      icon: <Gem className="w-6 h-6" />,
-      action: 'scroll' as const,
-      target: 'sacred-pillars'
-    },
-    {
-      id: 'vision',
-      label: t('sidebar.vision'),
-      icon: <Star className="w-6 h-6" />,
-      action: 'scroll' as const,
-      target: 'vision-mission'
-    },
-    {
-      id: 'values',
-      label: t('sidebar.values'),
-      icon: <Star className="w-6 h-6" />,
-      action: 'scroll' as const,
-      target: 'core-values'
-    },
-    {
       id: 'documents',
       label: t('sidebar.documents'),
       icon: <BookOpen className="w-6 h-6" />,
@@ -191,7 +149,7 @@ const DivineSidebar = () => {
     if (location.pathname !== '/') return;
 
     const handleScroll = () => {
-      const sections = ['hero', 'vision-mission', 'sacred-pillars', 'core-values', 'tai-lieu-anh-sang'];
+      const sections = ['hero'];
       const scrollPosition = window.scrollY + 200;
 
       for (const sectionId of sections) {
@@ -200,10 +158,6 @@ const DivineSidebar = () => {
           const { offsetTop, offsetHeight } = element;
           if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             if (sectionId === 'hero') setActiveSection('home');
-            else if (sectionId === 'vision-mission') setActiveSection('vision');
-            else if (sectionId === 'sacred-pillars') setActiveSection('pillars');
-            else if (sectionId === 'core-values') setActiveSection('values');
-            else if (sectionId === 'tai-lieu-anh-sang') setActiveSection('documents');
             break;
           }
         }

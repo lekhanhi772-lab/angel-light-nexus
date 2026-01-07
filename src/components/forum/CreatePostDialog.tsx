@@ -28,6 +28,9 @@ interface CreatePostDialogProps {
   onUpdate?: (postId: string, title: string, content: string, categoryId?: string) => Promise<boolean>;
 }
 
+// Gratitude category ID from database
+const GRATITUDE_CATEGORY_ID = '083333ad-83b2-408b-8a0d-32725de9e217';
+
 export function CreatePostDialog({
   open,
   onOpenChange,
@@ -47,6 +50,7 @@ export function CreatePostDialog({
   const [isDragging, setIsDragging] = useState(false);
 
   const isEditing = !!editingPost;
+  const isGratitudeCategory = categoryId === GRATITUDE_CATEGORY_ID;
 
   // Reset form when dialog opens/closes or editingPost changes
   useEffect(() => {
@@ -63,16 +67,40 @@ export function CreatePostDialog({
     }
   }, [open, editingPost]);
 
+  // Handle special restrictions for Gratitude category
+  const handleContentKeyDown = (e: React.KeyboardEvent) => {
+    if (isGratitudeCategory && e.key === 'Enter') {
+      e.preventDefault();
+    }
+  };
+
+  const handleContentPaste = (e: React.ClipboardEvent) => {
+    if (isGratitudeCategory) {
+      e.preventDefault();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    
+    // For gratitude category, only content is required
+    if (isGratitudeCategory) {
+      if (!content.trim()) return;
+    } else {
+      if (!title.trim() || !content.trim()) return;
+    }
+
+    // Auto-generate title for gratitude posts
+    const finalTitle = isGratitudeCategory 
+      ? content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
+      : title.trim();
 
     setIsSubmitting(true);
     try {
       if (isEditing && onUpdate) {
         const success = await onUpdate(
           editingPost.id,
-          title.trim(),
+          finalTitle,
           content.trim(),
           categoryId || undefined
         );
@@ -82,7 +110,7 @@ export function CreatePostDialog({
         }
       } else {
         const result = await onSubmit(
-          title.trim(),
+          finalTitle,
           content.trim(),
           categoryId || undefined,
           imageFile || undefined
@@ -201,34 +229,41 @@ export function CreatePostDialog({
             </Select>
           </div>
 
-          {/* Title input */}
-          <div>
-            <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
-              {t('forum.title_label')} *
-            </label>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={t('forum.title_placeholder')}
-              required
-              style={{
-                background: 'rgba(255, 255, 255, 0.8)',
-                borderColor: 'rgba(218, 165, 32, 0.5)',
-              }}
-            />
-          </div>
+          {/* Title input - Hidden for Gratitude category */}
+          {!isGratitudeCategory && (
+            <div>
+              <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
+                {t('forum.title_label')} *
+              </label>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t('forum.title_placeholder')}
+                required
+                style={{
+                  background: 'rgba(255, 255, 255, 0.8)',
+                  borderColor: 'rgba(218, 165, 32, 0.5)',
+                }}
+              />
+            </div>
+          )}
 
           {/* Content textarea */}
           <div>
             <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
-              {t('forum.content')} *
+              {isGratitudeCategory ? t('forum.gratitude_content', 'Lời biết ơn') : t('forum.content')} *
             </label>
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={t('forum.content_placeholder')}
+              onKeyDown={handleContentKeyDown}
+              onPaste={handleContentPaste}
+              placeholder={isGratitudeCategory 
+                ? t('forum.gratitude_placeholder', 'Viết lời biết ơn của bạn (không xuống dòng)...') 
+                : t('forum.content_placeholder')
+              }
               required
-              rows={6}
+              rows={isGratitudeCategory ? 3 : 6}
               style={{
                 background: 'rgba(255, 255, 255, 0.8)',
                 borderColor: 'rgba(218, 165, 32, 0.5)',
@@ -236,8 +271,8 @@ export function CreatePostDialog({
             />
           </div>
 
-          {/* Image upload */}
-          {!isEditing && (
+          {/* Image upload - Hidden for Gratitude category */}
+          {!isEditing && !isGratitudeCategory && (
             <div>
               <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
                 <span className="flex items-center gap-2">
@@ -324,7 +359,7 @@ export function CreatePostDialog({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || !title.trim() || !content.trim()}
+              disabled={isSubmitting || (!isGratitudeCategory && !title.trim()) || !content.trim()}
               className="flex-1 text-white"
               style={{
                 background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',

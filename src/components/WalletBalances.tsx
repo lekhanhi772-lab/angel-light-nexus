@@ -11,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import camlyLogo from '@/assets/fun-profile-logo.png';
+// Official CAMLY logo URL from BscScan
+const CAMLY_LOGO_URL = 'https://bscscan.com/token/images/camlycoin_32.png';
 
 // Supported chains for network switching
 const SUPPORTED_CHAINS = [
@@ -43,7 +44,7 @@ const TOKEN_ICONS: Record<string, string> = {
   BUSD: 'https://assets.coingecko.com/coins/images/9576/small/BUSD.png',
   DAI: 'https://assets.coingecko.com/coins/images/9956/small/Badge_Dai.png',
   DOGE: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png',
-  CAMLY: camlyLogo, // Use local asset for CAMLY
+  CAMLY: CAMLY_LOGO_URL,
 };
 
 const formatUsd = (value: number): string => {

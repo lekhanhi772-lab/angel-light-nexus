@@ -1,5 +1,5 @@
 import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
-import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle, ChevronDown } from 'lucide-react';
+import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle, ChevronDown, Send } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import { useSwitchChain } from 'wagmi';
@@ -11,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TransferDialog } from './TransferDialog';
+
 // Official CAMLY logo URL from BscScan
 const CAMLY_LOGO_URL = 'https://bscscan.com/token/images/camlycoin_32.png';
 
@@ -132,6 +134,7 @@ export const WalletBalances = () => {
   } = useWalletBalances();
   const { switchChain, isPending: isSwitching } = useSwitchChain();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
   const chainName = CHAIN_NAMES[chainId] || `Chain ${chainId}`;
   const isOnBnbChain = chainId === 56;
 
@@ -276,8 +279,23 @@ export const WalletBalances = () => {
             <p className="text-sm" style={{ color: '#8B6914' }}>
               ≈ {formatVnd(totalUsdValue)}
             </p>
+            {/* Transfer Button */}
+            <Button
+              onClick={() => setIsTransferOpen(true)}
+              className="mt-3 text-white"
+              size="sm"
+              style={{
+                background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',
+              }}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              Chuyển tiền
+            </Button>
           </>
         )}
+
+        {/* Transfer Dialog */}
+        <TransferDialog open={isTransferOpen} onOpenChange={setIsTransferOpen} />
       </div>
 
       {/* Error State */}

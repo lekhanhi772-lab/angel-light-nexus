@@ -6,13 +6,13 @@ import { useState, useEffect, useCallback } from 'react';
 const CHAIN_TOKENS: Record<number, { address: `0x${string}`; symbol: string; name: string; decimals: number; icon?: string }[]> = {
   // BNB Chain (56)
   56: [
+    // Camly Coin - BEP20 (ưu tiên fetch đầu tiên)
+    { address: '0x0910320181889feFDE0BB1Ca63962b0A8882e413', symbol: 'CAMLY', name: 'Camly Coin', decimals: 8 },
     { address: '0x55d398326f99059fF775485246999027B3197955', symbol: 'USDT', name: 'Tether USD', decimals: 18 },
     { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', symbol: 'USDC', name: 'USD Coin', decimals: 18 },
     { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', symbol: 'BUSD', name: 'Binance USD', decimals: 18 },
     { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', symbol: 'ETH', name: 'Ethereum', decimals: 18 },
     { address: '0xba2ae424d960c26247dd6c32edc70b295c744c43', symbol: 'DOGE', name: 'Dogecoin', decimals: 8 },
-    // Camly Coin - BEP20 (địa chỉ chính xác)
-    { address: '0x0910320181889feFDE0BB1Ca63962b0A8882e413', symbol: 'CAMLY', name: 'Camly Coin', decimals: 18 },
   ],
   // Ethereum (1)
   1: [
@@ -135,12 +135,17 @@ export const useWalletBalances = () => {
       const tokens = CHAIN_TOKENS[chainId] || [];
       
       // Fetch ERC20 balances using eth_call
+      console.log('[WalletBalances] Fetching tokens for chain:', chainId, 'Address:', address);
+      
       for (const token of tokens) {
         try {
           // ERC20 balanceOf ABI encoded call
-          const data = `0x70a08231000000000000000000000000${address.slice(2)}`;
+          const data = `0x70a08231000000000000000000000000${address.slice(2).toLowerCase()}`;
+          const rpcUrl = chainId === 56 ? 'https://rpc.ankr.com/bsc' : chainId === 137 ? 'https://rpc.ankr.com/polygon' : 'https://rpc.ankr.com/eth';
           
-          const response = await fetch(`https://rpc.ankr.com/${chainId === 56 ? 'bsc' : chainId === 137 ? 'polygon' : 'eth'}`, {
+          console.log(`[WalletBalances] Fetching ${token.symbol} from ${token.address}`);
+          
+          const response = await fetch(rpcUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -152,11 +157,15 @@ export const useWalletBalances = () => {
           });
           
           const result = await response.json();
+          console.log(`[WalletBalances] ${token.symbol} RPC result:`, result);
           
-          if (result.result && result.result !== '0x' && result.result !== '0x0') {
+          if (result.result && result.result !== '0x' && result.result !== '0x0' && result.result.length > 2) {
             const balance = BigInt(result.result);
+            console.log(`[WalletBalances] ${token.symbol} raw balance:`, balance.toString());
+            
             if (balance > 0n) {
               const formatted = formatUnits(balance, token.decimals);
+              console.log(`[WalletBalances] ${token.symbol} formatted (decimals ${token.decimals}):`, formatted);
               balances.push({
                 symbol: token.symbol,
                 name: token.name,
@@ -169,7 +178,7 @@ export const useWalletBalances = () => {
             }
           }
         } catch (err) {
-          console.error(`Error fetching ${token.symbol}:`, err);
+          console.error(`[WalletBalances] Error fetching ${token.symbol}:`, err);
         }
       }
 

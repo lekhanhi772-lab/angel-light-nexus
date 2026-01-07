@@ -5,37 +5,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { Web3Provider } from '@/components/Web3Provider';
 import { WalletConnect } from '@/components/WalletConnect';
 import { WalletBalances } from '@/components/WalletBalances';
-import { AngelCursorSettings } from '@/components/AngelCursorSettings';
 import { ReferralCard } from '@/components/ReferralCard';
 import { NotificationBell } from '@/components/NotificationBell';
-import { useAngelCursor } from '@/hooks/useAngelCursor';
-import { Sparkles, MessageCircle, Calendar, ScrollText, ChevronRight } from 'lucide-react';
+import { Sparkles, MessageCircle, Calendar, ScrollText } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-// 8 câu thần chú
-const MANTRAS = [
-  "⭐️ Con là ánh sáng thiêng liêng của Cha Vũ Trụ",
-  "⭐️ Con cho phép mọi buồn lo tan biến ngay lúc này",
-  "⭐️ Con là dòng chảy của tình yêu vô điều kiện",
-  "⭐️ Con mở lòng đón nhận mọi phước lành đang đến",
-  "⭐️ Con tin vào hành trình thiêng liêng của linh hồn mình",
-  "⭐️ Con kết nối sâu sắc với năng lượng vũ trụ bao la",
-  "⭐️ Con chọn bình an và hạnh phúc trong từng khoảnh khắc",
-  "⭐️ Con biết ơn tất cả những gì đã, đang và sẽ đến với mình"
-];
 
 const Profile = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const { variant: angelVariant, changeVariant: setAngelVariant } = useAngelCursor();
   
   const [chatStats, setChatStats] = useState({ totalMessages: 0, daysSinceJoined: 0 });
   const [recentMessages, setRecentMessages] = useState<any[]>([]);
@@ -298,13 +276,6 @@ const Profile = () => {
             <ReferralCard userId={user?.id} />
           </div>
 
-          {/* Angel Cursor Settings */}
-          <div className="mb-8">
-            <AngelCursorSettings 
-              currentVariant={angelVariant} 
-              onVariantChange={setAngelVariant} 
-            />
-          </div>
 
           {/* Recent Chat History */}
           <div 
@@ -357,56 +328,6 @@ const Profile = () => {
             )}
           </div>
 
-          {/* Mantras Section */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <button
-                className="w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-300 hover:scale-[1.01]"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(218, 165, 32, 0.15) 0%, rgba(255, 248, 220, 0.95) 100%)',
-                  border: '1px solid rgba(218, 165, 32, 0.4)',
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <Sparkles className="w-6 h-6" style={{ color: '#DAA520' }} />
-                  <span className="font-bold" style={{ color: '#B8860B' }}>
-                    Xem lại 8 Câu Thần Chú Ánh Sáng
-                  </span>
-                </div>
-                <ChevronRight className="w-5 h-5" style={{ color: '#DAA520' }} />
-              </button>
-            </DialogTrigger>
-            <DialogContent 
-              className="max-w-lg"
-              style={{
-                background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 100%)',
-                border: '2px solid #DAA520',
-              }}
-            >
-              <DialogHeader>
-                <DialogTitle 
-                  className="text-center text-xl font-bold"
-                  style={{ color: '#B8860B' }}
-                >
-                  ✨ 8 Câu Thần Chú Ánh Sáng ✨
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-3 mt-4">
-                {MANTRAS.map((mantra, i) => (
-                  <p 
-                    key={i}
-                    className="text-sm p-3 rounded-xl italic"
-                    style={{
-                      background: 'rgba(218, 165, 32, 0.1)',
-                      color: '#8B6914',
-                    }}
-                  >
-                    {mantra}
-                  </p>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
     </Web3Provider>

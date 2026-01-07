@@ -3,27 +3,26 @@ import { formatUnits } from 'viem';
 import { useState, useEffect, useCallback } from 'react';
 
 // Popular tokens on different chains (BNB Chain, Ethereum, etc.)
-const CHAIN_TOKENS: Record<number, { address: `0x${string}`; symbol: string; name: string; decimals: number; icon?: string }[]> = {
+const CHAIN_TOKENS: Record<number, { address: `0x${string}`; symbol: string; name: string }[]> = {
   // BNB Chain (56)
   56: [
     // Camly Coin - BEP20 (ưu tiên fetch đầu tiên)
-    { address: '0x0910320181889feFDE0BB1Ca63962b0A8882e413', symbol: 'CAMLY', name: 'Camly Coin', decimals: 8 },
-    { address: '0x55d398326f99059fF775485246999027B3197955', symbol: 'USDT', name: 'Tether USD', decimals: 18 },
-    { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', symbol: 'USDC', name: 'USD Coin', decimals: 18 },
-    { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', symbol: 'BUSD', name: 'Binance USD', decimals: 18 },
-    { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', symbol: 'ETH', name: 'Ethereum', decimals: 18 },
-    { address: '0xba2ae424d960c26247dd6c32edc70b295c744c43', symbol: 'DOGE', name: 'Dogecoin', decimals: 8 },
+    { address: '0x0910320181889feFDE0BB1Ca63962b0A8882e413', symbol: 'CAMLY', name: 'Camly Coin' },
+    { address: '0x55d398326f99059fF775485246999027B3197955', symbol: 'USDT', name: 'Tether USD' },
+    { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', symbol: 'USDC', name: 'USD Coin' },
+    { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', symbol: 'BUSD', name: 'Binance USD' },
+    { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', symbol: 'ETH', name: 'Ethereum' },
+    { address: '0xba2ae424d960c26247dd6c32edc70b295c744c43', symbol: 'DOGE', name: 'Dogecoin' },
   ],
   // Ethereum (1)
   1: [
-    { address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', symbol: 'USDT', name: 'Tether USD', decimals: 6 },
-    { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', name: 'USD Coin', decimals: 6 },
-    { address: '0x6B175474E89094C44Da98b954EesdfFD691dEB623Fd', symbol: 'DAI', name: 'Dai', decimals: 18 },
+    { address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', symbol: 'USDT', name: 'Tether USD' },
+    { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', symbol: 'USDC', name: 'USD Coin' },
   ],
   // Polygon (137)
   137: [
-    { address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', symbol: 'USDT', name: 'Tether USD', decimals: 6 },
-    { address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', symbol: 'USDC', name: 'USD Coin', decimals: 6 },
+    { address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', symbol: 'USDT', name: 'Tether USD' },
+    { address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', symbol: 'USDC', name: 'USD Coin' },
   ],
 };
 
@@ -50,6 +49,23 @@ const CHAIN_NATIVE: Record<number, { symbol: string; name: string }> = {
   8453: { symbol: 'ETH', name: 'Ethereum' },
 };
 
+// Multiple RPC URLs for fallback
+const RPC_URLS: Record<number, string[]> = {
+  56: [
+    'https://bsc-dataseed.binance.org',
+    'https://bsc-dataseed1.binance.org',
+    'https://bsc-dataseed2.binance.org',
+    'https://bsc.publicnode.com',
+  ],
+  1: ['https://eth.llamarpc.com', 'https://ethereum.publicnode.com'],
+  137: ['https://polygon-rpc.com', 'https://polygon.llamarpc.com'],
+};
+
+// ERC20 balanceOf selector: 0x70a08231
+// ERC20 decimals selector: 0x313ce567
+const BALANCE_OF_SELECTOR = '0x70a08231';
+const DECIMALS_SELECTOR = '0x313ce567';
+
 export interface TokenBalance {
   symbol: string;
   name: string;
@@ -60,6 +76,41 @@ export interface TokenBalance {
   isNative: boolean;
   address?: string;
   icon?: string;
+}
+
+// Helper to call RPC with fallback
+async function callRpcWithFallback(
+  chainId: number,
+  method: string,
+  params: unknown[]
+): Promise<unknown> {
+  const rpcUrls = RPC_URLS[chainId] || [];
+  
+  for (const rpcUrl of rpcUrls) {
+    try {
+      const response = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          method,
+          params,
+          id: Date.now(),
+        }),
+      });
+      
+      if (!response.ok) continue;
+      
+      const data = await response.json();
+      if (data.error) continue;
+      
+      return data.result;
+    } catch {
+      continue;
+    }
+  }
+  
+  throw new Error(`All RPCs failed for chain ${chainId}`);
 }
 
 export const useWalletBalances = () => {
@@ -134,51 +185,48 @@ export const useWalletBalances = () => {
       // Get token list for current chain
       const tokens = CHAIN_TOKENS[chainId] || [];
       
-      // Fetch ERC20 balances using eth_call
       console.log('[WalletBalances] Fetching tokens for chain:', chainId, 'Address:', address);
       
+      // Fetch each token balance
       for (const token of tokens) {
         try {
-          // ERC20 balanceOf ABI encoded call
-          const data = `0x70a08231000000000000000000000000${address.slice(2).toLowerCase()}`;
-          const rpcUrl = chainId === 56 ? 'https://rpc.ankr.com/bsc' : chainId === 137 ? 'https://rpc.ankr.com/polygon' : 'https://rpc.ankr.com/eth';
+          // Encode balanceOf call data
+          const balanceOfData = `${BALANCE_OF_SELECTOR}000000000000000000000000${address.slice(2).toLowerCase()}`;
           
-          console.log(`[WalletBalances] Fetching ${token.symbol} from ${token.address}`);
+          console.log(`[WalletBalances] Reading ${token.symbol} at ${token.address}`);
           
-          const response = await fetch(rpcUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_call',
-              params: [{ to: token.address, data }, 'latest'],
-              id: 1,
-            }),
-          });
+          // Read balance and decimals in parallel
+          const [balanceResult, decimalsResult] = await Promise.all([
+            callRpcWithFallback(chainId, 'eth_call', [{ to: token.address, data: balanceOfData }, 'latest']),
+            callRpcWithFallback(chainId, 'eth_call', [{ to: token.address, data: DECIMALS_SELECTOR }, 'latest']),
+          ]);
           
-          const result = await response.json();
-          console.log(`[WalletBalances] ${token.symbol} RPC result:`, result);
+          if (!balanceResult || balanceResult === '0x' || balanceResult === '0x0') {
+            console.log(`[WalletBalances] ${token.symbol}: no balance or invalid response`);
+            continue;
+          }
           
-          if (result.result && result.result !== '0x' && result.result !== '0x0' && result.result.length > 2) {
-            const balance = BigInt(result.result);
-            console.log(`[WalletBalances] ${token.symbol} raw balance:`, balance.toString());
+          const balance = BigInt(balanceResult as string);
+          const decimals = decimalsResult ? parseInt(decimalsResult as string, 16) : 18;
+          
+          console.log(`[WalletBalances] ${token.symbol}: balance=${balance}, decimals=${decimals}`);
+          
+          if (balance > 0n) {
+            const formatted = formatUnits(balance, decimals);
+            console.log(`[WalletBalances] ${token.symbol} formatted:`, formatted);
             
-            if (balance > 0n) {
-              const formatted = formatUnits(balance, token.decimals);
-              console.log(`[WalletBalances] ${token.symbol} formatted (decimals ${token.decimals}):`, formatted);
-              balances.push({
-                symbol: token.symbol,
-                name: token.name,
-                balance: balance.toString(),
-                balanceFormatted: parseFloat(formatted).toFixed(6),
-                decimals: token.decimals,
-                isNative: false,
-                address: token.address,
-              });
-            }
+            balances.push({
+              symbol: token.symbol,
+              name: token.name,
+              balance: balance.toString(),
+              balanceFormatted: parseFloat(formatted).toFixed(6),
+              decimals,
+              isNative: false,
+              address: token.address,
+            });
           }
         } catch (err) {
-          console.error(`[WalletBalances] Error fetching ${token.symbol}:`, err);
+          console.error(`[WalletBalances] Error reading ${token.symbol}:`, err);
         }
       }
 

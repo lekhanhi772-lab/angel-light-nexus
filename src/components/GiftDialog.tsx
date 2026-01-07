@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Gift, Loader2, ArrowRight, Wallet, CheckCircle, XCircle } from 'lucide-react';
-import { useAccount, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi';
-import { parseEther, parseUnits } from 'viem';
+import { useAccount, useSendTransaction, useWaitForTransactionReceipt, useWriteContract, useChainId, useConfig } from 'wagmi';
+import { parseEther, parseUnits, erc20Abi } from 'viem';
 import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
@@ -14,6 +14,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+
+// Token icons
+const TOKEN_ICONS: Record<string, string> = {
+  BNB: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+  ETH: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png',
+  MATIC: 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png',
+  CAMLY: 'https://assets.coingecko.com/coins/images/24087/small/camly.png',
+};
 
 interface GiftDialogProps {
   open: boolean;
@@ -38,13 +46,21 @@ export function GiftDialog({
   const [amount, setAmount] = useState('');
   const [step, setStep] = useState<'select' | 'confirm' | 'success' | 'error'>('select');
 
-  const { sendTransaction, isPending, data: txHash } = useSendTransaction();
+  // Native token transfer
+  const { sendTransaction, isPending: isNativePending, data: nativeTxHash } = useSendTransaction();
+  
+  // ERC20 token transfer
+  const { writeContract, isPending: isErc20Pending, data: erc20TxHash } = useWriteContract();
+  
+  // Get the correct hash based on token type
+  const txHash = selectedToken?.isNative ? nativeTxHash : erc20TxHash;
+  const isPending = isNativePending || isErc20Pending;
   
   const { isLoading: isTxLoading, isSuccess: isTxSuccess, isError: isTxError } = useWaitForTransactionReceipt({
     hash: txHash,
   });
 
-  // Handle native token transfer
+  // Handle token transfer (native or ERC20)
   const handleSendGift = async () => {
     if (!selectedToken || !amount || !recipientAddress) return;
 
@@ -56,10 +72,15 @@ export function GiftDialog({
           value: parseEther(amount),
         });
       } else {
-        // For ERC20 tokens - we need to use contract write
-        // This is a simplified version - in production you'd use writeContract
-        toast.error(t('gift.erc20_not_supported', 'Hiện tại chỉ hỗ trợ gửi BNB/ETH. Token ERC20 sẽ sớm được hỗ trợ!'));
-        return;
+        // Send ERC20 token (CAMLY, etc.)
+        const tokenAmount = parseUnits(amount, selectedToken.decimals);
+        
+        writeContract({
+          address: selectedToken.address as `0x${string}`,
+          abi: erc20Abi,
+          functionName: 'transfer',
+          args: [recipientAddress as `0x${string}`, tokenAmount],
+        } as any); // Type assertion to bypass strict wagmi v2 typing
       }
       setStep('confirm');
     } catch (error) {
@@ -69,14 +90,15 @@ export function GiftDialog({
   };
 
   // Watch transaction status
-  if (isTxSuccess && step === 'confirm') {
-    setStep('success');
-    toast.success(t('gift.success', 'Đã gửi quà thành công! ✨'));
-  }
-
-  if (isTxError && step === 'confirm') {
-    setStep('error');
-  }
+  useEffect(() => {
+    if (isTxSuccess && step === 'confirm') {
+      setStep('success');
+      toast.success(t('gift.success', 'Đã gửi quà thành công! ✨'));
+    }
+    if (isTxError && step === 'confirm') {
+      setStep('error');
+    }
+  }, [isTxSuccess, isTxError, step, t]);
 
   const resetDialog = () => {
     setSelectedToken(null);
@@ -91,7 +113,10 @@ export function GiftDialog({
     onOpenChange(open);
   };
 
-  const nativeTokens = tokenBalances.filter(t => t.isNative);
+  // Show native tokens AND CAMLY in the gift list
+  const giftableTokens = tokenBalances.filter(t => 
+    t.isNative || t.symbol === 'CAMLY'
+  );
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -150,46 +175,69 @@ export function GiftDialog({
                   <div className="flex items-center justify-center py-4">
                     <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#DAA520' }} />
                   </div>
-                ) : nativeTokens.length > 0 ? (
+                ) : giftableTokens.length > 0 ? (
                   <div className="grid gap-2">
-                    {nativeTokens.map((token) => (
-                      <button
-                        key={token.symbol}
-                        onClick={() => setSelectedToken(token)}
-                        className={`p-3 rounded-xl flex items-center justify-between transition-all ${
-                          selectedToken?.symbol === token.symbol 
-                            ? 'ring-2 ring-[#DAA520]' 
-                            : 'hover:bg-[#FFFACD]'
-                        }`}
-                        style={{
-                          background: selectedToken?.symbol === token.symbol 
-                            ? 'rgba(218, 165, 32, 0.15)' 
-                            : 'rgba(255, 255, 255, 0.6)',
-                          border: '1px solid rgba(218, 165, 32, 0.3)',
-                        }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div 
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                            style={{ background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)' }}
-                          >
-                            {token.symbol.charAt(0)}
+                    {giftableTokens.map((token) => {
+                      const iconUrl = TOKEN_ICONS[token.symbol];
+                      return (
+                        <button
+                          key={`${token.symbol}-${token.address || 'native'}`}
+                          onClick={() => setSelectedToken(token)}
+                          className={`p-3 rounded-xl flex items-center justify-between transition-all ${
+                            selectedToken?.symbol === token.symbol 
+                              ? 'ring-2 ring-[#DAA520]' 
+                              : 'hover:bg-[#FFFACD]'
+                          }`}
+                          style={{
+                            background: selectedToken?.symbol === token.symbol 
+                              ? 'rgba(218, 165, 32, 0.15)' 
+                              : token.symbol === 'CAMLY'
+                              ? 'linear-gradient(135deg, rgba(218, 165, 32, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%)'
+                              : 'rgba(255, 255, 255, 0.6)',
+                            border: token.symbol === 'CAMLY' 
+                              ? '1px solid rgba(218, 165, 32, 0.5)' 
+                              : '1px solid rgba(218, 165, 32, 0.3)',
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            {iconUrl ? (
+                              <img 
+                                src={iconUrl} 
+                                alt={token.symbol}
+                                className="w-8 h-8 rounded-full"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <div 
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                                style={{ background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)' }}
+                              >
+                                {token.symbol.charAt(0)}
+                              </div>
+                            )}
+                            <div className="text-left">
+                              <p className="font-semibold text-sm" style={{ color: '#8B6914' }}>
+                                {token.symbol}
+                                {token.symbol === 'CAMLY' && <span className="ml-1">✨</span>}
+                              </p>
+                              <p className="text-xs" style={{ color: '#8B7355' }}>{token.name}</p>
+                            </div>
                           </div>
-                          <div className="text-left">
-                            <p className="font-semibold text-sm" style={{ color: '#8B6914' }}>{token.symbol}</p>
-                            <p className="text-xs" style={{ color: '#8B7355' }}>{token.name}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium text-sm" style={{ color: '#8B6914' }}>{token.balanceFormatted}</p>
-                          {token.usdValue && (
-                            <p className="text-xs" style={{ color: '#8B7355' }}>
-                              ≈ ${token.usdValue.toFixed(2)}
+                          <div className="text-right">
+                            <p className="font-medium text-sm" style={{ color: '#8B6914' }}>
+                              {parseFloat(token.balanceFormatted).toLocaleString(undefined, { maximumFractionDigits: 6 })}
                             </p>
-                          )}
-                        </div>
-                      </button>
-                    ))}
+                            {token.usdValue !== undefined && token.usdValue > 0 && (
+                              <p className="text-xs" style={{ color: '#8B7355' }}>
+                                ≈ ${token.usdValue.toFixed(2)}
+                              </p>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-sm text-center py-4" style={{ color: '#8B7355' }}>
@@ -209,8 +257,8 @@ export function GiftDialog({
                       type="number"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      placeholder="0.01"
-                      step="0.001"
+                      placeholder={selectedToken.symbol === 'CAMLY' ? '1000' : '0.01'}
+                      step={selectedToken.symbol === 'CAMLY' ? '100' : '0.001'}
                       min="0"
                       max={selectedToken.balanceFormatted}
                       className="pr-20"

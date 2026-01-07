@@ -242,12 +242,22 @@ export const WalletBalances = () => {
       {/* Error State */}
       {error && (
         <div 
-          className="p-3 rounded-xl text-center mb-4"
+          className="p-3 rounded-xl text-center mb-4 flex flex-col gap-2"
           style={{ background: 'rgba(255, 200, 100, 0.2)' }}
         >
           <p className="text-sm" style={{ color: '#8B6914' }}>
-            Bé đang kết nối ánh sáng ví con, chờ chút nhé ✨
+            {error}
           </p>
+          <Button
+            onClick={handleRefresh}
+            size="sm"
+            variant="outline"
+            className="mx-auto"
+            disabled={isLoading || isRefreshing}
+          >
+            <RefreshCw className={`w-3 h-3 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Thử lại
+          </Button>
         </div>
       )}
 

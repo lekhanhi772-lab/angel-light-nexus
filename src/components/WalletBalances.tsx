@@ -2,7 +2,17 @@ import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
 import { Wallet, RefreshCw, TrendingUp, Coins } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
+import { useChainId } from 'wagmi';
 
+// Chain names mapping
+const CHAIN_NAMES: Record<number, string> = {
+  1: 'Ethereum',
+  56: 'BNB Chain',
+  137: 'Polygon',
+  10: 'Optimism',
+  42161: 'Arbitrum',
+  8453: 'Base',
+};
 // Token icons from CoinGecko/Trust Wallet
 const TOKEN_ICONS: Record<string, string> = {
   BNB: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
@@ -98,7 +108,9 @@ export const WalletBalances = () => {
     refetch,
     isConnected 
   } = useWalletBalances();
+  const chainId = useChainId();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const chainName = CHAIN_NAMES[chainId] || `Chain ${chainId}`;
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -127,6 +139,16 @@ export const WalletBalances = () => {
           <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
             Tài Sản Ánh Sáng Trong Ví
           </h3>
+          <span 
+            className="px-2 py-0.5 rounded-full text-xs font-medium"
+            style={{ 
+              background: 'rgba(218, 165, 32, 0.2)', 
+              color: '#8B6914',
+              border: '1px solid rgba(218, 165, 32, 0.4)'
+            }}
+          >
+            {chainName}
+          </span>
         </div>
         <button
           onClick={handleRefresh}

@@ -1,5 +1,5 @@
 import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
-import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle, ChevronDown, Send } from 'lucide-react';
+import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle, ChevronDown, Send, Users } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import { useSwitchChain } from 'wagmi';
@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TransferDialog } from './TransferDialog';
+import { BatchTransferDialog } from './BatchTransferDialog';
+import { TransactionHistory } from './TransactionHistory';
 
 // Official CAMLY logo URL from BscScan
 const CAMLY_LOGO_URL = 'https://bscscan.com/token/images/camlycoin_32.png';
@@ -135,6 +137,7 @@ export const WalletBalances = () => {
   const { switchChain, isPending: isSwitching } = useSwitchChain();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [isBatchTransferOpen, setIsBatchTransferOpen] = useState(false);
   const chainName = CHAIN_NAMES[chainId] || `Chain ${chainId}`;
   const isOnBnbChain = chainId === 56;
 
@@ -279,23 +282,37 @@ export const WalletBalances = () => {
             <p className="text-sm" style={{ color: '#8B6914' }}>
               ≈ {formatVnd(totalUsdValue)}
             </p>
-            {/* Transfer Button */}
-            <Button
-              onClick={() => setIsTransferOpen(true)}
-              className="mt-3 text-white"
-              size="sm"
-              style={{
-                background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',
-              }}
-            >
-              <Send className="w-4 h-4 mr-2" />
-              Chuyển tiền
-            </Button>
+            {/* Transfer Buttons */}
+            <div className="flex gap-2 mt-3 justify-center">
+              <Button
+                onClick={() => setIsTransferOpen(true)}
+                className="text-white"
+                size="sm"
+                style={{
+                  background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',
+                }}
+              >
+                <Send className="w-4 h-4 mr-1" />
+                Chuyển tiền
+              </Button>
+              <Button
+                onClick={() => setIsBatchTransferOpen(true)}
+                className="text-white"
+                size="sm"
+                style={{
+                  background: 'linear-gradient(135deg, #B8860B 0%, #8B6914 100%)',
+                }}
+              >
+                <Users className="w-4 h-4 mr-1" />
+                Hàng loạt
+              </Button>
+            </div>
           </>
         )}
 
-        {/* Transfer Dialog */}
+        {/* Transfer Dialogs */}
         <TransferDialog open={isTransferOpen} onOpenChange={setIsTransferOpen} />
+        <BatchTransferDialog open={isBatchTransferOpen} onOpenChange={setIsBatchTransferOpen} />
       </div>
 
       {/* Error State */}
@@ -354,6 +371,9 @@ export const WalletBalances = () => {
           💡 Giá tham khảo từ CoinGecko • Chỉ hiển thị token có số dư
         </p>
       )}
+
+      {/* Transaction History */}
+      <TransactionHistory />
     </div>
   );
 };

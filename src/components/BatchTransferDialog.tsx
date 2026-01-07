@@ -1,12 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAccount, useWriteContract, useSendTransaction, usePublicClient } from 'wagmi';
-import { parseEther, parseUnits, isAddress, encodeFunctionData } from 'viem';
-import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
-import { AlertTriangle, Users, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { parseEther, parseUnits, isAddress, encodeFunctionData, maxUint256 } from 'viem';
+import { useWalletBalances } from '@/hooks/useWalletBalances';
+import { AlertTriangle, Users, CheckCircle, XCircle, Loader2, Unlock, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -35,16 +35,47 @@ const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const
 // CAMLY token address on BSC
 const CAMLY_ADDRESS = '0x0910320181889feFDE0BB1Ca63962b0A8882e413' as const;
 
-// ERC20 transfer function signature
-const ERC20_TRANSFER_ABI = [{
-  name: 'transfer',
-  type: 'function',
-  inputs: [
-    { name: 'to', type: 'address' },
-    { name: 'amount', type: 'uint256' }
-  ],
-  outputs: [{ name: '', type: 'bool' }]
-}] as const;
+// Extended ERC20 ABI with approval functions
+const ERC20_ABI = [
+  {
+    name: 'transfer',
+    type: 'function',
+    inputs: [
+      { name: 'to', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }]
+  },
+  {
+    name: 'transferFrom',
+    type: 'function',
+    inputs: [
+      { name: 'from', type: 'address' },
+      { name: 'to', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }]
+  },
+  {
+    name: 'approve',
+    type: 'function',
+    inputs: [
+      { name: 'spender', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }]
+  },
+  {
+    name: 'allowance',
+    type: 'function',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' }
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view'
+  }
+] as const;
 
 // Multicall3 aggregate3 ABI
 const MULTICALL3_ABI = [{
@@ -75,12 +106,43 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
   const [selectedToken, setSelectedToken] = useState<'BNB' | 'CAMLY'>('CAMLY');
   const [inputText, setInputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
   const [results, setResults] = useState<TransferResult[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [allowance, setAllowance] = useState<bigint>(BigInt(0));
+  const [isCheckingAllowance, setIsCheckingAllowance] = useState(false);
   
   const { writeContractAsync } = useWriteContract();
   const { sendTransactionAsync } = useSendTransaction();
   const publicClient = usePublicClient();
+
+  // Check allowance when dialog opens or token changes
+  useEffect(() => {
+    const checkAllowance = async () => {
+      if (!open || !address || !publicClient || selectedToken !== 'CAMLY') {
+        setAllowance(BigInt(0));
+        return;
+      }
+
+      setIsCheckingAllowance(true);
+      try {
+        const currentAllowance = await publicClient.readContract({
+          address: CAMLY_ADDRESS,
+          abi: ERC20_ABI,
+          functionName: 'allowance',
+          args: [address, MULTICALL3_ADDRESS]
+        } as any);
+        setAllowance(currentAllowance as bigint);
+      } catch (err) {
+        console.error('Error checking allowance:', err);
+        setAllowance(BigInt(0));
+      } finally {
+        setIsCheckingAllowance(false);
+      }
+    };
+
+    checkAllowance();
+  }, [open, address, publicClient, selectedToken]);
 
   // Parse and validate recipients
   // Supports: comma-separated, tab-separated (Excel/Google Sheets), space-separated
@@ -138,6 +200,7 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
   const validRecipients = recipients.filter(r => r.isValid);
   const invalidRecipients = recipients.filter(r => !r.isValid);
   const totalAmount = validRecipients.reduce((sum, r) => sum + parseFloat(r.amount), 0);
+  const totalAmountWei = parseUnits(totalAmount.toString(), 8); // CAMLY has 8 decimals
 
   // Get current balance
   const currentBalance = useMemo(() => {
@@ -152,9 +215,44 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
 
   const hasEnoughBalance = currentBalance >= totalAmount;
   const isErc20 = selectedToken === 'CAMLY';
+  const hasEnoughAllowance = allowance >= totalAmountWei;
+  const needsApproval = isErc20 && !hasEnoughAllowance && validRecipients.length > 0;
+
+  const handleApprove = async () => {
+    if (!address || !chain) return;
+
+    setIsApproving(true);
+    try {
+      toast.info('Đang yêu cầu cấp quyền cho Multicall3...');
+      
+      const hash = await writeContractAsync({
+        address: CAMLY_ADDRESS,
+        abi: ERC20_ABI,
+        functionName: 'approve',
+        args: [MULTICALL3_ADDRESS, maxUint256],
+        account: address,
+        chain: chain,
+      });
+
+      toast.info('Đang chờ xác nhận...');
+      
+      if (publicClient) {
+        await publicClient.waitForTransactionReceipt({ hash });
+      }
+
+      // Update allowance
+      setAllowance(maxUint256);
+      toast.success('✅ Đã cấp quyền thành công! Bây giờ bạn có thể chuyển hàng loạt.');
+    } catch (err: any) {
+      console.error('Approve error:', err);
+      toast.error('Cấp quyền thất bại: ' + (err.shortMessage || err.message));
+    } finally {
+      setIsApproving(false);
+    }
+  };
 
   const handleBatchTransfer = async () => {
-    if (validRecipients.length === 0 || !hasEnoughBalance) return;
+    if (validRecipients.length === 0 || !hasEnoughBalance || !address) return;
 
     setIsProcessing(true);
     setResults([]);
@@ -162,17 +260,21 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
 
     try {
       if (isErc20) {
-        // Use Multicall3 for ERC20 (single confirmation)
+        // Use Multicall3 for ERC20 with transferFrom
         toast.info(`Đang chuẩn bị ${validRecipients.length} giao dịch CAMLY...`);
 
-        // Encode all transfer calls
+        // Encode all transferFrom calls
         const calls = validRecipients.map(r => ({
           target: CAMLY_ADDRESS,
           allowFailure: false,
           callData: encodeFunctionData({
-            abi: ERC20_TRANSFER_ABI,
-            functionName: 'transfer',
-            args: [r.address as `0x${string}`, parseUnits(r.amount, 8)] // CAMLY has 8 decimals
+            abi: ERC20_ABI,
+            functionName: 'transferFrom',
+            args: [
+              address, // from: user's wallet
+              r.address as `0x${string}`, // to: recipient
+              parseUnits(r.amount, 8) // amount: CAMLY has 8 decimals
+            ]
           })
         }));
 
@@ -293,6 +395,54 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
             </Select>
           </div>
 
+          {/* Approval Status for CAMLY */}
+          {isErc20 && validRecipients.length > 0 && (
+            <div 
+              className={`p-3 rounded-xl ${needsApproval ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}
+              style={{ border: '1px solid' }}
+            >
+              {isCheckingAllowance ? (
+                <p className="text-sm flex items-center gap-2 text-gray-600">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Đang kiểm tra quyền...
+                </p>
+              ) : needsApproval ? (
+                <div className="space-y-2">
+                  <p className="text-sm flex items-center gap-2 text-amber-700">
+                    <Unlock className="w-4 h-4" />
+                    Cần cấp quyền cho Multicall3 (chỉ 1 lần)
+                  </p>
+                  <Button
+                    onClick={handleApprove}
+                    disabled={isApproving}
+                    size="sm"
+                    className="w-full text-white"
+                    style={{
+                      background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                    }}
+                  >
+                    {isApproving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Đang cấp quyền...
+                      </>
+                    ) : (
+                      <>
+                        <Unlock className="w-4 h-4 mr-2" />
+                        🔓 Cấp Quyền Một Lần
+                      </>
+                    )}
+                  </Button>
+                </div>
+              ) : (
+                <p className="text-sm flex items-center gap-2 text-green-700">
+                  <ShieldCheck className="w-4 h-4" />
+                  ✅ Đã cấp quyền - Sẵn sàng batch transfer
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Recipients Input */}
           <div>
             <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
@@ -385,10 +535,10 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
           {/* Action Button */}
           <Button
             onClick={handleBatchTransfer}
-            disabled={validRecipients.length === 0 || !hasEnoughBalance || isProcessing}
+            disabled={validRecipients.length === 0 || !hasEnoughBalance || isProcessing || (isErc20 && needsApproval)}
             className="w-full text-white"
             style={{
-              background: validRecipients.length > 0 && hasEnoughBalance
+              background: validRecipients.length > 0 && hasEnoughBalance && (!isErc20 || !needsApproval)
                 ? 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)'
                 : undefined,
             }}

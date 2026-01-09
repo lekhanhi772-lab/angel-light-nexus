@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import UserProfile from "./pages/UserProfile";
 import Forum from "./pages/Forum";
 import ForumPostDetail from "./pages/ForumPostDetail";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
 import { AngelCompanion } from "./components/AngelCompanion";
@@ -37,6 +38,7 @@ const AppContent = () => {
             <Route path="/user/:userId" element={<UserProfile />} />
             <Route path="/forum" element={<Forum />} />
             <Route path="/forum/:postId" element={<ForumPostDetail />} />
+            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

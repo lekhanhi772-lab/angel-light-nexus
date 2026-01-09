@@ -8,6 +8,7 @@ import angelAvatar from '@/assets/angel-avatar.png';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useAuth } from '@/hooks/useAuth';
 import { useVoiceIO } from '@/hooks/useVoiceIO';
+import { useGuestChat } from '@/hooks/useGuestChat';
 import VoiceControls from '@/components/VoiceControls';
 import SpeakButton from '@/components/SpeakButton';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +44,7 @@ const IMAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-im
 const Chat = () => {
   const { user, session, loading: authLoading } = useAuth();
   const { t, i18n } = useTranslation();
+  const { saveGuestMessage, getGuestMessages, clearGuestMessages, hasGuestMessages } = useGuestChat();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -116,11 +118,76 @@ const Chat = () => {
       loadConversations();
     } else if (!authLoading && !user) {
       console.log('[chat] guest mode (no user)');
-      // Guest mode - clear conversations
+      // Guest mode - restore messages from localStorage
       setConversations([]);
       setCurrentConversationId(null);
-      setMessages([]);
+      const guestMsgs = getGuestMessages();
+      if (guestMsgs.length > 0) {
+        setMessages(guestMsgs.map(m => ({
+          role: m.role,
+          content: m.content,
+          imageUrl: m.imageUrl
+        })));
+      } else {
+        setMessages([]);
+      }
     }
+  }, [user, authLoading]);
+
+  // Migrate guest messages when user logs in
+  useEffect(() => {
+    const migrateGuestMessages = async () => {
+      if (!authLoading && user && hasGuestMessages()) {
+        console.log('[chat] Migrating guest messages to user account');
+        const guestMsgs = getGuestMessages();
+        
+        if (guestMsgs.length > 0) {
+          try {
+            // Create new conversation with first message as title
+            const title = guestMsgs[0].content.slice(0, 50) + (guestMsgs[0].content.length > 50 ? '...' : '');
+            const { data: conv, error: convError } = await supabase
+              .from('conversations')
+              .insert({ title, user_id: user.id })
+              .select()
+              .single();
+            
+            if (convError) {
+              console.error('[chat] Error creating conversation for migration:', convError);
+              return;
+            }
+            
+            if (conv) {
+              // Insert all messages
+              const messagesToInsert = guestMsgs.map(m => ({
+                conversation_id: conv.id,
+                role: m.role,
+                content: m.content,
+                image_url: m.imageUrl || null
+              }));
+              
+              const { error: msgError } = await supabase
+                .from('chat_messages')
+                .insert(messagesToInsert);
+              
+              if (msgError) {
+                console.error('[chat] Error migrating messages:', msgError);
+                return;
+              }
+              
+              // Clear localStorage and reload
+              clearGuestMessages();
+              toast.success(t('chat.history_saved'));
+              console.log('[chat] Guest messages migrated successfully');
+              loadConversations();
+            }
+          } catch (error) {
+            console.error('[chat] Migration error:', error);
+          }
+        }
+      }
+    };
+    
+    migrateGuestMessages();
   }, [user, authLoading]);
 
   // Load messages when conversation changes
@@ -403,8 +470,13 @@ const Chat = () => {
       }
     }
 
-    // Save assistant message (only if logged in)
-    await saveMessage(conversationId, { role: 'assistant', content: assistantContent });
+    // Save assistant message
+    if (conversationId) {
+      await saveMessage(conversationId, { role: 'assistant', content: assistantContent });
+    } else if (!user) {
+      // Guest mode - save to localStorage
+      saveGuestMessage({ role: 'assistant', content: assistantContent });
+    }
   };
 
   const sendMessage = async (text?: string) => {
@@ -445,9 +517,12 @@ const Chat = () => {
         }
       }
 
-      // Save user message (only if logged in and have conversation)
+      // Save user message
       if (convId) {
         await saveMessage(convId, userMessage);
+      } else if (!user) {
+        // Guest mode - save to localStorage
+        saveGuestMessage({ role: userMessage.role, content: userMessage.content, imageUrl: userMessage.imageUrl });
       }
 
       if (shouldGenerateImage) {
@@ -473,6 +548,9 @@ const Chat = () => {
         if (convId) {
           await saveMessage(convId, assistantMessage);
           await saveGeneratedImage(convId, messageText, result.imageUrl);
+        } else if (!user) {
+          // Guest mode - save assistant message to localStorage
+          saveGuestMessage({ role: assistantMessage.role, content: assistantMessage.content, imageUrl: assistantMessage.imageUrl });
         }
       } else {
         await sendChatMessage([...messages, userMessage], convId);

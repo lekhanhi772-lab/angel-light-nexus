@@ -151,8 +151,8 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3 relative z-10">
+      {/* Action Buttons - Stack on very small screens */}
+      <div className="flex flex-col sm:flex-row gap-3 relative z-10">
         <Button
           onClick={copyReferralLink}
           disabled={!canInviteMore}
@@ -185,7 +185,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent 
-            className="w-48"
+            className="w-48 z-50"
             style={{
               background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 100%)',
               border: '1px solid #DAA520',

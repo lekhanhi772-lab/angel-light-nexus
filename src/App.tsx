@@ -26,7 +26,7 @@ const AppContent = () => {
       <Sonner />
       <BrowserRouter>
         <DivineSidebar />
-        <div className="md:ml-[280px] ml-[70px] transition-all duration-300">
+        <div className="md:ml-[280px] ml-0 transition-all duration-300">
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/chat" element={<Chat />} />

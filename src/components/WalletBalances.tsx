@@ -282,11 +282,11 @@ export const WalletBalances = () => {
             <p className="text-sm" style={{ color: '#8B6914' }}>
               ≈ {formatVnd(totalUsdValue)}
             </p>
-            {/* Transfer Buttons */}
-            <div className="flex gap-2 mt-3 justify-center">
+            {/* Transfer Buttons - Stack on small screens */}
+            <div className="flex flex-col sm:flex-row gap-2 mt-3 justify-center">
               <Button
                 onClick={() => setIsTransferOpen(true)}
-                className="text-white"
+                className="text-white w-full sm:w-auto"
                 size="sm"
                 style={{
                   background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',
@@ -297,7 +297,7 @@ export const WalletBalances = () => {
               </Button>
               <Button
                 onClick={() => setIsBatchTransferOpen(true)}
-                className="text-white"
+                className="text-white w-full sm:w-auto"
                 size="sm"
                 style={{
                   background: 'linear-gradient(135deg, #B8860B 0%, #8B6914 100%)',

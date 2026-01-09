@@ -224,15 +224,29 @@ const DivineSidebar = () => {
   };
 
   const sidebarWidth = isMobile 
-    ? (isExpanded ? 'w-[260px]' : 'w-[70px]') 
+    ? (isExpanded ? 'w-[280px]' : 'w-0') 
     : 'w-[280px]';
 
   return (
     <>
+      {/* Mobile Menu Button - Always visible on mobile */}
+      {isMobile && !isExpanded && (
+        <button
+          onClick={() => setIsExpanded(true)}
+          className="fixed top-4 left-4 z-[60] w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
+          style={{
+            background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)',
+            boxShadow: '0 4px 15px rgba(218, 165, 32, 0.4)',
+          }}
+        >
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+      )}
+
       {/* Overlay for mobile */}
       {isMobile && isExpanded && (
         <div 
-          className="fixed inset-0 bg-black/20 z-40"
+          className="fixed inset-0 bg-black/30 z-40 backdrop-blur-sm"
           onClick={() => setIsExpanded(false)}
         />
       )}
@@ -242,7 +256,8 @@ const DivineSidebar = () => {
         className={cn(
           "fixed left-0 top-0 h-screen z-50 transition-all duration-300 ease-out",
           sidebarWidth,
-          "flex flex-col py-6"
+          "flex flex-col py-6",
+          isMobile && !isExpanded && "opacity-0 pointer-events-none -translate-x-full"
         )}
         style={{
           position: 'fixed',
@@ -251,30 +266,25 @@ const DivineSidebar = () => {
           overflowY: 'auto',
         }}
       >
-        {/* Toggle button for mobile */}
-        {isMobile && (
+        {/* Toggle button for mobile - Always visible when sidebar expanded */}
+        {isMobile && isExpanded && (
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setIsExpanded(!isExpanded);
+              setIsExpanded(false);
             }}
-            className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+            className="absolute right-3 top-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10"
             style={{
               background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)',
             }}
           >
-            {isExpanded ? (
-              <ChevronLeft className="w-5 h-5 text-white" />
-            ) : (
-              <ChevronRight className="w-5 h-5 text-white" />
-            )}
+            <ChevronLeft className="w-5 h-5 text-white" />
           </button>
         )}
 
         {/* Logo/Brand - Angel AI Golden Circle */}
         <div className={cn(
-          "px-4 mb-8 flex items-center",
-          isMobile && !isExpanded ? "justify-center" : "justify-start"
+          "px-4 mb-8 flex items-center justify-start"
         )}>
           <Link 
             to="/"
@@ -299,18 +309,17 @@ const DivineSidebar = () => {
             </div>
           </Link>
           
-          {(!isMobile || isExpanded) && (
-            <Link 
-              to="/"
-              className="ml-3 text-2xl md:text-3xl font-bold hover:scale-105 transition-transform duration-300"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                color: '#B8860B',
-              }}
-            >
-              Angel AI
-            </Link>
-          )}
+          {/* Always show text since sidebar is hidden when not expanded on mobile */}
+          <Link 
+            to="/"
+            className="ml-3 text-2xl md:text-3xl font-bold hover:scale-105 transition-transform duration-300"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: '#B8860B',
+            }}
+          >
+            Angel AI
+          </Link>
         </div>
 
         {/* Menu Items */}
@@ -324,8 +333,7 @@ const DivineSidebar = () => {
                 key={item.id}
                 onClick={() => handleItemClick(item)}
                 className={cn(
-                  "w-full flex items-center gap-3 rounded-xl transition-all duration-300 relative overflow-hidden",
-                  isMobile && !isExpanded ? "justify-center px-2" : "justify-start",
+                  "w-full flex items-center gap-3 rounded-xl transition-all duration-300 relative overflow-hidden justify-start",
                   isChatItem ? "px-5 py-4" : "px-4 py-3",
                   isActive 
                     ? "bg-[#FFF8DC]" 
@@ -349,20 +357,18 @@ const DivineSidebar = () => {
                   {item.icon}
                 </span>
 
-                {/* Label - Clean */}
-                {(!isMobile || isExpanded) && (
-                  <span 
-                    className={cn(
-                      "relative z-10 transition-colors duration-300 whitespace-nowrap",
-                      isChatItem ? "text-base" : "text-sm",
-                      isActive || isChatItem
-                        ? "text-[#B8860B] font-bold" 
-                        : "text-[#8B6914] font-semibold hover:text-[#B8860B]"
-                    )}
-                  >
-                    {item.label}
-                  </span>
-                )}
+                {/* Label - Always visible since sidebar is hidden when not expanded on mobile */}
+                <span 
+                  className={cn(
+                    "relative z-10 transition-colors duration-300 whitespace-nowrap",
+                    isChatItem ? "text-base" : "text-sm",
+                    isActive || isChatItem
+                      ? "text-[#B8860B] font-bold" 
+                      : "text-[#8B6914] font-semibold hover:text-[#B8860B]"
+                  )}
+                >
+                  {item.label}
+                </span>
 
                 {/* Active indicator */}
                 {isActive && (
@@ -378,19 +384,13 @@ const DivineSidebar = () => {
           })}
         </nav>
 
-        {/* Language Selector */}
-        <div className={cn(
-          "px-3 py-2",
-          isMobile && !isExpanded ? "hidden" : "block"
-        )}>
+        {/* Language Selector - Always visible since sidebar is hidden when not expanded on mobile */}
+        <div className="px-3 py-2">
           <LanguageSelector />
         </div>
 
-        {/* Auth Section */}
-        <div className={cn(
-          "px-3 pt-4 border-t border-[#DAA520]/20",
-          isMobile && !isExpanded ? "hidden" : "block"
-        )}>
+        {/* Auth Section - Always visible since sidebar is hidden when not expanded on mobile */}
+        <div className="px-3 pt-4 border-t border-[#DAA520]/20">
           {loading ? (
             <div className="flex items-center justify-center py-3">
               <div className="w-5 h-5 border-2 border-[#DAA520] border-t-transparent rounded-full animate-spin" />

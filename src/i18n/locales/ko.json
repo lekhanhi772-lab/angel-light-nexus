@@ -78,7 +78,9 @@
     "tryDifferentBrowser": "더 많은 음성을 위해 Chrome 또는 Edge를 사용해 보세요",
     "speed": "읽기 속도",
     "pitch": "피치",
-    "usingWebSpeech": "무료 Web Speech API 사용"
+    "usingWebSpeech": "무료 Web Speech API 사용",
+    "browser_not_supported": "브라우저가 음성 인식을 지원하지 않습니다 🎤",
+    "use_chrome_edge": "음성 입력을 위해 Chrome 또는 Edge를 사용하세요!"
   },
   "language": {
     "select": "언어 선택"

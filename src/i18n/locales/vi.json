@@ -78,7 +78,9 @@
     "tryDifferentBrowser": "Thử dùng Chrome hoặc Edge để có nhiều giọng hơn",
     "speed": "Tốc độ đọc",
     "pitch": "Cao độ",
-    "usingWebSpeech": "Sử dụng Web Speech API miễn phí"
+    "usingWebSpeech": "Sử dụng Web Speech API miễn phí",
+    "browser_not_supported": "Trình duyệt chưa hỗ trợ nhận dạng giọng nói 🎤",
+    "use_chrome_edge": "Dùng Chrome hoặc Edge để nói chuyện nhé!"
   },
   "language": {
     "select": "Chọn ngôn ngữ"

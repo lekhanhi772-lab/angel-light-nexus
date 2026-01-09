@@ -78,7 +78,9 @@
     "tryDifferentBrowser": "Essayez Chrome ou Edge pour plus de voix",
     "speed": "Vitesse de lecture",
     "pitch": "Tonalité",
-    "usingWebSpeech": "Utilise l'API Web Speech gratuite"
+    "usingWebSpeech": "Utilise l'API Web Speech gratuite",
+    "browser_not_supported": "Le navigateur ne prend pas en charge la reconnaissance vocale 🎤",
+    "use_chrome_edge": "Utilisez Chrome ou Edge pour la saisie vocale !"
   },
   "language": {
     "select": "Choisir la langue"

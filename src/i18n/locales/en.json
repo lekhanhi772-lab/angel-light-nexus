@@ -78,7 +78,9 @@
     "tryDifferentBrowser": "Try Chrome or Edge for more voices",
     "speed": "Speech rate",
     "pitch": "Pitch",
-    "usingWebSpeech": "Using free Web Speech API"
+    "usingWebSpeech": "Using free Web Speech API",
+    "browser_not_supported": "Browser doesn't support voice recognition 🎤",
+    "use_chrome_edge": "Use Chrome or Edge for voice input!"
   },
   "language": {
     "select": "Select language"

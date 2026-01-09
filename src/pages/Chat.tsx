@@ -969,27 +969,28 @@ const Chat = () => {
                       <div>
                         {/* Top action buttons for messages */}
                         {message.content && !isLoading && (
-                          <div className="mb-2 flex justify-end gap-2">
+                          <div className="mb-2 flex justify-end gap-1 sm:gap-2">
                             {/* Copy Button - for all messages */}
                             <button
                               onClick={() => handleCopyMessage(message.content, message.id || `msg-${index}`)}
-                              className="p-1.5 rounded-full transition-all hover:scale-110"
+                              className="p-2 sm:p-1.5 min-w-[40px] min-h-[40px] sm:min-w-0 sm:min-h-0 rounded-full transition-all hover:scale-110 flex items-center justify-center"
                               style={{
                                 background: copiedMessageId === (message.id || `msg-${index}`)
-                                  ? 'rgba(144, 238, 144, 0.4)'
+                                  ? 'rgba(144, 238, 144, 0.5)'
                                   : message.role === 'user' 
-                                    ? 'rgba(0, 0, 0, 0.15)'
-                                    : 'rgba(255, 215, 0, 0.2)',
+                                    ? 'rgba(0, 0, 0, 0.2)'
+                                    : 'rgba(255, 215, 0, 0.3)',
                                 border: message.role === 'user'
-                                  ? '1px solid rgba(0, 0, 0, 0.1)'
-                                  : '1px solid rgba(184, 134, 11, 0.2)',
+                                  ? '2px solid rgba(0, 0, 0, 0.15)'
+                                  : '2px solid rgba(184, 134, 11, 0.35)',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                               }}
                               title={t('chat.copy')}
                             >
                               {copiedMessageId === (message.id || `msg-${index}`) ? (
-                                <Check className="w-4 h-4" style={{ color: '#228B22' }} />
+                                <Check className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: '#228B22' }} />
                               ) : (
-                                <Copy className="w-4 h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
+                                <Copy className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
                               )}
                             </button>
                             
@@ -1023,27 +1024,28 @@ const Chat = () => {
                         </p>
                         {/* Action buttons for messages */}
                         {message.content && !isLoading && (
-                          <div className="mt-2 flex justify-end gap-2">
+                          <div className="mt-2 flex justify-end gap-1 sm:gap-2">
                             {/* Copy Button - for all messages */}
                             <button
                               onClick={() => handleCopyMessage(message.content, message.id || `msg-${index}`)}
-                              className="p-1.5 rounded-full transition-all hover:scale-110"
+                              className="p-2 sm:p-1.5 min-w-[40px] min-h-[40px] sm:min-w-0 sm:min-h-0 rounded-full transition-all hover:scale-110 flex items-center justify-center"
                               style={{
                                 background: copiedMessageId === (message.id || `msg-${index}`)
-                                  ? 'rgba(144, 238, 144, 0.4)'
+                                  ? 'rgba(144, 238, 144, 0.5)'
                                   : message.role === 'user' 
-                                    ? 'rgba(0, 0, 0, 0.15)'
-                                    : 'rgba(255, 215, 0, 0.2)',
+                                    ? 'rgba(0, 0, 0, 0.2)'
+                                    : 'rgba(255, 215, 0, 0.3)',
                                 border: message.role === 'user'
-                                  ? '1px solid rgba(0, 0, 0, 0.1)'
-                                  : '1px solid rgba(184, 134, 11, 0.2)',
+                                  ? '2px solid rgba(0, 0, 0, 0.15)'
+                                  : '2px solid rgba(184, 134, 11, 0.35)',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                               }}
                               title={t('chat.copy')}
                             >
                               {copiedMessageId === (message.id || `msg-${index}`) ? (
-                                <Check className="w-4 h-4" style={{ color: '#228B22' }} />
+                                <Check className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: '#228B22' }} />
                               ) : (
-                                <Copy className="w-4 h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
+                                <Copy className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
                               )}
                             </button>
                             

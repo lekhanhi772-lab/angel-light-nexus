@@ -3,10 +3,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAccount, useWriteContract, useSendTransaction, usePublicClient } from 'wagmi';
+import { Switch } from '@/components/ui/switch';
+import { useAccount, useWriteContract, useSendTransaction, usePublicClient, useSwitchChain } from 'wagmi';
 import { parseEther, parseUnits, isAddress, encodeFunctionData, maxUint256 } from 'viem';
 import { useWalletBalances } from '@/hooks/useWalletBalances';
-import { AlertTriangle, Users, CheckCircle, XCircle, Loader2, Unlock, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, Users, CheckCircle, XCircle, Loader2, Unlock, ShieldCheck, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -34,6 +35,12 @@ const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const
 
 // CAMLY token address on BSC
 const CAMLY_ADDRESS = '0x0910320181889feFDE0BB1Ca63962b0A8882e413' as const;
+
+// BNB Chain ID
+const BNB_CHAIN_ID = 56;
+
+// CAMLY decimals
+const CAMLY_DECIMALS = 8;
 
 // Extended ERC20 ABI with approval functions
 const ERC20_ABI = [
@@ -103,6 +110,7 @@ const MULTICALL3_ABI = [{
 export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogProps) => {
   const { address, chain } = useAccount();
   const { tokenBalances } = useWalletBalances();
+  const { switchChain } = useSwitchChain();
   const [selectedToken, setSelectedToken] = useState<'BNB' | 'CAMLY'>('CAMLY');
   const [inputText, setInputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -111,15 +119,19 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
   const [currentIndex, setCurrentIndex] = useState(0);
   const [allowance, setAllowance] = useState<bigint>(BigInt(0));
   const [isCheckingAllowance, setIsCheckingAllowance] = useState(false);
+  const [useSequentialMode, setUseSequentialMode] = useState(false);
+  const [simulationError, setSimulationError] = useState<string | null>(null);
   
   const { writeContractAsync } = useWriteContract();
   const { sendTransactionAsync } = useSendTransaction();
   const publicClient = usePublicClient();
 
+  const isOnBnbChain = chain?.id === BNB_CHAIN_ID;
+
   // Check allowance when dialog opens or token changes
   useEffect(() => {
     const checkAllowance = async () => {
-      if (!open || !address || !publicClient || selectedToken !== 'CAMLY') {
+      if (!open || !address || !publicClient || selectedToken !== 'CAMLY' || !isOnBnbChain) {
         setAllowance(BigInt(0));
         return;
       }
@@ -142,10 +154,14 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
     };
 
     checkAllowance();
-  }, [open, address, publicClient, selectedToken]);
+  }, [open, address, publicClient, selectedToken, isOnBnbChain]);
+
+  // Reset simulation error when input changes
+  useEffect(() => {
+    setSimulationError(null);
+  }, [inputText, selectedToken, useSequentialMode]);
 
   // Parse and validate recipients
-  // Supports: comma-separated, tab-separated (Excel/Google Sheets), space-separated
   const recipients = useMemo<Recipient[]>(() => {
     if (!inputText.trim()) return [];
     
@@ -157,17 +173,12 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
       const trimmed = line.trim();
       if (!trimmed) continue;
 
-      // Support tab (Excel/Google Sheets), comma, or multiple spaces as separators
-      // Priority: tab > comma > spaces
       let parts: string[];
       if (trimmed.includes('\t')) {
-        // Tab-separated (from Excel/Google Sheets copy-paste)
         parts = trimmed.split('\t').map(p => p.trim()).filter(Boolean);
       } else if (trimmed.includes(',')) {
-        // Comma-separated
         parts = trimmed.split(',').map(p => p.trim()).filter(Boolean);
       } else {
-        // Space-separated (fallback)
         parts = trimmed.split(/\s+/).filter(Boolean);
       }
 
@@ -177,7 +188,7 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
       }
 
       const addr = parts[0].trim();
-      const amountStr = parts[1].trim();
+      const amountStr = parts[1].trim().replace(',', '.');
       const amount = parseFloat(amountStr);
 
       if (!isAddress(addr)) {
@@ -199,8 +210,25 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
 
   const validRecipients = recipients.filter(r => r.isValid);
   const invalidRecipients = recipients.filter(r => !r.isValid);
-  const totalAmount = validRecipients.reduce((sum, r) => sum + parseFloat(r.amount), 0);
-  const totalAmountWei = parseUnits(totalAmount.toString(), 8); // CAMLY has 8 decimals
+
+  // Calculate total using BigInt for precision
+  const totalAmountWei = useMemo(() => {
+    if (validRecipients.length === 0) return BigInt(0);
+    
+    try {
+      return validRecipients.reduce((sum, r) => {
+        const amountWei = parseUnits(r.amount, selectedToken === 'CAMLY' ? CAMLY_DECIMALS : 18);
+        return sum + amountWei;
+      }, BigInt(0));
+    } catch {
+      return BigInt(0);
+    }
+  }, [validRecipients, selectedToken]);
+
+  const totalAmount = useMemo(() => {
+    if (validRecipients.length === 0) return 0;
+    return validRecipients.reduce((sum, r) => sum + parseFloat(r.amount), 0);
+  }, [validRecipients]);
 
   // Get current balance
   const currentBalance = useMemo(() => {
@@ -216,10 +244,19 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
   const hasEnoughBalance = currentBalance >= totalAmount;
   const isErc20 = selectedToken === 'CAMLY';
   const hasEnoughAllowance = allowance >= totalAmountWei;
-  const needsApproval = isErc20 && !hasEnoughAllowance && validRecipients.length > 0;
+  const needsApproval = isErc20 && !hasEnoughAllowance && validRecipients.length > 0 && !useSequentialMode;
+
+  const handleSwitchNetwork = async () => {
+    try {
+      await switchChain({ chainId: BNB_CHAIN_ID });
+    } catch (err) {
+      console.error('Failed to switch network:', err);
+      toast.error('Không thể chuyển mạng. Vui lòng chuyển thủ công trong ví.');
+    }
+  };
 
   const handleApprove = async () => {
-    if (!address || !chain) return;
+    if (!address || !chain || !isOnBnbChain) return;
 
     setIsApproving(true);
     try {
@@ -238,10 +275,17 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
       
       if (publicClient) {
         await publicClient.waitForTransactionReceipt({ hash });
+        
+        // Re-read allowance from chain to ensure accuracy
+        const newAllowance = await publicClient.readContract({
+          address: CAMLY_ADDRESS,
+          abi: ERC20_ABI,
+          functionName: 'allowance',
+          args: [address, MULTICALL3_ADDRESS]
+        } as any);
+        setAllowance(newAllowance as bigint);
       }
 
-      // Update allowance
-      setAllowance(maxUint256);
       toast.success('✅ Đã cấp quyền thành công! Bây giờ bạn có thể chuyển hàng loạt.');
     } catch (err: any) {
       console.error('Approve error:', err);
@@ -252,14 +296,15 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
   };
 
   const handleBatchTransfer = async () => {
-    if (validRecipients.length === 0 || !hasEnoughBalance || !address) return;
+    if (validRecipients.length === 0 || !hasEnoughBalance || !address || !isOnBnbChain) return;
 
     setIsProcessing(true);
     setResults([]);
     setCurrentIndex(0);
+    setSimulationError(null);
 
     try {
-      if (isErc20) {
+      if (isErc20 && !useSequentialMode) {
         // Use Multicall3 for ERC20 with transferFrom
         toast.info(`Đang chuẩn bị ${validRecipients.length} giao dịch CAMLY...`);
 
@@ -271,12 +316,71 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
             abi: ERC20_ABI,
             functionName: 'transferFrom',
             args: [
-              address, // from: user's wallet
-              r.address as `0x${string}`, // to: recipient
-              parseUnits(r.amount, 8) // amount: CAMLY has 8 decimals
+              address,
+              r.address as `0x${string}`,
+              parseUnits(r.amount, CAMLY_DECIMALS)
             ]
           })
         }));
+
+        // Pre-flight simulation
+        console.log('[BatchTransfer] Simulating Multicall3...', {
+          chainId: chain?.id,
+          from: address,
+          recipientCount: calls.length,
+          totalAmountWei: totalAmountWei.toString(),
+          allowance: allowance.toString()
+        });
+
+        try {
+          if (publicClient) {
+            await publicClient.simulateContract({
+              address: MULTICALL3_ADDRESS,
+              abi: MULTICALL3_ABI,
+              functionName: 'aggregate3',
+              args: [calls],
+              account: address
+            });
+            console.log('[BatchTransfer] Simulation passed!');
+          }
+        } catch (simError: any) {
+          console.error('[BatchTransfer] Simulation failed:', simError);
+          
+          const errorMsg = simError?.shortMessage || simError?.message || 'Không xác định';
+          setSimulationError(`Mô phỏng thất bại: ${errorMsg}`);
+          
+          // Try to find which recipient fails
+          toast.error('Giao dịch không thể thực hiện. Đang kiểm tra từng dòng...');
+          
+          let failedIndex = -1;
+          for (let i = 0; i < calls.length; i++) {
+            try {
+              if (publicClient) {
+                await publicClient.simulateContract({
+                  address: MULTICALL3_ADDRESS,
+                  abi: MULTICALL3_ABI,
+                  functionName: 'aggregate3',
+                  args: [[calls[i]]],
+                  account: address
+                });
+              }
+            } catch {
+              failedIndex = i;
+              break;
+            }
+          }
+
+          if (failedIndex >= 0) {
+            const failedRecipient = validRecipients[failedIndex];
+            setSimulationError(`Dòng #${failedIndex + 1} gây lỗi: ${failedRecipient.address.slice(0, 10)}...`);
+            toast.error(`Dòng #${failedIndex + 1} gây lỗi. Thử bật "Chế độ tuần tự" hoặc kiểm tra địa chỉ.`);
+          } else {
+            toast.error('Giao dịch thất bại. Thử bật "Chế độ tuần tự" để tiếp tục.');
+          }
+          
+          setIsProcessing(false);
+          return;
+        }
 
         // Execute via Multicall3
         const hash = await writeContractAsync({
@@ -301,6 +405,46 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
         })));
 
         toast.success(`✨ Đã gửi thành công đến ${validRecipients.length} địa chỉ!`);
+      } else if (isErc20 && useSequentialMode) {
+        // Sequential ERC20 transfer (fallback mode)
+        toast.info(`Đang xử lý ${validRecipients.length} giao dịch CAMLY tuần tự (${validRecipients.length} xác nhận)...`);
+        
+        const newResults: TransferResult[] = [];
+
+        for (let i = 0; i < validRecipients.length; i++) {
+          const recipient = validRecipients[i];
+          setCurrentIndex(i + 1);
+
+          try {
+            const hash = await writeContractAsync({
+              address: CAMLY_ADDRESS,
+              abi: ERC20_ABI,
+              functionName: 'transfer',
+              args: [recipient.address as `0x${string}`, parseUnits(recipient.amount, CAMLY_DECIMALS)],
+              account: address,
+              chain: chain,
+            });
+
+            if (publicClient) {
+              await publicClient.waitForTransactionReceipt({ hash });
+            }
+
+            newResults.push({ address: recipient.address, success: true, hash });
+            setResults([...newResults]);
+            toast.success(`✅ ${i + 1}/${validRecipients.length}: Đã gửi ${recipient.amount} CAMLY`);
+          } catch (err: any) {
+            newResults.push({ address: recipient.address, success: false, error: err.message });
+            setResults([...newResults]);
+            toast.error(`❌ ${i + 1}/${validRecipients.length}: Thất bại`);
+          }
+        }
+
+        const successCount = newResults.filter(r => r.success).length;
+        if (successCount === validRecipients.length) {
+          toast.success(`✨ Hoàn thành tất cả ${successCount} giao dịch!`);
+        } else {
+          toast.warning(`Hoàn thành ${successCount}/${validRecipients.length} giao dịch`);
+        }
       } else {
         // Sequential for native BNB
         toast.info(`Đang xử lý ${validRecipients.length} giao dịch BNB (cần ${validRecipients.length} xác nhận)...`);
@@ -350,6 +494,8 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
     setInputText('');
     setResults([]);
     setCurrentIndex(0);
+    setSimulationError(null);
+    setUseSequentialMode(false);
   };
 
   return (
@@ -368,194 +514,252 @@ export const BatchTransferDialog = ({ open, onOpenChange }: BatchTransferDialogP
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Token Selector */}
-          <div>
-            <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
-              Chọn token
-            </label>
-            <Select value={selectedToken} onValueChange={(v) => setSelectedToken(v as 'BNB' | 'CAMLY')}>
-              <SelectTrigger className="border-[#DAA520]/40 bg-white/80">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-white border-[#DAA520]/40">
-                <SelectItem value="CAMLY">
-                  <div className="flex items-center gap-2">
-                    <img src="https://bscscan.com/token/images/camlycoin_32.png" alt="CAMLY" className="w-5 h-5" />
-                    <span>CAMLY ✨ (Multicall3 - 1 xác nhận)</span>
-                  </div>
-                </SelectItem>
-                <SelectItem value="BNB">
-                  <div className="flex items-center gap-2">
-                    <span>🔶</span>
-                    <span>BNB (Tuần tự - N xác nhận)</span>
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Approval Status for CAMLY */}
-          {isErc20 && validRecipients.length > 0 && (
-            <div 
-              className={`p-3 rounded-xl ${needsApproval ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}
-              style={{ border: '1px solid' }}
-            >
-              {isCheckingAllowance ? (
-                <p className="text-sm flex items-center gap-2 text-gray-600">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Đang kiểm tra quyền...
+        <ScrollArea className="max-h-[70vh] pr-2">
+          <div className="space-y-4">
+            {/* Chain Warning */}
+            {!isOnBnbChain && (
+              <div className="p-3 rounded-xl bg-orange-50 border border-orange-300">
+                <p className="text-sm flex items-center gap-2 text-orange-700 mb-2">
+                  <AlertCircle className="w-4 h-4" />
+                  Vui lòng chuyển sang BNB Chain để sử dụng tính năng này
                 </p>
-              ) : needsApproval ? (
-                <div className="space-y-2">
-                  <p className="text-sm flex items-center gap-2 text-amber-700">
-                    <Unlock className="w-4 h-4" />
-                    Cần cấp quyền cho Multicall3 (chỉ 1 lần)
+                <Button
+                  onClick={handleSwitchNetwork}
+                  size="sm"
+                  className="w-full text-white"
+                  style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }}
+                >
+                  Chuyển sang BNB Chain
+                </Button>
+              </div>
+            )}
+
+            {/* Token Selector */}
+            <div>
+              <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
+                Chọn token
+              </label>
+              <Select value={selectedToken} onValueChange={(v) => setSelectedToken(v as 'BNB' | 'CAMLY')}>
+                <SelectTrigger className="border-[#DAA520]/40 bg-white/80">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-[#DAA520]/40">
+                  <SelectItem value="CAMLY">
+                    <div className="flex items-center gap-2">
+                      <img src="https://bscscan.com/token/images/camlycoin_32.png" alt="CAMLY" className="w-5 h-5" />
+                      <span>CAMLY ✨</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="BNB">
+                    <div className="flex items-center gap-2">
+                      <span>🔶</span>
+                      <span>BNB</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Sequential Mode Toggle for ERC20 */}
+            {isErc20 && (
+              <div className="flex items-center justify-between p-3 rounded-xl bg-white/60 border border-[#DAA520]/20">
+                <div>
+                  <p className="text-sm font-medium" style={{ color: '#8B6914' }}>Chế độ tuần tự</p>
+                  <p className="text-xs" style={{ color: '#B8860B' }}>
+                    {useSequentialMode ? `${validRecipients.length} xác nhận (ổn định hơn)` : '1 xác nhận (Multicall3)'}
                   </p>
-                  <Button
-                    onClick={handleApprove}
-                    disabled={isApproving}
-                    size="sm"
-                    className="w-full text-white"
-                    style={{
-                      background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                    }}
-                  >
-                    {isApproving ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Đang cấp quyền...
-                      </>
-                    ) : (
-                      <>
-                        <Unlock className="w-4 h-4 mr-2" />
-                        🔓 Cấp Quyền Một Lần
-                      </>
-                    )}
-                  </Button>
                 </div>
-              ) : (
-                <p className="text-sm flex items-center gap-2 text-green-700">
-                  <ShieldCheck className="w-4 h-4" />
-                  ✅ Đã cấp quyền - Sẵn sàng batch transfer
-                </p>
-              )}
-            </div>
-          )}
+                <Switch
+                  checked={useSequentialMode}
+                  onCheckedChange={setUseSequentialMode}
+                  disabled={isProcessing}
+                />
+              </div>
+            )}
 
-          {/* Recipients Input */}
-          <div>
-            <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
-              Danh sách người nhận
-            </label>
-            <Textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder={`Mỗi dòng 1 cặp: địa chỉ, số lượng\n\nVí dụ:\n0x1234...5678, 100\n0xabcd...efgh, 200\n\n💡 Hỗ trợ paste từ Excel/Google Sheets`}
-              className="min-h-[120px] border-[#DAA520]/40 bg-white/80 text-sm font-mono"
-              disabled={isProcessing}
-            />
-            <p className="text-xs mt-1" style={{ color: '#8B6914' }}>
-              📋 Hỗ trợ paste từ Excel/Google Sheets (2 cột: địa chỉ, số lượng)
-            </p>
-          </div>
-
-          {/* Validation Errors */}
-          {invalidRecipients.length > 0 && (
-            <div className="p-2 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-xs font-medium text-red-600 mb-1 flex items-center gap-1">
-                <AlertTriangle className="w-3 h-3" /> Có {invalidRecipients.length} dòng lỗi:
-              </p>
-              <ScrollArea className="max-h-[60px]">
-                {invalidRecipients.slice(0, 3).map((r, i) => (
-                  <p key={i} className="text-xs text-red-500 truncate">
-                    {r.address.slice(0, 10)}... - {r.error}
+            {/* Approval Status for CAMLY (only when not using sequential mode) */}
+            {isErc20 && validRecipients.length > 0 && !useSequentialMode && isOnBnbChain && (
+              <div 
+                className={`p-3 rounded-xl ${needsApproval ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}
+                style={{ border: '1px solid' }}
+              >
+                {isCheckingAllowance ? (
+                  <p className="text-sm flex items-center gap-2 text-gray-600">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Đang kiểm tra quyền...
                   </p>
-                ))}
-                {invalidRecipients.length > 3 && (
-                  <p className="text-xs text-red-400">...và {invalidRecipients.length - 3} lỗi khác</p>
+                ) : needsApproval ? (
+                  <div className="space-y-2">
+                    <p className="text-sm flex items-center gap-2 text-amber-700">
+                      <Unlock className="w-4 h-4" />
+                      Cần cấp quyền cho Multicall3 (chỉ 1 lần)
+                    </p>
+                    <Button
+                      onClick={handleApprove}
+                      disabled={isApproving}
+                      size="sm"
+                      className="w-full text-white"
+                      style={{
+                        background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                      }}
+                    >
+                      {isApproving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Đang cấp quyền...
+                        </>
+                      ) : (
+                        <>
+                          <Unlock className="w-4 h-4 mr-2" />
+                          🔓 Cấp Quyền Một Lần
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-sm flex items-center gap-2 text-green-700">
+                    <ShieldCheck className="w-4 h-4" />
+                    ✅ Đã cấp quyền - Sẵn sàng batch transfer
+                  </p>
                 )}
-              </ScrollArea>
-            </div>
-          )}
+              </div>
+            )}
 
-          {/* Summary */}
-          {validRecipients.length > 0 && (
-            <div 
-              className="p-3 rounded-xl"
+            {/* Recipients Input */}
+            <div>
+              <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
+                Danh sách người nhận
+              </label>
+              <Textarea
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder={`Mỗi dòng 1 cặp: địa chỉ, số lượng\n\nVí dụ:\n0x1234...5678, 100\n0xabcd...efgh, 200\n\n💡 Hỗ trợ paste từ Excel/Google Sheets`}
+                className="min-h-[120px] border-[#DAA520]/40 bg-white/80 text-sm font-mono"
+                disabled={isProcessing}
+              />
+              <p className="text-xs mt-1" style={{ color: '#8B6914' }}>
+                📋 Hỗ trợ paste từ Excel/Google Sheets (2 cột: địa chỉ, số lượng)
+              </p>
+            </div>
+
+            {/* Simulation Error */}
+            {simulationError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-300">
+                <p className="text-sm flex items-center gap-2 text-red-700">
+                  <AlertTriangle className="w-4 h-4" />
+                  {simulationError}
+                </p>
+                <p className="text-xs text-red-600 mt-1">
+                  💡 Thử bật "Chế độ tuần tự" ở trên để chuyển từng giao dịch một
+                </p>
+              </div>
+            )}
+
+            {/* Validation Errors */}
+            {invalidRecipients.length > 0 && (
+              <div className="p-2 rounded-lg bg-red-50 border border-red-200">
+                <p className="text-xs font-medium text-red-600 mb-1 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3" /> Có {invalidRecipients.length} dòng lỗi:
+                </p>
+                <ScrollArea className="max-h-[60px]">
+                  {invalidRecipients.slice(0, 3).map((r, i) => (
+                    <p key={i} className="text-xs text-red-500 truncate">
+                      {r.address.slice(0, 10)}... - {r.error}
+                    </p>
+                  ))}
+                  {invalidRecipients.length > 3 && (
+                    <p className="text-xs text-red-400">...và {invalidRecipients.length - 3} lỗi khác</p>
+                  )}
+                </ScrollArea>
+              </div>
+            )}
+
+            {/* Summary */}
+            {validRecipients.length > 0 && (
+              <div 
+                className="p-3 rounded-xl"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(218, 165, 32, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%)',
+                  border: '1px solid rgba(218, 165, 32, 0.3)',
+                }}
+              >
+                <p className="text-sm font-medium mb-2" style={{ color: '#B8860B' }}>📊 Tóm tắt:</p>
+                <div className="space-y-1 text-xs" style={{ color: '#8B6914' }}>
+                  <p>• {validRecipients.length} người nhận hợp lệ</p>
+                  <p>• Tổng: <span className="font-bold">{totalAmount.toLocaleString()} {selectedToken}</span></p>
+                  <p className={hasEnoughBalance ? '' : 'text-red-500'}>
+                    • Số dư: {currentBalance.toLocaleString()} {selectedToken} {hasEnoughBalance ? '✅' : '❌ Không đủ'}
+                  </p>
+                  <p>• Phương thức: <span className="font-medium">
+                    {isErc20 && !useSequentialMode 
+                      ? 'Multicall3 (1 xác nhận)' 
+                      : `Tuần tự (${validRecipients.length} xác nhận)`}
+                  </span></p>
+                </div>
+              </div>
+            )}
+
+            {/* Progress */}
+            {isProcessing && (isErc20 && useSequentialMode || !isErc20) && (
+              <div className="p-2 rounded-lg bg-blue-50 border border-blue-200">
+                <p className="text-sm text-blue-600 flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Đang xử lý {currentIndex}/{validRecipients.length}...
+                </p>
+              </div>
+            )}
+
+            {/* Results */}
+            {results.length > 0 && (
+              <ScrollArea className="max-h-[100px]">
+                <div className="space-y-1">
+                  {results.map((r, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      {r.success ? (
+                        <CheckCircle className="w-3 h-3 text-green-500" />
+                      ) : (
+                        <XCircle className="w-3 h-3 text-red-500" />
+                      )}
+                      <span className="truncate" style={{ color: r.success ? '#22c55e' : '#ef4444' }}>
+                        {r.address.slice(0, 10)}...{r.address.slice(-4)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+
+            {/* Action Button */}
+            <Button
+              onClick={handleBatchTransfer}
+              disabled={
+                validRecipients.length === 0 || 
+                !hasEnoughBalance || 
+                isProcessing || 
+                (isErc20 && needsApproval && !useSequentialMode) ||
+                !isOnBnbChain
+              }
+              className="w-full text-white"
               style={{
-                background: 'linear-gradient(135deg, rgba(218, 165, 32, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%)',
-                border: '1px solid rgba(218, 165, 32, 0.3)',
+                background: validRecipients.length > 0 && hasEnoughBalance && isOnBnbChain && (!isErc20 || !needsApproval || useSequentialMode)
+                  ? 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)'
+                  : undefined,
               }}
             >
-              <p className="text-sm font-medium mb-2" style={{ color: '#B8860B' }}>📊 Tóm tắt:</p>
-              <div className="space-y-1 text-xs" style={{ color: '#8B6914' }}>
-                <p>• {validRecipients.length} người nhận hợp lệ</p>
-                <p>• Tổng: <span className="font-bold">{totalAmount.toLocaleString()} {selectedToken}</span></p>
-                <p className={hasEnoughBalance ? '' : 'text-red-500'}>
-                  • Số dư: {currentBalance.toLocaleString()} {selectedToken} {hasEnoughBalance ? '✅' : '❌ Không đủ'}
-                </p>
-                <p>• Phương thức: <span className="font-medium">
-                  {isErc20 ? 'Multicall3 (1 xác nhận)' : `Tuần tự (${validRecipients.length} xác nhận)`}
-                </span></p>
-              </div>
-            </div>
-          )}
-
-          {/* Progress */}
-          {isProcessing && !isErc20 && (
-            <div className="p-2 rounded-lg bg-blue-50 border border-blue-200">
-              <p className="text-sm text-blue-600 flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Đang xử lý {currentIndex}/{validRecipients.length}...
-              </p>
-            </div>
-          )}
-
-          {/* Results */}
-          {results.length > 0 && (
-            <ScrollArea className="max-h-[100px]">
-              <div className="space-y-1">
-                {results.map((r, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs">
-                    {r.success ? (
-                      <CheckCircle className="w-3 h-3 text-green-500" />
-                    ) : (
-                      <XCircle className="w-3 h-3 text-red-500" />
-                    )}
-                    <span className="truncate" style={{ color: r.success ? '#22c55e' : '#ef4444' }}>
-                      {r.address.slice(0, 10)}...{r.address.slice(-4)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-          )}
-
-          {/* Action Button */}
-          <Button
-            onClick={handleBatchTransfer}
-            disabled={validRecipients.length === 0 || !hasEnoughBalance || isProcessing || (isErc20 && needsApproval)}
-            className="w-full text-white"
-            style={{
-              background: validRecipients.length > 0 && hasEnoughBalance && (!isErc20 || !needsApproval)
-                ? 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)'
-                : undefined,
-            }}
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Đang xử lý...
-              </>
-            ) : (
-              <>
-                <Users className="w-4 h-4 mr-2" />
-                Chuyển Hàng Loạt ✨
-              </>
-            )}
-          </Button>
-        </div>
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Đang xử lý...
+                </>
+              ) : (
+                <>
+                  <Users className="w-4 h-4 mr-2" />
+                  Chuyển Hàng Loạt ✨
+                </>
+              )}
+            </Button>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

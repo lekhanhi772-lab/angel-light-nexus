@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.upload-document]
 verify_jwt = false
+
+[functions.share-documents]
+verify_jwt = false

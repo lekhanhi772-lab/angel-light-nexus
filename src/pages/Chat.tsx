@@ -516,7 +516,7 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Toggle Sidebar Button - Positioned in chat header area, right side */}
+      {/* Toggle Sidebar Button - Desktop only */}
       <button
         onClick={toggleSidebar}
         className="fixed z-[60] hidden md:flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-300"
@@ -536,33 +536,13 @@ const Chat = () => {
         )}
       </button>
 
-      {/* Mobile Toggle Button - Larger for touch */}
-      <button
-        onClick={toggleSidebar}
-        className="fixed z-[60] flex md:hidden items-center justify-center w-11 h-11 rounded-lg transition-all duration-300"
-        style={{
-          top: '10px',
-          right: '12px',
-          background: 'rgba(255, 215, 0, 0.15)',
-          border: '1px solid rgba(184, 134, 11, 0.2)',
-          color: '#B8860B',
-        }}
-        title={showSidebar ? 'Ẩn menu' : 'Mở menu'}
-      >
-        {showSidebar ? (
-          <ChevronRight className="w-6 h-6" />
-        ) : (
-          <ChevronLeft className="w-6 h-6" />
-        )}
-      </button>
-
-      {/* Sidebar - Light Theme - Fixed Position */}
+      {/* Sidebar - Light Theme - Fixed Position - Hidden on Mobile by default */}
       <aside
         className={cn(
-          "fixed top-0 z-[55] h-screen transition-all duration-300 w-72",
+          "fixed top-0 z-[55] h-screen transition-all duration-300 w-72 hidden md:block",
           showSidebar 
-            ? "left-[70px] md:left-[280px] translate-x-0" 
-            : "left-[70px] md:left-[280px] -translate-x-full opacity-0 pointer-events-none"
+            ? "left-[280px] translate-x-0" 
+            : "left-[280px] -translate-x-full opacity-0 pointer-events-none"
         )}
         style={{
           background:
@@ -743,13 +723,14 @@ const Chat = () => {
       </aside>
 
 
-      {/* Main Chat Area - Offset for fixed sidebars */}
+      {/* Main Chat Area - Offset for fixed sidebar on desktop only */}
       <main
         className={cn(
           "flex-1 flex flex-col relative z-10 transition-all duration-300",
+          "ml-0", // No margin on mobile
           showSidebar 
-            ? "ml-[calc(70px+18rem)] md:ml-[calc(280px+18rem)]"
-            : "ml-[70px] md:ml-[280px]"
+            ? "md:ml-[calc(280px+18rem)]"
+            : "md:ml-[280px]"
         )}
       >
         {/* Sticky Chat Header */}

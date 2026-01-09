@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Heart, Star, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users } from 'lucide-react';
+import { Home, Heart, Star, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
 import LanguageSelector from './LanguageSelector';
@@ -69,6 +70,7 @@ const DivineSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
 
   // Translated menu items
   const menuItems = [
@@ -120,7 +122,15 @@ const DivineSidebar = () => {
       icon: <BookOpen className="w-6 h-6" />,
       action: 'navigate' as const,
       target: '/documents'
-    }
+    },
+    // Admin menu item - only shown if isAdmin
+    ...(isAdmin ? [{
+      id: 'admin',
+      label: 'Admin Dashboard',
+      icon: <Shield className="w-6 h-6" />,
+      action: 'navigate' as const,
+      target: '/admin'
+    }] : [])
   ];
 
   const handleGoogleSignIn = () => {
@@ -175,6 +185,7 @@ const DivineSidebar = () => {
     else if (location.pathname === '/luat-anh-sang') setActiveSection('luat-anh-sang');
     else if (location.pathname === '/fun-ecosystem') setActiveSection('fun-ecosystem');
     else if (location.pathname.startsWith('/forum')) setActiveSection('forum');
+    else if (location.pathname === '/admin') setActiveSection('admin');
     else if (location.pathname === '/') setActiveSection('home');
   }, [location.pathname]);
 

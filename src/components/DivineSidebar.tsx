@@ -223,21 +223,18 @@ const DivineSidebar = () => {
     }
   };
 
-  const sidebarWidth = isMobile 
-    ? (isExpanded ? 'w-[280px]' : 'w-0') 
-    : 'w-[280px]';
-
   return (
     <>
-      {/* Mobile Menu Button - Always visible on mobile */}
+      {/* Mobile Menu Button - Always visible on mobile when sidebar hidden */}
       {isMobile && !isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
-          className="fixed top-4 left-4 z-[60] w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
+          className="fixed top-4 left-4 z-[70] w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
           style={{
             background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)',
             boxShadow: '0 4px 15px rgba(218, 165, 32, 0.4)',
           }}
+          aria-label="Open menu"
         >
           <ChevronRight className="w-6 h-6 text-white" />
         </button>
@@ -246,7 +243,7 @@ const DivineSidebar = () => {
       {/* Overlay for mobile */}
       {isMobile && isExpanded && (
         <div 
-          className="fixed inset-0 bg-black/30 z-40 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/40 z-[55] backdrop-blur-sm"
           onClick={() => setIsExpanded(false)}
         />
       )}
@@ -254,16 +251,17 @@ const DivineSidebar = () => {
       <aside
         id="divine-sidebar"
         className={cn(
-          "fixed left-0 top-0 h-screen z-50 transition-all duration-300 ease-out",
-          sidebarWidth,
+          "fixed left-0 top-0 h-screen z-[60] transition-all duration-300 ease-out",
           "flex flex-col py-6",
-          isMobile && !isExpanded && "opacity-0 pointer-events-none -translate-x-full"
+          // Mobile: completely hidden when not expanded
+          isMobile ? (isExpanded ? "w-[280px] opacity-100 translate-x-0" : "w-0 opacity-0 -translate-x-full pointer-events-none") : "w-[280px]"
         )}
         style={{
-          position: 'fixed',
           background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
           borderRight: '2px solid #DAA520',
           overflowY: 'auto',
+          // Ensure sidebar doesn't interfere when hidden
+          visibility: isMobile && !isExpanded ? 'hidden' : 'visible',
         }}
       >
         {/* Toggle button for mobile - Always visible when sidebar expanded */}

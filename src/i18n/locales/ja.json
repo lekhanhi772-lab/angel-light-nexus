@@ -78,7 +78,9 @@
     "tryDifferentBrowser": "より多くの音声にはChromeまたはEdgeをお試しください",
     "speed": "読み上げ速度",
     "pitch": "ピッチ",
-    "usingWebSpeech": "無料のWeb Speech APIを使用"
+    "usingWebSpeech": "無料のWeb Speech APIを使用",
+    "browser_not_supported": "ブラウザは音声認識をサポートしていません 🎤",
+    "use_chrome_edge": "音声入力にはChromeまたはEdgeをお使いください！"
   },
   "language": {
     "select": "言語を選択"

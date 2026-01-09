@@ -1,12 +1,19 @@
 import { Mic, MicOff, Volume2, VolumeX, Settings2, Loader2, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VoiceControlsProps {
   // STT props
@@ -55,44 +62,81 @@ const VoiceControls = ({
   const { t } = useTranslation();
   const [showSettings, setShowSettings] = useState(false);
 
+  // Handle mic click - show message if not supported
+  const handleMicClick = () => {
+    if (!isSTTSupported) {
+      toast.info(t('voice.browser_not_supported'), {
+        description: t('voice.use_chrome_edge'),
+        duration: 4000,
+      });
+      return;
+    }
+    isListening ? onStopListening() : onStartListening();
+  };
+
   return (
     <div className="flex items-center gap-1">
-      {/* Microphone Button - Voice Input */}
-      {isSTTSupported && (
-        <button
-          onClick={isListening ? onStopListening : onStartListening}
-          disabled={isLoading}
-          className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 relative"
-          style={{
-            background: isListening 
-              ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
-              : 'linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%)',
-            border: isListening 
-              ? '2px solid #EF4444'
-              : '1px solid rgba(184, 134, 11, 0.3)',
-            boxShadow: isListening 
-              ? '0 0 20px rgba(239, 68, 68, 0.5)'
-              : '0 2px 8px rgba(255, 215, 0, 0.2)',
-          }}
-          title={isListening ? t('voice.stop_listening') : t('voice.start_listening')}
-        >
-          {isListening ? (
-            <>
-              <MicOff className="w-5 h-5 text-white" />
-              {/* Pulsing animation */}
-              <span 
-                className="absolute inset-0 rounded-xl animate-ping"
-                style={{ 
-                  background: 'rgba(239, 68, 68, 0.4)',
-                  animationDuration: '1s',
-                }}
-              />
-            </>
-          ) : (
-            <Mic className="w-5 h-5" style={{ color: '#B8860B' }} />
-          )}
-        </button>
-      )}
+      {/* Microphone Button - Voice Input - Always visible */}
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={handleMicClick}
+              disabled={isLoading}
+              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 relative"
+              style={{
+                background: isListening 
+                  ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)'
+                  : !isSTTSupported
+                    ? 'rgba(184, 134, 11, 0.15)'
+                    : 'linear-gradient(135deg, rgba(135, 206, 235, 0.3) 0%, rgba(255, 215, 0, 0.2) 100%)',
+                border: isListening 
+                  ? '2px solid #EF4444'
+                  : !isSTTSupported
+                    ? '1px solid rgba(184, 134, 11, 0.2)'
+                    : '1px solid rgba(184, 134, 11, 0.3)',
+                boxShadow: isListening 
+                  ? '0 0 20px rgba(239, 68, 68, 0.5)'
+                  : '0 2px 8px rgba(255, 215, 0, 0.2)',
+                opacity: !isSTTSupported ? 0.6 : 1,
+              }}
+            >
+              {isListening ? (
+                <>
+                  <MicOff className="w-5 h-5 text-white" />
+                  {/* Pulsing animation */}
+                  <span 
+                    className="absolute inset-0 rounded-xl animate-ping"
+                    style={{ 
+                      background: 'rgba(239, 68, 68, 0.4)',
+                      animationDuration: '1s',
+                    }}
+                  />
+                </>
+              ) : (
+                <Mic className="w-5 h-5" style={{ color: !isSTTSupported ? '#999' : '#B8860B' }} />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent 
+            side="top" 
+            className="max-w-[200px] text-center"
+            style={{
+              background: 'linear-gradient(180deg, #FFFBE6 0%, #FFF8DC 100%)',
+              border: '1px solid rgba(184, 134, 11, 0.3)',
+              color: '#006666',
+            }}
+          >
+            {!isSTTSupported ? (
+              <p className="text-xs">{t('voice.use_chrome_edge')}</p>
+            ) : isListening ? (
+              <p className="text-xs">{t('voice.stop_listening')}</p>
+            ) : (
+              <p className="text-xs">{t('voice.start_listening')}</p>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       {/* Speaker Button - Stop Speaking */}
       {isTTSSupported && isSpeaking && (

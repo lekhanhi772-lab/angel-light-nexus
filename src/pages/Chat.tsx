@@ -8,11 +8,12 @@ import angelAvatar from '@/assets/angel-avatar.png';
 import ParticleBackground from '@/components/ParticleBackground';
 import { useAuth } from '@/hooks/useAuth';
 import { useVoiceIO } from '@/hooks/useVoiceIO';
+import { useEdgeTTS } from '@/hooks/useEdgeTTS';
 import { useGuestChat } from '@/hooks/useGuestChat';
 import VoiceControls from '@/components/VoiceControls';
 import SpeakButton from '@/components/SpeakButton';
 import { useTranslation } from 'react-i18next';
-import { getSpeechCode } from '@/i18n';
+import { getSpeechCode, getEdgeVoice } from '@/i18n';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,12 +58,14 @@ const Chat = () => {
   });
   const [deleteConversationId, setDeleteConversationId] = useState<string | null>(null);
   const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
+  const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
-  // Get current speech code based on selected language
+  // Get current speech code and edge voice based on selected language
   const currentSpeechCode = getSpeechCode(i18n.language);
+  const currentEdgeVoice = getEdgeVoice(i18n.language);
 
-  // Voice I/O Hook - Dynamic language
+  // Voice I/O Hook - Dynamic language (fallback)
   const handleVoiceTranscript = useCallback((text: string) => {
     setInput(text);
   }, []);
@@ -72,23 +75,51 @@ const Chat = () => {
     onTranscript: handleVoiceTranscript,
   });
 
-  // Handle speak with message tracking
-  const handleSpeak = useCallback((text: string, messageId: string) => {
+  // Edge TTS Hook - Primary TTS with high quality Neural voices
+  const edgeTTS = useEdgeTTS({
+    onSpeakingStart: () => {},
+    onSpeakingEnd: () => {
+      setCurrentSpeakingId(null);
+      setLoadingAudioId(null);
+    },
+  });
+
+  // Handle speak with Edge TTS (primary) and Web Speech API (fallback)
+  const handleSpeak = useCallback(async (text: string, messageId: string) => {
+    setLoadingAudioId(messageId);
     setCurrentSpeakingId(messageId);
-    voiceIO.speak(text);
-  }, [voiceIO]);
+    
+    try {
+      // Try Edge TTS first (high quality Neural voices)
+      const success = await edgeTTS.speak(text, currentEdgeVoice, currentSpeechCode);
+      
+      if (!success) {
+        console.warn('[TTS] Edge TTS failed, falling back to Web Speech API');
+        // Fallback to Web Speech API
+        voiceIO.speak(text);
+      }
+    } catch (error) {
+      console.error('[TTS] Edge TTS error, using fallback:', error);
+      // Fallback to Web Speech API
+      voiceIO.speak(text);
+    } finally {
+      setLoadingAudioId(null);
+    }
+  }, [edgeTTS, voiceIO, currentEdgeVoice, currentSpeechCode]);
 
   const handleStopSpeaking = useCallback(() => {
+    edgeTTS.stopSpeaking();
     voiceIO.stopSpeaking();
     setCurrentSpeakingId(null);
-  }, [voiceIO]);
+    setLoadingAudioId(null);
+  }, [edgeTTS, voiceIO]);
 
   // Clear speaking ID when speech ends
   useEffect(() => {
-    if (!voiceIO.isSpeaking) {
+    if (!voiceIO.isSpeaking && !edgeTTS.isSpeaking) {
       setCurrentSpeakingId(null);
     }
-  }, [voiceIO.isSpeaking]);
+  }, [voiceIO.isSpeaking, edgeTTS.isSpeaking]);
 
   // Handle copy message
   const handleCopyMessage = async (text: string, messageId: string) => {
@@ -1076,12 +1107,13 @@ const Chat = () => {
                             {message.role === 'assistant' && (
                               <SpeakButton
                                 text={message.content}
-                                isSpeaking={voiceIO.isSpeaking}
+                                isSpeaking={voiceIO.isSpeaking || edgeTTS.isSpeaking}
                                 currentSpeakingId={currentSpeakingId}
                                 messageId={message.id || `msg-${index}`}
                                 onSpeak={handleSpeak}
                                 onStop={handleStopSpeaking}
                                 isTTSSupported={voiceIO.isTTSSupported}
+                                isLoading={loadingAudioId === (message.id || `msg-${index}`)}
                               />
                             )}
                           </div>
@@ -1131,12 +1163,13 @@ const Chat = () => {
                             {message.role === 'assistant' && (
                               <SpeakButton
                                 text={message.content}
-                                isSpeaking={voiceIO.isSpeaking}
+                                isSpeaking={voiceIO.isSpeaking || edgeTTS.isSpeaking}
                                 currentSpeakingId={currentSpeakingId}
                                 messageId={message.id || `msg-${index}`}
                                 onSpeak={handleSpeak}
                                 onStop={handleStopSpeaking}
                                 isTTSSupported={voiceIO.isTTSSupported}
+                                isLoading={loadingAudioId === (message.id || `msg-${index}`)}
                               />
                             )}
                           </div>

@@ -9,16 +9,21 @@ import ja from './locales/ja.json';
 import ko from './locales/ko.json';
 
 export const languages = [
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', speechCode: 'vi-VN' },
-  { code: 'en', name: 'English', flag: '🇺🇸', speechCode: 'en-US' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', speechCode: 'fr-FR' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵', speechCode: 'ja-JP' },
-  { code: 'ko', name: '한국어', flag: '🇰🇷', speechCode: 'ko-KR' },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', speechCode: 'vi-VN', edgeVoice: 'vi-VN-HoaiMyNeural' },
+  { code: 'en', name: 'English', flag: '🇺🇸', speechCode: 'en-US', edgeVoice: 'en-US-JennyNeural' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', speechCode: 'fr-FR', edgeVoice: 'fr-FR-DeniseNeural' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵', speechCode: 'ja-JP', edgeVoice: 'ja-JP-NanamiNeural' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷', speechCode: 'ko-KR', edgeVoice: 'ko-KR-SunHiNeural' },
 ];
 
 export const getSpeechCode = (langCode: string): string => {
   const lang = languages.find(l => l.code === langCode);
   return lang?.speechCode || 'vi-VN';
+};
+
+export const getEdgeVoice = (langCode: string): string => {
+  const lang = languages.find(l => l.code === langCode);
+  return lang?.edgeVoice || 'vi-VN-HoaiMyNeural';
 };
 
 i18n

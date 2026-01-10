@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.share-documents]
 verify_jwt = false
+
+[functions.edge-tts]
+verify_jwt = false

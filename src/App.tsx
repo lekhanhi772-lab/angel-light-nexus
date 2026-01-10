@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { toast } from "sonner";
 import Index from "./pages/Index";
 import Chat from "./pages/Chat";
 import Documents from "./pages/Documents";
@@ -19,7 +21,49 @@ import { AngelCompanion } from "./components/AngelCompanion";
 
 const queryClient = new QueryClient();
 
+// Hook to check for app version updates
+const useVersionCheck = () => {
+  useEffect(() => {
+    const checkVersion = async () => {
+      try {
+        // Fetch version with cache busting
+        const response = await fetch(`/app-version.json?t=${Date.now()}`, {
+          cache: 'no-store',
+        });
+        
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        const serverVersion = data.version;
+        const localVersion = localStorage.getItem('app-version');
+        
+        if (localVersion && localVersion !== serverVersion) {
+          // New version detected
+          localStorage.setItem('app-version', serverVersion);
+          toast.info('Phiên bản mới đã sẵn sàng! Đang tải lại...', {
+            duration: 2000,
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else if (!localVersion) {
+          // First visit, just save the version
+          localStorage.setItem('app-version', serverVersion);
+        }
+      } catch (error) {
+        // Silently fail - version check is not critical
+        console.log('Version check skipped');
+      }
+    };
+
+    // Check version on load
+    checkVersion();
+  }, []);
+};
+
 const AppContent = () => {
+  useVersionCheck();
+  
   return (
     <>
       <AngelCompanion enabled={true} />

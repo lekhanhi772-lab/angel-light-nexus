@@ -625,33 +625,44 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Toggle Sidebar Button - Desktop only */}
+      {/* Toggle Sidebar Button - Visible on ALL devices */}
       <button
         onClick={toggleSidebar}
-        className="fixed z-[60] hidden md:flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-300"
+        className="fixed z-[60] flex items-center justify-center w-11 h-11 md:w-9 md:h-9 rounded-lg transition-all duration-300"
         style={{
           top: '10px',
-          right: '16px',
-          background: 'rgba(255, 215, 0, 0.15)',
-          border: '1px solid rgba(184, 134, 11, 0.2)',
+          left: '16px',
+          background: 'rgba(255, 215, 0, 0.25)',
+          border: '2px solid rgba(184, 134, 11, 0.4)',
           color: '#B8860B',
+          boxShadow: '0 2px 8px rgba(184, 134, 11, 0.2)',
         }}
-        title={showSidebar ? 'Ẩn menu' : 'Mở menu'}
+        title={showSidebar ? 'Ẩn lịch sử' : 'Xem lịch sử chat'}
       >
         {showSidebar ? (
-          <ChevronRight className="w-5 h-5" />
+          <ChevronLeft className="w-6 h-6 md:w-5 md:h-5" />
         ) : (
-          <ChevronLeft className="w-5 h-5" />
+          <Menu className="w-6 h-6 md:w-5 md:h-5" />
         )}
       </button>
 
-      {/* Sidebar - Light Theme - Fixed Position - Hidden on Mobile by default */}
+      {/* Mobile Backdrop - Click to close sidebar */}
+      {showSidebar && (
+        <div 
+          className="fixed inset-0 z-[54] bg-black/30 md:hidden"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
+
+      {/* Sidebar - Responsive: Full overlay on mobile, fixed sidebar on desktop */}
       <aside
         className={cn(
-          "fixed top-0 z-[55] h-screen transition-all duration-300 w-72 hidden md:block",
+          "fixed top-0 z-[55] h-screen transition-all duration-300 w-[85vw] max-w-[320px] md:w-72",
+          // Mobile: slide from left edge
+          "left-0 md:left-[280px]",
           showSidebar 
-            ? "left-[280px] translate-x-0" 
-            : "left-[280px] -translate-x-full opacity-0 pointer-events-none"
+            ? "translate-x-0 opacity-100" 
+            : "-translate-x-full opacity-0 pointer-events-none"
         )}
         style={{
           background:

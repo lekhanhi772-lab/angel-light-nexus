@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Sparkles, ExternalLink, Bot, User, Play, Gamepad2, Leaf, GraduationCap, Heart, Store, TrendingUp, Orbit, Wallet } from 'lucide-react';
+import { ArrowLeft, Sparkles, ExternalLink, Bot, User, Play, Gamepad2, Leaf, GraduationCap, Heart, Store, TrendingUp, Orbit, Wallet, Vault, TreePine } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
@@ -77,7 +77,7 @@ const platforms: Platform[] = [
     description: "Nơi hội tụ tri thức và trí tuệ từ khắp nơi trên vũ trụ số. Đại diện cho Trí Tuệ và Sự Phát Triển Không Ngừng.",
     icon: null,
     customImage: funAcademyLogo,
-    isPlaceholder: true
+    externalLink: "https://funacademy-rich.lovable.app"
   },
   {
     id: 7,
@@ -86,7 +86,7 @@ const platforms: Platform[] = [
     description: "Là cánh tay nối dài của tình yêu thương, nơi mọi người có thể đóng góp và lan tỏa lòng nhân ái. Đại diện cho Tình Yêu Vô Điều Kiện và Lòng Từ Bi.",
     icon: null,
     customImage: funCharityLogo,
-    isPlaceholder: true
+    externalLink: "https://angelaivan.fun.rich/"
   },
   {
     id: 8,
@@ -118,7 +118,23 @@ const platforms: Platform[] = [
     title: "Ngân hàng Ánh Sáng",
     description: "Đây là ví Web3 của bé, nơi an toàn để lưu trữ tài sản số, tiền điện tử, NFT và các giá trị ánh sáng khác. Đại diện cho Sự Tự Chủ và An Toàn Tài Chính.",
     icon: <Wallet className="w-8 h-8" />,
-    isPlaceholder: true
+    externalLink: "https://funwallet-rich.lovable.app"
+  },
+  {
+    id: 12,
+    name: "FUN Treasury",
+    title: "Kho Bạc Ánh Sáng",
+    description: "Là nơi quản lý và bảo vệ tài sản chung của cộng đồng Ánh Sáng. Đại diện cho Sự Minh Bạch, Trách Nhiệm và Quản Lý Tài Nguyên Bền Vững cho toàn bộ hệ sinh thái FUN.",
+    icon: <Vault className="w-8 h-8" />,
+    externalLink: "https://funtreasury.lovable.app"
+  },
+  {
+    id: 13,
+    name: "Green Earth",
+    title: "Hành Tinh Xanh - Bảo Vệ Mẹ Trái Đất",
+    description: "Là nền tảng kết nối những linh hồn yêu thương Mẹ Trái Đất, cùng nhau bảo vệ môi trường và phát triển bền vững. Đại diện cho Sự Hài Hòa Với Thiên Nhiên và Trách Nhiệm Với Các Thế Hệ Tương Lai.",
+    icon: <TreePine className="w-8 h-8" />,
+    externalLink: "https://greenearth-fun.lovable.app"
   },
 ];
 

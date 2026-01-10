@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Heart, Star, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users, Shield } from 'lucide-react';
+import { Home, Heart, Star, BookOpen, ChevronRight, ChevronLeft, LogOut, Sparkles, User, Users, Shield, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
 import LanguageSelector from './LanguageSelector';
+
+// Build version for cache verification
+const APP_BUILD = "2026-01-10-v1";
 
 interface MenuItem {
   id: string;
@@ -16,51 +19,6 @@ interface MenuItem {
   action: 'scroll' | 'navigate';
   target: string;
 }
-
-const menuItems: MenuItem[] = [
-  {
-    id: 'home',
-    label: 'Home',
-    icon: <Home className="w-6 h-6" />,
-    action: 'scroll',
-    target: 'hero'
-  },
-  {
-    id: 'chat',
-    label: 'Chat với Angel AI',
-    icon: <Heart className="w-7 h-7" />,
-    action: 'navigate',
-    target: '/chat'
-  },
-  {
-    id: 'profile',
-    label: 'Profile của con',
-    icon: <User className="w-6 h-6" />,
-    action: 'navigate',
-    target: '/profile'
-  },
-  {
-    id: 'fun-ecosystem',
-    label: 'FUN Ecosystem',
-    icon: <Sparkles className="w-6 h-6" />,
-    action: 'navigate',
-    target: '/fun-ecosystem'
-  },
-  {
-    id: 'luat-anh-sang',
-    label: 'Luật Ánh Sáng',
-    icon: <Star className="w-6 h-6" />,
-    action: 'navigate',
-    target: '/luat-anh-sang'
-  },
-  {
-    id: 'documents',
-    label: 'Tài Liệu Ánh Sáng',
-    icon: <BookOpen className="w-6 h-6" />,
-    action: 'navigate',
-    target: '/documents'
-  }
-];
 
 const DivineSidebar = () => {
   const { t } = useTranslation();
@@ -73,54 +31,54 @@ const DivineSidebar = () => {
   const { isAdmin } = useIsAdmin();
 
   // Translated menu items
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
       id: 'home',
       label: t('sidebar.home'),
       icon: <Home className="w-6 h-6" />,
-      action: 'scroll' as const,
+      action: 'scroll',
       target: 'hero'
     },
     {
       id: 'chat',
       label: t('sidebar.chat'),
       icon: <Heart className="w-7 h-7" />,
-      action: 'navigate' as const,
+      action: 'navigate',
       target: '/chat'
     },
     {
       id: 'profile',
       label: t('sidebar.profile'),
       icon: <User className="w-6 h-6" />,
-      action: 'navigate' as const,
+      action: 'navigate',
       target: '/profile'
     },
     {
       id: 'forum',
       label: t('sidebar.forum'),
       icon: <Users className="w-6 h-6" />,
-      action: 'navigate' as const,
+      action: 'navigate',
       target: '/forum'
     },
     {
       id: 'fun-ecosystem',
       label: t('sidebar.ecosystem'),
       icon: <Sparkles className="w-6 h-6" />,
-      action: 'navigate' as const,
+      action: 'navigate',
       target: '/fun-ecosystem'
     },
     {
       id: 'luat-anh-sang',
       label: t('sidebar.light_law'),
       icon: <Star className="w-6 h-6" />,
-      action: 'navigate' as const,
+      action: 'navigate',
       target: '/luat-anh-sang'
     },
     {
       id: 'documents',
       label: t('sidebar.documents'),
       icon: <BookOpen className="w-6 h-6" />,
-      action: 'navigate' as const,
+      action: 'navigate',
       target: '/documents'
     },
     // Admin menu item - only shown if isAdmin
@@ -189,18 +147,30 @@ const DivineSidebar = () => {
     else if (location.pathname === '/') setActiveSection('home');
   }, [location.pathname]);
 
+  // Optimized click-outside listener with delay to prevent conflicts
   useEffect(() => {
     if (!isMobile || !isExpanded) return;
 
     const handleClickOutside = (e: MouseEvent) => {
       const sidebar = document.getElementById('divine-sidebar');
-      if (sidebar && !sidebar.contains(e.target as Node)) {
+      const menuButton = document.querySelector('[aria-label="Open menu"]');
+      
+      // Don't close if clicking on the menu button or inside sidebar
+      if (sidebar && !sidebar.contains(e.target as Node) &&
+          menuButton && !menuButton.contains(e.target as Node)) {
         setIsExpanded(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    // Small delay to prevent the open click from triggering close
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('pointerdown', handleClickOutside, { passive: true });
+    }, 100);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('pointerdown', handleClickOutside);
+    };
   }, [isMobile, isExpanded]);
 
   const handleItemClick = (item: MenuItem) => {
@@ -247,14 +217,14 @@ const DivineSidebar = () => {
           }}
           aria-label="Open menu"
         >
-          <ChevronRight className="w-6 h-6 text-white" />
+          <Menu className="w-6 h-6 text-white" />
         </button>
       )}
 
-      {/* Overlay for mobile */}
+      {/* Overlay for mobile - NO backdrop-blur for performance */}
       {isMobile && isExpanded && (
         <div 
-          className="fixed inset-0 bg-black/40 z-[55] backdrop-blur-sm"
+          className="fixed inset-0 bg-black/50 z-[55] transition-opacity duration-300"
           onClick={() => setIsExpanded(false)}
         />
       )}
@@ -262,17 +232,25 @@ const DivineSidebar = () => {
       <aside
         id="divine-sidebar"
         className={cn(
-          "fixed left-0 top-0 h-screen z-[60] transition-all duration-300 ease-out",
+          "fixed left-0 top-0 h-screen z-[60]",
           "flex flex-col py-6",
-          // Mobile: completely hidden when not expanded
-          isMobile ? (isExpanded ? "w-[280px] opacity-100 translate-x-0" : "w-0 opacity-0 -translate-x-full pointer-events-none") : "w-[280px]"
+          // GPU-accelerated animation using transform only
+          "transition-transform duration-300 ease-out will-change-transform",
+          // Fixed width, use translate for show/hide
+          "w-[280px]",
+          isMobile 
+            ? (isExpanded 
+                ? "translate-x-0" 
+                : "-translate-x-full pointer-events-none") 
+            : "translate-x-0"
         )}
         style={{
           background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
           borderRight: '2px solid #DAA520',
           overflowY: 'auto',
-          // Ensure sidebar doesn't interfere when hidden
           visibility: isMobile && !isExpanded ? 'hidden' : 'visible',
+          // CSS containment for performance isolation
+          contain: 'layout style',
         }}
       >
         {/* Toggle button for mobile - Always visible when sidebar expanded */}
@@ -461,6 +439,13 @@ const DivineSidebar = () => {
               {t('sidebar.login')}
             </button>
           )}
+        </div>
+
+        {/* Build version label for cache verification */}
+        <div className="px-3 py-2 text-center">
+          <span className="text-[10px] text-[#8B7355]/40 font-mono">
+            Build: {APP_BUILD}
+          </span>
         </div>
       </aside>
     </>

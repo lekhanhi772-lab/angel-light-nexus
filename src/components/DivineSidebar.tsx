@@ -210,8 +210,10 @@ const DivineSidebar = () => {
       {isMobile && !isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
-          className="fixed top-4 left-4 z-[70] w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
+          className="fixed z-[60] w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
           style={{
+            top: 'max(16px, env(safe-area-inset-top))',
+            left: '16px',
             background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)',
             boxShadow: '0 4px 15px rgba(218, 165, 32, 0.4)',
           }}
@@ -224,7 +226,7 @@ const DivineSidebar = () => {
       {/* Overlay for mobile - NO backdrop-blur for performance */}
       {isMobile && isExpanded && (
         <div 
-          className="fixed inset-0 bg-black/50 z-[55] transition-opacity duration-300"
+          className="fixed inset-0 bg-black/50 z-[50] transition-opacity duration-300"
           onClick={() => setIsExpanded(false)}
         />
       )}
@@ -232,7 +234,7 @@ const DivineSidebar = () => {
       <aside
         id="divine-sidebar"
         className={cn(
-          "fixed left-0 top-0 h-screen z-[60]",
+          "fixed left-0 top-0 h-screen z-[55]",
           "flex flex-col py-6",
           // GPU-accelerated animation using transform only
           "transition-transform duration-300 ease-out will-change-transform",

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -625,13 +625,13 @@ const Chat = () => {
       />
       <ParticleBackground />
 
-      {/* Toggle Sidebar Button - Visible on ALL devices */}
+      {/* Toggle Sidebar Button - Desktop only (not shown on mobile to avoid overlapping DivineSidebar menu) */}
       <button
         onClick={toggleSidebar}
-        className="fixed z-[60] flex items-center justify-center w-11 h-11 md:w-9 md:h-9 rounded-lg transition-all duration-300"
+        className="hidden md:flex fixed z-[45] items-center justify-center w-9 h-9 rounded-lg transition-all duration-300"
         style={{
           top: '10px',
-          left: '16px',
+          left: showSidebar ? 'calc(280px + 18rem + 8px)' : 'calc(280px + 8px)',
           background: 'rgba(255, 215, 0, 0.25)',
           border: '2px solid rgba(184, 134, 11, 0.4)',
           color: '#B8860B',
@@ -640,16 +640,37 @@ const Chat = () => {
         title={showSidebar ? 'Ẩn lịch sử' : 'Xem lịch sử chat'}
       >
         {showSidebar ? (
-          <ChevronLeft className="w-6 h-6 md:w-5 md:h-5" />
+          <ChevronLeft className="w-5 h-5" />
         ) : (
-          <Menu className="w-6 h-6 md:w-5 md:h-5" />
+          <ChevronRight className="w-5 h-5" />
+        )}
+      </button>
+
+      {/* Mobile Toggle Sidebar Button - Position at top right to avoid DivineSidebar menu */}
+      <button
+        onClick={toggleSidebar}
+        className="flex md:hidden fixed z-[45] items-center justify-center w-11 h-11 rounded-full transition-all duration-300"
+        style={{
+          top: 'max(16px, env(safe-area-inset-top))',
+          right: '16px',
+          background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.9) 0%, rgba(255, 165, 0, 0.9) 100%)',
+          border: '2px solid rgba(184, 134, 11, 0.5)',
+          color: '#5C4033',
+          boxShadow: '0 4px 15px rgba(184, 134, 11, 0.3)',
+        }}
+        title={showSidebar ? 'Ẩn lịch sử' : 'Xem lịch sử chat'}
+      >
+        {showSidebar ? (
+          <X className="w-5 h-5" />
+        ) : (
+          <MessageSquare className="w-5 h-5" />
         )}
       </button>
 
       {/* Mobile Backdrop - Click to close sidebar */}
       {showSidebar && (
         <div 
-          className="fixed inset-0 z-[54] bg-black/30 md:hidden"
+          className="fixed inset-0 z-[40] bg-black/30 md:hidden"
           onClick={() => setShowSidebar(false)}
         />
       )}
@@ -657,7 +678,7 @@ const Chat = () => {
       {/* Sidebar - Responsive: Full overlay on mobile, fixed sidebar on desktop */}
       <aside
         className={cn(
-          "fixed top-0 z-[55] h-screen transition-all duration-300 w-[85vw] max-w-[320px] md:w-72",
+          "fixed top-0 z-[42] h-screen transition-all duration-300 w-[85vw] max-w-[320px] md:w-72",
           // Mobile: slide from left edge
           "left-0 md:left-[280px]",
           showSidebar 

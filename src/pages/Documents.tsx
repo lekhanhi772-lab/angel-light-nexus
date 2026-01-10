@@ -768,6 +768,16 @@ const DocumentsPage = () => {
     });
   };
 
+  // Format ngắn gọn cho mobile
+  const formatDateShort = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', { 
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+  };
+
   const isNewlyUploaded = (fileName: string) => {
     return newlyUploaded.some(f => f.fileName === fileName);
   };
@@ -878,33 +888,33 @@ const DocumentsPage = () => {
       />
       <ParticleBackground />
 
-      {/* Header */}
+      {/* Header - Thêm padding-left cho mobile để tránh nút hamburger */}
       <header 
-        className="sticky top-0 z-50 backdrop-blur-md"
+        className="sticky top-0 z-20 backdrop-blur-md"
         style={{
           background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
           borderBottom: '1px solid rgba(184, 134, 11, 0.3)',
         }}
       >
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pl-12 md:pl-0">
             <Link 
               to="/" 
               className="flex items-center gap-2 transition-colors font-poppins"
               style={{ color: '#B8860B' }}
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium">Trang chủ</span>
+              <span className="font-medium hidden sm:inline">Trang chủ</span>
             </Link>
             <h1 
-              className="font-playfair text-xl md:text-2xl font-bold flex items-center gap-2"
+              className="font-playfair text-base sm:text-xl md:text-2xl font-bold flex items-center gap-1 sm:gap-2"
               style={{ color: '#B8860B' }}
             >
-              <Sparkles className="w-5 h-5 animate-pulse" style={{ color: '#FFD700' }} />
-              Tài Liệu Ánh Sáng
-              <span>🌿</span>
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" style={{ color: '#FFD700' }} />
+              <span className="hidden xs:inline">Tài Liệu</span> Ánh Sáng
+              <span className="hidden sm:inline">🌿</span>
             </h1>
-            <div className="w-24" />
+            <div className="w-8 md:w-24" />
           </div>
         </div>
       </header>
@@ -1050,9 +1060,61 @@ const DocumentsPage = () => {
       </div>
 
       <main className="container mx-auto px-4 pb-8 relative z-10">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar - Folder Tree */}
-          <div className="lg:w-72 flex-shrink-0">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+          
+          {/* Mobile Folder Selector - Dropdown thay thế sidebar trên mobile */}
+          <div className="lg:hidden">
+            <div 
+              className="p-3 rounded-xl backdrop-blur-md shadow-lg"
+              style={{
+                background: 'linear-gradient(180deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.9) 100%)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+              }}
+            >
+              <Select 
+                value={selectedFolderId || 'all'} 
+                onValueChange={(val) => setSelectedFolderId(val === 'all' ? null : val)}
+              >
+                <SelectTrigger 
+                  className="w-full font-inter"
+                  style={{
+                    background: 'rgba(255, 251, 230, 0.9)',
+                    border: '1px solid rgba(184, 134, 11, 0.3)',
+                    color: '#006666',
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
+                    <SelectValue placeholder="Chọn thư mục..." />
+                  </div>
+                </SelectTrigger>
+                <SelectContent
+                  style={{
+                    background: '#FFFBE6',
+                    border: '1px solid rgba(184, 134, 11, 0.3)',
+                  }}
+                >
+                  <SelectItem value="all" className="font-inter">
+                    <div className="flex items-center gap-2">
+                      <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
+                      Tất cả file ({documents.length})
+                    </div>
+                  </SelectItem>
+                  {folders.map(folder => (
+                    <SelectItem key={folder.id} value={folder.id} className="font-inter">
+                      <div className="flex items-center gap-2">
+                        <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
+                        {folder.name} ({getDocCountInFolder(folder.id)})
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Desktop Sidebar - Folder Tree - Ẩn trên mobile */}
+          <div className="hidden lg:block lg:w-72 flex-shrink-0">
             <div 
               className="sticky top-24 p-4 rounded-xl backdrop-blur-md shadow-lg"
               style={{
@@ -1511,9 +1573,9 @@ const DocumentsPage = () => {
                     const isSelected = selectedDocIds.has(doc.id);
 
                     return (
-                      <div
+                    <div
                         key={doc.id}
-                        className="p-4 rounded-xl backdrop-blur-md transition-all duration-300 group relative overflow-hidden"
+                        className="p-3 sm:p-4 rounded-xl backdrop-blur-md transition-all duration-300 group relative overflow-hidden"
                         style={{
                           background: 'rgba(255, 251, 230, 0.95)',
                           border: isNewlyUploaded(doc.file_name) || isSelected
@@ -1549,124 +1611,138 @@ const DocumentsPage = () => {
                           ))}
                         </div>
 
-                        <div className="flex items-start justify-between gap-4 relative z-10">
-                          <div className="flex items-start gap-3 flex-1 min-w-0">
-                            {/* Checkbox - Only for admin */}
-                            {isAdmin && (
-                              <Checkbox
-                                checked={isSelected}
-                                onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
-                                className="mt-3"
-                                style={{ borderColor: '#B8860B' }}
-                              />
-                            )}
+                      {/* Mobile: Stack layout, Desktop: Row layout */}
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 relative z-10">
+                        {/* Main content row */}
+                        <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+                          {/* Checkbox - Only for admin */}
+                          {isAdmin && (
+                            <Checkbox
+                              checked={isSelected}
+                              onCheckedChange={(checked) => handleSelectDoc(doc.id, !!checked)}
+                              className="mt-2 sm:mt-3 flex-shrink-0"
+                              style={{ borderColor: '#B8860B' }}
+                            />
+                          )}
 
-                            {/* Sequential Number Badge */}
-                            <div 
-                              className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                              style={{
-                                background: 'rgba(255, 251, 230, 0.9)',
-                                border: isNewlyUploaded(doc.file_name) 
-                                  ? '2px solid #FFD700' 
-                                  : '1px solid rgba(184, 134, 11, 0.3)',
-                              }}
-                            >
-                              <span className="font-cinzel font-bold text-sm" style={{ color: '#B8860B' }}>
-                                {getDocumentSequenceNumber(doc, displayedDocuments)}
-                              </span>
-                            </div>
-                            <div 
-                              className="p-2 rounded-lg"
-                              style={{ background: 'rgba(255, 215, 0, 0.2)' }}
-                            >
-                              <FileText className="w-5 h-5" style={{ color: '#B8860B' }} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-lora font-medium truncate" style={{ color: '#006666' }}>
-                                {doc.title}
-                              </h4>
-                              <p className="text-sm truncate font-inter" style={{ color: '#87CEEB' }}>
-                                {doc.file_name}
-                              </p>
-                              <div className="flex items-center gap-4 mt-2 text-xs flex-wrap font-inter" style={{ color: '#87CEEB' }}>
-                                <span className="flex items-center gap-1">
-                                  <Calendar className="w-3 h-3" />
-                                  {formatDate(doc.created_at)}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <HardDrive className="w-3 h-3" />
-                                  {formatFileSize(doc.file_size)}
-                                </span>
-                                {folderName && (
-                                  <span className="flex items-center gap-1" style={{ color: '#B8860B' }}>
-                                    <Folder className="w-3 h-3" />
-                                    {folderName}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
+                          {/* Sequential Number Badge - Nhỏ hơn trên mobile */}
+                          <div 
+                            className="flex-shrink-0 w-9 h-9 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center"
+                            style={{
+                              background: 'rgba(255, 251, 230, 0.9)',
+                              border: isNewlyUploaded(doc.file_name) 
+                                ? '2px solid #FFD700' 
+                                : '1px solid rgba(184, 134, 11, 0.3)',
+                            }}
+                          >
+                            <span className="font-cinzel font-bold text-xs sm:text-sm" style={{ color: '#B8860B' }}>
+                              {getDocumentSequenceNumber(doc, displayedDocuments)}
+                            </span>
                           </div>
                           
-                          <div className="flex items-center gap-1">
-                            {/* View button - always visible on hover for all users (blue color) */}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleView(doc)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              style={{ color: '#3B82F6' }}
-                              title="Xem"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
+                          {/* File icon - Nhỏ hơn trên mobile */}
+                          <div 
+                            className="p-1.5 sm:p-2 rounded-lg flex-shrink-0"
+                            style={{ background: 'rgba(255, 215, 0, 0.2)' }}
+                          >
+                            <FileText className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#B8860B' }} />
+                          </div>
+                          
+                          {/* Title and meta info */}
+                          <div className="flex-1 min-w-0">
+                            {/* Title - Cho phép 2 dòng trên mobile */}
+                            <h4 className="font-lora font-medium text-sm sm:text-base line-clamp-2 sm:truncate" style={{ color: '#006666' }}>
+                              {doc.title}
+                            </h4>
                             
-                            {/* Download button - always visible on hover for all users (green color) */}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDownload(doc)}
-                              disabled={downloadingDocId === doc.id}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              style={{ color: '#22C55E' }}
-                              title="Tải về"
-                            >
-                              {downloadingDocId === doc.id ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <Download className="w-4 h-4" />
+                            {/* File name - Ẩn trên mobile để tiết kiệm không gian */}
+                            <p className="hidden sm:block text-sm truncate font-inter" style={{ color: '#87CEEB' }}>
+                              {doc.file_name}
+                            </p>
+                            
+                            {/* Meta info - Format gọn hơn trên mobile */}
+                            <div className="flex items-center gap-2 sm:gap-4 mt-1 sm:mt-2 text-xs flex-wrap font-inter" style={{ color: '#87CEEB' }}>
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-3 h-3" />
+                                {/* Desktop: full date, Mobile: short date */}
+                                <span className="hidden sm:inline">{formatDate(doc.created_at)}</span>
+                                <span className="sm:hidden">{formatDateShort(doc.created_at)}</span>
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <HardDrive className="w-3 h-3" />
+                                {formatFileSize(doc.file_size)}
+                              </span>
+                              {folderName && (
+                                <span className="hidden sm:flex items-center gap-1" style={{ color: '#B8860B' }}>
+                                  <Folder className="w-3 h-3" />
+                                  {folderName}
+                                </span>
                               )}
-                            </Button>
-                            
-                            {/* Admin-only buttons */}
-                            {isAdmin && (
-                              <>
-                                {/* Update folder button */}
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    setUpdatingDocFolder(doc);
-                                    setNewDocFolderId(doc.folder_id || 'none');
-                                  }}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                  style={{ color: '#B8860B' }}
-                                  title="Cập nhật thư mục"
-                                >
-                                  <FolderInput className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleDelete(doc)}
-                                  className="text-red-500 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  title="Xóa"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </>
-                            )}
+                            </div>
                           </div>
                         </div>
+                        
+                        {/* Action buttons - Luôn hiển thị trên mobile, hover trên desktop */}
+                        <div className="flex items-center gap-1 ml-11 sm:ml-0">
+                          {/* View button */}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleView(doc)}
+                            className="h-8 w-8 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                            style={{ color: '#3B82F6' }}
+                            title="Xem"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          
+                          {/* Download button */}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDownload(doc)}
+                            disabled={downloadingDocId === doc.id}
+                            className="h-8 w-8 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                            style={{ color: '#22C55E' }}
+                            title="Tải về"
+                          >
+                            {downloadingDocId === doc.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Download className="w-4 h-4" />
+                            )}
+                          </Button>
+                          
+                          {/* Admin-only buttons */}
+                          {isAdmin && (
+                            <>
+                              {/* Update folder button */}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                  setUpdatingDocFolder(doc);
+                                  setNewDocFolderId(doc.folder_id || 'none');
+                                }}
+                                className="h-8 w-8 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                                style={{ color: '#B8860B' }}
+                                title="Cập nhật thư mục"
+                              >
+                                <FolderInput className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDelete(doc)}
+                                className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                                title="Xóa"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </div>
                       </div>
                     );
                   })}

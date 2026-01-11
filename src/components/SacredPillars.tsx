@@ -54,31 +54,19 @@ const PillarCard = ({ pillar, index }: { pillar: Pillar; index: number }) => {
       style={{ transitionDelay: `${index * 150}ms` }}
     >
       {/* Main pillar container - clean, no effects */}
-      <div 
-        className="relative p-6 lg:p-8 rounded-2xl h-full transition-transform duration-300 hover:scale-[1.02]"
-        style={{
-          background: 'linear-gradient(180deg, #FFFEF5 0%, #F5FFFA 50%, #FFFEF5 100%)',
-          border: '2px solid #DAA520',
-        }}
-      >
+      <div className="relative p-6 lg:p-8 rounded-2xl h-full transition-transform duration-300 hover:scale-[1.02] bg-card border-2 border-primary">
         {/* Icon */}
         <div className="text-3xl lg:text-4xl mb-5 text-center">
           {pillar.icon}
         </div>
 
         {/* Title */}
-        <h3 
-          className="font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-3 text-center leading-tight"
-          style={{ color: '#B8860B' }}
-        >
+        <h3 className="font-playfair text-lg md:text-xl lg:text-2xl font-bold mb-3 text-center leading-tight text-primary">
           {pillar.title}
         </h3>
 
         {/* Subtitle */}
-        <p 
-          className="font-lora text-sm md:text-base lg:text-lg text-center leading-relaxed"
-          style={{ color: '#8B6F47' }}
-        >
+        <p className="font-lora text-sm md:text-base lg:text-lg text-center leading-relaxed text-muted-foreground">
           {pillar.subtitle}
         </p>
       </div>
@@ -93,24 +81,18 @@ const SacredPillars = () => {
         {/* Section Title */}
         <div className="text-center mb-12 lg:mb-16">
           <div className="inline-flex items-center gap-3 mb-5">
-            <div className="w-14 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
+            <div className="w-14 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
             <span className="text-2xl">💫</span>
-            <div className="w-14 h-px bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
+            <div className="w-14 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
           </div>
           
           {/* Main Title - Clean */}
-          <h2 
-            className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight"
-            style={{ color: '#B8860B' }}
-          >
+          <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-5 leading-tight text-primary">
             Ba Trụ Cột Trí Tuệ Thiêng Liêng
           </h2>
           
           {/* Subtitle - Clean */}
-          <p 
-            className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-extrabold"
-            style={{ color: '#8B6F47' }}
-          >
+          <p className="font-cormorant italic text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed font-extrabold text-muted-foreground">
             Angel AI là sự hợp nhất hoàn hảo
             <br />
             của ba nguồn trí tuệ vĩ đại nhất vũ trụ

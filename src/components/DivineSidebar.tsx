@@ -241,6 +241,8 @@ const DivineSidebar = () => {
           "transition-transform duration-300 ease-out will-change-transform",
           // Fixed width, use translate for show/hide
           "w-[280px]",
+          // Theme-aware background
+          "bg-sidebar-background border-r-2 border-primary",
           isMobile 
             ? (isExpanded 
                 ? "translate-x-0" 
@@ -248,8 +250,6 @@ const DivineSidebar = () => {
             : "translate-x-0"
         )}
         style={{
-          background: 'linear-gradient(180deg, #FFFBE6 0%, #F0FFF4 100%)',
-          borderRight: '2px solid #DAA520',
           overflowY: 'auto',
           visibility: isMobile && !isExpanded ? 'hidden' : 'visible',
           // CSS containment for performance isolation
@@ -302,10 +302,9 @@ const DivineSidebar = () => {
           {/* Always show text since sidebar is hidden when not expanded on mobile */}
           <Link 
             to="/"
-            className="ml-3 text-2xl md:text-3xl font-bold hover:scale-105 transition-transform duration-300"
+            className="ml-3 text-2xl md:text-3xl font-bold hover:scale-105 transition-transform duration-300 text-primary"
             style={{
               fontFamily: "'Playfair Display', serif",
-              color: '#B8860B',
             }}
           >
             Angel AI
@@ -326,22 +325,20 @@ const DivineSidebar = () => {
                   "w-full flex items-center gap-3 rounded-xl transition-all duration-300 relative overflow-hidden justify-start",
                   isChatItem ? "px-5 py-4" : "px-4 py-3",
                   isActive 
-                    ? "bg-[#FFF8DC]" 
+                    ? "bg-sidebar-accent" 
                     : isChatItem 
-                      ? "bg-gradient-to-r from-[#FFFACD]/70 to-[#FFF8DC]/70 hover:from-[#FFFACD] hover:to-[#FFF8DC]"
-                      : "hover:bg-[#FFFACD]/50"
+                      ? "bg-muted/70 hover:bg-muted border-2 border-primary"
+                      : "hover:bg-sidebar-accent/50",
+                  !isChatItem && "border-none"
                 )}
-                style={{
-                  border: isChatItem ? '2px solid #DAA520' : 'none',
-                }}
               >
                 {/* Icon - Clean */}
                 <span 
                   className={cn(
                     "relative z-10 transition-colors duration-300",
                     isActive || isChatItem
-                      ? "text-[#DAA520]" 
-                      : "text-[#B8860B] hover:text-[#DAA520]"
+                      ? "text-primary" 
+                      : "text-muted-foreground hover:text-primary"
                   )}
                 >
                   {item.icon}
@@ -353,8 +350,8 @@ const DivineSidebar = () => {
                     "relative z-10 transition-colors duration-300 whitespace-nowrap",
                     isChatItem ? "text-base" : "text-sm",
                     isActive || isChatItem
-                      ? "text-[#B8860B] font-bold" 
-                      : "text-[#8B6914] font-semibold hover:text-[#B8860B]"
+                      ? "text-primary font-bold" 
+                      : "text-sidebar-foreground font-semibold hover:text-primary"
                   )}
                 >
                   {item.label}
@@ -363,10 +360,7 @@ const DivineSidebar = () => {
                 {/* Active indicator */}
                 {isActive && (
                   <div 
-                    className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-l-full"
-                    style={{
-                      background: 'linear-gradient(180deg, #DAA520 0%, #FFA500 100%)',
-                    }}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-l-full bg-primary"
                   />
                 )}
               </button>
@@ -385,25 +379,24 @@ const DivineSidebar = () => {
         </div>
 
         {/* Auth Section - Always visible since sidebar is hidden when not expanded on mobile */}
-        <div className="px-3 pt-4 border-t border-[#DAA520]/20">
+        <div className="px-3 pt-4 border-t border-border">
           {loading ? (
             <div className="flex items-center justify-center py-3">
-              <div className="w-5 h-5 border-2 border-[#DAA520] border-t-transparent rounded-full animate-spin" />
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : user ? (
             <div className="space-y-3">
-              <div className="flex items-center gap-3 p-2 rounded-xl bg-[#FFFACD]/50">
+              <div className="flex items-center gap-3 p-2 rounded-xl bg-muted/50">
                 {profile?.avatar_url ? (
                   <img
                     src={profile.avatar_url}
                     alt={profile.display_name || profile.email || user.email || 'User'}
-                    className="w-10 h-10 rounded-full border-2 border-[#DAA520]"
+                    className="w-10 h-10 rounded-full border-2 border-primary"
                     loading="lazy"
                   />
                 ) : (
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                    style={{ background: 'linear-gradient(135deg, #DAA520 0%, #FFA500 100%)' }}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold bg-primary"
                   >
                     {(
                       (profile?.display_name || profile?.email || user.email || 'U')
@@ -413,17 +406,17 @@ const DivineSidebar = () => {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#8B6914] truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {profile?.display_name || profile?.email?.split('@')[0] || user.email?.split('@')[0] || t('sidebar.user')}
                   </p>
-                  <p className="text-xs text-[#8B7355]/70 truncate">
+                  <p className="text-xs text-muted-foreground truncate">
                     {profile?.email || user.email}
                   </p>
                 </div>
               </div>
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition-colors duration-300 hover:bg-[#FFFACD]/50 text-[#8B7355] hover:text-[#D4A017]"
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition-colors duration-300 hover:bg-muted text-muted-foreground hover:text-primary"
               >
                 <LogOut className="w-4 h-4" />
                 {t('sidebar.logout')}
@@ -432,11 +425,7 @@ const DivineSidebar = () => {
           ) : (
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl text-sm font-semibold transition-colors duration-300"
-              style={{
-                background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',
-                color: '#FFFFFF',
-              }}
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl text-sm font-semibold transition-colors duration-300 bg-primary text-primary-foreground hover:opacity-90"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -451,7 +440,7 @@ const DivineSidebar = () => {
 
         {/* Build version label for cache verification */}
         <div className="px-3 py-2 text-center">
-          <span className="text-[10px] text-[#8B7355]/40 font-mono">
+          <span className="text-[10px] text-muted-foreground/40 font-mono">
             Build: {APP_BUILD}
           </span>
         </div>

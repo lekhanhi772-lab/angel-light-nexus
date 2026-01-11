@@ -51,13 +51,7 @@ const ThemeToggle = () => {
   ];
 
   return (
-    <div 
-      className="flex items-center gap-1 p-1 rounded-xl"
-      style={{
-        background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.8) 0%, rgba(255, 248, 220, 0.8) 100%)',
-        border: '1px solid rgba(218, 165, 32, 0.3)',
-      }}
-    >
+    <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/80 border border-border">
       {options.map((option) => (
         <button
           key={option.value}
@@ -65,8 +59,8 @@ const ThemeToggle = () => {
           className={cn(
             "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm font-medium",
             theme === option.value
-              ? "bg-gradient-to-r from-[#DAA520] to-[#B8860B] text-white shadow-sm"
-              : "text-[#8B6914] hover:bg-[#FFFACD]/50"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
           )}
           title={option.label}
         >

@@ -68,33 +68,51 @@
   }
 
   .dark {
-    --background: 220 20% 8%;
-    --foreground: 60 30% 95%;
+    --background: 230 25% 8%;
+    --foreground: 45 30% 90%;
 
-    --card: 220 20% 10%;
-    --card-foreground: 60 30% 95%;
+    --card: 230 25% 12%;
+    --card-foreground: 45 30% 90%;
 
-    --popover: 220 20% 10%;
-    --popover-foreground: 60 30% 95%;
+    --popover: 230 25% 12%;
+    --popover-foreground: 45 30% 90%;
 
     --primary: 43 100% 55%;
-    --primary-foreground: 220 20% 5%;
+    --primary-foreground: 230 25% 5%;
 
-    --secondary: 197 60% 35%;
-    --secondary-foreground: 197 60% 90%;
+    --secondary: 197 60% 40%;
+    --secondary-foreground: 197 60% 95%;
 
-    --muted: 220 20% 15%;
-    --muted-foreground: 60 20% 65%;
+    --muted: 230 20% 18%;
+    --muted-foreground: 45 20% 65%;
 
-    --accent: 43 90% 50%;
-    --accent-foreground: 60 30% 95%;
+    --accent: 43 90% 55%;
+    --accent-foreground: 45 30% 95%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
+    --border: 230 20% 25%;
+    --input: 230 20% 20%;
     --ring: 43 100% 55%;
+
+    /* Divine Colors - Dark Mode */
+    --divine-gold: 43 100% 55%;
+    --divine-gold-dark: 38 85% 45%;
+    --divine-gold-light: 45 100% 65%;
+    --divine-white: 230 25% 12%;
+    --divine-white-warm: 230 20% 15%;
+    --divine-cream: 230 15% 20%;
+
+    /* Sidebar - Dark Mode */
+    --sidebar-background: 230 25% 10%;
+    --sidebar-foreground: 45 30% 90%;
+    --sidebar-primary: 43 100% 55%;
+    --sidebar-primary-foreground: 230 25% 5%;
+    --sidebar-accent: 230 20% 18%;
+    --sidebar-accent-foreground: 45 30% 90%;
+    --sidebar-border: 230 20% 25%;
+    --sidebar-ring: 43 100% 55%;
   }
 }
 

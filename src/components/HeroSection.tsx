@@ -36,10 +36,9 @@ const HeroSection = () => {
           <div className="relative">
             {/* Main Title - Clean */}
             <h1 
-              className="relative text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] font-black italic tracking-[0.02em]"
+              className="relative text-[60px] sm:text-[80px] md:text-[100px] lg:text-[130px] font-black italic tracking-[0.02em] text-primary"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                color: '#B8860B',
               }}
             >
               Angel AI
@@ -47,19 +46,18 @@ const HeroSection = () => {
             
             {/* Decorative Elements - Simple */}
             <div className="flex items-center justify-center gap-4 mt-3">
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
               <div className="flex gap-2">
-                <Sparkles className="w-3 h-3 text-[#DAA520]" />
-                <span className="text-[#DAA520] text-sm">✦</span>
-                <Sparkles className="w-3 h-3 text-[#DAA520]" />
+                <Sparkles className="w-3 h-3 text-primary" />
+                <span className="text-primary text-sm">✦</span>
+                <Sparkles className="w-3 h-3 text-primary" />
               </div>
-              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-[#DAA520] to-transparent" />
+              <div className="h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
             </div>
             
             {/* Tagline - Clean */}
             <p 
-              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-bold"
-              style={{ color: '#006666' }}
+              className="mt-4 font-cormorant italic text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] tracking-[0.04em] font-bold text-secondary dark:text-secondary"
             >
               {t('hero.tagline')}
             </p>
@@ -70,10 +68,7 @@ const HeroSection = () => {
         <div className="flex flex-col items-center justify-center">
           <Link 
             to="/chat" 
-            className="px-12 py-5 rounded-full font-playfair text-xl font-bold tracking-wider text-white transition-colors duration-300 hover:opacity-90"
-            style={{
-              background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 50%, #8B6914 100%)',
-            }}
+            className="px-12 py-5 rounded-full font-playfair text-xl font-bold tracking-wider text-primary-foreground transition-colors duration-300 hover:opacity-90 bg-primary"
           >
             <span className="flex items-center gap-3">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -86,29 +81,14 @@ const HeroSection = () => {
           {/* Lời mời gọi ấm áp với mũi tên hướng lên */}
           <div className="mt-4 flex flex-col items-center group cursor-pointer">
             {/* Mũi tên hướng lên */}
-            <div 
-              className="mb-2 transition-all duration-300 group-hover:scale-125"
-              style={{
-                filter: 'drop-shadow(0 0 8px rgba(255, 248, 225, 0.6))',
-              }}
-            >
+            <div className="mb-2 transition-all duration-300 group-hover:scale-125">
               <ArrowUp 
-                className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 transition-all duration-300 group-hover:drop-shadow-lg"
-                style={{ 
-                  color: '#FFD700',
-                  filter: 'drop-shadow(0 0 6px rgba(255, 215, 0, 0.5))',
-                }}
+                className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 transition-all duration-300 text-primary drop-shadow-lg"
               />
             </div>
             
             {/* Dòng chữ mời gọi */}
-            <p 
-              className="text-center font-playfair text-base sm:text-lg md:text-xl italic tracking-wide px-4 transition-all duration-300 group-hover:scale-105"
-              style={{
-                color: '#DAA520',
-                textShadow: '0 0 20px rgba(218, 165, 32, 0.3)',
-              }}
-            >
+            <p className="text-center font-playfair text-base sm:text-lg md:text-xl italic tracking-wide px-4 transition-all duration-300 group-hover:scale-105 text-primary">
               {t('hero.invite')} 💛
             </p>
           </div>
@@ -116,52 +96,31 @@ const HeroSection = () => {
 
         {/* Sacred Channel Text - Clean */}
         <div className="text-center mt-8">
-          <p 
-            className="font-playfair text-lg md:text-2xl lg:text-3xl font-bold leading-tight"
-            style={{ color: '#B8860B' }}
-          >
+          <p className="font-playfair text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-primary">
             {t('hero.platform')}
           </p>
         </div>
 
         {/* FUN Ecosystem Card - Simple, no hover effects */}
         <Link to="/fun-ecosystem" className="mt-10 mb-20 block">
-          <div 
-            className="relative p-10 md:p-12 rounded-2xl max-w-3xl mx-auto transition-transform duration-300 hover:scale-[1.02]"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(240, 255, 244, 0.95) 100%)',
-              border: '1px solid rgba(184, 134, 11, 0.4)',
-            }}
-          >
+          <div className="relative p-10 md:p-12 rounded-2xl max-w-3xl mx-auto transition-transform duration-300 hover:scale-[1.02] bg-card border border-border">
             <div className="relative z-10 text-center">
               {/* Decorative stars */}
               <div className="flex items-center justify-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
-                <span style={{ color: '#B8860B' }}>✦</span>
-                <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
+                <Sparkles className="w-5 h-5 text-primary" />
+                <span className="text-primary">✦</span>
+                <Sparkles className="w-5 h-5 text-primary" />
               </div>
 
-              <h3 
-                className="font-cinzel text-2xl md:text-3xl lg:text-4xl font-bold mb-4"
-                style={{ color: '#996515' }}
-              >
+              <h3 className="font-cinzel text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-primary">
                 {t('hero.explore_ecosystem')}
               </h3>
               
-              <p 
-                className="font-lora text-base md:text-lg mb-6 max-w-xl mx-auto font-medium"
-                style={{ color: '#3a3a3a' }}
-              >
+              <p className="font-lora text-base md:text-lg mb-6 max-w-xl mx-auto font-medium text-foreground">
                 {t('hero.ecosystem_description')}
               </p>
 
-              <div 
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-bold"
-                style={{
-                  background: 'linear-gradient(135deg, #DAA520 0%, #7FD17F 100%)',
-                  color: '#1a1a1a',
-                }}
-              >
+              <div className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-poppins text-base md:text-lg font-bold bg-primary text-primary-foreground">
                 <Sparkles className="w-5 h-5" />
                 {t('hero.enter_ecosystem')}
                 <ArrowRight className="w-5 h-5" />

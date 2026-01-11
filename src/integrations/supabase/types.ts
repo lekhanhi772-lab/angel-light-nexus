@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookmarked_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          message_id: string | null
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          message_id?: string | null
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          message_id?: string | null
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarked_messages_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "chat_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           content: string
@@ -393,6 +428,7 @@ export type Database = {
           id: string
           last_referral_reset: string | null
           monthly_referral_count: number | null
+          onboarding_completed: boolean | null
           referral_count: number | null
           referred_by: string | null
           updated_at: string
@@ -408,6 +444,7 @@ export type Database = {
           id?: string
           last_referral_reset?: string | null
           monthly_referral_count?: number | null
+          onboarding_completed?: boolean | null
           referral_count?: number | null
           referred_by?: string | null
           updated_at?: string
@@ -423,6 +460,7 @@ export type Database = {
           id?: string
           last_referral_reset?: string | null
           monthly_referral_count?: number | null
+          onboarding_completed?: boolean | null
           referral_count?: number | null
           referred_by?: string | null
           updated_at?: string

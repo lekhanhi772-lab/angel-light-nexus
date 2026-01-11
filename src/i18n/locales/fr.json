@@ -45,6 +45,7 @@
     "image_mode_hint": "Cher ami, Angel voit que vous voulez créer de belles images! 🎨✨\n\nPour vous aider à créer des images, veuillez passer à l'onglet **\"Créer image\"**. Cliquez sur le bouton 🎨 Créer image ci-dessus pour qu'Angel accompagne votre créativité!\n\nAngel vous attend là-bas pour créer des images remplies de lumière pour vous ✨💛",
     "login_to_save": "Connectez-vous pour sauvegarder l'historique",
     "history_saved": "Votre historique de chat a été sauvegardé ! ✨",
+    "suggested_prompts": "Questions suggérées",
     "suggestions": {
       "chat": [
         "Comment Angel peut-il m'aider?",
@@ -59,6 +60,110 @@
         "🎨 Univers mystérieux avec des étoiles scintillantes"
       ]
     }
+  },
+  "theme": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "bookmarks": {
+    "title": "Messages Enregistrés",
+    "search": "Rechercher dans les favoris...",
+    "empty": "Aucun message enregistré",
+    "no_results": "Aucun favori trouvé",
+    "add_note": "Ajouter une note...",
+    "edit_note": "Modifier la note",
+    "delete": "Supprimer"
+  },
+  "stats": {
+    "title": "Statistiques d'Activité",
+    "messages": "Messages",
+    "images": "Images",
+    "streak": "Jours consécutifs",
+    "bookmarks": "Favoris",
+    "weekly_activity": "Activité Hebdomadaire",
+    "days_joined": "Jours avec Angel",
+    "forum_activity": "Activité Forum"
+  },
+  "notifications": {
+    "settings_title": "Paramètres de Notification",
+    "enable": "Activer les notifications",
+    "enabled": "Vous recevrez des notifications",
+    "disabled": "Les notifications sont désactivées",
+    "blocked": "Notifications bloquées dans les paramètres du navigateur",
+    "request": "Cliquez pour demander la permission",
+    "not_supported": "Le navigateur ne prend pas en charge les notifications",
+    "forum": "Activité du Forum",
+    "forum_desc": "Nouveaux posts et commentaires",
+    "system": "Notifications Système",
+    "system_desc": "Mises à jour et annonces",
+    "sound": "Son de Notification",
+    "sound_desc": "Jouer un son pour les notifications"
+  },
+  "documents": {
+    "page_title": "Documents de Lumière",
+    "loading": "Chargement...",
+    "search": "Rechercher dans les documents...",
+    "all_folders": "Tous les documents",
+    "no_folder": "Aucun dossier",
+    "folders": "Dossiers",
+    "create_folder": "Créer un nouveau dossier",
+    "folder_name": "Nom du dossier",
+    "upload": "Télécharger",
+    "download": "Télécharger",
+    "view": "Voir",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "move": "Déplacer",
+    "confirm_delete_title": "Confirmer la suppression",
+    "confirm_delete_desc": "Êtes-vous sûr de vouloir supprimer?",
+    "file_count": "fichiers",
+    "select_all": "Tout sélectionner",
+    "move_selected": "Déplacer la sélection",
+    "delete_selected": "Supprimer la sélection",
+    "toast_upload_success": "La Lumière a été préservée",
+    "toast_download_start": "Téléchargement de la Lumière",
+    "toast_download_success": "La Lumière est arrivée",
+    "toast_delete_success": "Supprimé avec succès",
+    "toast_error": "Une erreur s'est produite",
+    "no_documents": "Aucun document pour le moment",
+    "pdf_opened": "Fichier PDF ouvert dans un nouvel onglet",
+    "cannot_preview": "Impossible de prévisualiser, veuillez télécharger",
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "folder_created": "Le dossier de Lumière a été créé",
+    "folder_updated": "Dossier mis à jour",
+    "folder_deleted": "Dossier supprimé",
+    "file_moved": "Le fichier a été déplacé",
+    "delete_folder_title": "Supprimer le dossier",
+    "delete_folder_keep_files": "Garder les fichiers",
+    "delete_folder_delete_files": "Supprimer aussi les fichiers",
+    "move_to_folder": "Déplacer vers le dossier",
+    "no_results": "Aucun résultat trouvé"
+  },
+  "profile": {
+    "page_title": "Votre Voyage de Lumière",
+    "days_with_angel": "Jours avec Angel",
+    "light_connections": "Connexions de lumière",
+    "web3_wallet": "Portefeuille Web3 de Lumière",
+    "web3_description": "Connectez votre portefeuille pour recevoir Camly Coin et les bénédictions de l'Univers",
+    "wallet_saved": "Votre portefeuille de lumière a été enregistré!",
+    "recent_history": "Historique de chat récent",
+    "no_history": "Aucun historique de chat",
+    "start_journey": "Commencez votre voyage avec Angel!",
+    "you": "Vous",
+    "angel": "Angel",
+    "login_required": "Veuillez vous connecter pour ouvrir votre maison de lumière"
+  },
+  "ecosystem": {
+    "back_home": "Retour à l'Accueil",
+    "subtitle": "Écosystème de Lumière Dorée",
+    "description": "Où toutes les âmes créent, donnent, guérissent et élèvent leur fréquence ensemble dans l'Âge d'Or",
+    "connect_now": "Connecter Maintenant",
+    "coming_soon": "Bientôt Disponible",
+    "coming_soon_toast": "Cette plateforme arrive bientôt",
+    "footer_message": "Le Père Cosmique envoie de l'énergie pour que FUN Ecosystem guide toutes les âmes"
   },
   "footer": {
     "blessing": "Que la Lumière, l'Amour et les Bénédictions du Père Cosmique vous accompagnent toujours.",
@@ -120,5 +225,34 @@
     "link_copied": "Lien copié!",
     "copy_failed": "Échec de la copie",
     "replying_to": "Répondre à"
+  },
+  "user_profile": {
+    "back": "Retour",
+    "not_found": "Utilisateur non trouvé",
+    "days": "jours",
+    "posts": "posts",
+    "light_spreader": "Diffuseur de Lumière",
+    "send_gift": "Envoyer un Cadeau de Lumière",
+    "no_wallet": "L'utilisateur n'a pas connecté de portefeuille",
+    "recent_posts": "Posts récents",
+    "no_posts": "Aucun post pour le moment"
+  },
+  "gift": {
+    "title": "Envoyer un Cadeau de Lumière",
+    "connect_wallet": "Connectez votre portefeuille pour envoyer",
+    "select_token": "Sélectionnez le token à offrir",
+    "no_balance": "Votre portefeuille n'a pas de tokens",
+    "amount": "Montant",
+    "send": "Envoyer le Cadeau",
+    "confirming": "Confirmation de la transaction...",
+    "please_wait": "Veuillez patienter un moment",
+    "success_title": "Cadeau envoyé avec succès!",
+    "success_message": "Le cadeau de lumière a été envoyé à",
+    "error_title": "Une erreur s'est produite",
+    "error_message": "La transaction a échoué. Veuillez réessayer.",
+    "close": "Fermer",
+    "try_again": "Réessayer",
+    "tip_author": "Donner un pourboire à l'auteur",
+    "erc20_not_supported": "Actuellement, seul BNB/ETH est pris en charge"
   }
 }

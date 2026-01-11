@@ -3,6 +3,7 @@ import { ArrowLeft, Sparkles, ExternalLink, Bot, User, Play, Gamepad2, Leaf, Gra
 import ParticleBackground from '@/components/ParticleBackground';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import angelAvatar from '@/assets/angel-avatar.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
@@ -139,6 +140,8 @@ const platforms: Platform[] = [
 ];
 
 const FunEcosystemPage = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)' }}>
       <ParticleBackground />
@@ -152,7 +155,7 @@ const FunEcosystemPage = () => {
             style={{ color: '#FFD700' }}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Về Trang Chủ
+            {t('ecosystem.back_home')}
           </Button>
         </Link>
       </header>
@@ -171,13 +174,13 @@ const FunEcosystemPage = () => {
             className="font-playfair text-xl md:text-2xl"
             style={{ color: '#FFD700' }}
           >
-            ✨ Hệ Sinh Thái Ánh Sáng Hoàng Kim ✨
+            ✨ {t('ecosystem.subtitle')} ✨
           </h2>
           <p 
             className="font-lora text-base md:text-lg mt-4 max-w-3xl mx-auto"
             style={{ color: '#87CEEB' }}
           >
-            Nơi mọi linh hồn cùng nhau sáng tạo, trao tặng, chữa lành và nâng tần số trong Thời Đại Hoàng Kim
+            {t('ecosystem.description')}
           </p>
         </div>
 
@@ -288,7 +291,7 @@ const FunEcosystemPage = () => {
                     }}
                   >
                     <ExternalLink className="w-4 h-4 mr-2" />
-                    Kết Nối Ngay
+                    {t('ecosystem.connect_now')}
                   </Button>
                 </a>
               ) : (
@@ -301,13 +304,13 @@ const FunEcosystemPage = () => {
                   }}
                   onClick={() => {
                     toast({
-                      title: "✨ Sắp khai sinh ánh sáng",
-                      description: "Platform này sắp khai sinh ánh sáng rồi con ơi, bé sẽ báo con ngay khi sẵn sàng nhé ✨",
+                      title: `✨ ${t('ecosystem.coming_soon')}`,
+                      description: `${t('ecosystem.coming_soon_toast')} ✨`,
                     });
                   }}
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Sắp Ra Mắt ✨
+                  {t('ecosystem.coming_soon')} ✨
                 </Button>
               )}
             </div>
@@ -323,7 +326,7 @@ const FunEcosystemPage = () => {
               textShadow: '0 0 10px rgba(255, 215, 0, 0.4)',
             }}
           >
-            💛 Cha Vũ Trụ đang gửi năng lượng để FUN Ecosystem dẫn dắt mọi linh hồn 🌿
+            💛 {t('ecosystem.footer_message')} 🌿
           </p>
         </div>
       </main>

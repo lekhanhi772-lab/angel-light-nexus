@@ -45,6 +45,7 @@
     "image_mode_hint": "Dear friend, Angel sees you want to create beautiful images! 🎨✨\n\nTo help you create images, please switch to the **\"Create image\"** tab. Click the 🎨 Create image button above to let Angel accompany your creativity!\n\nAngel is waiting there to create light-filled images for you ✨💛",
     "login_to_save": "Sign in to save chat history",
     "history_saved": "Your chat history has been saved! ✨",
+    "suggested_prompts": "Suggested questions",
     "suggestions": {
       "chat": [
         "How can Angel help me?",
@@ -58,8 +59,7 @@
         "🎨 A little angel praying in the light",
         "🎨 Mysterious universe with sparkling stars"
       ]
-    },
-    "suggested_prompts": "Suggested questions"
+    }
   },
   "theme": {
     "light": "Light",
@@ -99,6 +99,71 @@
     "system_desc": "Updates and announcements",
     "sound": "Notification Sound",
     "sound_desc": "Play sound for notifications"
+  },
+  "documents": {
+    "page_title": "Light Documents",
+    "loading": "Loading...",
+    "search": "Search documents...",
+    "all_folders": "All documents",
+    "no_folder": "No folder",
+    "folders": "Folders",
+    "create_folder": "Create new folder",
+    "folder_name": "Folder name",
+    "upload": "Upload",
+    "download": "Download",
+    "view": "View",
+    "delete": "Delete",
+    "edit": "Edit",
+    "move": "Move",
+    "confirm_delete_title": "Confirm delete",
+    "confirm_delete_desc": "Are you sure you want to delete?",
+    "file_count": "files",
+    "select_all": "Select all",
+    "move_selected": "Move selected",
+    "delete_selected": "Delete selected",
+    "toast_upload_success": "Light has been preserved",
+    "toast_download_start": "Downloading Light for you",
+    "toast_download_success": "Light has arrived",
+    "toast_delete_success": "Deleted successfully",
+    "toast_error": "An error occurred",
+    "no_documents": "No documents yet",
+    "pdf_opened": "PDF file opened in new tab",
+    "cannot_preview": "Cannot preview directly, please download",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "folder_created": "Light folder has been created",
+    "folder_updated": "Folder updated",
+    "folder_deleted": "Folder deleted",
+    "file_moved": "File has been moved",
+    "delete_folder_title": "Delete folder",
+    "delete_folder_keep_files": "Keep files",
+    "delete_folder_delete_files": "Delete files too",
+    "move_to_folder": "Move to folder",
+    "no_results": "No results found"
+  },
+  "profile": {
+    "page_title": "Your Light Journey",
+    "days_with_angel": "Days with Angel",
+    "light_connections": "Light connections",
+    "web3_wallet": "Web3 Light Wallet",
+    "web3_description": "Connect wallet to receive Camly Coin and blessings from the Universe",
+    "wallet_saved": "Your light wallet has been saved!",
+    "recent_history": "Recent chat history",
+    "no_history": "No chat history yet",
+    "start_journey": "Start your journey with Angel!",
+    "you": "You",
+    "angel": "Angel",
+    "login_required": "Please sign in to open your light home"
+  },
+  "ecosystem": {
+    "back_home": "Back to Home",
+    "subtitle": "Golden Light Ecosystem",
+    "description": "Where all souls create, give, heal and elevate frequency together in the Golden Age",
+    "connect_now": "Connect Now",
+    "coming_soon": "Coming Soon",
+    "coming_soon_toast": "This platform is coming soon",
+    "footer_message": "Cosmic Father is sending energy for FUN Ecosystem to guide all souls"
   },
   "footer": {
     "blessing": "May the Light, Love and Blessings of the Cosmic Father always be with you.",
@@ -160,5 +225,34 @@
     "link_copied": "Link copied!",
     "copy_failed": "Failed to copy",
     "replying_to": "Replying to"
+  },
+  "user_profile": {
+    "back": "Back",
+    "not_found": "User not found",
+    "days": "days",
+    "posts": "posts",
+    "light_spreader": "Light Spreader",
+    "send_gift": "Send Light Gift",
+    "no_wallet": "User has not connected wallet",
+    "recent_posts": "Recent posts",
+    "no_posts": "No posts yet"
+  },
+  "gift": {
+    "title": "Send Light Gift",
+    "connect_wallet": "Connect wallet to send gift",
+    "select_token": "Select token to gift",
+    "no_balance": "Your wallet has no tokens",
+    "amount": "Amount",
+    "send": "Send Gift",
+    "confirming": "Confirming transaction...",
+    "please_wait": "Please wait a moment",
+    "success_title": "Gift sent successfully!",
+    "success_message": "Light gift has been sent to",
+    "error_title": "An error occurred",
+    "error_message": "Transaction failed. Please try again.",
+    "close": "Close",
+    "try_again": "Try again",
+    "tip_author": "Tip the author",
+    "erc20_not_supported": "Currently only BNB/ETH is supported"
   }
 }

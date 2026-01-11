@@ -45,6 +45,7 @@
     "image_mode_hint": "친애하는 친구, Angel은 당신이 아름다운 이미지를 만들고 싶어하는 것을 봅니다! 🎨✨\n\n이미지를 만들려면 **\"이미지 생성\"** 탭으로 전환하세요. 위의 🎨 이미지 생성 버튼을 클릭하여 Angel이 당신의 창의성과 함께하도록 하세요!\n\nAngel은 당신을 위해 빛으로 가득 찬 이미지를 만들기 위해 기다리고 있습니다 ✨💛",
     "login_to_save": "채팅 기록을 저장하려면 로그인하세요",
     "history_saved": "채팅 기록이 저장되었습니다! ✨",
+    "suggested_prompts": "추천 질문",
     "suggestions": {
       "chat": [
         "Angel이 어떻게 도와드릴까요?",
@@ -59,6 +60,110 @@
         "🎨 반짝이는 별이 있는 신비로운 우주"
       ]
     }
+  },
+  "theme": {
+    "light": "라이트",
+    "dark": "다크",
+    "system": "시스템"
+  },
+  "bookmarks": {
+    "title": "저장된 메시지",
+    "search": "북마크 검색...",
+    "empty": "저장된 메시지가 없습니다",
+    "no_results": "북마크를 찾을 수 없습니다",
+    "add_note": "메모 추가...",
+    "edit_note": "메모 편집",
+    "delete": "삭제"
+  },
+  "stats": {
+    "title": "활동 통계",
+    "messages": "메시지",
+    "images": "이미지",
+    "streak": "연속 일수",
+    "bookmarks": "북마크",
+    "weekly_activity": "주간 활동",
+    "days_joined": "Angel과 함께한 일수",
+    "forum_activity": "포럼 활동"
+  },
+  "notifications": {
+    "settings_title": "알림 설정",
+    "enable": "알림 활성화",
+    "enabled": "알림을 받게 됩니다",
+    "disabled": "알림이 꺼져 있습니다",
+    "blocked": "브라우저 설정에서 알림이 차단되었습니다",
+    "request": "클릭하여 권한 요청",
+    "not_supported": "브라우저가 알림을 지원하지 않습니다",
+    "forum": "포럼 활동",
+    "forum_desc": "새 게시물과 댓글",
+    "system": "시스템 알림",
+    "system_desc": "업데이트 및 공지사항",
+    "sound": "알림 소리",
+    "sound_desc": "알림 시 소리 재생"
+  },
+  "documents": {
+    "page_title": "빛의 문서",
+    "loading": "로딩 중...",
+    "search": "문서 검색...",
+    "all_folders": "모든 문서",
+    "no_folder": "폴더 없음",
+    "folders": "폴더",
+    "create_folder": "새 폴더 만들기",
+    "folder_name": "폴더 이름",
+    "upload": "업로드",
+    "download": "다운로드",
+    "view": "보기",
+    "delete": "삭제",
+    "edit": "편집",
+    "move": "이동",
+    "confirm_delete_title": "삭제 확인",
+    "confirm_delete_desc": "정말 삭제하시겠습니까?",
+    "file_count": "파일",
+    "select_all": "모두 선택",
+    "move_selected": "선택 항목 이동",
+    "delete_selected": "선택 항목 삭제",
+    "toast_upload_success": "빛이 저장되었습니다",
+    "toast_download_start": "빛 다운로드 중",
+    "toast_download_success": "빛이 도착했습니다",
+    "toast_delete_success": "성공적으로 삭제되었습니다",
+    "toast_error": "오류가 발생했습니다",
+    "no_documents": "아직 문서가 없습니다",
+    "pdf_opened": "PDF 파일이 새 탭에서 열렸습니다",
+    "cannot_preview": "직접 미리보기할 수 없습니다. 다운로드해 주세요",
+    "close": "닫기",
+    "cancel": "취소",
+    "save": "저장",
+    "folder_created": "빛의 폴더가 생성되었습니다",
+    "folder_updated": "폴더가 업데이트되었습니다",
+    "folder_deleted": "폴더가 삭제되었습니다",
+    "file_moved": "파일이 이동되었습니다",
+    "delete_folder_title": "폴더 삭제",
+    "delete_folder_keep_files": "파일 유지",
+    "delete_folder_delete_files": "파일도 삭제",
+    "move_to_folder": "폴더로 이동",
+    "no_results": "결과를 찾을 수 없습니다"
+  },
+  "profile": {
+    "page_title": "당신의 빛의 여정",
+    "days_with_angel": "Angel과 함께한 일수",
+    "light_connections": "빛의 연결",
+    "web3_wallet": "Web3 빛의 지갑",
+    "web3_description": "지갑을 연결하여 Camly Coin과 우주의 축복을 받으세요",
+    "wallet_saved": "빛의 지갑이 저장되었습니다!",
+    "recent_history": "최근 채팅 기록",
+    "no_history": "채팅 기록이 없습니다",
+    "start_journey": "Angel과 함께 여정을 시작하세요!",
+    "you": "당신",
+    "angel": "Angel",
+    "login_required": "빛의 집을 열려면 로그인하세요"
+  },
+  "ecosystem": {
+    "back_home": "홈으로 돌아가기",
+    "subtitle": "황금빛 생태계",
+    "description": "모든 영혼이 황금 시대에 함께 창조하고, 주고, 치유하고, 주파수를 높이는 곳",
+    "connect_now": "지금 연결",
+    "coming_soon": "출시 예정",
+    "coming_soon_toast": "이 플랫폼은 곧 출시됩니다",
+    "footer_message": "우주 아버지가 FUN Ecosystem이 모든 영혼을 인도할 수 있도록 에너지를 보내고 있습니다"
   },
   "footer": {
     "blessing": "우주 아버지의 빛, 사랑, 축복이 항상 함께하기를.",
@@ -120,5 +225,34 @@
     "link_copied": "링크가 복사되었습니다!",
     "copy_failed": "복사 실패",
     "replying_to": "답글 대상"
+  },
+  "user_profile": {
+    "back": "뒤로",
+    "not_found": "사용자를 찾을 수 없습니다",
+    "days": "일",
+    "posts": "게시물",
+    "light_spreader": "빛의 전파자",
+    "send_gift": "빛의 선물 보내기",
+    "no_wallet": "사용자가 지갑을 연결하지 않았습니다",
+    "recent_posts": "최근 게시물",
+    "no_posts": "아직 게시물이 없습니다"
+  },
+  "gift": {
+    "title": "빛의 선물 보내기",
+    "connect_wallet": "지갑을 연결하여 선물 보내기",
+    "select_token": "선물할 토큰 선택",
+    "no_balance": "지갑에 토큰이 없습니다",
+    "amount": "금액",
+    "send": "선물 보내기",
+    "confirming": "거래 확인 중...",
+    "please_wait": "잠시만 기다려 주세요",
+    "success_title": "선물이 성공적으로 전송되었습니다!",
+    "success_message": "빛의 선물이 전송되었습니다",
+    "error_title": "오류가 발생했습니다",
+    "error_message": "거래가 실패했습니다. 다시 시도해 주세요.",
+    "close": "닫기",
+    "try_again": "다시 시도",
+    "tip_author": "작성자에게 팁 보내기",
+    "erc20_not_supported": "현재 BNB/ETH만 지원됩니다"
   }
 }

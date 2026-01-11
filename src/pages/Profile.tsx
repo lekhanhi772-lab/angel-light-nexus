@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { Web3Provider } from '@/components/Web3Provider';
 import { WalletConnect } from '@/components/WalletConnect';
@@ -14,6 +15,7 @@ import StatisticsDashboard from '@/components/StatisticsDashboard';
 import NotificationSettings from '@/components/NotificationSettings';
 
 const Profile = () => {
+  const { t } = useTranslation();
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   
@@ -180,7 +182,7 @@ const Profile = () => {
                 color: '#B8860B',
               }}
             >
-              Hành Trình Ánh Sáng Của Con ✨
+              {t('profile.page_title')} ✨
             </h1>
           </div>
 
@@ -236,7 +238,7 @@ const Profile = () => {
                 {loadingStats ? '...' : chatStats.daysSinceJoined}
               </p>
               <p className="text-xs sm:text-sm" style={{ color: '#8B6914' }}>
-                Ngày đồng hành với bé Angel
+                {t('profile.days_with_angel')}
               </p>
             </div>
             
@@ -252,7 +254,7 @@ const Profile = () => {
                 {loadingStats ? '...' : chatStats.totalMessages}
               </p>
               <p className="text-xs sm:text-sm" style={{ color: '#8B6914' }}>
-                Lượt kết nối ánh sáng
+                {t('profile.light_connections')}
               </p>
             </div>
           </div>
@@ -268,11 +270,11 @@ const Profile = () => {
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
               <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
-                Ví Ánh Sáng Web3
+                {t('profile.web3_wallet')}
               </h3>
             </div>
             <p className="text-sm mb-4" style={{ color: '#8B6914' }}>
-              Kết nối ví để nhận Camly Coin và phước lành từ Vũ Trụ ✨
+              {t('profile.web3_description')} ✨
             </p>
             <WalletConnect onWalletChange={handleWalletChange} />
             
@@ -307,7 +309,7 @@ const Profile = () => {
             <div className="flex items-center gap-2 mb-4">
               <ScrollText className="w-5 h-5" style={{ color: '#DAA520' }} />
               <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
-                Lịch sử trò chuyện gần đây
+                {t('profile.recent_history')}
               </h3>
             </div>
             
@@ -331,7 +333,7 @@ const Profile = () => {
                         className="text-xs font-medium mb-1"
                         style={{ color: msg.role === 'user' ? '#DAA520' : '#B8860B' }}
                       >
-                        {msg.role === 'user' ? 'Con' : 'Bé Angel'}
+                        {msg.role === 'user' ? t('profile.you') : t('profile.angel')}
                       </p>
                       <p style={{ color: '#5a5a5a' }}>
                         {msg.content.substring(0, 100)}{msg.content.length > 100 ? '...' : ''}
@@ -342,7 +344,7 @@ const Profile = () => {
               </ScrollArea>
             ) : (
               <p className="text-sm text-center py-4" style={{ color: '#8B6914' }}>
-                Chưa có lịch sử trò chuyện. Hãy bắt đầu hành trình với bé Angel! 💛
+                {t('profile.no_history')}. {t('profile.start_journey')} 💛
               </p>
             )}
           </div>

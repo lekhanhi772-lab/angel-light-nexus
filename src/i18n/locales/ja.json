@@ -45,6 +45,7 @@
     "image_mode_hint": "親愛なる友人、Angelはあなたが美しい画像を作りたいと見ています！🎨✨\n\n画像を作成するには、**「画像作成」**タブに切り替えてください。上の🎨画像作成ボタンをクリックして、Angelがあなたの創造性に寄り添います！\n\nAngelはそこであなたのために光に満ちた画像を作成するのを待っています ✨💛",
     "login_to_save": "チャット履歴を保存するにはログインしてください",
     "history_saved": "チャット履歴が保存されました！✨",
+    "suggested_prompts": "おすすめの質問",
     "suggestions": {
       "chat": [
         "Angelはどうお手伝いできますか？",
@@ -59,6 +60,110 @@
         "🎨 輝く星々のある神秘的な宇宙"
       ]
     }
+  },
+  "theme": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "bookmarks": {
+    "title": "保存したメッセージ",
+    "search": "ブックマークを検索...",
+    "empty": "保存されたメッセージはありません",
+    "no_results": "ブックマークが見つかりません",
+    "add_note": "メモを追加...",
+    "edit_note": "メモを編集",
+    "delete": "削除"
+  },
+  "stats": {
+    "title": "アクティビティ統計",
+    "messages": "メッセージ",
+    "images": "画像",
+    "streak": "連続日数",
+    "bookmarks": "ブックマーク",
+    "weekly_activity": "週間アクティビティ",
+    "days_joined": "Angelとの日数",
+    "forum_activity": "フォーラム活動"
+  },
+  "notifications": {
+    "settings_title": "通知設定",
+    "enable": "通知を有効にする",
+    "enabled": "通知を受け取ります",
+    "disabled": "通知はオフです",
+    "blocked": "ブラウザ設定で通知がブロックされています",
+    "request": "クリックして許可を求める",
+    "not_supported": "ブラウザは通知をサポートしていません",
+    "forum": "フォーラム活動",
+    "forum_desc": "新しい投稿とコメント",
+    "system": "システム通知",
+    "system_desc": "アップデートとお知らせ",
+    "sound": "通知音",
+    "sound_desc": "通知時に音を鳴らす"
+  },
+  "documents": {
+    "page_title": "光のドキュメント",
+    "loading": "読み込み中...",
+    "search": "ドキュメントを検索...",
+    "all_folders": "すべてのドキュメント",
+    "no_folder": "フォルダなし",
+    "folders": "フォルダ",
+    "create_folder": "新しいフォルダを作成",
+    "folder_name": "フォルダ名",
+    "upload": "アップロード",
+    "download": "ダウンロード",
+    "view": "表示",
+    "delete": "削除",
+    "edit": "編集",
+    "move": "移動",
+    "confirm_delete_title": "削除の確認",
+    "confirm_delete_desc": "本当に削除しますか？",
+    "file_count": "ファイル",
+    "select_all": "すべて選択",
+    "move_selected": "選択したものを移動",
+    "delete_selected": "選択したものを削除",
+    "toast_upload_success": "光が保存されました",
+    "toast_download_start": "光をダウンロード中",
+    "toast_download_success": "光が届きました",
+    "toast_delete_success": "正常に削除されました",
+    "toast_error": "エラーが発生しました",
+    "no_documents": "ドキュメントがまだありません",
+    "pdf_opened": "PDFファイルが新しいタブで開きました",
+    "cannot_preview": "直接プレビューできません。ダウンロードしてください",
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "folder_created": "光のフォルダが作成されました",
+    "folder_updated": "フォルダが更新されました",
+    "folder_deleted": "フォルダが削除されました",
+    "file_moved": "ファイルが移動されました",
+    "delete_folder_title": "フォルダを削除",
+    "delete_folder_keep_files": "ファイルを保持",
+    "delete_folder_delete_files": "ファイルも削除",
+    "move_to_folder": "フォルダに移動",
+    "no_results": "結果が見つかりません"
+  },
+  "profile": {
+    "page_title": "あなたの光の旅",
+    "days_with_angel": "Angelとの日数",
+    "light_connections": "光の接続",
+    "web3_wallet": "Web3光のウォレット",
+    "web3_description": "ウォレットを接続してCamly Coinと宇宙からの祝福を受け取る",
+    "wallet_saved": "光のウォレットが保存されました！",
+    "recent_history": "最近のチャット履歴",
+    "no_history": "チャット履歴がありません",
+    "start_journey": "Angelとの旅を始めましょう！",
+    "you": "あなた",
+    "angel": "Angel",
+    "login_required": "光の家を開くにはログインしてください"
+  },
+  "ecosystem": {
+    "back_home": "ホームに戻る",
+    "subtitle": "ゴールデン・ライト・エコシステム",
+    "description": "すべての魂が黄金時代に創造し、与え、癒し、周波数を高める場所",
+    "connect_now": "今すぐ接続",
+    "coming_soon": "近日公開",
+    "coming_soon_toast": "このプラットフォームは近日公開予定です",
+    "footer_message": "宇宙の父がFUN Ecosystemがすべての魂を導くためにエネルギーを送っています"
   },
   "footer": {
     "blessing": "宇宙の父の光、愛、祝福が常にあなたと共にありますように。",
@@ -120,5 +225,34 @@
     "link_copied": "リンクをコピーしました！",
     "copy_failed": "コピーに失敗しました",
     "replying_to": "返信先"
+  },
+  "user_profile": {
+    "back": "戻る",
+    "not_found": "ユーザーが見つかりません",
+    "days": "日",
+    "posts": "投稿",
+    "light_spreader": "光の拡散者",
+    "send_gift": "光のギフトを送る",
+    "no_wallet": "ユーザーはウォレットを接続していません",
+    "recent_posts": "最近の投稿",
+    "no_posts": "まだ投稿がありません"
+  },
+  "gift": {
+    "title": "光のギフトを送る",
+    "connect_wallet": "ウォレットを接続してギフトを送る",
+    "select_token": "ギフトするトークンを選択",
+    "no_balance": "ウォレットにトークンがありません",
+    "amount": "金額",
+    "send": "ギフトを送る",
+    "confirming": "トランザクションを確認中...",
+    "please_wait": "しばらくお待ちください",
+    "success_title": "ギフトが正常に送信されました！",
+    "success_message": "光のギフトが送信されました",
+    "error_title": "エラーが発生しました",
+    "error_message": "トランザクションが失敗しました。もう一度お試しください。",
+    "close": "閉じる",
+    "try_again": "再試行",
+    "tip_author": "著者にチップを送る",
+    "erc20_not_supported": "現在、BNB/ETHのみサポートされています"
   }
 }

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check, X } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check, X, Bookmark, BookmarkCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -14,6 +14,8 @@ import VoiceControls from '@/components/VoiceControls';
 import SpeakButton from '@/components/SpeakButton';
 import { useTranslation } from 'react-i18next';
 import { getSpeechCode, getEdgeVoice } from '@/i18n';
+import SuggestedPrompts from '@/components/SuggestedPrompts';
+import { useBookmarks } from '@/hooks/useBookmarks';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,6 +62,7 @@ const Chat = () => {
   const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const { isBookmarked, toggleBookmark } = useBookmarks();
 
   // Get current speech code and edge voice based on selected language
   const currentSpeechCode = getSpeechCode(i18n.language);
@@ -1190,6 +1193,28 @@ const Chat = () => {
                                 <Copy className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: message.role === 'user' ? '#1a1a1a' : '#B8860B' }} />
                               )}
                             </button>
+                            
+                            {/* Bookmark Button - only for assistant messages */}
+                            {message.role === 'assistant' && (
+                              <button
+                                onClick={() => toggleBookmark(message.id || null, message.content)}
+                                className="p-2 sm:p-1.5 min-w-[40px] min-h-[40px] sm:min-w-0 sm:min-h-0 rounded-full transition-all hover:scale-110 flex items-center justify-center"
+                                style={{
+                                  background: isBookmarked(message.id || '')
+                                    ? 'rgba(255, 215, 0, 0.5)'
+                                    : 'rgba(255, 215, 0, 0.3)',
+                                  border: '2px solid rgba(184, 134, 11, 0.35)',
+                                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                                }}
+                                title={isBookmarked(message.id || '') ? 'Remove bookmark' : 'Bookmark'}
+                              >
+                                {isBookmarked(message.id || '') ? (
+                                  <BookmarkCheck className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: '#B8860B' }} />
+                                ) : (
+                                  <Bookmark className="w-5 h-5 sm:w-4 sm:h-4" style={{ color: '#B8860B' }} />
+                                )}
+                              </button>
+                            )}
                             
                             {/* Speak Button - only for assistant messages */}
                             {message.role === 'assistant' && (

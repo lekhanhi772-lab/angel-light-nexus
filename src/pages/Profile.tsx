@@ -10,6 +10,8 @@ import { NotificationBell } from '@/components/NotificationBell';
 import { Sparkles, MessageCircle, Calendar, ScrollText } from 'lucide-react';
 import { toast } from 'sonner';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import StatisticsDashboard from '@/components/StatisticsDashboard';
+import NotificationSettings from '@/components/NotificationSettings';
 
 const Profile = () => {
   const { user, profile, loading } = useAuth();
@@ -285,7 +287,15 @@ const Profile = () => {
             <ReferralCard userId={user?.id} />
           </div>
 
+          {/* Statistics Dashboard */}
+          <div className="mb-8">
+            <StatisticsDashboard />
+          </div>
 
+          {/* Notification Settings */}
+          <div className="mb-8">
+            <NotificationSettings />
+          </div>
           {/* Recent Chat History */}
           <div 
             className="p-6 rounded-2xl mb-8"

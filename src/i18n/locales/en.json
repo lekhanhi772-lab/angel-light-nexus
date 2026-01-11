@@ -58,7 +58,47 @@
         "🎨 A little angel praying in the light",
         "🎨 Mysterious universe with sparkling stars"
       ]
-    }
+    },
+    "suggested_prompts": "Suggested questions"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "bookmarks": {
+    "title": "Saved Messages",
+    "search": "Search bookmarks...",
+    "empty": "No saved messages yet",
+    "no_results": "No bookmarks found",
+    "add_note": "Add a note...",
+    "edit_note": "Edit note",
+    "delete": "Delete"
+  },
+  "stats": {
+    "title": "Activity Statistics",
+    "messages": "Messages",
+    "images": "Images",
+    "streak": "Day Streak",
+    "bookmarks": "Bookmarks",
+    "weekly_activity": "Weekly Activity",
+    "days_joined": "Days with Angel",
+    "forum_activity": "Forum Activity"
+  },
+  "notifications": {
+    "settings_title": "Notification Settings",
+    "enable": "Enable Notifications",
+    "enabled": "You will receive notifications",
+    "disabled": "Notifications are turned off",
+    "blocked": "Notifications are blocked in browser settings",
+    "request": "Click to request permission",
+    "not_supported": "Browser does not support notifications",
+    "forum": "Forum Activity",
+    "forum_desc": "New posts and comments",
+    "system": "System Notifications",
+    "system_desc": "Updates and announcements",
+    "sound": "Notification Sound",
+    "sound_desc": "Play sound for notifications"
   },
   "footer": {
     "blessing": "May the Light, Love and Blessings of the Cosmic Father always be with you.",

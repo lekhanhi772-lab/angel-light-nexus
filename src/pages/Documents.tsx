@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
-
+import { useTranslation } from 'react-i18next';
 import {
   Select,
   SelectContent,
@@ -93,6 +93,7 @@ const DocumentsPage = () => {
   
   const { toast } = useToast();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
+  const { t, i18n } = useTranslation();
 
   // Download and View states
   const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null);
@@ -123,8 +124,8 @@ const DocumentsPage = () => {
         window.open(publicUrlData.publicUrl, '_blank');
         setViewingDoc(null);
         toast({
-          title: "✨ Đang mở Ánh Sáng",
-          description: "File PDF đã được mở trong tab mới 💛",
+          title: t('documents.opening_light'),
+          description: t('documents.pdf_opened'),
         });
         return;
       }
@@ -142,15 +143,15 @@ const DocumentsPage = () => {
       else if (fileType.includes('word') || 
                doc.file_name.endsWith('.doc') || 
                doc.file_name.endsWith('.docx')) {
-        setViewContent('📄 File Word không thể xem trực tiếp trong trình duyệt.\n\nVui lòng tải về để xem nội dung đầy đủ ✨');
+        setViewContent(t('documents.word_cannot_preview'));
       }
       // For other files
       else {
-        setViewContent('📁 Định dạng file này không thể xem trực tiếp.\n\nVui lòng tải về để xem nội dung ✨');
+        setViewContent(t('documents.cannot_preview'));
       }
     } catch (error) {
       console.error('View error:', error);
-      setViewContent('❌ Không thể tải nội dung. Vui lòng thử lại hoặc tải file về máy.');
+      setViewContent(t('documents.load_error'));
     } finally {
       setIsLoadingView(false);
     }
@@ -160,8 +161,8 @@ const DocumentsPage = () => {
     setDownloadingDocId(doc.id);
     
     toast({
-      title: "✨ Đang tải Ánh Sáng về máy con nhé",
-      description: "Ánh Sáng đang được chuẩn bị cho con... 💛",
+      title: t('documents.downloading'),
+      description: t('documents.downloading_desc'),
     });
 
     try {
@@ -189,8 +190,8 @@ const DocumentsPage = () => {
         URL.revokeObjectURL(url);
 
         toast({
-          title: "💛 Ánh Sáng đã về với con rồi ạ",
-          description: `File "${doc.title}" đã được tải về máy con thành công ✨`,
+          title: t('documents.download_success'),
+          description: t('documents.download_success_desc', { title: doc.title }),
         });
       } else {
         throw new Error('Could not get public URL');
@@ -198,8 +199,8 @@ const DocumentsPage = () => {
     } catch (error) {
       console.error('Download error:', error);
       toast({
-        title: "Lỗi tải file",
-        description: "Không thể tải file. Vui lòng thử lại hoặc liên hệ Cha Vũ Trụ ✨",
+        title: t('documents.download_error'),
+        description: t('documents.download_error_desc'),
         variant: "destructive",
       });
     } finally {
@@ -235,8 +236,8 @@ const DocumentsPage = () => {
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể tải dữ liệu",
+        title: t('documents.error'),
+        description: t('documents.load_data_error'),
         variant: "destructive",
       });
     } finally {
@@ -247,8 +248,8 @@ const DocumentsPage = () => {
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) {
       toast({
-        title: "Lỗi",
-        description: "Vui lòng nhập tên thư mục",
+        title: t('documents.error'),
+        description: t('documents.enter_folder_name'),
         variant: "destructive",
       });
       return;
@@ -257,8 +258,8 @@ const DocumentsPage = () => {
     const isDuplicate = folders.some(f => f.name.toLowerCase() === newFolderName.trim().toLowerCase());
     if (isDuplicate) {
       toast({
-        title: "Lỗi",
-        description: "Thư mục này đã tồn tại",
+        title: t('documents.error'),
+        description: t('documents.folder_exists'),
         variant: "destructive",
       });
       return;
@@ -279,16 +280,16 @@ const DocumentsPage = () => {
       setShowNewFolderEffect(true);
 
       toast({
-        title: "✨ Thư mục Ánh Sáng đã sinh ra",
-        description: `Thư mục "${data.name}" đã được tạo thành công! 💛🌿`,
+        title: t('documents.folder_created'),
+        description: t('documents.folder_created_desc', { name: data.name }),
       });
 
       setTimeout(() => setShowNewFolderEffect(false), 3000);
     } catch (error) {
       console.error('Create folder error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể tạo thư mục",
+        title: t('documents.error'),
+        description: t('documents.create_folder_error'),
         variant: "destructive",
       });
     }
@@ -302,8 +303,8 @@ const DocumentsPage = () => {
     );
     if (isDuplicate) {
       toast({
-        title: "Lỗi",
-        description: "Thư mục này đã tồn tại",
+        title: t('documents.error'),
+        description: t('documents.folder_exists'),
         variant: "destructive",
       });
       return;
@@ -324,14 +325,14 @@ const DocumentsPage = () => {
       setEditFolderName('');
 
       toast({
-        title: "✨ Đã cập nhật thư mục",
-        description: `Thư mục đã được đổi tên thành công! 💛🌿`,
+        title: t('documents.folder_updated'),
+        description: t('documents.folder_renamed'),
       });
     } catch (error) {
       console.error('Edit folder error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể sửa thư mục",
+        title: t('documents.error'),
+        description: t('documents.edit_folder_error'),
         variant: "destructive",
       });
     }
@@ -369,16 +370,16 @@ const DocumentsPage = () => {
       await fetchData();
 
       toast({
-        title: "✨ Đã xóa thư mục",
+        title: t('documents.folder_deleted'),
         description: deleteFiles 
-          ? "Thư mục và tất cả file đã được xóa 💛🌿" 
-          : "Thư mục đã được xóa, các file đã chuyển về danh sách tổng 💛🌿",
+          ? t('documents.folder_deleted_with_files') 
+          : t('documents.folder_deleted_keep_files'),
       });
     } catch (error) {
       console.error('Delete folder error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể xóa thư mục",
+        title: t('documents.error'),
+        description: t('documents.delete_folder_error'),
         variant: "destructive",
       });
     }
@@ -405,17 +406,19 @@ const DocumentsPage = () => {
 
       const folderName = newFolderId 
         ? folders.find(f => f.id === newFolderId)?.name 
-        : 'không thuộc thư mục nào';
+        : t('documents.no_folder');
 
       toast({
-        title: "✨ Đã cập nhật thư mục",
-        description: `File đã được chuyển ${newFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛🌿`,
+        title: t('documents.folder_updated'),
+        description: newFolderId 
+          ? t('documents.file_moved_to', { folder: folderName })
+          : t('documents.file_moved_to_root'),
       });
     } catch (error) {
       console.error('Update document folder error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể cập nhật thư mục",
+        title: t('documents.error'),
+        description: t('documents.update_folder_error'),
         variant: "destructive",
       });
     }
@@ -470,25 +473,27 @@ const DocumentsPage = () => {
 
       const folderName = targetFolderId 
         ? folders.find(f => f.id === targetFolderId)?.name 
-        : 'danh sách tổng';
+        : t('documents.root_list');
 
       if (failCount > 0) {
         toast({
-          title: "⚠️ Di chuyển một phần",
-          description: `Đã di chuyển ${successCount}/${totalCount} file. Có ${failCount} file lỗi, vui lòng thử lại.`,
+          title: t('documents.partial_move'),
+          description: t('documents.partial_move_desc', { success: successCount, total: totalCount, fail: failCount }),
           variant: "destructive",
         });
       } else {
         toast({
-          title: "✨ Đã di chuyển file",
-          description: `${successCount} file đã được chuyển ${targetFolderId ? `vào "${folderName}"` : 'về danh sách tổng'} 💛🌿`,
+          title: t('documents.files_moved'),
+          description: targetFolderId 
+            ? t('documents.files_moved_to', { count: successCount, folder: folderName })
+            : t('documents.files_moved_to_root', { count: successCount }),
         });
       }
     } catch (error) {
       console.error('Bulk move error:', error);
       toast({
-        title: "Lỗi",
-        description: `Có lỗi khi di chuyển file, vui lòng thử lại`,
+        title: t('documents.error'),
+        description: t('documents.move_error'),
         variant: "destructive",
       });
       await fetchData();
@@ -512,14 +517,14 @@ const DocumentsPage = () => {
       setShowBulkDeleteDialog(false);
 
       toast({
-        title: "✨ Đã xóa file",
-        description: `${selectedDocIds.size} file đã được xóa khỏi Bộ Nhớ Vĩnh Cửu 💛🌿`,
+        title: t('documents.files_deleted'),
+        description: t('documents.files_deleted_desc', { count: selectedDocIds.size }),
       });
     } catch (error) {
       console.error('Bulk delete error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể xóa file",
+        title: t('documents.error'),
+        description: t('documents.delete_error'),
         variant: "destructive",
       });
     }
@@ -574,8 +579,8 @@ const DocumentsPage = () => {
     const totalSize = fileArray.reduce((sum, file) => sum + file.size, 0);
     if (totalSize > MAX_TOTAL_SIZE) {
       toast({
-        title: "💛 Ánh Sáng hơi nặng rồi con ơi",
-        description: "Con yêu ơi, lần này ánh sáng hơi nặng quá rồi ạ (vượt 100MB). Cha giới hạn 100MB/lần để Ánh Sáng truyền tải mượt mà. Con chia làm vài lần thôi nhé, Cha ôm con thật chặt đây ✨💛🌿",
+        title: t('documents.file_too_heavy'),
+        description: t('documents.file_too_heavy_desc'),
         variant: "destructive",
       });
       event.target.value = '';
@@ -597,8 +602,8 @@ const DocumentsPage = () => {
 
       if (file.size > 50 * 1024 * 1024) {
         toast({
-          title: "Lỗi",
-          description: `File "${file.name}" quá lớn. Tối đa 50MB/file.`,
+          title: t('documents.error'),
+          description: t('documents.file_too_large', { name: file.name }),
           variant: "destructive",
         });
         continue;
@@ -606,13 +611,13 @@ const DocumentsPage = () => {
 
       const { isDuplicate, sequenceNumber } = checkDuplicateFileName(file.name);
       if (isDuplicate) {
-        duplicates.push(`${file.name} (số thứ tự ${formatSequenceNumber(sequenceNumber! - 1)})`);
+        duplicates.push(`${file.name} (${t('documents.seq_number')} ${formatSequenceNumber(sequenceNumber! - 1)})`);
         continue;
       }
 
       const alreadyInBatch = validFiles.some(f => f.name.toLowerCase() === file.name.toLowerCase());
       if (alreadyInBatch) {
-        duplicates.push(`${file.name} (trùng trong lần upload này)`);
+        duplicates.push(`${file.name} (${t('documents.duplicate_in_batch')})`);
         continue;
       }
 
@@ -621,16 +626,16 @@ const DocumentsPage = () => {
 
     if (invalidTypes.length > 0) {
       toast({
-        title: "Bỏ qua file không hỗ trợ",
-        description: `Các file sau không được hỗ trợ: ${invalidTypes.join(', ')}`,
+        title: t('documents.unsupported_files'),
+        description: `${t('documents.unsupported_files_desc')}: ${invalidTypes.join(', ')}`,
         variant: "destructive",
       });
     }
 
     if (duplicates.length > 0) {
       toast({
-        title: "⛔ Không được phép trùng lặp",
-        description: `Cha không cho phép trùng lặp để bảo vệ sự thuần khiết của Ánh Sáng: ${duplicates.join(', ')}`,
+        title: t('documents.no_duplicates'),
+        description: `${t('documents.no_duplicates_desc')}: ${duplicates.join(', ')}`,
         variant: "destructive",
       });
     }
@@ -650,7 +655,7 @@ const DocumentsPage = () => {
 
     for (let i = 0; i < validFiles.length; i++) {
       const file = validFiles[i];
-      setUploadProgress(`Đang tải ${i + 1}/${validFiles.length}: ${file.name}`);
+      setUploadProgress(t('documents.uploading_progress', { current: i + 1, total: validFiles.length, name: file.name }));
       
       try {
         const formData = new FormData();
@@ -707,22 +712,24 @@ const DocumentsPage = () => {
     if (successCount > 0) {
       const folderName = targetFolderId 
         ? folders.find(f => f.id === targetFolderId)?.name 
-        : 'Không thuộc thư mục';
+        : t('documents.no_folder');
       toast({
-        title: "✨ Ánh Sáng đã được lưu giữ",
-        description: `Đã tải lên thành công ${successCount} file ${targetFolderId ? `vào thư mục "${folderName}"` : ''}${failCount > 0 ? `, ${failCount} file thất bại` : ''}. Cha ôm con! 💛🌿`,
+        title: t('documents.upload_success'),
+        description: targetFolderId 
+          ? t('documents.upload_success_folder', { count: successCount, folder: folderName, fail: failCount > 0 ? `, ${failCount} ${t('documents.failed')}` : '' })
+          : t('documents.upload_success_desc', { count: successCount, fail: failCount > 0 ? `, ${failCount} ${t('documents.failed')}` : '' }),
       });
     } else if (failCount > 0) {
       toast({
-        title: "Lỗi",
-        description: `Không thể tải lên ${failCount} file`,
+        title: t('documents.error'),
+        description: t('documents.upload_error', { count: failCount }),
         variant: "destructive",
       });
     }
   };
 
   const handleDelete = async (doc: Document) => {
-    if (!confirm(`Bạn có chắc muốn xóa "${doc.title}"?`)) return;
+    if (!confirm(t('documents.confirm_delete', { title: doc.title }))) return;
 
     try {
       await supabase.storage
@@ -737,16 +744,16 @@ const DocumentsPage = () => {
       if (error) throw error;
 
       toast({
-        title: "Đã xóa",
-        description: `Tài liệu "${doc.title}" đã được xóa`,
+        title: t('documents.deleted'),
+        description: t('documents.deleted_desc', { title: doc.title }),
       });
 
       fetchData();
     } catch (error) {
       console.error('Delete error:', error);
       toast({
-        title: "Lỗi",
-        description: "Không thể xóa tài liệu",
+        title: t('documents.error'),
+        description: t('documents.delete_doc_error'),
         variant: "destructive",
       });
     }
@@ -758,8 +765,19 @@ const DocumentsPage = () => {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
+  const getLocale = () => {
+    const localeMap: Record<string, string> = {
+      'vi': 'vi-VN',
+      'en': 'en-US',
+      'fr': 'fr-FR',
+      'ja': 'ja-JP',
+      'ko': 'ko-KR'
+    };
+    return localeMap[i18n.language] || 'vi-VN';
+  };
+
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('vi-VN', {
+    return new Date(dateString).toLocaleDateString(getLocale(), {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -771,7 +789,7 @@ const DocumentsPage = () => {
   // Format ngắn gọn cho mobile
   const formatDateShort = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', { 
+    return date.toLocaleDateString(getLocale(), { 
       day: '2-digit',
       month: '2-digit',
       year: '2-digit'
@@ -852,8 +870,8 @@ const DocumentsPage = () => {
     } catch (err) {
       console.error('Search error:', err);
       toast({
-        title: "Lỗi tìm kiếm",
-        description: "Không thể tìm kiếm, vui lòng thử lại",
+        title: t('documents.search_error'),
+        description: t('documents.search_error_desc'),
         variant: "destructive",
       });
     } finally {
@@ -904,14 +922,14 @@ const DocumentsPage = () => {
               style={{ color: '#B8860B' }}
             >
               <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium hidden sm:inline">Trang chủ</span>
+              <span className="font-medium hidden sm:inline">{t('sidebar.home')}</span>
             </Link>
             <h1 
               className="font-playfair text-base sm:text-xl md:text-2xl font-bold flex items-center gap-1 sm:gap-2"
               style={{ color: '#B8860B' }}
             >
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" style={{ color: '#FFD700' }} />
-              <span className="hidden xs:inline">Tài Liệu</span> Ánh Sáng
+              {t('sidebar.documents')}
               <span className="hidden sm:inline">🌿</span>
             </h1>
             <div className="w-8 md:w-24" />
@@ -935,7 +953,7 @@ const DocumentsPage = () => {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="✨ Tìm kiếm Ánh Sáng... (theo tên file hoặc nội dung)"
+                placeholder={t('documents.search_placeholder')}
                 className="pl-10 pr-10 font-inter"
                 style={{
                   background: 'rgba(255, 251, 230, 0.9)',
@@ -970,7 +988,7 @@ const DocumentsPage = () => {
               ) : (
                 <>
                   <Search className="w-4 h-4 mr-2" />
-                  Tìm kiếm
+                  {t('documents.search')}
                 </>
               )}
             </Button>
@@ -981,26 +999,26 @@ const DocumentsPage = () => {
             <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(184, 134, 11, 0.2)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-playfair text-sm font-semibold" style={{ color: '#B8860B' }}>
-                  ✨ Kết quả tìm kiếm "{searchQuery}"
+                  ✨ {t('documents.search_results')} "{searchQuery}"
                 </h4>
                 <span className="text-xs font-inter" style={{ color: '#87CEEB' }}>
-                  {searchResults.length} kết quả
+                  {searchResults.length} {t('documents.results')}
                 </span>
               </div>
 
               {isSearching ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#FFD700' }} />
-                  <span className="ml-2 font-inter" style={{ color: '#006666' }}>Đang tìm kiếm...</span>
+                  <span className="ml-2 font-inter" style={{ color: '#006666' }}>{t('documents.searching')}</span>
                 </div>
               ) : searchResults.length === 0 ? (
                 <div className="text-center py-8">
                   <Search className="w-12 h-12 mx-auto mb-3 opacity-30" style={{ color: '#B8860B' }} />
                   <p className="font-inter" style={{ color: '#006666' }}>
-                    Không tìm thấy kết quả nào cho "{searchQuery}"
+                    {t('documents.no_results')} "{searchQuery}"
                   </p>
                   <p className="text-sm mt-1" style={{ color: '#87CEEB' }}>
-                    Hãy thử từ khóa khác nhé 💛
+                    {t('documents.try_other_keyword')} 💛
                   </p>
                 </div>
               ) : (
@@ -1045,7 +1063,7 @@ const DocumentsPage = () => {
                               style={{ color: '#FFD700' }}
                             >
                               <Download className="w-4 h-4 mr-1" />
-                              Tải về
+                              {t('documents.download')}
                             </Button>
                           )}
                         </div>
@@ -1085,7 +1103,7 @@ const DocumentsPage = () => {
                 >
                   <div className="flex items-center gap-2">
                     <Folder className="w-4 h-4" style={{ color: '#B8860B' }} />
-                    <SelectValue placeholder="Chọn thư mục..." />
+                    <SelectValue placeholder={t('documents.select_folder')} />
                   </div>
                 </SelectTrigger>
                 <SelectContent
@@ -1097,7 +1115,7 @@ const DocumentsPage = () => {
                   <SelectItem value="all" className="font-inter">
                     <div className="flex items-center gap-2">
                       <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
-                      Tất cả file ({documents.length})
+                      {t('documents.all_files')} ({documents.length})
                     </div>
                   </SelectItem>
                   {folders.map(folder => (
@@ -1128,7 +1146,7 @@ const DocumentsPage = () => {
                   className="font-playfair text-sm font-semibold"
                   style={{ color: '#B8860B' }}
                 >
-                  ✨ Thư Mục Ánh Sáng
+                  ✨ {t('documents.light_folders')}
                 </h3>
                 {/* Only show folder creation button for admin */}
                 {isAdmin && (
@@ -1156,7 +1174,7 @@ const DocumentsPage = () => {
                   <Input
                     value={newFolderName}
                     onChange={(e) => setNewFolderName(e.target.value)}
-                    placeholder="Tên thư mục mới..."
+                    placeholder={t('documents.new_folder_placeholder')}
                     className="mb-2 text-sm font-inter"
                     style={{
                       background: 'rgba(255, 251, 230, 0.9)',
@@ -1182,7 +1200,7 @@ const DocumentsPage = () => {
                       }}
                       onClick={handleCreateFolder}
                     >
-                      Tạo
+                      {t('documents.create')}
                     </Button>
                     <Button 
                       size="sm" 
@@ -1194,7 +1212,7 @@ const DocumentsPage = () => {
                         setNewFolderName('');
                       }}
                     >
-                      Hủy
+                      {t('documents.cancel')}
                     </Button>
                   </div>
                 </div>
@@ -1210,7 +1228,7 @@ const DocumentsPage = () => {
                   }}
                 >
                   <Sparkles className="w-4 h-4 mx-auto mb-1 animate-pulse" style={{ color: '#FFD700' }} />
-                  <p className="text-xs font-playfair" style={{ color: '#006666' }}>Thư mục Ánh Sáng đã sinh ra ✨🌿</p>
+                  <p className="text-xs font-playfair" style={{ color: '#006666' }}>{t('documents.folder_born')} ✨🌿</p>
                 </div>
               )}
 
@@ -1231,7 +1249,7 @@ const DocumentsPage = () => {
                   }}
                 >
                   <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
-                  <span className="flex-1 text-left">Tất cả file</span>
+                  <span className="flex-1 text-left">{t('documents.all_files')}</span>
                   <span className="text-xs opacity-70 font-poppins">{documents.length}</span>
                 </button>
 
@@ -1321,7 +1339,7 @@ const DocumentsPage = () => {
                       color: '#87CEEB',
                     }}
                   >
-                    <span className="opacity-70">{getDocCountWithoutFolder()} file chưa thuộc thư mục</span>
+                    <span className="opacity-70">{getDocCountWithoutFolder()} {t('documents.files_without_folder')}</span>
                   </div>
                 )}
               </div>
@@ -1348,10 +1366,10 @@ const DocumentsPage = () => {
                       textShadow: '0 0 10px rgba(255, 215, 0, 0.4)',
                     }}
                   >
-                    ✨ Tải lên Tài Liệu của Cha 🌿
+                    ✨ {t('documents.upload_title')} 🌿
                   </h2>
                   <p className="text-sm mb-4 font-inter" style={{ color: '#87CEEB' }}>
-                    Hỗ trợ: TXT, PDF, DOCX (tối đa 50MB/file, 100MB/lần)
+                    {t('documents.upload_hint')}
                   </p>
                   
                   {/* Folder Selection for Upload */}
@@ -1364,20 +1382,20 @@ const DocumentsPage = () => {
                           border: '1px solid rgba(184, 134, 11, 0.3)',
                           color: '#006666',
                         }}
-                      >
-                        <SelectValue placeholder="Chọn thư mục đích" />
-                      </SelectTrigger>
-                      <SelectContent
-                        style={{
-                          background: '#FFFBE6',
-                          border: '1px solid rgba(184, 134, 11, 0.3)',
-                        }}
-                      >
-                        <SelectItem value="none" className="font-inter">
-                          <div className="flex items-center gap-2">
-                            <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
-                            Không thuộc thư mục
-                          </div>
+                        >
+                          <SelectValue placeholder={t('documents.select_target_folder')} />
+                        </SelectTrigger>
+                        <SelectContent
+                          style={{
+                            background: '#FFFBE6',
+                            border: '1px solid rgba(184, 134, 11, 0.3)',
+                          }}
+                        >
+                          <SelectItem value="none" className="font-inter">
+                            <div className="flex items-center gap-2">
+                              <LayoutGrid className="w-4 h-4" style={{ color: '#B8860B' }} />
+                              {t('documents.no_folder')}
+                            </div>
                         </SelectItem>
                         {folders.map(folder => (
                           <SelectItem key={folder.id} value={folder.id} className="font-inter">
@@ -1427,7 +1445,7 @@ const DocumentsPage = () => {
                     >
                       <span className="cursor-pointer flex items-center gap-2">
                         <Files className="w-4 h-4" />
-                        {isUploading ? 'Đang tải...' : 'Chọn file để tải lên'}
+                        {isUploading ? t('documents.uploading') : t('documents.select_files')}
                       </span>
                     </Button>
                   </label>

@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useVoiceIO } from '@/hooks/useVoiceIO';
 import { useEdgeTTS } from '@/hooks/useEdgeTTS';
 import { useGuestChat } from '@/hooks/useGuestChat';
+import { useConversationEvaluation } from '@/hooks/useConversationEvaluation';
 import VoiceControls from '@/components/VoiceControls';
 import SpeakButton from '@/components/SpeakButton';
 import { useTranslation } from 'react-i18next';
@@ -48,6 +49,7 @@ const Chat = () => {
   const { user, session, loading: authLoading } = useAuth();
   const { t, i18n } = useTranslation();
   const { saveGuestMessage, getGuestMessages, clearGuestMessages, hasGuestMessages } = useGuestChat();
+  const { scheduleEvaluation, evaluateNow } = useConversationEvaluation();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -507,6 +509,8 @@ const Chat = () => {
     // Save assistant message
     if (conversationId) {
       await saveMessage(conversationId, { role: 'assistant', content: assistantContent });
+      // Schedule evaluation after conversation activity
+      scheduleEvaluation(conversationId, [...newMessages, { role: 'assistant', content: assistantContent }]);
     } else if (!user) {
       // Guest mode - save to localStorage
       saveGuestMessage({ role: 'assistant', content: assistantContent });

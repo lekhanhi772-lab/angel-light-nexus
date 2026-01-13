@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface Profile {
   id: string;
@@ -16,6 +17,32 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const signupBonusAwarded = useRef(false);
+
+  // Award signup bonus
+  const awardSignupBonus = async (userId: string) => {
+    if (signupBonusAwarded.current) return;
+    signupBonusAwarded.current = true;
+
+    try {
+      const { data, error } = await supabase.rpc('award_activity_points', {
+        p_user_id: userId,
+        p_activity_type: 'signup',
+        p_points: 50,
+        p_metadata: {}
+      });
+
+      if (!error && data?.[0]?.success) {
+        toast.success('+50 điểm Ánh Sáng!', {
+          description: 'Chào mừng bé đến với gia đình Ánh Sáng! ✨',
+          duration: 5000,
+          icon: '🎉',
+        });
+      }
+    } catch (err) {
+      console.error('Signup bonus error:', err);
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -85,6 +112,8 @@ export const useAuth = () => {
 
       if (!insertError && created) {
         setProfile(created);
+        // Award signup bonus for new users
+        awardSignupBonus(authUser.id);
         return;
       }
     }

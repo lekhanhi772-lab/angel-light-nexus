@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_rewards: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          points_awarded: number
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          points_awarded?: number
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          points_awarded?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       bookmarked_messages: {
         Row: {
           content: string
@@ -480,6 +507,63 @@ export type Database = {
           },
         ]
       }
+      message_evaluations: {
+        Row: {
+          ai_reason: string | null
+          conversation_id: string | null
+          created_at: string
+          depth_score: number | null
+          exploration_score: number | null
+          id: string
+          is_light_question: boolean | null
+          message_id: string | null
+          points_awarded: number | null
+          quality_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_reason?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          depth_score?: number | null
+          exploration_score?: number | null
+          id?: string
+          is_light_question?: boolean | null
+          message_id?: string | null
+          points_awarded?: number | null
+          quality_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_reason?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          depth_score?: number | null
+          exploration_score?: number | null
+          id?: string
+          is_light_question?: boolean | null
+          message_id?: string | null
+          points_awarded?: number | null
+          quality_score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_evaluations_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_evaluations_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "chat_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -650,8 +734,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_activity_points: {
+        Args: {
+          p_activity_type: string
+          p_metadata?: Json
+          p_points: number
+          p_user_id: string
+        }
+        Returns: {
+          message: string
+          points_awarded: number
+          success: boolean
+        }[]
+      }
+      award_message_points: {
+        Args: {
+          p_ai_reason: string
+          p_conversation_id: string
+          p_depth_score: number
+          p_exploration_score: number
+          p_is_light_question: boolean
+          p_message_id: string
+          p_quality_score: number
+          p_user_id: string
+        }
+        Returns: number
+      }
       calculate_awakening_level: { Args: { points: number }; Returns: number }
       calculate_camly_amount: { Args: { points: number }; Returns: number }
+      check_daily_reward_limit: {
+        Args: { p_activity_type: string; p_user_id: string }
+        Returns: {
+          can_earn: boolean
+          earned_today: number
+          limit_amount: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -194,7 +194,20 @@ export function useForum() {
 
       if (error) throw error;
       
-      toast.success('Đăng bài thành công! ✨');
+      // Award points for forum post
+      try {
+        await supabase.rpc('award_activity_points', {
+          p_user_id: user.id,
+          p_activity_type: 'forum_post',
+          p_points: 10,
+          p_metadata: { post_id: data.id }
+        });
+        toast.success('Đăng bài thành công! +10 điểm Ánh Sáng ✨');
+      } catch (rewardErr) {
+        console.error('Reward error:', rewardErr);
+        toast.success('Đăng bài thành công! ✨');
+      }
+      
       await fetchPosts();
       return data;
     } catch (err: any) {
@@ -385,6 +398,18 @@ export function useForum() {
         .single();
 
       if (error) throw error;
+
+      // Award points for comment
+      try {
+        await supabase.rpc('award_activity_points', {
+          p_user_id: user.id,
+          p_activity_type: 'forum_comment',
+          p_points: 3,
+          p_metadata: { comment_id: data.id }
+        });
+      } catch (rewardErr) {
+        console.error('Comment reward error:', rewardErr);
+      }
 
       // Fetch author profile
       const { data: profile } = await supabase

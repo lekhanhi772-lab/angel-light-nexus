@@ -8,9 +8,9 @@ import { WalletConnect } from '@/components/WalletConnect';
 import { WalletBalances } from '@/components/WalletBalances';
 import { ReferralCard } from '@/components/ReferralCard';
 import { NotificationBell } from '@/components/NotificationBell';
-import { Sparkles, MessageCircle, Calendar, ScrollText } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sparkles, MessageCircle, Calendar, Wallet, Users, BarChart3, Bell } from 'lucide-react';
 import { toast } from 'sonner';
-import { ScrollArea } from "@/components/ui/scroll-area";
 import StatisticsDashboard from '@/components/StatisticsDashboard';
 import NotificationSettings from '@/components/NotificationSettings';
 import AwakeningDashboard from '@/components/AwakeningDashboard';
@@ -21,7 +21,6 @@ const Profile = () => {
   const navigate = useNavigate();
   
   const [chatStats, setChatStats] = useState({ totalMessages: 0, daysSinceJoined: 0 });
-  const [recentMessages, setRecentMessages] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [walletConnected, setWalletConnected] = useState(false);
 
@@ -39,12 +38,6 @@ const Profile = () => {
       if (!user) return;
 
       try {
-        // Get total messages
-        const { count: messageCount } = await supabase
-          .from('chat_messages')
-          .select('*', { count: 'exact', head: true })
-          .eq('role', 'user');
-
         // Get conversations for this user
         const { data: conversations } = await supabase
           .from('conversations')
@@ -72,19 +65,6 @@ const Profile = () => {
           totalMessages: userMessageCount,
           daysSinceJoined: Math.max(1, daysSinceJoined)
         });
-
-        // Get recent messages
-        if (conversations && conversations.length > 0) {
-          const conversationIds = conversations.map(c => c.id);
-          const { data: messages } = await supabase
-            .from('chat_messages')
-            .select('*')
-            .in('conversation_id', conversationIds)
-            .order('created_at', { ascending: false })
-            .limit(20);
-          
-          setRecentMessages(messages || []);
-        }
       } catch (error) {
         console.error('Error fetching stats:', error);
       } finally {
@@ -290,100 +270,95 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Web3 Wallet Section */}
-          <div 
-            className="p-6 rounded-2xl mb-8"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
-              border: '2px solid rgba(218, 165, 32, 0.5)',
-            }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
-              <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
-                {t('profile.web3_wallet')}
-              </h3>
-            </div>
-            <p className="text-sm mb-4" style={{ color: '#8B6914' }}>
-              {t('profile.web3_description')} ✨
-            </p>
-            <WalletConnect onWalletChange={handleWalletChange} />
-            
-            {/* Wallet Balances - tự động hiển thị khi ví đã kết nối */}
-            <div className="mt-6">
-              <WalletBalances />
-            </div>
-          </div>
+          {/* Tabbed Content */}
+          <Tabs defaultValue="wallet" className="w-full">
+            <TabsList className="grid w-full grid-cols-5 mb-6 h-auto p-1 bg-[#FFF8DC]/80 border border-[#DAA520]/30 rounded-xl">
+              <TabsTrigger 
+                value="wallet" 
+                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
+              >
+                <Wallet className="w-4 h-4" />
+                <span className="text-xs sm:text-sm">Ví</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="referral" 
+                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
+              >
+                <Users className="w-4 h-4" />
+                <span className="text-xs sm:text-sm">Mời</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="awakening" 
+                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="text-xs sm:text-sm hidden sm:inline">Tỉnh Thức</span>
+                <span className="text-xs sm:hidden">✨</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="stats" 
+                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span className="text-xs sm:text-sm hidden sm:inline">Thống Kê</span>
+                <span className="text-xs sm:hidden">📊</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="notifications" 
+                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="text-xs sm:text-sm hidden sm:inline">Thông Báo</span>
+                <span className="text-xs sm:hidden">🔔</span>
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Referral Card - Mời Linh Hồn Mới */}
-          <div className="mb-8">
-            <ReferralCard userId={user?.id} />
-          </div>
-
-          {/* Awakening Dashboard - Hành Trình Tỉnh Thức */}
-          <div className="mb-8">
-            <AwakeningDashboard />
-          </div>
-
-          {/* Statistics Dashboard */}
-          <div className="mb-8">
-            <StatisticsDashboard />
-          </div>
-
-          {/* Notification Settings */}
-          <div className="mb-8">
-            <NotificationSettings />
-          </div>
-          {/* Recent Chat History */}
-          <div 
-            className="p-6 rounded-2xl mb-8"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
-              border: '1px solid rgba(218, 165, 32, 0.3)',
-            }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <ScrollText className="w-5 h-5" style={{ color: '#DAA520' }} />
-              <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
-                {t('profile.recent_history')}
-              </h3>
-            </div>
-            
-            {recentMessages.length > 0 ? (
-              <ScrollArea className="h-[200px] pr-4">
-                <div className="space-y-3">
-                  {recentMessages.map((msg, i) => (
-                    <div 
-                      key={msg.id || i}
-                      className="p-3 rounded-xl text-sm"
-                      style={{
-                        background: msg.role === 'user' 
-                          ? 'rgba(218, 165, 32, 0.1)' 
-                          : 'rgba(255, 255, 255, 0.5)',
-                        borderLeft: msg.role === 'user' 
-                          ? '3px solid #DAA520' 
-                          : '3px solid #B8860B',
-                      }}
-                    >
-                      <p 
-                        className="text-xs font-medium mb-1"
-                        style={{ color: msg.role === 'user' ? '#DAA520' : '#B8860B' }}
-                      >
-                        {msg.role === 'user' ? t('profile.you') : t('profile.angel')}
-                      </p>
-                      <p style={{ color: '#5a5a5a' }}>
-                        {msg.content.substring(0, 100)}{msg.content.length > 100 ? '...' : ''}
-                      </p>
-                    </div>
-                  ))}
+            {/* Tab: Wallet */}
+            <TabsContent value="wallet" className="mt-0">
+              <div 
+                className="p-6 rounded-2xl"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)',
+                  border: '2px solid rgba(218, 165, 32, 0.5)',
+                }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
+                  <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
+                    {t('profile.web3_wallet')}
+                  </h3>
                 </div>
-              </ScrollArea>
-            ) : (
-              <p className="text-sm text-center py-4" style={{ color: '#8B6914' }}>
-                {t('profile.no_history')}. {t('profile.start_journey')} 💛
-              </p>
-            )}
-          </div>
+                <p className="text-sm mb-4" style={{ color: '#8B6914' }}>
+                  {t('profile.web3_description')} ✨
+                </p>
+                <WalletConnect onWalletChange={handleWalletChange} />
+                
+                <div className="mt-6">
+                  <WalletBalances />
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tab: Referral */}
+            <TabsContent value="referral" className="mt-0">
+              <ReferralCard userId={user?.id} />
+            </TabsContent>
+
+            {/* Tab: Awakening */}
+            <TabsContent value="awakening" className="mt-0">
+              <AwakeningDashboard />
+            </TabsContent>
+
+            {/* Tab: Statistics */}
+            <TabsContent value="stats" className="mt-0">
+              <StatisticsDashboard />
+            </TabsContent>
+
+            {/* Tab: Notifications */}
+            <TabsContent value="notifications" className="mt-0">
+              <NotificationSettings />
+            </TabsContent>
+          </Tabs>
 
         </div>
       </div>

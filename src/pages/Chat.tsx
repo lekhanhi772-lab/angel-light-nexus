@@ -332,17 +332,22 @@ const Chat = () => {
   const saveMessage = async (conversationId: string | null, message: Message) => {
     if (!conversationId || !user) return; // Guest mode - no save
 
-    const { error } = await supabase.from('chat_messages').insert({
+    const { data: savedMessage, error } = await supabase.from('chat_messages').insert({
       conversation_id: conversationId,
       role: message.role,
       content: message.content,
       image_url: message.imageUrl || null,
-    });
+    }).select().single();
 
     if (error) {
       console.error('[chat] Error saving message:', error);
       toast.error(`Không thể lưu tin nhắn: ${error.message}`);
       return;
+    }
+
+    // Evaluate user message for points (async, don't wait)
+    if (message.role === 'user' && savedMessage && message.content.length >= 10) {
+      evaluateMessageForPoints(savedMessage.id, conversationId, message.content);
     }
 
     // Update conversation timestamp
@@ -353,6 +358,41 @@ const Chat = () => {
 
     if (updateError) {
       console.error('[chat] Error updating conversation timestamp:', updateError);
+    }
+  };
+
+  // Evaluate individual message for points
+  const evaluateMessageForPoints = async (messageId: string, conversationId: string, content: string) => {
+    if (!user) return;
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/evaluate-message`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messageId,
+          conversationId,
+          userId: user.id,
+          userMessage: content
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.points > 0) {
+          const lightBadge = result.isLightQuestion ? ' ✨ Câu hỏi ánh sáng!' : '';
+          toast.success(`+${result.points} điểm Ánh Sáng${lightBadge}`, {
+            description: result.reason || 'Tiếp tục hỏi những câu hỏi chất lượng nhé! 💛',
+            duration: 3000,
+            icon: '🌟',
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Message evaluation error:', err);
     }
   };
 

@@ -97,6 +97,32 @@ const Profile = () => {
 
   // Track saved wallet to avoid duplicate saves/toasts
   const savedWalletRef = useRef<string | null>(profile?.wallet_address ?? null);
+  const walletBonusAwarded = useRef(false);
+
+  // Award wallet connection bonus
+  const awardWalletBonus = async () => {
+    if (walletBonusAwarded.current || !user) return;
+    walletBonusAwarded.current = true;
+
+    try {
+      const { data, error } = await supabase.rpc('award_activity_points', {
+        p_user_id: user.id,
+        p_activity_type: 'wallet_connect',
+        p_points: 30,
+        p_metadata: {}
+      });
+
+      if (!error && data?.[0]?.success) {
+        toast.success('+30 điểm Ánh Sáng!', {
+          description: 'Đã kết nối ví Web3 thành công! 💎',
+          duration: 5000,
+          icon: '🎉',
+        });
+      }
+    } catch (err) {
+      console.error('Wallet bonus error:', err);
+    }
+  };
 
   // Save wallet address to profile
   const handleWalletChange = async (address: string | null) => {
@@ -118,6 +144,10 @@ const Profile = () => {
       if (error) {
         console.error('Error saving wallet:', error);
       } else {
+        // Award bonus only on first wallet connection
+        if (!savedWalletRef.current) {
+          awardWalletBonus();
+        }
         savedWalletRef.current = address;
         toast.success('Đã lưu ví ánh sáng của con! ✨');
       }

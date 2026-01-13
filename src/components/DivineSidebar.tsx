@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
 import LanguageSelector from './LanguageSelector';
 import ThemeToggle from './ThemeToggle';
+import AwakeningWidget from './AwakeningWidget';
 
 // Build version for cache verification
 const APP_BUILD = "2026-01-10-v1";
@@ -414,6 +415,10 @@ const DivineSidebar = () => {
                   </p>
                 </div>
               </div>
+              
+              {/* Awakening Widget */}
+              <AwakeningWidget />
+              
               <button
                 onClick={handleSignOut}
                 className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition-colors duration-300 hover:bg-muted text-muted-foreground hover:text-primary"

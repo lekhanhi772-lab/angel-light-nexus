@@ -9,7 +9,7 @@ import { WalletBalances } from '@/components/WalletBalances';
 import { ReferralCard } from '@/components/ReferralCard';
 import { NotificationBell } from '@/components/NotificationBell';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, MessageCircle, Calendar, Wallet, Users, BarChart3, Bell } from 'lucide-react';
+import { Sparkles, Wallet, Users, BarChart3, Bell } from 'lucide-react';
 import { toast } from 'sonner';
 import StatisticsDashboard from '@/components/StatisticsDashboard';
 import NotificationSettings from '@/components/NotificationSettings';
@@ -20,8 +20,6 @@ const Profile = () => {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   
-  const [chatStats, setChatStats] = useState({ totalMessages: 0, daysSinceJoined: 0 });
-  const [loadingStats, setLoadingStats] = useState(true);
   const [walletConnected, setWalletConnected] = useState(false);
 
   // Redirect if not logged in
@@ -31,49 +29,6 @@ const Profile = () => {
       navigate('/luat-anh-sang?action=register');
     }
   }, [user, loading, navigate]);
-
-  // Fetch chat stats
-  useEffect(() => {
-    const fetchStats = async () => {
-      if (!user) return;
-
-      try {
-        // Get conversations for this user
-        const { data: conversations } = await supabase
-          .from('conversations')
-          .select('id')
-          .eq('user_id', user.id);
-
-        let userMessageCount = 0;
-        if (conversations && conversations.length > 0) {
-          const conversationIds = conversations.map(c => c.id);
-          const { count } = await supabase
-            .from('chat_messages')
-            .select('*', { count: 'exact', head: true })
-            .in('conversation_id', conversationIds)
-            .eq('role', 'user');
-          userMessageCount = count || 0;
-        }
-
-        // Calculate days since joined
-        const createdAt = user.created_at;
-        const daysSinceJoined = createdAt 
-          ? Math.floor((Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24))
-          : 0;
-
-        setChatStats({
-          totalMessages: userMessageCount,
-          daysSinceJoined: Math.max(1, daysSinceJoined)
-        });
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      } finally {
-        setLoadingStats(false);
-      }
-    };
-
-    fetchStats();
-  }, [user, profile]);
 
   // Track saved wallet to avoid duplicate saves/toasts
   const savedWalletRef = useRef<string | null>(profile?.wallet_address ?? null);
@@ -179,23 +134,6 @@ const Profile = () => {
             <NotificationBell userId={user?.id} />
           </div>
           
-          {/* Title */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="w-6 h-6" style={{ color: '#DAA520' }} />
-              <span style={{ color: '#B8860B' }}>✦</span>
-              <Sparkles className="w-6 h-6" style={{ color: '#DAA520' }} />
-            </div>
-            <h1 
-              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2"
-              style={{ 
-                fontFamily: "'Playfair Display', serif",
-                color: '#B8860B',
-              }}
-            >
-              {t('profile.page_title')} ✨
-            </h1>
-          </div>
 
           {/* Avatar Section */}
           <div className="flex flex-col items-center mb-8">
@@ -235,40 +173,6 @@ const Profile = () => {
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <div 
-              className="p-4 rounded-2xl text-center"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.95) 100%)',
-                border: '1px solid rgba(218, 165, 32, 0.3)',
-              }}
-            >
-              <Calendar className="w-8 h-8 mx-auto mb-2" style={{ color: '#DAA520' }} />
-              <p className="text-2xl sm:text-3xl font-bold" style={{ color: '#B8860B' }}>
-                {loadingStats ? '...' : chatStats.daysSinceJoined}
-              </p>
-              <p className="text-xs sm:text-sm" style={{ color: '#8B6914' }}>
-                {t('profile.days_with_angel')}
-              </p>
-            </div>
-            
-            <div 
-              className="p-4 rounded-2xl text-center"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(255, 248, 220, 0.95) 100%)',
-                border: '1px solid rgba(218, 165, 32, 0.3)',
-              }}
-            >
-              <MessageCircle className="w-8 h-8 mx-auto mb-2" style={{ color: '#DAA520' }} />
-              <p className="text-2xl sm:text-3xl font-bold" style={{ color: '#B8860B' }}>
-                {loadingStats ? '...' : chatStats.totalMessages}
-              </p>
-              <p className="text-xs sm:text-sm" style={{ color: '#8B6914' }}>
-                {t('profile.light_connections')}
-              </p>
-            </div>
-          </div>
 
           {/* Tabbed Content */}
           <Tabs defaultValue="wallet" className="w-full">

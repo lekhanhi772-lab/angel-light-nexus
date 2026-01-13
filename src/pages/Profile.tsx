@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import StatisticsDashboard from '@/components/StatisticsDashboard';
 import NotificationSettings from '@/components/NotificationSettings';
+import AwakeningDashboard from '@/components/AwakeningDashboard';
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -287,6 +288,11 @@ const Profile = () => {
           {/* Referral Card - Mời Linh Hồn Mới */}
           <div className="mb-8">
             <ReferralCard userId={user?.id} />
+          </div>
+
+          {/* Awakening Dashboard - Hành Trình Tỉnh Thức */}
+          <div className="mb-8">
+            <AwakeningDashboard />
           </div>
 
           {/* Statistics Dashboard */}

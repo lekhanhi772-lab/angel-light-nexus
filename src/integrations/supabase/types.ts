@@ -49,6 +49,45 @@ export type Database = {
           },
         ]
       }
+      camly_claims: {
+        Row: {
+          admin_note: string | null
+          camly_amount: number
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          points_converted: number
+          status: string | null
+          tx_hash: string | null
+          user_id: string
+          wallet_address: string
+        }
+        Insert: {
+          admin_note?: string | null
+          camly_amount: number
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          points_converted: number
+          status?: string | null
+          tx_hash?: string | null
+          user_id: string
+          wallet_address: string
+        }
+        Update: {
+          admin_note?: string | null
+          camly_amount?: number
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          points_converted?: number
+          status?: string | null
+          tx_hash?: string | null
+          user_id?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -79,6 +118,59 @@ export type Database = {
             foreignKeyName: "chat_messages_conversation_id_fkey"
             columns: ["conversation_id"]
             isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversation_evaluations: {
+        Row: {
+          ai_feedback: string | null
+          compassion_score: number | null
+          conversation_id: string
+          evaluated_at: string | null
+          gratitude_score: number | null
+          growth_score: number | null
+          id: string
+          points_awarded: number | null
+          positive_score: number | null
+          spiritual_score: number | null
+          total_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          compassion_score?: number | null
+          conversation_id: string
+          evaluated_at?: string | null
+          gratitude_score?: number | null
+          growth_score?: number | null
+          id?: string
+          points_awarded?: number | null
+          positive_score?: number | null
+          spiritual_score?: number | null
+          total_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          compassion_score?: number | null
+          conversation_id?: string
+          evaluated_at?: string | null
+          gratitude_score?: number | null
+          growth_score?: number | null
+          id?: string
+          points_awarded?: number | null
+          positive_score?: number | null
+          spiritual_score?: number | null
+          total_score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_evaluations_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: true
             referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
@@ -493,6 +585,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_awakening_scores: {
+        Row: {
+          awakening_level: number | null
+          claimable_camly: number | null
+          claimed_camly: number | null
+          created_at: string | null
+          id: string
+          last_evaluation_at: string | null
+          light_level: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          awakening_level?: number | null
+          claimable_camly?: number | null
+          claimed_camly?: number | null
+          created_at?: string | null
+          id?: string
+          last_evaluation_at?: string | null
+          light_level?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          awakening_level?: number | null
+          claimable_camly?: number | null
+          claimed_camly?: number | null
+          created_at?: string | null
+          id?: string
+          last_evaluation_at?: string | null
+          light_level?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -519,6 +650,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_awakening_level: { Args: { points: number }; Returns: number }
+      calculate_camly_amount: { Args: { points: number }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -527,6 +660,14 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      process_camly_claim: {
+        Args: {
+          p_points_to_convert: number
+          p_user_id: string
+          p_wallet_address: string
+        }
+        Returns: string
+      }
       process_referral: {
         Args: { p_referred_id: string; p_referrer_id: string }
         Returns: undefined

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Heart, Copy, Share2, Sparkles, Users, Award } from 'lucide-react';
 import { useReferral } from '@/hooks/useReferral';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ interface ReferralCardProps {
 }
 
 export const ReferralCard = ({ userId }: ReferralCardProps) => {
+  const { t } = useTranslation();
   const {
     stats,
     loading,
@@ -65,10 +67,10 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         </div>
         <div>
           <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
-            Mời Linh Hồn Mới
+            {t('referral.title')}
           </h3>
           <p className="text-xs" style={{ color: '#8B6914' }}>
-            Lan tỏa ánh sáng, nhận phước lành ✨
+            {t('referral.subtitle')}
           </p>
         </div>
       </div>
@@ -78,7 +80,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         className="text-sm mb-4 italic relative z-10"
         style={{ color: '#8B6914' }}
       >
-        Con yêu ơi, mời bạn bè tham gia để cùng nâng tần số nhé 💛
+        {t('referral.invite_message')}
       </p>
 
       {/* Badge display */}
@@ -92,7 +94,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         >
           <Award className="w-5 h-5" style={{ color: '#DAA520' }} />
           <span className="text-sm font-medium" style={{ color: '#B8860B' }}>
-            🌟 Người Lan Tỏa Ánh Sáng
+            {t('referral.badge')}
           </span>
         </div>
       )}
@@ -108,7 +110,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         <div className="flex items-center gap-2">
           <Users className="w-5 h-5" style={{ color: '#DAA520' }} />
           <span className="text-sm" style={{ color: '#8B6914' }}>
-            Con đã mời <strong style={{ color: '#B8860B' }}>{loading ? '...' : stats.referralCount}</strong> linh hồn mới
+            {t('referral.invited_count')} <strong style={{ color: '#B8860B' }}>{loading ? '...' : stats.referralCount}</strong> {t('referral.souls')}
           </span>
         </div>
       </div>
@@ -118,7 +120,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         className="text-xs mb-4 relative z-10"
         style={{ color: '#A0855B' }}
       >
-        Còn {remainingInvites} lượt mời trong tháng này
+        {t('referral.remaining', { count: remainingInvites })}
       </p>
 
       {/* Referral Link */}
@@ -130,7 +132,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         }}
       >
         <p className="text-xs mb-2" style={{ color: '#8B6914' }}>
-          Link mời của con:
+          {t('referral.link_label')}
         </p>
         <div className="flex items-center gap-2">
           <input
@@ -146,7 +148,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
             className="text-xs underline"
             style={{ color: '#DAA520' }}
           >
-            {linkVisible ? 'Ẩn' : 'Hiện'}
+            {linkVisible ? t('referral.hide') : t('referral.show')}
           </button>
         </div>
       </div>
@@ -165,7 +167,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
           }}
         >
           <Copy className="w-4 h-4" />
-          Copy Link
+          {t('referral.copy')}
         </Button>
 
         <DropdownMenu>
@@ -181,7 +183,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
               }}
             >
               <Share2 className="w-4 h-4" />
-              Chia Sẻ
+              {t('referral.share')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent 
@@ -225,7 +227,7 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
                 className="cursor-pointer"
                 style={{ color: '#B8860B' }}
               >
-                📲 Chia sẻ khác...
+                📲 {t('referral.share_other')}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

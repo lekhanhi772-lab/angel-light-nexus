@@ -25,10 +25,10 @@ const Profile = () => {
   // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
-      toast.info("Con đăng nhập để mở ngôi nhà ánh sáng riêng nhé 💛");
+      toast.info(t('profile.login_required') + ' 💛');
       navigate('/luat-anh-sang?action=register');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, t]);
 
   // Track saved wallet to avoid duplicate saves/toasts
   const savedWalletRef = useRef<string | null>(profile?.wallet_address ?? null);
@@ -48,8 +48,8 @@ const Profile = () => {
       });
 
       if (!error && data?.[0]?.success) {
-        toast.success('+30 điểm Ánh Sáng!', {
-          description: 'Đã kết nối ví Web3 thành công! 💎',
+        toast.success(t('profile.wallet_bonus'), {
+          description: t('profile.wallet_connected'),
           duration: 5000,
           icon: '🎉',
         });
@@ -84,7 +84,7 @@ const Profile = () => {
           awardWalletBonus();
         }
         savedWalletRef.current = address;
-        toast.success('Đã lưu ví ánh sáng của con! ✨');
+        toast.success(t('profile.wallet_saved') + ' ✨');
       }
     } catch (err) {
       console.error('Error:', err);
@@ -182,7 +182,7 @@ const Profile = () => {
                 className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
               >
                 <Sparkles className="w-4 h-4" />
-                <span className="text-xs sm:text-sm hidden sm:inline">Tỉnh Thức</span>
+                <span className="text-xs sm:text-sm hidden sm:inline">{t('profile.tabs.awakening')}</span>
                 <span className="text-xs sm:hidden">✨</span>
               </TabsTrigger>
               <TabsTrigger 
@@ -190,21 +190,21 @@ const Profile = () => {
                 className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
               >
                 <Wallet className="w-4 h-4" />
-                <span className="text-xs sm:text-sm">Ví</span>
+                <span className="text-xs sm:text-sm">{t('profile.tabs.wallet')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="referral" 
                 className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
               >
                 <Users className="w-4 h-4" />
-                <span className="text-xs sm:text-sm">Mời</span>
+                <span className="text-xs sm:text-sm">{t('profile.tabs.referral')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="stats" 
                 className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
               >
                 <BarChart3 className="w-4 h-4" />
-                <span className="text-xs sm:text-sm hidden sm:inline">Thống Kê</span>
+                <span className="text-xs sm:text-sm hidden sm:inline">{t('profile.tabs.stats')}</span>
                 <span className="text-xs sm:hidden">📊</span>
               </TabsTrigger>
               <TabsTrigger 
@@ -212,7 +212,7 @@ const Profile = () => {
                 className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
               >
                 <Bell className="w-4 h-4" />
-                <span className="text-xs sm:text-sm hidden sm:inline">Thông Báo</span>
+                <span className="text-xs sm:text-sm hidden sm:inline">{t('profile.tabs.notifications')}</span>
                 <span className="text-xs sm:hidden">🔔</span>
               </TabsTrigger>
             </TabsList>

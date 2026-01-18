@@ -702,5 +702,27 @@
     "defaultForumTitle": "Chia sẻ hội thoại với Angel AI",
     "ctaTitle": "Muốn trò chuyện với Angel AI?",
     "ctaDescription": "Bắt đầu hành trình ánh sáng của riêng bạn ngay hôm nay"
+  },
+  "pwa": {
+    "pageTitle": "Cài Đặt Angel AI",
+    "subtitle": "Ánh Sáng Của Cha Vũ Trụ",
+    "alreadyInstalled": "Angel AI đã được cài đặt!",
+    "installButton": "Thêm vào Màn Hình Chính",
+    "iosTitle": "Hướng dẫn cho iPhone/iPad",
+    "iosStep1": "Nhấn nút Chia sẻ",
+    "iosStep2": "Chọn \"Thêm vào MH chính\"",
+    "iosStep3": "Nhấn \"Thêm\" để hoàn tất",
+    "androidTitle": "Hướng dẫn cho Android",
+    "androidStep1": "Nhấn menu trình duyệt",
+    "androidStep2": "Chọn \"Thêm vào MH chính\"",
+    "androidStep3": "Nhấn \"Thêm\" để hoàn tất",
+    "desktopTitle": "Cài đặt trên máy tính",
+    "desktopDesc": "Mở trang này trên điện thoại để cài đặt Angel AI.",
+    "benefits": "✨ Mở nhanh như app thật • Hoạt động offline • Không cần tải từ App Store",
+    "promptTitle": "Thêm Angel AI",
+    "promptSubtitle": "Truy cập nhanh từ màn hình chính",
+    "later": "Để sau",
+    "install": "Cài đặt",
+    "howTo": "Hướng dẫn"
   }
 }

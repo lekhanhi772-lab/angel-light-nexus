@@ -175,8 +175,16 @@ const Profile = () => {
 
 
           {/* Tabbed Content */}
-          <Tabs defaultValue="wallet" className="w-full">
+          <Tabs defaultValue="awakening" className="w-full">
             <TabsList className="grid w-full grid-cols-5 mb-6 h-auto p-1 bg-[#FFF8DC]/80 border border-[#DAA520]/30 rounded-xl">
+              <TabsTrigger 
+                value="awakening" 
+                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="text-xs sm:text-sm hidden sm:inline">Tỉnh Thức</span>
+                <span className="text-xs sm:hidden">✨</span>
+              </TabsTrigger>
               <TabsTrigger 
                 value="wallet" 
                 className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
@@ -190,14 +198,6 @@ const Profile = () => {
               >
                 <Users className="w-4 h-4" />
                 <span className="text-xs sm:text-sm">Mời</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="awakening" 
-                className="flex flex-col sm:flex-row items-center gap-1 py-2 px-2 text-[#8B6914] data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD700]/20 data-[state=active]:to-[#DAA520]/20 data-[state=active]:text-[#B8860B] data-[state=active]:border data-[state=active]:border-[#DAA520]/50 rounded-lg transition-all"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span className="text-xs sm:text-sm hidden sm:inline">Tỉnh Thức</span>
-                <span className="text-xs sm:hidden">✨</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="stats" 
@@ -216,6 +216,11 @@ const Profile = () => {
                 <span className="text-xs sm:hidden">🔔</span>
               </TabsTrigger>
             </TabsList>
+
+            {/* Tab: Awakening */}
+            <TabsContent value="awakening" className="mt-0">
+              <AwakeningDashboard />
+            </TabsContent>
 
             {/* Tab: Wallet */}
             <TabsContent value="wallet" className="mt-0">
@@ -246,11 +251,6 @@ const Profile = () => {
             {/* Tab: Referral */}
             <TabsContent value="referral" className="mt-0">
               <ReferralCard userId={user?.id} />
-            </TabsContent>
-
-            {/* Tab: Awakening */}
-            <TabsContent value="awakening" className="mt-0">
-              <AwakeningDashboard />
             </TabsContent>
 
             {/* Tab: Statistics */}

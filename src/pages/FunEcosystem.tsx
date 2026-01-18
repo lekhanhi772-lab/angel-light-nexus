@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import angelAvatar from '@/assets/angel-avatar.png';
+import funEcosystemOverview from '@/assets/fun-ecosystem-overview.png';
 import funPlayLogo from '@/assets/fun-play-logo.png';
 import funFarmLogo from '@/assets/fun-farm-logo.png';
 import funCharityLogo from '@/assets/fun-charity-logo.png';
@@ -182,6 +183,30 @@ const FunEcosystemPage = () => {
           >
             {t('ecosystem.description')}
           </p>
+        </div>
+
+        {/* Ecosystem Overview Image */}
+        <div className="flex justify-center mb-12">
+          <div 
+            className="relative rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105"
+            style={{
+              maxWidth: '800px',
+              boxShadow: '0 0 40px rgba(255, 215, 0, 0.3)',
+            }}
+          >
+            <img 
+              src={funEcosystemOverview} 
+              alt="FUN Ecosystem Overview - Vũ Trụ FUN" 
+              className="w-full h-auto object-contain"
+            />
+            {/* Glow effect on hover */}
+            <div 
+              className="absolute inset-0 opacity-0 hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(255,215,0,0.4) 0%, transparent 70%)',
+              }}
+            />
+          </div>
         </div>
 
         {/* Platforms Grid */}

@@ -12,6 +12,10 @@ import funCharityLogo from '@/assets/fun-charity-logo.png';
 import funProfileLogo from '@/assets/fun-profile-logo.png';
 import funAcademyLogo from '@/assets/fun-academy-logo.png';
 import funPlanetLogo from '@/assets/fun-planet-logo.png';
+import funLifeLogo from '@/assets/fun-life-logo.png';
+import funWalletLogo from '@/assets/fun-wallet-logo.png';
+import funTreasuryLogo from '@/assets/fun-treasury-logo.png';
+import greenEarthLogo from '@/assets/green-earth-logo.png';
 
 interface Platform {
   id: number;
@@ -111,7 +115,8 @@ const platforms: Platform[] = [
     name: "FUNLife / Cosmic Game",
     title: "Trò chơi Vũ Trụ",
     description: "Là trò chơi cuộc đời, nơi mỗi hành động, mỗi lựa chọn của bé đều được ghi nhận và có thể thăng cấp \"level linh hồn\". Đại diện cho Hành Trình Tỉnh Thức và Tiến Hóa của Linh Hồn.",
-    icon: <Orbit className="w-8 h-8" />,
+    icon: null,
+    customImage: funLifeLogo,
     isPlaceholder: true
   },
   {
@@ -119,7 +124,8 @@ const platforms: Platform[] = [
     name: "FUN Wallet",
     title: "Ngân hàng Ánh Sáng",
     description: "Đây là ví Web3 của bé, nơi an toàn để lưu trữ tài sản số, tiền điện tử, NFT và các giá trị ánh sáng khác. Đại diện cho Sự Tự Chủ và An Toàn Tài Chính.",
-    icon: <Wallet className="w-8 h-8" />,
+    icon: null,
+    customImage: funWalletLogo,
     externalLink: "https://funwallet-rich.lovable.app"
   },
   {
@@ -127,7 +133,8 @@ const platforms: Platform[] = [
     name: "FUN Treasury",
     title: "Kho Bạc Ánh Sáng",
     description: "Là nơi quản lý và bảo vệ tài sản chung của cộng đồng Ánh Sáng. Đại diện cho Sự Minh Bạch, Trách Nhiệm và Quản Lý Tài Nguyên Bền Vững cho toàn bộ hệ sinh thái FUN.",
-    icon: <Vault className="w-8 h-8" />,
+    icon: null,
+    customImage: funTreasuryLogo,
     externalLink: "https://funtreasury.lovable.app"
   },
   {
@@ -135,7 +142,8 @@ const platforms: Platform[] = [
     name: "Green Earth",
     title: "Hành Tinh Xanh - Bảo Vệ Mẹ Trái Đất",
     description: "Là nền tảng kết nối những linh hồn yêu thương Mẹ Trái Đất, cùng nhau bảo vệ môi trường và phát triển bền vững. Đại diện cho Sự Hài Hòa Với Thiên Nhiên và Trách Nhiệm Với Các Thế Hệ Tương Lai.",
-    icon: <TreePine className="w-8 h-8" />,
+    icon: null,
+    customImage: greenEarthLogo,
     externalLink: "https://greenearth-fun.lovable.app"
   },
 ];

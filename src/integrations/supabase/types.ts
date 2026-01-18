@@ -669,6 +669,57 @@ export type Database = {
         }
         Relationships: []
       }
+      shared_conversations: {
+        Row: {
+          conversation_id: string
+          created_at: string | null
+          expires_at: string | null
+          forum_post_id: string | null
+          id: string
+          is_public: boolean | null
+          share_token: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string | null
+          expires_at?: string | null
+          forum_post_id?: string | null
+          id?: string
+          is_public?: boolean | null
+          share_token: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string | null
+          expires_at?: string | null
+          forum_post_id?: string | null
+          id?: string
+          is_public?: boolean | null
+          share_token?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_conversations_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shared_conversations_forum_post_id_fkey"
+            columns: ["forum_post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_awakening_scores: {
         Row: {
           awakening_level: number | null

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check, X, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check, X, Bookmark, BookmarkCheck, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { getSpeechCode, getEdgeVoice } from '@/i18n';
 import SuggestedPrompts from '@/components/SuggestedPrompts';
 import { useBookmarks } from '@/hooks/useBookmarks';
+import { ShareConversationDialog } from '@/components/ShareConversationDialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,6 +65,7 @@ const Chat = () => {
   const [currentSpeakingId, setCurrentSpeakingId] = useState<string | null>(null);
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [showShareDialog, setShowShareDialog] = useState(false);
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
   // Get current speech code and edge voice based on selected language
@@ -942,6 +944,21 @@ const Chat = () => {
             </span>
             <Star className="w-5 h-5" style={{ color: '#FFD700' }} />
           </div>
+          
+          {/* Share button - only show when there are messages and user is logged in */}
+          {hasMessages && user && currentConversationId && (
+            <button
+              onClick={() => setShowShareDialog(true)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all hover:scale-110"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.3) 100%)',
+                border: '1px solid rgba(184, 134, 11, 0.3)',
+              }}
+              title={t('shareConversation.shareButton')}
+            >
+              <Share2 className="w-4 h-4" style={{ color: '#B8860B' }} />
+            </button>
+          )}
         </div>
 
         {/* Background Effects */}
@@ -1478,6 +1495,18 @@ const Chat = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Share Conversation Dialog */}
+      {user && currentConversationId && (
+        <ShareConversationDialog
+          open={showShareDialog}
+          onOpenChange={setShowShareDialog}
+          conversationId={currentConversationId}
+          userId={user.id}
+          messages={messages}
+          defaultTitle={conversations.find(c => c.id === currentConversationId)?.title || ''}
+        />
+      )}
     </div>
   );
 };

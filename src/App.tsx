@@ -23,6 +23,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
 import { AngelCompanion } from "./components/AngelCompanion";
+import { AwakeningProvider } from "./contexts/AwakeningContext";
 
 const queryClient = new QueryClient();
 
@@ -100,7 +101,9 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AppContent />
+      <AwakeningProvider>
+        <AppContent />
+      </AwakeningProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -778,14 +778,23 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
-      process_camly_claim: {
-        Args: {
-          p_points_to_convert: number
-          p_user_id: string
-          p_wallet_address: string
-        }
-        Returns: string
-      }
+      process_camly_claim:
+        | {
+            Args: {
+              p_points_to_convert: number
+              p_user_id: string
+              p_wallet_address: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_points_to_convert: number
+              p_user_id: string
+              p_wallet_address: string
+            }
+            Returns: string
+          }
       process_referral: {
         Args: { p_referred_id: string; p_referrer_id: string }
         Returns: undefined

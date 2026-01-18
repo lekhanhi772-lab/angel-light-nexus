@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Star, ChevronRight } from 'lucide-react';
-import { useAwakeningScore, AWAKENING_LEVEL_NAMES, AWAKENING_LEVEL_ICONS, LEVEL_THRESHOLDS } from '@/hooks/useAwakeningScore';
+import { useAwakeningContext } from '@/contexts/AwakeningContext';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 const AwakeningWidget = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { score, loading, getLevelInfo, getProgressToNextLevel } = useAwakeningScore();
+  const { score, loading, getLevelInfo, getProgressToNextLevel } = useAwakeningContext();
 
   if (loading) {
     return (

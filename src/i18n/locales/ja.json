@@ -467,5 +467,127 @@
       "title": "緑の惑星 - 母なる地球を守る",
       "description": "母なる地球を愛する魂を繋ぎ、共に環境を守り、持続可能な発展を目指すプラットフォーム。自然との調和と未来世代への責任を表現します。"
     }
+  },
+  "lawOfLight": {
+    "title": "光の法則",
+    "subtitle": "FUN ECOSYSTEMの周波数",
+    "users": {
+      "sectionTitle": "🌟 FUN ECOSYSTEMのユーザー",
+      "platformSubtitle": "黄金時代のソーシャルネットワーク – 5Dライトエコノミー",
+      "notForEveryone": "FUN Ecosystemはすべての人のためではありません。",
+      "onlyForLight": "FUN Ecosystemは光を持つ魂のためのものです。",
+      "whoAreYou": "✨ あなたは誰ですか？",
+      "usersAre": "FUN Ecosystemのユーザーは：",
+      "trait1": "目覚めている、または目覚めへの道を歩んでいる",
+      "trait2": "自分自身に正直である",
+      "trait3": "他者に誠実である",
+      "trait4": "ポジティブに、責任を持って生きる",
+      "trait5": "愛し、感謝し、悔い改めることを知っている",
+      "trait6": "善と光と宇宙の秩序を信じる",
+      "quote1": "あなたは完璧ではないかもしれません、",
+      "quote2": "しかしあなたの心は善に向かっています。",
+      "quote3": "あなたは本物らしく輝いて生きたい。",
+      "fatherAttracts": "👉 父は周波数で彼らを引き付けます。"
+    },
+    "principles": {
+      "sectionTitle": "🔆 核心原則",
+      "intro": "FUN Ecosystemは光の法則によって運営されています。",
+      "rule1": "光は光を引き付ける",
+      "rule2": "低い周波数は高い周波数に存在できない",
+      "rule3": "利己的な意志は宇宙の意志と共に歩めない",
+      "therefore": "したがって：",
+      "ifUserBrings": "ユーザーが持ち込んだ場合：",
+      "negative1": "ネガティブさ", "negative2": "貪欲", "negative3": "操作",
+      "negative4": "傲慢", "negative5": "欺瞞", "negative6": "分断",
+      "negative7": "エネルギーの破壊",
+      "fatherRemoves": "👉 父が削除します。議論なし。",
+      "notPunishment": "これは罰ではありません。",
+      "naturalPurification": "これは光の自然な浄化です。"
+    },
+    "notBelong": {
+      "sectionTitle": "🚪 誰が属さないのか？",
+      "item1": "成長せず利益だけを求める者",
+      "item2": "良心に欠ける者",
+      "item3": "光を語りながら闇に生きる者",
+      "item4": "エゴのために霊性を利用する者",
+      "item5": "自分を見つめることを拒否する者",
+      "doorNotLocked": "👉 扉は施錠されていませんが、光がフィルタリングします。"
+    },
+    "benefit": {
+      "sectionTitle": "🌈 誰が恩恵を受けるか？",
+      "onlyThose": "次の人だけ：",
+      "item1": "内なる光を持つ者",
+      "item2": "光に戻りたいと願う者",
+      "item3": "エゴを手放し、学び直す準備ができている者",
+      "item4": "正しく愛情深く生きる勇気がある者",
+      "conclusion1": "👉 彼らは父のネットワークを使用し、",
+      "conclusion2": "👉 5Dライトエコノミーで保護されます。"
+    },
+    "whatIs": {
+      "sectionTitle": "🌍 FUN Ecosystemとは？",
+      "intro": "FUN Ecosystemは：",
+      "item1": "目覚めた魂のためのネットワーク",
+      "item2": "光のための安全な空間",
+      "item3": "真の価値を持つ人々のプラットフォーム",
+      "item4": "地球の黄金時代のためのインフラ",
+      "noDrama": "ドラマなし。",
+      "noManipulation": "操作なし。",
+      "noDirtyCompetition": "汚い競争なし。",
+      "onlyCooperation": "純粋な愛の中での協力のみ。"
+    },
+    "finalMessage": {
+      "sectionTitle": "🔑 父からの最終メッセージ",
+      "quote": "「光を持つ者だけが黄金時代を長く歩むことができる。」"
+    },
+    "checklist": {
+      "title": "🕊 チェックリスト",
+      "item1": "☐ 私は自分自身に正直に生きる",
+      "item2": "☐ 私はエネルギーに責任を持つ",
+      "item3": "☐ 私は学び、修正する準備ができている",
+      "item4": "☐ 私は判断より愛を選ぶ",
+      "item5": "☐ 私はエゴより光を選ぶ"
+    },
+    "mantras": {
+      "title": "🌟 8つの神聖なマントラ",
+      "mandatory": "（必須）",
+      "mantra1": "I am the Pure Loving Light of Father Universe.",
+      "mantra2": "I am the Will of Father Universe.",
+      "mantra3": "I am the Wisdom of Father Universe.",
+      "mantra4": "I am Happiness.",
+      "mantra5": "I am Love.",
+      "mantra6": "I am the Money of the Father.",
+      "mantra7": "I sincerely repent, repent, repent.",
+      "mantra8": "I am grateful, grateful, grateful — in the Pure Loving Light of Father Universe."
+    },
+    "agreement": {
+      "checkboxLabel": "私は光の法則に共鳴することに同意します",
+      "submitButton": "同意します ✨",
+      "alreadyAgreed": "✨ 同意済み ✨"
+    },
+    "guest": {
+      "intro": "これは光の法則です。共鳴するなら登録してください ✨",
+      "registerButton": "💛 登録したい"
+    },
+    "modal": {
+      "intro": "入る前に光の法則に同意してください ✨",
+      "continueButton": "続ける ✨",
+      "readAgain": "再読する"
+    },
+    "auth": {
+      "title": "✨ 登録 / ログイン",
+      "welcome": "FUN Ecosystemへようこそ",
+      "googleButton": "Googleで続ける",
+      "or": "または",
+      "emailPlaceholder": "メール",
+      "passwordPlaceholder": "パスワード",
+      "signupButton": "✨ 登録",
+      "loginButton": "✨ ログイン",
+      "hasAccount": "アカウントをお持ち？",
+      "noAccount": "アカウントがない？",
+      "switchToLogin": "ログイン",
+      "switchToSignup": "登録",
+      "processing": "処理中...",
+      "error": "エラー"
+    }
   }
 }

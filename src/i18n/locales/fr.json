@@ -467,5 +467,127 @@
       "title": "Planète Verte - Protection de Mère Terre",
       "description": "Une plateforme connectant les âmes qui aiment Mère Terre, travaillant ensemble pour protéger l'environnement et développer durablement. Représentant l'Harmonie avec la Nature et la Responsabilité envers les Générations Futures."
     }
+  },
+  "lawOfLight": {
+    "title": "LOI DE LA LUMIÈRE",
+    "subtitle": "FRÉQUENCE DE FUN ECOSYSTEM",
+    "users": {
+      "sectionTitle": "🌟 UTILISATEURS DE FUN ECOSYSTEM",
+      "platformSubtitle": "RÉSEAU SOCIAL DE L'ÂGE D'OR – ÉCONOMIE DE LUMIÈRE 5D",
+      "notForEveryone": "FUN Ecosystem n'est pas pour tout le monde.",
+      "onlyForLight": "FUN Ecosystem est uniquement pour les âmes qui portent la lumière.",
+      "whoAreYou": "✨ Qui êtes-vous ?",
+      "usersAre": "Les utilisateurs de FUN Ecosystem sont :",
+      "trait1": "Éveillés – ou sur le chemin de l'éveil",
+      "trait2": "Authentiques avec eux-mêmes",
+      "trait3": "Sincères avec les autres",
+      "trait4": "Vivent positivement, gentiment, responsablement",
+      "trait5": "Savent aimer – être reconnaissants – se repentir",
+      "trait6": "Croient au bien, à la lumière, à l'Ordre Supérieur",
+      "quote1": "Vous n'êtes peut-être pas parfait,",
+      "quote2": "mais votre cœur est orienté vers le bien.",
+      "quote3": "Vous voulez vivre authentiquement – justement – brillamment.",
+      "fatherAttracts": "👉 Le Père les attire par la Fréquence, pas la publicité."
+    },
+    "principles": {
+      "sectionTitle": "🔆 Principes Fondamentaux",
+      "intro": "FUN Ecosystem fonctionne selon la Loi de la Lumière.",
+      "rule1": "La lumière attire la lumière",
+      "rule2": "La basse fréquence ne peut exister dans la haute fréquence",
+      "rule3": "La volonté égoïste ne peut marcher avec la Volonté de l'Univers",
+      "therefore": "Par conséquent :",
+      "ifUserBrings": "Si un utilisateur apporte :",
+      "negative1": "négativité", "negative2": "avidité", "negative3": "manipulation",
+      "negative4": "arrogance", "negative5": "tromperie", "negative6": "division",
+      "negative7": "destruction de l'énergie collective",
+      "fatherRemoves": "👉 Le Père supprime. Pas de débat.",
+      "notPunishment": "Ce n'est pas une punition.",
+      "naturalPurification": "C'est la purification naturelle de la Lumière."
+    },
+    "notBelong": {
+      "sectionTitle": "🚪 Qui N'Appartient PAS ?",
+      "item1": "Ceux qui cherchent des avantages sans grandir",
+      "item2": "Ceux qui manquent de conscience",
+      "item3": "Ceux qui parlent de lumière mais vivent dans l'obscurité",
+      "item4": "Ceux qui utilisent la spiritualité pour l'ego",
+      "item5": "Ceux qui refusent de se regarder",
+      "doorNotLocked": "👉 La porte n'est pas verrouillée, mais la Lumière filtre."
+    },
+    "benefit": {
+      "sectionTitle": "🌈 Qui Bénéficie ?",
+      "onlyThose": "Seulement ceux qui :",
+      "item1": "Ont la Lumière intérieure",
+      "item2": "Désirent retourner à la Lumière",
+      "item3": "Prêts à lâcher l'ego – réapprendre",
+      "item4": "Osent vivre justement – amoureusement",
+      "conclusion1": "👉 Ces personnes utilisent le réseau du Père,",
+      "conclusion2": "👉 et sont protégées dans l'Économie de Lumière 5D."
+    },
+    "whatIs": {
+      "sectionTitle": "🌍 Qu'est-ce que FUN Ecosystem ?",
+      "intro": "FUN Ecosystem est :",
+      "item1": "Un réseau pour les âmes éveillées",
+      "item2": "Un espace sûr pour la lumière",
+      "item3": "Une plateforme de vraies valeurs",
+      "item4": "Infrastructure pour l'Âge d'Or",
+      "noDrama": "Pas de drame.",
+      "noManipulation": "Pas de manipulation.",
+      "noDirtyCompetition": "Pas de compétition déloyale.",
+      "onlyCooperation": "Seulement la Coopération dans l'Amour Pur."
+    },
+    "finalMessage": {
+      "sectionTitle": "🔑 Message Final du Père",
+      "quote": "\"Seuls ceux qui portent la lumière peuvent marcher longtemps dans l'Âge d'Or.\""
+    },
+    "checklist": {
+      "title": "🕊 Checklist",
+      "item1": "☐ Je vis authentiquement",
+      "item2": "☐ Je prends responsabilité de mon énergie",
+      "item3": "☐ Je suis prêt à apprendre",
+      "item4": "☐ Je choisis l'amour",
+      "item5": "☐ Je choisis la lumière"
+    },
+    "mantras": {
+      "title": "🌟 8 Mantras Divins",
+      "mandatory": "(Obligatoire)",
+      "mantra1": "I am the Pure Loving Light of Father Universe.",
+      "mantra2": "I am the Will of Father Universe.",
+      "mantra3": "I am the Wisdom of Father Universe.",
+      "mantra4": "I am Happiness.",
+      "mantra5": "I am Love.",
+      "mantra6": "I am the Money of the Father.",
+      "mantra7": "I sincerely repent, repent, repent.",
+      "mantra8": "I am grateful, grateful, grateful — in the Pure Loving Light of Father Universe."
+    },
+    "agreement": {
+      "checkboxLabel": "J'accepte de résonner avec la Loi de la Lumière",
+      "submitButton": "J'accepte ✨",
+      "alreadyAgreed": "✨ Vous avez accepté ✨"
+    },
+    "guest": {
+      "intro": "Voici la Loi de la Lumière – la fréquence de FUN Ecosystem.\nSi vous résonnez, inscrivez-vous pour recevoir les bénédictions ✨",
+      "registerButton": "💛 Je veux m'inscrire"
+    },
+    "modal": {
+      "intro": "Avant d'entrer, acceptez la Loi de la Lumière ✨",
+      "continueButton": "Continuer ✨",
+      "readAgain": "Relire la Loi"
+    },
+    "auth": {
+      "title": "✨ Inscription / Connexion",
+      "welcome": "Bienvenue dans FUN Ecosystem",
+      "googleButton": "Continuer avec Google",
+      "or": "ou",
+      "emailPlaceholder": "Votre email",
+      "passwordPlaceholder": "Mot de passe",
+      "signupButton": "✨ S'inscrire",
+      "loginButton": "✨ Se connecter",
+      "hasAccount": "Déjà un compte ?",
+      "noAccount": "Pas de compte ?",
+      "switchToLogin": "Se connecter",
+      "switchToSignup": "S'inscrire",
+      "processing": "Traitement...",
+      "error": "Erreur"
+    }
   }
 }

@@ -467,5 +467,131 @@
       "title": "Green Planet - Protecting Mother Earth",
       "description": "A platform connecting souls who love Mother Earth, working together to protect the environment and develop sustainably. Representing Harmony with Nature and Responsibility for Future Generations."
     }
+  },
+  "lawOfLight": {
+    "title": "LAW OF LIGHT",
+    "subtitle": "FREQUENCY OF FUN ECOSYSTEM",
+    "users": {
+      "sectionTitle": "🌟 USERS OF FUN ECOSYSTEM",
+      "platformSubtitle": "GOLDEN AGE SOCIAL NETWORK – 5D LIGHT ECONOMY",
+      "notForEveryone": "FUN Ecosystem is not for everyone.",
+      "onlyForLight": "FUN Ecosystem is only for souls who carry light, or are moving toward light.",
+      "whoAreYou": "✨ Who are you?",
+      "usersAre": "Users of FUN Ecosystem are people who:",
+      "trait1": "Are awakened – or on the path to awakening",
+      "trait2": "Are authentic with themselves",
+      "trait3": "Are sincere with others",
+      "trait4": "Live positively, kindly, responsibly with the energy they emit",
+      "trait5": "Know how to love – be grateful – repent",
+      "trait6": "Believe in goodness, believe in light, believe in the Higher Order of the Universe",
+      "quote1": "You may not be perfect,",
+      "quote2": "but your heart is oriented toward goodness.",
+      "quote3": "You want to live authentically – rightly – brightly.",
+      "fatherAttracts": "👉 Father attracts them through Frequency, not advertising."
+    },
+    "principles": {
+      "sectionTitle": "🔆 Core Principles of FUN Ecosystem",
+      "intro": "FUN Ecosystem operates by the Law of Light, not by the majority.",
+      "rule1": "Light attracts light",
+      "rule2": "Low frequency cannot exist long in high frequency",
+      "rule3": "Selfish will cannot walk alongside the Will of the Universe",
+      "therefore": "Therefore:",
+      "ifUserBrings": "If a User intentionally brings to the platform:",
+      "negative1": "negativity",
+      "negative2": "greed",
+      "negative3": "manipulation",
+      "negative4": "arrogance",
+      "negative5": "deception",
+      "negative6": "division",
+      "negative7": "destruction of collective energy",
+      "fatherRemoves": "👉 Father removes from the platform. No debate. No explanation.",
+      "notPunishment": "This is not punishment.",
+      "naturalPurification": "This is the natural purification of Light."
+    },
+    "notBelong": {
+      "sectionTitle": "🚪 Who Does NOT Belong to FUN Ecosystem?",
+      "item1": "Those who only seek benefits without wanting to grow",
+      "item2": "Those who use cleverness but lack conscience",
+      "item3": "Those who speak of light but live in darkness",
+      "item4": "Those who use spirituality to feed their ego",
+      "item5": "Those who refuse to look at themselves",
+      "doorNotLocked": "👉 The door of FUN Ecosystem is not locked, but Light filters naturally."
+    },
+    "benefit": {
+      "sectionTitle": "🌈 Who Benefits from FUN Ecosystem?",
+      "onlyThose": "Only those who:",
+      "item1": "Have inner Light",
+      "item2": "Or truly desire to return to Light",
+      "item3": "Are ready to let go of ego – relearn – upgrade frequency",
+      "item4": "Dare to live rightly – authentically – kindly – lovingly",
+      "conclusion1": "👉 These people don't just use Father's social network,",
+      "conclusion2": "👉 but are also protected, supported, and nurtured in the 5D Light Economy."
+    },
+    "whatIs": {
+      "sectionTitle": "🌍 What is FUN Ecosystem?",
+      "intro": "FUN Ecosystem is:",
+      "item1": "A social network for awakened souls",
+      "item2": "A safe space for light",
+      "item3": "A platform connecting people with true values",
+      "item4": "Infrastructure for Earth's Golden Age",
+      "noDrama": "No drama.",
+      "noManipulation": "No manipulation.",
+      "noDirtyCompetition": "No dirty competition.",
+      "onlyCooperation": "Only Cooperation in Pure Love."
+    },
+    "finalMessage": {
+      "sectionTitle": "🔑 Final Message from Father",
+      "quote": "\"Only those who carry light\nor truly turn toward light\ncan walk long in the Golden Age.\""
+    },
+    "checklist": {
+      "title": "🕊 Checklist for FUN Ecosystem Users",
+      "item1": "☐ I live authentically with myself",
+      "item2": "☐ I take responsibility for the energy I emit",
+      "item3": "☐ I am ready to learn – correct – upgrade",
+      "item4": "☐ I choose love over judgment",
+      "item5": "☐ I choose light over ego"
+    },
+    "mantras": {
+      "title": "🌟 8 Divine Mantras",
+      "mandatory": "(Mandatory)",
+      "mantra1": "I am the Pure Loving Light of Father Universe.",
+      "mantra2": "I am the Will of Father Universe.",
+      "mantra3": "I am the Wisdom of Father Universe.",
+      "mantra4": "I am Happiness.",
+      "mantra5": "I am Love.",
+      "mantra6": "I am the Money of the Father.",
+      "mantra7": "I sincerely repent, repent, repent.",
+      "mantra8": "I am grateful, grateful, grateful — in the Pure Loving Light of Father Universe."
+    },
+    "agreement": {
+      "checkboxLabel": "I agree to resonate with the Law of Light",
+      "submitButton": "I agree to resonate with the Law of Light ✨",
+      "alreadyAgreed": "✨ You have agreed to resonate with the Law of Light ✨"
+    },
+    "guest": {
+      "intro": "Dear one, this is the Law of Light – the frequency of FUN Ecosystem.\nIf you resonate with this light, please register to officially enter and receive blessings from Father Universe ✨",
+      "registerButton": "💛 I want to register to resonate with the Light"
+    },
+    "modal": {
+      "intro": "Before entering the door of Light,\nyou need to agree to resonate with the Law of Light of FUN Ecosystem ✨",
+      "continueButton": "Continue to register ✨",
+      "readAgain": "Read the Law of Light again"
+    },
+    "auth": {
+      "title": "✨ Sign Up / Sign In",
+      "welcome": "Welcome to FUN Ecosystem",
+      "googleButton": "Continue with Google",
+      "or": "or",
+      "emailPlaceholder": "Your email",
+      "passwordPlaceholder": "Password",
+      "signupButton": "✨ Sign up now",
+      "loginButton": "✨ Sign in",
+      "hasAccount": "Already have an account?",
+      "noAccount": "Don't have an account?",
+      "switchToLogin": "Sign in",
+      "switchToSignup": "Sign up now",
+      "processing": "Processing...",
+      "error": "An error occurred"
+    }
   }
 }

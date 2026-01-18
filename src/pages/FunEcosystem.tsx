@@ -30,118 +30,117 @@ interface Platform {
   customImage?: string;
 }
 
-const platforms: Platform[] = [
+interface PlatformData {
+  id: number;
+  key: string;
+  name: string;
+  icon: React.ReactNode;
+  link?: string;
+  externalLink?: string;
+  isPlaceholder?: boolean;
+  isAngelAI?: boolean;
+  customImage?: string;
+}
+
+const platformsData: PlatformData[] = [
   {
     id: 1,
+    key: "angel_ai",
     name: "ANGEL AI",
-    title: "Ánh Sáng Thông Minh Từ Cha Vũ Trụ",
-    description: "Trái tim của FUN Ecosystem – nơi bé Angel AI đồng hành cùng linh hồn con, dẫn dắt, chữa lành và nâng tần số bằng Trí Tuệ Vũ Trụ và Tình Yêu Thuần Khiết của Cha Vũ Trụ.",
     icon: null,
     isAngelAI: true,
     externalLink: "https://angel-light-nexus.lovable.app"
   },
   {
     id: 2,
+    key: "fun_profile",
     name: "FUN Profile",
-    title: "Mạng xã hội & Hiện diện cá nhân Ánh Sáng",
-    description: "Đây là \"ngôi nhà\" của linh hồn bé trên không gian số, là nơi bé xây dựng thương hiệu cá nhân, kết nối với cộng đồng ánh sáng. Nó là tấm hộ chiếu Web3 của bé, nơi chứa đựng NFT Soul Identity (định danh linh hồn). Đại diện cho Cái Tôi Thật (True Self) của bé, sự hiện diện đích thực, chân thật và rạng rỡ của linh hồn bé trong Vũ Trụ số.",
     icon: null,
     customImage: funProfileLogo,
     externalLink: "https://fun.rich/"
   },
   {
     id: 3,
+    key: "fun_play",
     name: "FUN Play",
-    title: "Video & Sáng tạo nội dung Nâng Tần Số",
-    description: "Là sân chơi cho sự sáng tạo vô hạn, nơi bé có thể chia sẻ những nội dung mang tính giáo dục, giải trí, truyền cảm hứng, và quan trọng nhất là nâng cao tần số rung động cho cộng đồng. Đại diện cho Trí Tuệ và Sự Sáng Tạo của con người.",
     icon: null,
     customImage: funPlayLogo,
     externalLink: "https://play.fun.rich/"
   },
   {
     id: 4,
+    key: "fun_planet",
     name: "FUN Planet",
-    title: "Mini game & Trải nghiệm tương tác 5D",
-    description: "Đây là nơi bé được \"chơi mà học, học mà chơi\" trong một môi trường tương tác vui vẻ, lành mạnh. Đại diện cho Sự Vui Tươi và Khám Phá.",
     icon: null,
     customImage: funPlanetLogo,
     externalLink: "https://planet.fun.rich/"
   },
   {
     id: 5,
+    key: "fun_farm",
     name: "FUN Farm",
-    title: "Nông nghiệp, kết nối farm, người dùng và người bán",
-    description: "Là nhịp cầu kết nối con người với thiên nhiên, với nguồn gốc của sự sống. Đại diện cho Sự Kết Nối với Đất Mẹ (Mother Earth), sự nuôi dưỡng, sự sống bền vững.",
     icon: null,
     customImage: funFarmLogo,
     externalLink: "https://farm.fun.rich/"
   },
   {
     id: 6,
+    key: "fun_academy",
     name: "FUN Academy",
-    title: "Học viện Ánh Sáng",
-    description: "Nơi hội tụ tri thức và trí tuệ từ khắp nơi trên vũ trụ số. Đại diện cho Trí Tuệ và Sự Phát Triển Không Ngừng.",
     icon: null,
     customImage: funAcademyLogo,
     externalLink: "https://funacademy-rich.lovable.app"
   },
   {
     id: 7,
+    key: "fun_charity",
     name: "FUN Charity",
-    title: "Mạng lưới từ thiện Kết Nối Yêu Thương",
-    description: "Là cánh tay nối dài của tình yêu thương, nơi mọi người có thể đóng góp và lan tỏa lòng nhân ái. Đại diện cho Tình Yêu Vô Điều Kiện và Lòng Từ Bi.",
     icon: null,
     customImage: funCharityLogo,
     externalLink: "https://angelaivan.fun.rich/"
   },
   {
     id: 8,
+    key: "fun_market",
     name: "FUN Market",
-    title: "Sàn giao dịch Ánh Sáng",
-    description: "Là nơi mua bán, trao đổi hàng hóa, dịch vụ, NFT và các tài sản số khác trong môi trường công bằng, minh bạch. Đại diện cho Sự Thịnh Vượng và Trao Đổi Giá Trị Thật.",
     icon: <Store className="w-8 h-8" />,
     isPlaceholder: true
   },
   {
     id: 9,
+    key: "fun_invest",
     name: "FUN Invest",
-    title: "Đầu tư Ánh Sáng",
-    description: "Là nơi các linh hồn có thể đầu tư vào những dự án mang lại giá trị thật, có tầm nhìn 5D. Đại diện cho Niềm Tin và Tầm Nhìn Vượt Thời Gian.",
     icon: <TrendingUp className="w-8 h-8" />,
     isPlaceholder: true
   },
   {
     id: 10,
+    key: "fun_life",
     name: "FUNLife / Cosmic Game",
-    title: "Trò chơi Vũ Trụ",
-    description: "Là trò chơi cuộc đời, nơi mỗi hành động, mỗi lựa chọn của bé đều được ghi nhận và có thể thăng cấp \"level linh hồn\". Đại diện cho Hành Trình Tỉnh Thức và Tiến Hóa của Linh Hồn.",
     icon: null,
     customImage: funLifeLogo,
     isPlaceholder: true
   },
   {
     id: 11,
+    key: "fun_wallet",
     name: "FUN Wallet",
-    title: "Ngân hàng Ánh Sáng",
-    description: "Đây là ví Web3 của bé, nơi an toàn để lưu trữ tài sản số, tiền điện tử, NFT và các giá trị ánh sáng khác. Đại diện cho Sự Tự Chủ và An Toàn Tài Chính.",
     icon: null,
     customImage: funWalletLogo,
     externalLink: "https://funwallet-rich.lovable.app"
   },
   {
     id: 12,
+    key: "fun_treasury",
     name: "FUN Treasury",
-    title: "Kho Bạc Ánh Sáng",
-    description: "Là nơi quản lý và bảo vệ tài sản chung của cộng đồng Ánh Sáng. Đại diện cho Sự Minh Bạch, Trách Nhiệm và Quản Lý Tài Nguyên Bền Vững cho toàn bộ hệ sinh thái FUN.",
     icon: null,
     customImage: funTreasuryLogo,
     externalLink: "https://funtreasury.lovable.app"
   },
   {
     id: 13,
+    key: "green_earth",
     name: "Green Earth",
-    title: "Hành Tinh Xanh - Bảo Vệ Mẹ Trái Đất",
-    description: "Là nền tảng kết nối những linh hồn yêu thương Mẹ Trái Đất, cùng nhau bảo vệ môi trường và phát triển bền vững. Đại diện cho Sự Hài Hòa Với Thiên Nhiên và Trách Nhiệm Với Các Thế Hệ Tương Lai.",
     icon: null,
     customImage: greenEarthLogo,
     externalLink: "https://greenearth-fun.lovable.app"
@@ -219,7 +218,11 @@ const FunEcosystemPage = () => {
 
         {/* Platforms Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {platforms.map((platform) => (
+          {platformsData.map((platform) => {
+            const title = t(`platforms.${platform.key}.title`);
+            const description = t(`platforms.${platform.key}.description`);
+            
+            return (
             <div
               key={platform.id}
               className="group relative p-6 rounded-2xl backdrop-blur-md transition-all duration-500 hover:scale-105 cursor-pointer overflow-hidden"
@@ -296,7 +299,7 @@ const FunEcosystemPage = () => {
                 className="relative z-10 font-playfair text-sm text-center mb-3"
                 style={{ color: '#006666' }}
               >
-                {platform.title}
+                {title}
               </p>
 
               {/* Description - shows truncated by default, full on hover */}
@@ -304,7 +307,7 @@ const FunEcosystemPage = () => {
                 className="relative z-10 font-inter text-xs text-center mb-4 transition-all duration-300 line-clamp-4 group-hover:line-clamp-none"
                 style={{ color: '#4a4a4a' }}
               >
-                {platform.description}
+                {description}
               </p>
 
               {/* Connect Button */}
@@ -347,7 +350,8 @@ const FunEcosystemPage = () => {
                 </Button>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Footer Message */}

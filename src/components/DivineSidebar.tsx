@@ -8,7 +8,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
 import LanguageSelector from './LanguageSelector';
-import ThemeToggle from './ThemeToggle';
+// ThemeToggle removed - Light mode only
 import AwakeningWidget from './AwakeningWidget';
 
 // Build version for cache verification
@@ -369,10 +369,6 @@ const DivineSidebar = () => {
           })}
         </nav>
 
-        {/* Theme Toggle */}
-        <div className="px-3 py-2">
-          <ThemeToggle />
-        </div>
 
         {/* Language Selector - Always visible since sidebar is hidden when not expanded on mobile */}
         <div className="px-3 py-2">

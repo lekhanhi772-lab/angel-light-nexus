@@ -25,7 +25,7 @@ import {
 import { toast } from 'sonner';
 
 const AwakeningDashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { address } = useAccount();
   const { 
     score, 
@@ -46,19 +46,19 @@ const AwakeningDashboard = () => {
 
   const handleClaim = async () => {
     if (!address) {
-      toast.error('Vui lòng kết nối ví trước khi claim CAMLY');
+      toast.error(t('awakening.error_connect_wallet'));
       return;
     }
     
     if (!score || claimAmount < 1) {
-      toast.error('Cần tối thiểu 1 điểm để claim');
+      toast.error(t('awakening.error_min_points'));
       return;
     }
 
     // claimable_camly is stored as points in DB
     const claimablePoints = score.claimable_camly || 0;
     if (claimAmount > claimablePoints) {
-      toast.error('Số điểm claim vượt quá số điểm khả dụng');
+      toast.error(t('awakening.error_exceed_points'));
       return;
     }
 
@@ -66,13 +66,22 @@ const AwakeningDashboard = () => {
     try {
       await claimCamly(claimAmount, address);
       const camlyReceived = claimAmount * 1000;
-      toast.success(`Yêu cầu claim ${camlyReceived.toLocaleString()} CAMLY đã được gửi! ✨`);
+      toast.success(t('awakening.claim_success', { amount: camlyReceived.toLocaleString() }));
       await refetch();
     } catch (error) {
       console.error('Claim error:', error);
-      toast.error(error instanceof Error ? error.message : 'Có lỗi xảy ra khi claim');
+      toast.error(error instanceof Error ? error.message : t('awakening.claim_error'));
     } finally {
       setClaiming(false);
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'completed': return t('awakening.status_completed');
+      case 'failed': return t('awakening.status_failed');
+      case 'processing': return t('awakening.status_processing');
+      default: return t('awakening.status_pending');
     }
   };
 
@@ -92,15 +101,15 @@ const AwakeningDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2" style={{ color: '#B8860B' }}>
             <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
-            Hành Trình Tỉnh Thức
+            {t('awakening.title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center py-8">
           <p style={{ color: '#8B6914' }}>
-            Bắt đầu trò chuyện với Angel để tích lũy điểm Ánh Sáng! 💛
+            {t('awakening.no_score_message')}
           </p>
           <p className="text-sm mt-2" style={{ color: '#8B6914' }}>
-            Mỗi cuộc trò chuyện sẽ được đánh giá và tặng điểm dựa trên năng lượng tích cực của con.
+            {t('awakening.no_score_hint')}
           </p>
         </CardContent>
       </Card>
@@ -117,7 +126,7 @@ const AwakeningDashboard = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2" style={{ color: '#B8860B' }}>
           <Sparkles className="w-5 h-5" style={{ color: '#DAA520' }} />
-          Hành Trình Tỉnh Thức
+          {t('awakening.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -126,15 +135,15 @@ const AwakeningDashboard = () => {
           <div className="inline-flex items-center gap-3 mb-4">
             <span className="text-4xl">{levelInfo.icon}</span>
             <div className="text-left">
-              <p className="text-sm" style={{ color: '#8B6914' }}>Cấp độ {levelInfo.level}</p>
+              <p className="text-sm" style={{ color: '#8B6914' }}>{t('awakening.level')} {levelInfo.level}</p>
               <p className="font-bold text-lg" style={{ color: '#B8860B' }}>{levelInfo.name}</p>
             </div>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between text-sm" style={{ color: '#8B6914' }}>
-              <span>{score.total_points} điểm</span>
-              <span>{progressInfo.pointsToNext} điểm đến cấp tiếp theo</span>
+              <span>{score.total_points} {t('awakening.points')}</span>
+              <span>{progressInfo.pointsToNext} {t('awakening.points_to_next')}</span>
             </div>
             <Progress 
               value={progressInfo.progress} 
@@ -149,12 +158,12 @@ const AwakeningDashboard = () => {
           <div className="p-4 rounded-xl text-center" style={{ background: 'rgba(218, 165, 32, 0.1)' }}>
             <Star className="w-6 h-6 mx-auto mb-2" style={{ color: '#DAA520' }} />
             <p className="text-2xl font-bold" style={{ color: '#B8860B' }}>{score.total_points}</p>
-            <p className="text-xs" style={{ color: '#8B6914' }}>Tổng Điểm Ánh Sáng</p>
+            <p className="text-xs" style={{ color: '#8B6914' }}>{t('awakening.total_light_points')}</p>
           </div>
           <div className="p-4 rounded-xl text-center" style={{ background: 'rgba(218, 165, 32, 0.1)' }}>
             <Coins className="w-6 h-6 mx-auto mb-2" style={{ color: '#DAA520' }} />
             <p className="text-2xl font-bold" style={{ color: '#B8860B' }}>{claimableCamly.toLocaleString()}</p>
-            <p className="text-xs" style={{ color: '#8B6914' }}>CAMLY Có Thể Claim</p>
+            <p className="text-xs" style={{ color: '#8B6914' }}>{t('awakening.claimable_camly')}</p>
           </div>
         </div>
 
@@ -162,11 +171,11 @@ const AwakeningDashboard = () => {
           <TabsList className="grid w-full grid-cols-2" style={{ background: 'rgba(218, 165, 32, 0.1)' }}>
             <TabsTrigger value="evaluations" className="data-[state=active]:bg-white">
               <TrendingUp className="w-4 h-4 mr-2" />
-              Đánh Giá
+              {t('awakening.tab_evaluations')}
             </TabsTrigger>
             <TabsTrigger value="claims" className="data-[state=active]:bg-white">
               <Gift className="w-4 h-4 mr-2" />
-              Claim CAMLY
+              {t('awakening.tab_claims')}
             </TabsTrigger>
           </TabsList>
 
@@ -193,7 +202,7 @@ const AwakeningDashboard = () => {
                           </Badge>
                         </div>
                         <span className="text-xs" style={{ color: '#8B6914' }}>
-                          +{evaluation.points_awarded} điểm
+                          +{evaluation.points_awarded} {t('awakening.points')}
                         </span>
                       </div>
                       {evaluation.ai_feedback && (
@@ -202,7 +211,7 @@ const AwakeningDashboard = () => {
                         </p>
                       )}
                       <p className="text-xs mt-2" style={{ color: '#8B6914' }}>
-                        {new Date(evaluation.evaluated_at).toLocaleDateString('vi-VN')}
+                        {new Date(evaluation.evaluated_at).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : i18n.language === 'ja' ? 'ja-JP' : i18n.language === 'ko' ? 'ko-KR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
                       </p>
                     </div>
                   ))}
@@ -210,7 +219,7 @@ const AwakeningDashboard = () => {
               </ScrollArea>
             ) : (
               <p className="text-center py-8 text-sm" style={{ color: '#8B6914' }}>
-                Chưa có đánh giá nào. Hãy trò chuyện với Angel để nhận điểm! 💛
+                {t('awakening.no_evaluations')}
               </p>
             )}
           </TabsContent>
@@ -219,7 +228,7 @@ const AwakeningDashboard = () => {
             {/* Claim Form */}
             <div className="p-4 rounded-xl" style={{ background: 'rgba(218, 165, 32, 0.05)', border: '1px solid rgba(218, 165, 32, 0.3)' }}>
               <p className="text-sm mb-3" style={{ color: '#8B6914' }}>
-                Quy đổi: 1 điểm = 1,000 CAMLY
+                {t('awakening.exchange_rate')}
               </p>
               
               <div className="flex gap-2 mb-3">
@@ -232,7 +241,7 @@ const AwakeningDashboard = () => {
                     disabled={claimablePoints < amount}
                     style={claimAmount === amount ? { background: '#DAA520', color: 'white' } : { borderColor: '#DAA520', color: '#B8860B' }}
                   >
-                    {amount} điểm
+                    {amount} {t('awakening.points')}
                   </Button>
                 ))}
               </div>
@@ -248,12 +257,12 @@ const AwakeningDashboard = () => {
                 ) : (
                   <Coins className="w-4 h-4 mr-2" />
                 )}
-                Claim {(claimAmount * 1000).toLocaleString()} CAMLY
+                {t('awakening.claim_button', { amount: (claimAmount * 1000).toLocaleString() })}
               </Button>
 
               {!address && (
                 <p className="text-xs text-center mt-2" style={{ color: '#B8860B' }}>
-                  ⚠️ Kết nối ví để claim CAMLY
+                  ⚠️ {t('awakening.connect_wallet_warning')}
                 </p>
               )}
             </div>
@@ -281,7 +290,7 @@ const AwakeningDashboard = () => {
                             {claim.camly_amount.toLocaleString()} CAMLY
                           </p>
                           <p className="text-xs" style={{ color: '#8B6914' }}>
-                            {claim.points_converted} điểm
+                            {claim.points_converted} {t('awakening.points')}
                           </p>
                         </div>
                       </div>
@@ -293,9 +302,7 @@ const AwakeningDashboard = () => {
                           color: claim.status === 'completed' ? '#22c55e' : claim.status === 'failed' ? '#ef4444' : '#B8860B'
                         }}
                       >
-                        {claim.status === 'completed' ? 'Hoàn thành' : 
-                         claim.status === 'failed' ? 'Thất bại' : 
-                         claim.status === 'processing' ? 'Đang xử lý' : 'Đang chờ'}
+                        {getStatusText(claim.status || 'pending')}
                       </Badge>
                     </div>
                   ))}

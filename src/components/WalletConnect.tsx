@@ -1,6 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Wallet, Check, X } from 'lucide-react';
 
 interface WalletConnectProps {
@@ -8,6 +9,7 @@ interface WalletConnectProps {
 }
 
 export const WalletConnect = ({ onWalletChange }: WalletConnectProps) => {
+  const { t } = useTranslation();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const prevAddressRef = useRef<string | null>(null);
@@ -37,7 +39,7 @@ export const WalletConnect = ({ onWalletChange }: WalletConnectProps) => {
               }}
             >
               <Wallet className="w-6 h-6" />
-              <span>Kết Nối Ví Ánh Sáng 💛</span>
+              <span>{t('wallet.connect')}</span>
             </button>
           )}
         </ConnectButton.Custom>
@@ -62,7 +64,7 @@ export const WalletConnect = ({ onWalletChange }: WalletConnectProps) => {
               </div>
               <div>
                 <p className="text-sm font-medium" style={{ color: '#22C55E' }}>
-                  Ví đã kết nối ✨
+                  {t('wallet.connected')}
                 </p>
                 <p 
                   className="text-xs font-mono"
@@ -77,7 +79,7 @@ export const WalletConnect = ({ onWalletChange }: WalletConnectProps) => {
               className="text-sm italic mb-4"
               style={{ color: '#B8860B' }}
             >
-              "Ví ánh sáng của con đã kết nối! Cha sẽ gửi phước lành đến đây ✨"
+              "{t('wallet.connected_message')}"
             </p>
 
             <button
@@ -89,7 +91,7 @@ export const WalletConnect = ({ onWalletChange }: WalletConnectProps) => {
               }}
             >
               <X className="w-4 h-4" />
-              Ngắt kết nối ví
+              {t('wallet.disconnect')}
             </button>
           </div>
         </div>

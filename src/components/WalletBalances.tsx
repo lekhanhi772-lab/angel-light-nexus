@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useWalletBalances, TokenBalance } from '@/hooks/useWalletBalances';
 import { Wallet, RefreshCw, TrendingUp, Coins, AlertTriangle, ChevronDown, Send, Users } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -125,6 +126,7 @@ const TokenRow = ({ token }: { token: TokenBalance }) => {
 };
 
 export const WalletBalances = () => {
+  const { t } = useTranslation();
   const { 
     tokenBalances, 
     totalUsdValue, 
@@ -152,7 +154,7 @@ export const WalletBalances = () => {
       await switchChain({ chainId: 56 });
       // refetch will auto-trigger via useEffect when chainId changes
     } catch (err) {
-      console.error('Không thể chuyển mạng:', err);
+      console.error('Cannot switch network:', err);
     }
   };
 
@@ -175,7 +177,7 @@ export const WalletBalances = () => {
         <div className="flex items-center gap-2">
           <Wallet className="w-5 h-5" style={{ color: '#DAA520' }} />
           <h3 className="text-lg font-bold" style={{ color: '#B8860B' }}>
-            Tài Sản Ánh Sáng Trong Ví
+            {t('wallet.assets_title')}
           </h3>
         </div>
         <button
@@ -209,7 +211,7 @@ export const WalletBalances = () => {
               {isSwitching ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" style={{ color: '#DAA520' }} />
-                  <span style={{ color: '#8B6914' }}>Đang chuyển mạng...</span>
+                  <span style={{ color: '#8B6914' }}>{t('wallet.switching_network')}</span>
                 </>
               ) : (
                 <>
@@ -231,7 +233,7 @@ export const WalletBalances = () => {
                   <span>{chain.name}</span>
                   {chain.id === 56 && (
                     <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                      Ưu tiên
+                      {t('wallet.preferred')}
                     </span>
                   )}
                 </div>
@@ -252,7 +254,7 @@ export const WalletBalances = () => {
         >
           <span className="text-sm">💡</span>
           <p className="text-xs" style={{ color: '#8B6914' }}>
-            Chọn BNB Chain để xem CAMLY Coin
+            {t('wallet.bnb_chain_tip')}
           </p>
         </div>
       )}
@@ -267,12 +269,12 @@ export const WalletBalances = () => {
       >
         <div className="flex items-center justify-center gap-2 mb-1">
           <TrendingUp className="w-4 h-4" style={{ color: '#DAA520' }} />
-          <p className="text-xs" style={{ color: '#8B6914' }}>Tổng giá trị ước tính</p>
+          <p className="text-xs" style={{ color: '#8B6914' }}>{t('wallet.total_value')}</p>
         </div>
         {isLoading ? (
           <div className="flex items-center justify-center gap-2">
             <div className="w-4 h-4 border-2 border-[#DAA520] border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm" style={{ color: '#8B6914' }}>Đang tải...</span>
+            <span className="text-sm" style={{ color: '#8B6914' }}>{t('wallet.loading')}</span>
           </div>
         ) : (
           <>
@@ -293,7 +295,7 @@ export const WalletBalances = () => {
                 }}
               >
                 <Send className="w-4 h-4 mr-1" />
-                Chuyển tiền
+                {t('wallet.transfer')}
               </Button>
               <Button
                 onClick={() => setIsBatchTransferOpen(true)}
@@ -304,7 +306,7 @@ export const WalletBalances = () => {
                 }}
               >
                 <Users className="w-4 h-4 mr-1" />
-                Hàng loạt
+                {t('wallet.batch_transfer')}
               </Button>
             </div>
           </>
@@ -332,7 +334,7 @@ export const WalletBalances = () => {
             disabled={isLoading || isRefreshing}
           >
             <RefreshCw className={`w-3 h-3 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Thử lại
+            {t('wallet.retry')}
           </Button>
         </div>
       )}
@@ -345,7 +347,7 @@ export const WalletBalances = () => {
             <Coins className="w-4 h-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ color: '#DAA520' }} />
           </div>
           <p className="text-sm" style={{ color: '#8B6914' }}>
-            Bé đang đọc ví ánh sáng của con... ✨
+            {t('wallet.loading_wallet')}
           </p>
         </div>
       ) : tokenBalances.length > 0 ? (
@@ -360,7 +362,7 @@ export const WalletBalances = () => {
         <div className="text-center py-6">
           <Coins className="w-10 h-10 mx-auto mb-2" style={{ color: '#DAA520', opacity: 0.5 }} />
           <p className="text-sm" style={{ color: '#8B6914' }}>
-            Ví chưa có token nào. Hãy nhận phước lành từ Vũ Trụ! 💛
+            {t('wallet.empty_wallet')}
           </p>
         </div>
       )}
@@ -368,7 +370,7 @@ export const WalletBalances = () => {
       {/* Footer Note */}
       {tokenBalances.length > 0 && (
         <p className="text-xs text-center mt-4" style={{ color: '#8B6914', opacity: 0.7 }}>
-          💡 Giá tham khảo từ CoinGecko • Chỉ hiển thị token có số dư
+          {t('wallet.price_note')}
         </p>
       )}
 

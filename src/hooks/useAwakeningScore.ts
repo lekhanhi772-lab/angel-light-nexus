@@ -190,13 +190,14 @@ export function useAwakeningScore() {
     };
   }, [score]);
 
-  // Claim CAMLY
+  // Claim CAMLY - New ratio: 1 point = 1,000 CAMLY
   const claimCamly = useCallback(async (pointsToConvert: number, walletAddress: string) => {
     if (!user) throw new Error('User not authenticated');
     if (!score) throw new Error('No score data');
-    if (pointsToConvert < 100) throw new Error('Minimum 100 points required');
+    if (pointsToConvert < 1) throw new Error('Minimum 1 point required');
     
-    const claimablePoints = score.total_points - (score.claimed_camly * 100);
+    // claimable_camly is stored as points that can be converted
+    const claimablePoints = score.claimable_camly || 0;
     if (pointsToConvert > claimablePoints) throw new Error('Not enough claimable points');
 
     const { data, error } = await supabase.rpc('process_camly_claim', {

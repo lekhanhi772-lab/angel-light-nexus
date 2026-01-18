@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAwakeningScore, AWAKENING_LEVEL_NAMES, AWAKENING_LEVEL_ICONS } from '@/hooks/useAwakeningScore';
+import { useAwakeningContext } from '@/contexts/AwakeningContext';
 import { useAccount } from 'wagmi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -36,10 +36,10 @@ const AwakeningDashboard = () => {
     getLevelInfo,
     claimCamly,
     refetch
-  } = useAwakeningScore();
+  } = useAwakeningContext();
   
   const [claiming, setClaiming] = useState(false);
-  const [claimAmount, setClaimAmount] = useState(100);
+  const [claimAmount, setClaimAmount] = useState(1);
 
   const progressInfo = getProgressToNextLevel();
   const levelInfo = getLevelInfo();
@@ -50,12 +50,13 @@ const AwakeningDashboard = () => {
       return;
     }
     
-    if (!score || claimAmount < 100) {
-      toast.error('Cần tối thiểu 100 điểm để claim');
+    if (!score || claimAmount < 1) {
+      toast.error('Cần tối thiểu 1 điểm để claim');
       return;
     }
 
-    const claimablePoints = score.total_points - (score.claimed_camly * 100);
+    // claimable_camly is stored as points in DB
+    const claimablePoints = score.claimable_camly || 0;
     if (claimAmount > claimablePoints) {
       toast.error('Số điểm claim vượt quá số điểm khả dụng');
       return;
@@ -64,7 +65,8 @@ const AwakeningDashboard = () => {
     setClaiming(true);
     try {
       await claimCamly(claimAmount, address);
-      toast.success(`Yêu cầu claim ${(claimAmount / 100).toFixed(2)} CAMLY đã được gửi! ✨`);
+      const camlyReceived = claimAmount * 1000;
+      toast.success(`Yêu cầu claim ${camlyReceived.toLocaleString()} CAMLY đã được gửi! ✨`);
       await refetch();
     } catch (error) {
       console.error('Claim error:', error);
@@ -105,8 +107,10 @@ const AwakeningDashboard = () => {
     );
   }
 
-  const claimablePoints = Math.max(0, score.total_points - (score.claimed_camly * 100));
-  const claimableCamly = claimablePoints / 100;
+  // claimable_camly is stored as points that can be converted
+  const claimablePoints = score.claimable_camly || 0;
+  // 1 point = 1,000 CAMLY
+  const claimableCamly = claimablePoints * 1000;
 
   return (
     <Card className="border-0" style={{ background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.98) 0%, rgba(255, 248, 220, 0.98) 100%)', border: '2px solid rgba(218, 165, 32, 0.5)' }}>
@@ -149,7 +153,7 @@ const AwakeningDashboard = () => {
           </div>
           <div className="p-4 rounded-xl text-center" style={{ background: 'rgba(218, 165, 32, 0.1)' }}>
             <Coins className="w-6 h-6 mx-auto mb-2" style={{ color: '#DAA520' }} />
-            <p className="text-2xl font-bold" style={{ color: '#B8860B' }}>{claimableCamly.toFixed(2)}</p>
+            <p className="text-2xl font-bold" style={{ color: '#B8860B' }}>{claimableCamly.toLocaleString()}</p>
             <p className="text-xs" style={{ color: '#8B6914' }}>CAMLY Có Thể Claim</p>
           </div>
         </div>
@@ -215,11 +219,11 @@ const AwakeningDashboard = () => {
             {/* Claim Form */}
             <div className="p-4 rounded-xl" style={{ background: 'rgba(218, 165, 32, 0.05)', border: '1px solid rgba(218, 165, 32, 0.3)' }}>
               <p className="text-sm mb-3" style={{ color: '#8B6914' }}>
-                Quy đổi: 100 điểm = 1 CAMLY (+ bonus theo mức điểm)
+                Quy đổi: 1 điểm = 1,000 CAMLY
               </p>
               
               <div className="flex gap-2 mb-3">
-                {[100, 500, 1000].map((amount) => (
+                {[1, 5, 10].map((amount) => (
                   <Button
                     key={amount}
                     variant={claimAmount === amount ? "default" : "outline"}
@@ -228,7 +232,7 @@ const AwakeningDashboard = () => {
                     disabled={claimablePoints < amount}
                     style={claimAmount === amount ? { background: '#DAA520', color: 'white' } : { borderColor: '#DAA520', color: '#B8860B' }}
                   >
-                    {amount}
+                    {amount} điểm
                   </Button>
                 ))}
               </div>
@@ -236,7 +240,7 @@ const AwakeningDashboard = () => {
               <Button
                 className="w-full"
                 onClick={handleClaim}
-                disabled={claiming || !address || claimablePoints < 100}
+                disabled={claiming || !address || claimablePoints < 1}
                 style={{ background: 'linear-gradient(135deg, #FFD700 0%, #DAA520 100%)', color: '#5a4a1a' }}
               >
                 {claiming ? (
@@ -244,7 +248,7 @@ const AwakeningDashboard = () => {
                 ) : (
                   <Coins className="w-4 h-4 mr-2" />
                 )}
-                Claim {(claimAmount / 100).toFixed(2)} CAMLY
+                Claim {(claimAmount * 1000).toLocaleString()} CAMLY
               </Button>
 
               {!address && (
@@ -274,7 +278,7 @@ const AwakeningDashboard = () => {
                         )}
                         <div>
                           <p className="text-sm font-medium" style={{ color: '#B8860B' }}>
-                            {claim.camly_amount} CAMLY
+                            {claim.camly_amount.toLocaleString()} CAMLY
                           </p>
                           <p className="text-xs" style={{ color: '#8B6914' }}>
                             {claim.points_converted} điểm

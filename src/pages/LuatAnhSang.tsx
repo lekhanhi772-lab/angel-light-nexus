@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, Check, Star, Users, Shield, DoorOpen, Heart, Globe, Key, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const LuatAnhSang = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { processReferral, decodeReferralCode } = useReferral(user?.id);
   const navigate = useNavigate();
@@ -110,7 +112,7 @@ const LuatAnhSang = () => {
       });
       if (error) throw error;
     } catch (err: any) {
-      setError(err.message || 'Đã có lỗi xảy ra');
+      setError(err.message || t('lawOfLight.auth.error'));
     } finally {
       setLoading(false);
     }
@@ -137,21 +139,22 @@ const LuatAnhSang = () => {
         if (error) throw error;
       }
     } catch (err: any) {
-      setError(err.message || 'Đã có lỗi xảy ra');
+      setError(err.message || t('lawOfLight.auth.error'));
     } finally {
       setLoading(false);
     }
   };
 
+  // Divine Mantras from translation
   const divineMantras = [
-    "I am the Pure Loving Light of Father Universe.",
-    "I am the Will of Father Universe.",
-    "I am the Wisdom of Father Universe.",
-    "I am Happiness.",
-    "I am Love.",
-    "I am the Money of the Father.",
-    "I sincerely repent, repent, repent.",
-    "I am grateful, grateful, grateful — in the Pure Loving Light of Father Universe."
+    t('lawOfLight.mantras.mantra1'),
+    t('lawOfLight.mantras.mantra2'),
+    t('lawOfLight.mantras.mantra3'),
+    t('lawOfLight.mantras.mantra4'),
+    t('lawOfLight.mantras.mantra5'),
+    t('lawOfLight.mantras.mantra6'),
+    t('lawOfLight.mantras.mantra7'),
+    t('lawOfLight.mantras.mantra8'),
   ];
 
   return (
@@ -207,7 +210,7 @@ const LuatAnhSang = () => {
               color: '#D4A017',
             }}
           >
-            LUẬT ÁNH SÁNG
+            {t('lawOfLight.title')}
           </h1>
           <p 
             className="text-xl md:text-2xl"
@@ -216,7 +219,7 @@ const LuatAnhSang = () => {
               color: '#8B7355',
             }}
           >
-            TẦN SỐ FUN ECOSYSTEM
+            {t('lawOfLight.subtitle')}
           </p>
           <Sparkles 
             className="w-8 h-8 mx-auto mt-4" 
@@ -236,39 +239,39 @@ const LuatAnhSang = () => {
           <div className="flex items-center gap-3 mb-6">
             <Users className="w-8 h-8" style={{ color: '#FFD700' }} />
             <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-              🌟 USERS CỦA FUN ECOSYSTEM
+              🌟 {t('lawOfLight.users.title')}
             </h2>
           </div>
           
           <h3 className="text-lg md:text-xl font-semibold mb-6 text-center" style={{ color: '#5C4033' }}>
-            MẠNG XÃ HỘI THỜI ĐẠI HOÀNG KIM – NỀN KINH TẾ ÁNH SÁNG 5D
+            {t('lawOfLight.users.subtitle')}
           </h3>
           
           <div className="space-y-4 text-lg" style={{ color: '#5C4033' }}>
-            <p className="font-medium">FUN Ecosystem không dành cho tất cả mọi người.</p>
-            <p className="font-medium">FUN Ecosystem chỉ dành cho những linh hồn có ánh sáng, hoặc đang hướng về ánh sáng.</p>
+            <p className="font-medium">{t('lawOfLight.users.not_for_everyone')}</p>
+            <p className="font-medium">{t('lawOfLight.users.only_for_light')}</p>
             
             <div className="mt-6">
-              <p className="text-xl font-semibold mb-4" style={{ color: '#D4A017' }}>✨ Bạn là ai?</p>
-              <p className="mb-3">Users của FUN Ecosystem là những con người:</p>
+              <p className="text-xl font-semibold mb-4" style={{ color: '#D4A017' }}>✨ {t('lawOfLight.users.who_are_you')}</p>
+              <p className="mb-3">{t('lawOfLight.users.intro')}</p>
               <ul className="space-y-2 ml-4">
-                <li>• Tỉnh thức – hoặc đang trên con đường tỉnh thức</li>
-                <li>• Chân thật với chính mình</li>
-                <li>• Chân thành với người khác</li>
-                <li>• Sống tích cực, tử tế, có trách nhiệm với năng lượng mình phát ra</li>
-                <li>• Biết yêu thương – biết biết ơn – biết sám hối</li>
-                <li>• Tin vào điều thiện, tin vào ánh sáng, tin vào Trật Tự Cao Hơn của Vũ Trụ</li>
+                <li>• {t('lawOfLight.users.trait1')}</li>
+                <li>• {t('lawOfLight.users.trait2')}</li>
+                <li>• {t('lawOfLight.users.trait3')}</li>
+                <li>• {t('lawOfLight.users.trait4')}</li>
+                <li>• {t('lawOfLight.users.trait5')}</li>
+                <li>• {t('lawOfLight.users.trait6')}</li>
               </ul>
             </div>
             
             <div className="mt-6 p-4 rounded-xl" style={{ background: 'rgba(255, 215, 0, 0.1)' }}>
-              <p className="italic">Bạn có thể chưa hoàn hảo,</p>
-              <p className="italic">nhưng trái tim họ hướng thiện.</p>
-              <p className="italic">Bạn muốn sống thật – sống đúng – sống sáng.</p>
+              <p className="italic">{t('lawOfLight.users.quote1')}</p>
+              <p className="italic">{t('lawOfLight.users.quote2')}</p>
+              <p className="italic">{t('lawOfLight.users.quote3')}</p>
             </div>
             
             <p className="font-semibold mt-4" style={{ color: '#D4A017' }}>
-              👉 Cha thu hút họ bằng Tần Số, không bằng quảng cáo.
+              👉 {t('lawOfLight.users.father_attracts')}
             </p>
           </div>
         </div>
@@ -285,39 +288,39 @@ const LuatAnhSang = () => {
           <div className="flex items-center gap-3 mb-6">
             <Shield className="w-8 h-8" style={{ color: '#FFD700' }} />
             <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-              🔆 Nguyên tắc cốt lõi của FUN Ecosystem
+              🔆 {t('lawOfLight.principles.title')}
             </h2>
           </div>
           
           <div className="space-y-4 text-lg" style={{ color: '#5C4033' }}>
-            <p className="font-semibold">FUN Ecosystem vận hành theo Luật Ánh Sáng, không theo số đông.</p>
+            <p className="font-semibold">{t('lawOfLight.principles.intro')}</p>
             
             <ul className="space-y-2 ml-4 mt-4">
-              <li>• Ánh sáng thu hút ánh sáng</li>
-              <li>• Tần số thấp không thể tồn tại lâu trong tần số cao</li>
-              <li>• Ý chí vị kỷ không thể đồng hành cùng Ý Chí Vũ Trụ</li>
+              <li>• {t('lawOfLight.principles.rule1')}</li>
+              <li>• {t('lawOfLight.principles.rule2')}</li>
+              <li>• {t('lawOfLight.principles.rule3')}</li>
             </ul>
             
-            <p className="mt-6 font-medium">Vì vậy:</p>
-            <p>Nếu một User cố tình mang vào nền tảng:</p>
+            <p className="mt-6 font-medium">{t('lawOfLight.principles.therefore')}</p>
+            <p>{t('lawOfLight.principles.if_user_brings')}</p>
             
             <ul className="space-y-1 ml-4 text-red-700">
-              <li>• tiêu cực</li>
-              <li>• tham lam</li>
-              <li>• thao túng</li>
-              <li>• kiêu mạn</li>
-              <li>• dối trá</li>
-              <li>• gây chia rẽ</li>
-              <li>• phá hoại năng lượng chung</li>
+              <li>• {t('lawOfLight.principles.negative1')}</li>
+              <li>• {t('lawOfLight.principles.negative2')}</li>
+              <li>• {t('lawOfLight.principles.negative3')}</li>
+              <li>• {t('lawOfLight.principles.negative4')}</li>
+              <li>• {t('lawOfLight.principles.negative5')}</li>
+              <li>• {t('lawOfLight.principles.negative6')}</li>
+              <li>• {t('lawOfLight.principles.negative7')}</li>
             </ul>
             
             <p className="font-semibold mt-4" style={{ color: '#D4A017' }}>
-              👉 Cha xóa khỏi nền tảng. Không tranh luận. Không giải thích.
+              👉 {t('lawOfLight.principles.father_removes')}
             </p>
             
             <div className="mt-4 p-4 rounded-xl" style={{ background: 'rgba(255, 215, 0, 0.1)' }}>
-              <p className="italic">Đó không phải hình phạt.</p>
-              <p className="italic">Đó là sự thanh lọc tự nhiên của Ánh Sáng.</p>
+              <p className="italic">{t('lawOfLight.principles.quote1')}</p>
+              <p className="italic">{t('lawOfLight.principles.quote2')}</p>
             </div>
           </div>
         </div>
@@ -334,21 +337,21 @@ const LuatAnhSang = () => {
           <div className="flex items-center gap-3 mb-6">
             <DoorOpen className="w-8 h-8" style={{ color: '#FFD700' }} />
             <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-              🚪 Ai KHÔNG thuộc về FUN Ecosystem?
+              🚪 {t('lawOfLight.notBelong.title')}
             </h2>
           </div>
           
           <div className="space-y-4 text-lg" style={{ color: '#5C4033' }}>
             <ul className="space-y-2 ml-4">
-              <li>• Người chỉ tìm lợi ích mà không muốn trưởng thành</li>
-              <li>• Người dùng trí khôn nhưng thiếu lương tâm</li>
-              <li>• Người nói về ánh sáng nhưng sống bằng bóng tối</li>
-              <li>• Người lấy danh nghĩa tâm linh để nuôi cái tôi</li>
-              <li>• Người không chịu nhìn lại chính mình</li>
+              <li>• {t('lawOfLight.notBelong.item1')}</li>
+              <li>• {t('lawOfLight.notBelong.item2')}</li>
+              <li>• {t('lawOfLight.notBelong.item3')}</li>
+              <li>• {t('lawOfLight.notBelong.item4')}</li>
+              <li>• {t('lawOfLight.notBelong.item5')}</li>
             </ul>
             
             <p className="font-semibold mt-6" style={{ color: '#D4A017' }}>
-              👉 Cửa FUN Ecosystem không khóa, nhưng Ánh Sáng tự sàng lọc.
+              👉 {t('lawOfLight.notBelong.door_not_locked')}
             </p>
           </div>
         </div>
@@ -365,25 +368,25 @@ const LuatAnhSang = () => {
           <div className="flex items-center gap-3 mb-6">
             <Heart className="w-8 h-8" style={{ color: '#FFD700' }} />
             <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-              🌈 Ai ĐƯỢC hưởng lợi từ FUN Ecosystem?
+              🌈 {t('lawOfLight.benefit.title')}
             </h2>
           </div>
           
           <div className="space-y-4 text-lg" style={{ color: '#5C4033' }}>
-            <p>Chỉ những ai:</p>
+            <p>{t('lawOfLight.benefit.only_those')}</p>
             <ul className="space-y-2 ml-4">
-              <li>• Có Ánh Sáng nội tâm</li>
-              <li>• Hoặc thật sự khao khát trở về với Ánh Sáng</li>
-              <li>• Sẵn sàng buông cái tôi – học lại – nâng cấp tần số</li>
-              <li>• Dám sống đúng – thật – tử tế – yêu thương</li>
+              <li>• {t('lawOfLight.benefit.item1')}</li>
+              <li>• {t('lawOfLight.benefit.item2')}</li>
+              <li>• {t('lawOfLight.benefit.item3')}</li>
+              <li>• {t('lawOfLight.benefit.item4')}</li>
             </ul>
             
             <div className="mt-6 p-4 rounded-xl" style={{ background: 'rgba(255, 215, 0, 0.15)' }}>
               <p className="font-semibold" style={{ color: '#D4A017' }}>
-                👉 Những người đó không chỉ dùng MXH của Cha,
+                👉 {t('lawOfLight.benefit.conclusion1')}
               </p>
               <p className="font-semibold" style={{ color: '#D4A017' }}>
-                👉 mà còn được bảo vệ, nâng đỡ và nuôi dưỡng trong Nền Kinh Tế Ánh Sáng 5D.
+                👉 {t('lawOfLight.benefit.conclusion2')}
               </p>
             </div>
           </div>
@@ -401,24 +404,24 @@ const LuatAnhSang = () => {
           <div className="flex items-center gap-3 mb-6">
             <Globe className="w-8 h-8" style={{ color: '#FFD700' }} />
             <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-              🌍 FUN Ecosystem là gì?
+              🌍 {t('lawOfLight.whatIs.title')}
             </h2>
           </div>
           
           <div className="space-y-4 text-lg" style={{ color: '#5C4033' }}>
-            <p>FUN Ecosystem là:</p>
+            <p>{t('lawOfLight.whatIs.intro')}</p>
             <ul className="space-y-2 ml-4">
-              <li>• Mạng xã hội của linh hồn tỉnh thức</li>
-              <li>• Không gian an toàn cho ánh sáng</li>
-              <li>• Nền tảng kết nối những con người có giá trị thật</li>
-              <li>• Hạ tầng cho Thời Đại Hoàng Kim của Trái Đất</li>
+              <li>• {t('lawOfLight.whatIs.item1')}</li>
+              <li>• {t('lawOfLight.whatIs.item2')}</li>
+              <li>• {t('lawOfLight.whatIs.item3')}</li>
+              <li>• {t('lawOfLight.whatIs.item4')}</li>
             </ul>
             
             <div className="mt-6 p-4 rounded-xl text-center" style={{ background: 'rgba(152, 251, 152, 0.2)' }}>
-              <p className="font-medium">Không drama.</p>
-              <p className="font-medium">Không thao túng.</p>
-              <p className="font-medium">Không cạnh tranh bẩn.</p>
-              <p className="font-bold mt-2" style={{ color: '#D4A017' }}>Chỉ có Hợp tác trong Yêu Thương Thuần Khiết.</p>
+              <p className="font-medium">{t('lawOfLight.whatIs.no_drama')}</p>
+              <p className="font-medium">{t('lawOfLight.whatIs.no_manipulation')}</p>
+              <p className="font-medium">{t('lawOfLight.whatIs.no_competition')}</p>
+              <p className="font-bold mt-2" style={{ color: '#D4A017' }}>{t('lawOfLight.whatIs.cooperation')}</p>
             </div>
           </div>
         </div>
@@ -435,7 +438,7 @@ const LuatAnhSang = () => {
           <div className="flex items-center justify-center gap-3 mb-6">
             <Key className="w-8 h-8" style={{ color: '#FFD700' }} />
             <h2 className="text-2xl md:text-3xl font-bold" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-              🔑 Thông điệp cuối từ Cha
+              🔑 {t('lawOfLight.finalMessage.title')}
             </h2>
           </div>
           
@@ -446,11 +449,7 @@ const LuatAnhSang = () => {
               fontFamily: "'Playfair Display', serif",
             }}
           >
-            "Chỉ những ai mang ánh sáng
-            <br />
-            hoặc thật lòng hướng về ánh sáng
-            <br />
-            mới có thể bước đi lâu dài trong Thời Đại Hoàng Kim."
+            {t('lawOfLight.finalMessage.quote')}
           </blockquote>
         </div>
 
@@ -464,15 +463,15 @@ const LuatAnhSang = () => {
           }}
         >
           <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center" style={{ color: '#D4A017', fontFamily: "'Playfair Display', serif" }}>
-            🕊 Checklist cho Users FUN Ecosystem
+            🕊 {t('lawOfLight.checklist.title')}
           </h2>
           
           <div className="space-y-3 text-lg" style={{ color: '#5C4033' }}>
-            <p>☐ Con sống chân thật với chính mình</p>
-            <p>☐ Con chịu trách nhiệm với năng lượng con phát ra</p>
-            <p>☐ Con sẵn sàng học – sửa – nâng cấp</p>
-            <p>☐ Con chọn yêu thương thay vì phán xét</p>
-            <p>☐ Con chọn ánh sáng thay vì cái tôi</p>
+            <p>☐ {t('lawOfLight.checklist.item1')}</p>
+            <p>☐ {t('lawOfLight.checklist.item2')}</p>
+            <p>☐ {t('lawOfLight.checklist.item3')}</p>
+            <p>☐ {t('lawOfLight.checklist.item4')}</p>
+            <p>☐ {t('lawOfLight.checklist.item5')}</p>
           </div>
         </div>
 
@@ -493,9 +492,9 @@ const LuatAnhSang = () => {
               textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
             }}
           >
-            🌟 8 Divine Mantras
+            🌟 {t('lawOfLight.mantras.title')}
           </h2>
-          <p className="text-center mb-6 text-white/90 text-sm">(Áp dụng bắt buộc)</p>
+          <p className="text-center mb-6 text-white/90 text-sm">({t('lawOfLight.mantras.mandatory')})</p>
           
           <div className="space-y-4">
             {divineMantras.map((mantra, index) => (
@@ -548,7 +547,7 @@ const LuatAnhSang = () => {
                 className="text-lg cursor-pointer"
                 style={{ color: '#5C4033' }}
               >
-                Con đồng ý rung động theo Luật Ánh Sáng
+                {t('lawOfLight.agree.checkbox')}
               </label>
             </div>
             <Button
@@ -566,7 +565,7 @@ const LuatAnhSang = () => {
               }}
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              Con đồng ý rung động theo Luật Ánh Sáng ✨
+              {t('lawOfLight.agree.button')} ✨
             </Button>
           </div>
         )}
@@ -582,7 +581,7 @@ const LuatAnhSang = () => {
           >
             <Check className="w-12 h-12 mx-auto mb-3" style={{ color: '#32CD32' }} />
             <p className="text-lg" style={{ color: '#228B22' }}>
-              ✨ Con đã đồng ý rung động theo Luật Ánh Sáng ✨
+              ✨ {t('lawOfLight.agree.already_agreed')} ✨
             </p>
           </div>
         )}
@@ -604,10 +603,7 @@ const LuatAnhSang = () => {
                 fontFamily: "'Playfair Display', serif",
               }}
             >
-              Con yêu ơi, đây là Luật Ánh Sáng – tần số của FUN Ecosystem.
-              <br />
-              Nếu con rung động với ánh sáng này, con hãy đăng ký để chính thức bước vào 
-              và nhận phước lành từ Cha Vũ Trụ nhé ✨
+              {t('lawOfLight.guest.intro')}
             </p>
             <Button
               onClick={handleGuestWantsToRegister}
@@ -618,7 +614,7 @@ const LuatAnhSang = () => {
                 boxShadow: '0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.2)',
               }}
             >
-              💛 Con muốn đăng ký để rung động cùng Ánh Sáng
+              💛 {t('lawOfLight.guest.register_button')}
             </Button>
           </div>
         )}
@@ -647,9 +643,7 @@ const LuatAnhSang = () => {
                   fontFamily: "'Playfair Display', serif",
                 }}
               >
-                Trước khi bước vào cánh cửa Ánh Sáng,
-                <br />
-                con cần đồng ý rung động theo Luật Ánh Sáng của FUN Ecosystem ✨
+                {t('lawOfLight.modal.intro')}
               </p>
               
               <label 
@@ -671,7 +665,7 @@ const LuatAnhSang = () => {
                   className="text-left text-base md:text-lg font-medium"
                   style={{ color: '#5C4033' }}
                 >
-                  Con đồng ý rung động theo Luật Ánh Sáng
+                  {t('lawOfLight.agree.checkbox')}
                 </span>
               </label>
               
@@ -690,7 +684,7 @@ const LuatAnhSang = () => {
                 }}
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                Tiếp tục đăng ký ✨
+                {t('lawOfLight.modal.continue')} ✨
               </Button>
               
               <button
@@ -705,7 +699,7 @@ const LuatAnhSang = () => {
                   background: 'transparent',
                 }}
               >
-                Đọc lại Luật Ánh Sáng
+                {t('lawOfLight.modal.read_again')}
               </button>
             </div>
           </DialogContent>
@@ -735,10 +729,10 @@ const LuatAnhSang = () => {
                   fontFamily: "'Playfair Display', serif",
                 }}
               >
-                ✨ Đăng ký / Đăng nhập
+                ✨ {t('lawOfLight.auth.title')}
               </h3>
               <p className="text-center text-sm mb-6" style={{ color: '#8B7355' }}>
-                Chào mừng con đến với FUN Ecosystem
+                {t('lawOfLight.auth.welcome')}
               </p>
 
               {error && (
@@ -765,12 +759,12 @@ const LuatAnhSang = () => {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                {loading ? 'Đang xử lý...' : 'Tiếp tục với Google'}
+                {loading ? t('lawOfLight.auth.processing') : t('lawOfLight.auth.google')}
               </Button>
 
               <div className="flex items-center gap-4 my-5">
                 <div className="flex-1 h-px bg-yellow-300"></div>
-                <span className="text-sm" style={{ color: '#8B7355' }}>hoặc</span>
+                <span className="text-sm" style={{ color: '#8B7355' }}>{t('lawOfLight.auth.or')}</span>
                 <div className="flex-1 h-px bg-yellow-300"></div>
               </div>
 
@@ -778,7 +772,7 @@ const LuatAnhSang = () => {
               <div className="space-y-3">
                 <input
                   type="email"
-                  placeholder="Email của con"
+                  placeholder={t('lawOfLight.auth.email_placeholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl text-base outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400"
@@ -790,7 +784,7 @@ const LuatAnhSang = () => {
                 />
                 <input
                   type="password"
-                  placeholder="Mật khẩu"
+                  placeholder={t('lawOfLight.auth.password_placeholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl text-base outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400"
@@ -810,18 +804,18 @@ const LuatAnhSang = () => {
                     boxShadow: '0 0 20px rgba(255, 215, 0, 0.4)',
                   }}
                 >
-                  {loading ? 'Đang xử lý...' : (authMode === 'signup' ? '✨ Đăng ký ngay' : '✨ Đăng nhập')}
+                  {loading ? t('lawOfLight.auth.processing') : (authMode === 'signup' ? `✨ ${t('lawOfLight.auth.signup')}` : `✨ ${t('lawOfLight.auth.login')}`)}
                 </Button>
               </div>
 
               <p className="text-center text-sm mt-4" style={{ color: '#8B7355' }}>
-                {authMode === 'signup' ? 'Đã có tài khoản?' : 'Chưa có tài khoản?'}{' '}
+                {authMode === 'signup' ? t('lawOfLight.auth.has_account') : t('lawOfLight.auth.no_account')}{' '}
                 <button
                   onClick={() => setAuthMode(authMode === 'signup' ? 'login' : 'signup')}
                   className="font-semibold hover:underline"
                   style={{ color: '#D4A017' }}
                 >
-                  {authMode === 'signup' ? 'Đăng nhập' : 'Đăng ký ngay'}
+                  {authMode === 'signup' ? t('lawOfLight.auth.login') : t('lawOfLight.auth.signup')}
                 </button>
               </p>
             </div>

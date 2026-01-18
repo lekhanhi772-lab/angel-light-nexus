@@ -75,23 +75,37 @@ export function CreatePostDialog({
   };
 
   const handleContentPaste = (e: React.ClipboardEvent) => {
+    // Block all paste for Gratitude category
     if (isGratitudeCategory) {
       e.preventDefault();
+      return;
     }
+
+    // Check for image in clipboard (Ctrl+V image paste)
+    const items = e.clipboardData?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+          e.preventDefault();
+          const file = items[i].getAsFile();
+          if (file) {
+            handleFileSelect(file);
+          }
+          return;
+        }
+      }
+    }
+    // If no image, allow normal text paste
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // For gratitude category, only content is required
-    if (isGratitudeCategory) {
-      if (!content.trim()) return;
-    } else {
-      if (!title.trim() || !content.trim()) return;
-    }
+    // Only content is required
+    if (!content.trim()) return;
 
-    // Auto-generate title for gratitude posts
-    const finalTitle = isGratitudeCategory 
+    // Auto-generate title if not provided or for gratitude posts
+    const finalTitle = isGratitudeCategory || !title.trim()
       ? content.trim().substring(0, 50) + (content.trim().length > 50 ? '...' : '')
       : title.trim();
 
@@ -233,13 +247,12 @@ export function CreatePostDialog({
           {!isGratitudeCategory && (
             <div>
               <label className="text-sm font-medium mb-1.5 block" style={{ color: '#8B6914' }}>
-                {t('forum.title_label')} *
+                {t('forum.title_label')} ({t('forum.optional', 'tùy chọn')})
               </label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t('forum.title_placeholder')}
-                required
                 style={{
                   background: 'rgba(255, 255, 255, 0.8)',
                   borderColor: 'rgba(218, 165, 32, 0.5)',
@@ -359,7 +372,7 @@ export function CreatePostDialog({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || (!isGratitudeCategory && !title.trim()) || !content.trim()}
+              disabled={isSubmitting || !content.trim()}
               className="flex-1 text-white"
               style={{
                 background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)',

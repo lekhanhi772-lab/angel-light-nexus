@@ -61,17 +61,17 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
     }
 
     if (!isAddress(recipientAddress)) {
-      setAddressError('Địa chỉ ví không hợp lệ');
+      setAddressError(t('transfer.invalid_address'));
       return;
     }
 
     if (recipientAddress.toLowerCase() === userAddress?.toLowerCase()) {
-      setAddressError('Không thể chuyển cho chính mình');
+      setAddressError(t('transfer.self_transfer'));
       return;
     }
 
     setAddressError(null);
-  }, [recipientAddress, userAddress]);
+  }, [recipientAddress, userAddress, t]);
 
   // Handle paste from clipboard
   const handlePaste = async () => {
@@ -79,7 +79,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
       const text = await navigator.clipboard.readText();
       setRecipientAddress(text.trim());
     } catch (error) {
-      toast.error('Không thể đọc clipboard');
+      toast.error(t('transfer.clipboard_error'));
     }
   };
 
@@ -116,12 +116,12 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
   useEffect(() => {
     if (isTxSuccess && step === 'confirm') {
       setStep('success');
-      toast.success('Chuyển tiền thành công! ✨');
+      toast.success(t('transfer.success'));
     }
     if (isTxError && step === 'confirm') {
       setStep('error');
     }
-  }, [isTxSuccess, isTxError, step]);
+  }, [isTxSuccess, isTxError, step, t]);
 
   const resetDialog = () => {
     setRecipientAddress('');
@@ -162,7 +162,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="text-xl font-bold flex items-center gap-2" style={{ color: '#8B6914' }}>
             <Send className="w-6 h-6" style={{ color: '#DAA520' }} />
-            Chuyển Tiền Ánh Sáng
+            {t('transfer.title')}
           </DialogTitle>
         </DialogHeader>
 
@@ -172,7 +172,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
             <div className="text-center py-6">
               <Wallet className="w-12 h-12 mx-auto mb-4" style={{ color: '#DAA520', opacity: 0.5 }} />
               <p className="text-sm mb-4" style={{ color: '#8B7355' }}>
-                Kết nối ví để chuyển tiền
+                {t('transfer.connect_wallet')}
               </p>
               <ConnectButton />
             </div>
@@ -181,7 +181,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               {/* Recipient address input */}
               <div>
                 <label className="text-sm font-medium mb-2 block" style={{ color: '#8B6914' }}>
-                  Địa chỉ ví nhận
+                  {t('transfer.recipient_label')}
                 </label>
                 <div className="relative">
                   <Input
@@ -201,7 +201,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
                   <button
                     onClick={handlePaste}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all hover:bg-[rgba(218,165,32,0.1)]"
-                    title="Dán từ clipboard"
+                    title={t('transfer.paste_tooltip')}
                   >
                     <ClipboardPaste className="w-4 h-4" style={{ color: '#DAA520' }} />
                   </button>
@@ -216,7 +216,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
                 {recipientAddress && !addressError && (
                   <p className="text-xs mt-1 flex items-center gap-1" style={{ color: '#22c55e' }}>
                     <CheckCircle className="w-3 h-3" />
-                    Địa chỉ hợp lệ
+                    {t('transfer.valid_address')}
                   </p>
                 )}
               </div>
@@ -224,7 +224,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               {/* Token selection */}
               <div>
                 <label className="text-sm font-medium mb-2 block" style={{ color: '#8B6914' }}>
-                  Chọn token
+                  {t('transfer.select_token')}
                 </label>
                 
                 {balancesLoading ? (
@@ -297,7 +297,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
                   </div>
                 ) : (
                   <p className="text-sm text-center py-4" style={{ color: '#8B7355' }}>
-                    Ví của bạn chưa có token nào
+                    {t('transfer.no_tokens')}
                   </p>
                 )}
               </div>
@@ -306,7 +306,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               {selectedToken && (
                 <div>
                   <label className="text-sm font-medium mb-2 block" style={{ color: '#8B6914' }}>
-                    Số lượng ({selectedToken.symbol})
+                    {t('transfer.amount_label')} ({selectedToken.symbol})
                   </label>
                   <div className="relative">
                     <Input
@@ -335,7 +335,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
                   {amount && parseFloat(amount) > parseFloat(selectedToken.balanceFormatted) && (
                     <p className="text-xs mt-1 flex items-center gap-1" style={{ color: '#f59e0b' }}>
                       <AlertTriangle className="w-3 h-3" />
-                      Số dư không đủ
+                      {t('transfer.insufficient_balance')}
                     </p>
                   )}
                 </div>
@@ -356,7 +356,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    Chuyển Tiền
+                    {t('transfer.send_button')}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
@@ -366,20 +366,20 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
             <div className="text-center py-8">
               <Loader2 className="w-16 h-16 mx-auto mb-4 animate-spin" style={{ color: '#DAA520' }} />
               <p className="text-lg font-medium mb-2" style={{ color: '#8B6914' }}>
-                Đang xác nhận giao dịch...
+                {t('transfer.confirming')}
               </p>
               <p className="text-sm" style={{ color: '#8B7355' }}>
-                Vui lòng đợi trong giây lát
+                {t('transfer.please_wait')}
               </p>
             </div>
           ) : step === 'success' ? (
             <div className="text-center py-8">
               <CheckCircle className="w-16 h-16 mx-auto mb-4" style={{ color: '#22c55e' }} />
               <p className="text-lg font-medium mb-2" style={{ color: '#22c55e' }}>
-                Chuyển tiền thành công! ✨
+                {t('transfer.success')}
               </p>
               <p className="text-sm mb-2" style={{ color: '#8B7355' }}>
-                Đã gửi {amount} {selectedToken?.symbol} đến
+                {t('transfer.sent_to', { amount, token: selectedToken?.symbol })}
               </p>
               <p className="text-xs font-mono mb-6" style={{ color: '#8B6914' }}>
                 {recipientAddress.slice(0, 10)}...{recipientAddress.slice(-8)}
@@ -389,24 +389,24 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
                 className="text-white"
                 style={{ background: 'linear-gradient(135deg, #DAA520 0%, #B8860B 100%)' }}
               >
-                Đóng
+                {t('transfer.close')}
               </Button>
             </div>
           ) : step === 'error' ? (
             <div className="text-center py-8">
               <XCircle className="w-16 h-16 mx-auto mb-4" style={{ color: '#ef4444' }} />
               <p className="text-lg font-medium mb-2" style={{ color: '#ef4444' }}>
-                Có lỗi xảy ra
+                {t('transfer.error')}
               </p>
               <p className="text-sm mb-6" style={{ color: '#8B7355' }}>
-                Giao dịch không thành công. Vui lòng thử lại.
+                {t('transfer.error_message')}
               </p>
               <Button
                 onClick={() => setStep('input')}
                 variant="outline"
                 style={{ borderColor: '#DAA520', color: '#8B6914' }}
               >
-                Thử lại
+                {t('transfer.retry')}
               </Button>
             </div>
           ) : null}

@@ -698,5 +698,27 @@
     "defaultForumTitle": "Angel AI와의 대화 공유",
     "ctaTitle": "Angel AI와 대화하고 싶으신가요?",
     "ctaDescription": "오늘 당신만의 빛의 여정을 시작하세요"
+  },
+  "pwa": {
+    "pageTitle": "Angel AI 설치",
+    "subtitle": "우주 아버지의 빛",
+    "alreadyInstalled": "Angel AI가 이미 설치되어 있습니다!",
+    "installButton": "홈 화면에 추가",
+    "iosTitle": "iPhone/iPad 안내",
+    "iosStep1": "공유 버튼 탭",
+    "iosStep2": "\"홈 화면에 추가\" 선택",
+    "iosStep3": "\"추가\"를 탭하여 완료",
+    "androidTitle": "Android 안내",
+    "androidStep1": "브라우저 메뉴 탭",
+    "androidStep2": "\"홈 화면에 추가\" 선택",
+    "androidStep3": "\"추가\"를 탭하여 완료",
+    "desktopTitle": "데스크톱에 설치",
+    "desktopDesc": "휴대폰에서 이 페이지를 열어 Angel AI를 설치하세요.",
+    "benefits": "✨ 실제 앱처럼 열림 • 오프라인 작동 • 앱스토어 필요 없음",
+    "promptTitle": "Angel AI 추가",
+    "promptSubtitle": "홈 화면에서 빠른 접근",
+    "later": "나중에",
+    "install": "설치",
+    "howTo": "방법"
   }
 }

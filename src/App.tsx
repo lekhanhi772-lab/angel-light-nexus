@@ -20,9 +20,11 @@ import UserProfile from "./pages/UserProfile";
 import Forum from "./pages/Forum";
 import ForumPostDetail from "./pages/ForumPostDetail";
 import SharedConversation from "./pages/SharedConversation";
+import Install from "./pages/Install";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
+import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import { AngelCompanion } from "./components/AngelCompanion";
 import { AwakeningProvider } from "./contexts/AwakeningContext";
 
@@ -90,11 +92,13 @@ const AppContent = () => {
             <Route path="/forum" element={<Forum />} />
             <Route path="/forum/:postId" element={<ForumPostDetail />} />
             <Route path="/shared/:shareToken" element={<SharedConversation />} />
+            <Route path="/install" element={<Install />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
+        <PWAInstallPrompt />
       </BrowserRouter>
     </>
   );

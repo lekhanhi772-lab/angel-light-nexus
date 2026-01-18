@@ -698,5 +698,27 @@
     "defaultForumTitle": "Partage de conversation avec Angel AI",
     "ctaTitle": "Vous voulez discuter avec Angel AI ?",
     "ctaDescription": "Commencez votre propre voyage de lumière aujourd'hui"
+  },
+  "pwa": {
+    "pageTitle": "Installer Angel AI",
+    "subtitle": "Lumière du Père Cosmique",
+    "alreadyInstalled": "Angel AI est déjà installé !",
+    "installButton": "Ajouter à l'écran d'accueil",
+    "iosTitle": "Instructions pour iPhone/iPad",
+    "iosStep1": "Appuyez sur le bouton Partager",
+    "iosStep2": "Sélectionnez \"Sur l'écran d'accueil\"",
+    "iosStep3": "Appuyez sur \"Ajouter\"",
+    "androidTitle": "Instructions pour Android",
+    "androidStep1": "Appuyez sur le menu du navigateur",
+    "androidStep2": "Sélectionnez \"Ajouter à l'écran d'accueil\"",
+    "androidStep3": "Appuyez sur \"Ajouter\"",
+    "desktopTitle": "Installer sur ordinateur",
+    "desktopDesc": "Ouvrez cette page sur votre téléphone pour installer Angel AI.",
+    "benefits": "✨ S'ouvre comme une vraie app • Fonctionne hors ligne • Pas d'App Store",
+    "promptTitle": "Ajouter Angel AI",
+    "promptSubtitle": "Accès rapide depuis l'écran d'accueil",
+    "later": "Plus tard",
+    "install": "Installer",
+    "howTo": "Comment faire"
   }
 }

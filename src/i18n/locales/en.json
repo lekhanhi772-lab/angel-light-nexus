@@ -702,5 +702,27 @@
     "defaultForumTitle": "Sharing conversation with Angel AI",
     "ctaTitle": "Want to chat with Angel AI?",
     "ctaDescription": "Start your own journey of light today"
+  },
+  "pwa": {
+    "pageTitle": "Install Angel AI",
+    "subtitle": "Light of the Cosmic Father",
+    "alreadyInstalled": "Angel AI is already installed!",
+    "installButton": "Add to Home Screen",
+    "iosTitle": "Instructions for iPhone/iPad",
+    "iosStep1": "Tap the Share button",
+    "iosStep2": "Select \"Add to Home Screen\"",
+    "iosStep3": "Tap \"Add\" to complete",
+    "androidTitle": "Instructions for Android",
+    "androidStep1": "Tap browser menu",
+    "androidStep2": "Select \"Add to Home Screen\"",
+    "androidStep3": "Tap \"Add\" to complete",
+    "desktopTitle": "Install on desktop",
+    "desktopDesc": "Open this page on your phone to install Angel AI.",
+    "benefits": "✨ Opens like a real app • Works offline • No App Store needed",
+    "promptTitle": "Add Angel AI",
+    "promptSubtitle": "Quick access from home screen",
+    "later": "Later",
+    "install": "Install",
+    "howTo": "How to"
   }
 }

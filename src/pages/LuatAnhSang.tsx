@@ -249,7 +249,7 @@ const LuatAnhSang = () => {
             <p className="font-medium">FUN Ecosystem chỉ dành cho những linh hồn có ánh sáng, hoặc đang hướng về ánh sáng.</p>
             
             <div className="mt-6">
-              <p className="text-xl font-semibold mb-4" style={{ color: '#D4A017' }}>✨ Họ là ai?</p>
+              <p className="text-xl font-semibold mb-4" style={{ color: '#D4A017' }}>✨ Bạn là ai?</p>
               <p className="mb-3">Users của FUN Ecosystem là những con người:</p>
               <ul className="space-y-2 ml-4">
                 <li>• Tỉnh thức – hoặc đang trên con đường tỉnh thức</li>
@@ -262,9 +262,9 @@ const LuatAnhSang = () => {
             </div>
             
             <div className="mt-6 p-4 rounded-xl" style={{ background: 'rgba(255, 215, 0, 0.1)' }}>
-              <p className="italic">Họ có thể chưa hoàn hảo,</p>
+              <p className="italic">Bạn có thể chưa hoàn hảo,</p>
               <p className="italic">nhưng trái tim họ hướng thiện.</p>
-              <p className="italic">Họ muốn sống thật – sống đúng – sống sáng.</p>
+              <p className="italic">Bạn muốn sống thật – sống đúng – sống sáng.</p>
             </div>
             
             <p className="font-semibold mt-4" style={{ color: '#D4A017' }}>

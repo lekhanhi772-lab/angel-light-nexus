@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "pwa-192x192.png", "pwa-512x512.png"],
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "apple-touch-icon-152x152.png", "apple-touch-icon-167x167.png", "apple-touch-icon-180x180.png", "pwa-192x192.png", "pwa-512x512.png"],
       manifest: {
         name: "Angel AI",
         short_name: "Angel AI",

@@ -1,17 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-// Import all 10 GIF assets
-import gif1 from '@/assets/angel-gifs/1.gif';
-import gif2 from '@/assets/angel-gifs/2.gif';
-import gif3 from '@/assets/angel-gifs/3.gif';
-import gif4 from '@/assets/angel-gifs/4.gif';
-import gif5 from '@/assets/angel-gifs/5.gif';
-import gif6 from '@/assets/angel-gifs/6.gif';
-import gif7 from '@/assets/angel-gifs/7.gif';
-import gif8 from '@/assets/angel-gifs/8.gif';
-import gif9 from '@/assets/angel-gifs/9.gif';
-import gif10 from '@/assets/angel-gifs/10.gif';
+// GIF paths from public folder - lazy loaded, not bundled
+const gif1 = '/angel-gifs/1.gif';
+const gif2 = '/angel-gifs/2.gif';
+const gif3 = '/angel-gifs/3.gif';
+const gif4 = '/angel-gifs/4.gif';
+const gif5 = '/angel-gifs/5.gif';
+const gif6 = '/angel-gifs/6.gif';
+const gif7 = '/angel-gifs/7.gif';
+const gif8 = '/angel-gifs/8.gif';
+const gif9 = '/angel-gifs/9.gif';
+const gif10 = '/angel-gifs/10.gif';
 
 interface StarTrail {
   id: number;

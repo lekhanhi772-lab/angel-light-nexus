@@ -22,6 +22,7 @@ import ForumPostDetail from "./pages/ForumPostDetail";
 import SharedConversation from "./pages/SharedConversation";
 import Install from "./pages/Install";
 import Admin from "./pages/Admin";
+import PlatformDocs from "./pages/PlatformDocs";
 import NotFound from "./pages/NotFound";
 import DivineSidebar from "./components/DivineSidebar";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
@@ -94,6 +95,7 @@ const AppContent = () => {
             <Route path="/shared/:shareToken" element={<SharedConversation />} />
             <Route path="/install" element={<Install />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/docs/platform" element={<PlatformDocs />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

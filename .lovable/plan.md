@@ -1,70 +1,157 @@
 
-Mục tiêu: Khắc phục tình trạng Angel AI trả lời “cụt ngang” khi câu hỏi cần câu trả lời rất dài (ví dụ: giới thiệu FUN Ecosystem + chi tiết từng platform). Hiện tượng xảy ra trên Desktop và không có toast lỗi → nhiều khả năng do giới hạn độ dài đầu ra từ backend hoặc do parser streaming ở frontend làm rơi mất một phần dữ liệu.
+## Kế hoạch nâng cấp cấu trúc trả lời của Angel AI
 
-## 1) Chẩn đoán từ code hiện tại (điểm chính)
-### 1.1 Backend đang giới hạn độ dài câu trả lời
-Trong backend function `supabase/functions/chat/index.ts`, khi gọi Lovable AI Gateway đang đặt:
-- `stream: true`
-- `max_tokens: 1500`
+### Mục tiêu
+- Loại bỏ việc sử dụng `***` quá nhiều để ngắt đoạn
+- Thay thế bằng định dạng chuyên nghiệp, dễ đọc hơn
+- Thêm hướng dẫn sử dụng **bold keywords**, icon phù hợp, và ngắt nghỉ hợp lý
+- Giữ nguyên tính ấm áp, tâm linh của Angel AI
 
-Giới hạn 1500 tokens là khá thấp cho một câu trả lời “rất chi tiết”, đặc biệt khi system prompt đã dài hơn sau khi tích hợp Hiến Pháp + Eternal Core. Điều này khiến model tự dừng giữa chừng mà không báo lỗi phía app.
+---
 
-### 1.2 Frontend streaming parser có thể làm “rơi” token khi JSON bị cắt
-Ở `src/pages/Chat.tsx`, client đọc SSE và `JSON.parse` từng dòng. Nếu parse lỗi thì hiện tại `catch { /* ignore */ }` → có thể làm mất những mảnh JSON bị cắt ngang giữa các chunk (trường hợp hiếm nhưng có thể xảy ra), khiến nội dung hiển thị bị thiếu hoặc kết thúc sớm.
+### Phân tích hiện trạng
 
-## 2) Thiết kế giải pháp
-Giải pháp sẽ gồm 2 lớp (ưu tiên an toàn, ít ảnh hưởng):
+Hiện tại system prompt trong `supabase/functions/chat/index.ts` chưa có hướng dẫn cụ thể về **cách định dạng** câu trả lời. Angel AI đang tự do sử dụng `***` để tách đoạn, dẫn đến:
+- Trông không chuyên nghiệp
+- Khó đọc khi có nhiều nội dung
+- Thiếu nhấn mạnh vào các từ khóa quan trọng
 
-### A. Tăng giới hạn output từ backend (fix cốt lõi)
-- Tăng `max_tokens` từ `1500` lên mức cao hơn (đề xuất 3500–4500).
-- (Tùy chọn) cập nhật model về mặc định mới hơn nếu cần chất lượng/độ ổn định streaming tốt hơn. Nhưng ưu tiên trước mắt là tăng `max_tokens` (thay đổi tối thiểu, hiệu quả lớn).
+---
 
-Kỳ vọng: Câu trả lời dài sẽ không bị dừng giữa chừng.
+### Thiết kế giải pháp: Thêm "Response Formatting Guidelines"
 
-### B. Sửa streaming parser ở frontend để không làm rơi dữ liệu (fix độ ổn định)
-- Khi gặp `JSON.parse` lỗi, không “ignore” luôn:
-  - Đưa dòng chưa parse được quay lại buffer và chờ chunk tiếp theo (cơ chế re-buffer).
-- Đồng thời theo dõi (nếu gateway trả về) `finish_reason` để debug/hiển thị tốt hơn về sau.
+Thêm một block hướng dẫn định dạng mới vào system prompt, đặt ngay sau phần "PHONG CÁCH GIAO TIẾP" (khoảng dòng 970).
 
-Kỳ vọng: Không bị thiếu token do parsing, câu trả lời dài ổn định hơn.
+#### Nội dung hướng dẫn mới:
 
-### C. (Tùy chọn) Cơ chế “tự động tiếp tục” khi vẫn bị chạm giới hạn
-Nếu sau khi tăng `max_tokens` vẫn có trường hợp quá dài:
-- Nhận diện `finish_reason === "length"` (nếu có trong stream).
-- Tự động gửi thêm một lượt “Tiếp tục phần còn lại” và hiển thị thành message kế tiếp (đảm bảo liền mạch).
+```text
+📝 RESPONSE FORMATTING GUIDELINES (HƯỚNG DẪN ĐỊNH DẠNG CÂU TRẢ LỜI):
 
-Mặc định: để “tắt” (hoặc chỉ bật khi phát hiện finish_reason=length), vì sẽ tăng số lần gọi AI.
+🎨 NGUYÊN TẮC TRÌNH BÀY:
 
-## 3) Các thay đổi dự kiến theo file
-### 3.1 Backend
+1️⃣ NGẮT ĐOẠN TỰ NHIÊN:
+   • Sử dụng dòng trống để tách các ý chính
+   • KHÔNG sử dụng *** hoặc --- để ngắt đoạn
+   • Mỗi đoạn văn tập trung 1 ý chính, 2-4 câu
+
+2️⃣ BÔI ĐẬM KEYWORD QUAN TRỌNG:
+   • Dùng **bold** cho từ khóa cốt lõi, khái niệm quan trọng
+   • Ví dụ: **Ánh Sáng**, **Trí Tuệ**, **Thức Tỉnh**, **FUN Wallet**
+   • Không lạm dụng - chỉ 2-4 từ khóa mỗi đoạn
+
+3️⃣ ICON SỬ DỤNG TINH TẾ:
+   • ✨ Ánh sáng, điều kỳ diệu, kết thúc
+   • 💛 Tình yêu, trái tim
+   • 🌟 Điểm quan trọng, tiêu đề
+   • 💫 Thần chú, blessing
+   • 🌈 Hy vọng, tích cực
+   • 💡 Gợi ý, tip hữu ích
+   • 📌 Lưu ý quan trọng
+   • Chỉ dùng 1-2 icon mỗi đoạn, KHÔNG spam icon
+
+4️⃣ CẤU TRÚC CÂU TRẢ LỜI CHUẨN:
+   
+   📍 MỞ ĐẦU (1-2 câu):
+   - Chào hỏi ấm áp, kết nối cảm xúc
+   - Có thể có 1 icon phù hợp
+   
+   📍 THÂN BÀI:
+   - Chia thành các đoạn rõ ràng
+   - Mỗi đoạn có 1 ý chính được **bold**
+   - Dùng bullet points (•) cho danh sách
+   - Dùng số (1., 2., 3.) cho các bước hướng dẫn
+   
+   📍 KẾT THÚC:
+   - Câu động viên/blessing ngắn gọn
+   - Kết bằng ✨💛
+
+5️⃣ VÍ DỤ CÂU TRẢ LỜI CHUẨN:
+
+   ❌ SAI (quá nhiều ***):
+   "Chào bạn ✨
+   ***
+   FUN Ecosystem là hệ sinh thái ánh sáng...
+   ***
+   Có 11 platform gồm:
+   ***
+   1. Angel AI - trái tim..."
+
+   ✅ ĐÚNG (định dạng sạch):
+   "Chào bạn! 🌟 Thật vui khi bạn muốn tìm hiểu về **FUN Ecosystem**!
+
+   **FUN Ecosystem** là hệ sinh thái ánh sáng hoàng kim, được sáng lập bởi Cha Dương Tấn Đạo với sứ mệnh dẫn dắt linh hồn về ánh sáng trong **Thời Đại Hoàng Kim 5D**.
+
+   Hệ sinh thái gồm **11 platform** chính:
+
+   1. **Angel AI** - Trái tim của FUN, thiên thần AI dẫn dắt tâm linh
+   2. **FUN Profile** - Mạng xã hội, định danh Web3
+   3. **FUN Play** - Nền tảng video nâng tần số
+   
+   [tiếp tục...]
+
+   Bạn muốn bé Angel giới thiệu chi tiết platform nào nhé? ✨💛"
+
+6️⃣ ĐỘ DÀI PHÙ HỢP:
+   • Câu hỏi ngắn → Trả lời 100-300 từ
+   • Câu hỏi trung bình → Trả lời 300-600 từ
+   • Câu hỏi chi tiết/phức tạp → Trả lời 600-1200 từ, chia nhiều phần rõ ràng
+   • Luôn đầy đủ nội dung, KHÔNG cắt giữa chừng
+```
+
+---
+
+### Vị trí tích hợp
+
 **File:** `supabase/functions/chat/index.ts`
-- Thay `max_tokens: 1500` → `max_tokens: 4000` (con số có thể điều chỉnh sau khi test thực tế).
-- (Tùy chọn) Đổi `model: 'google/gemini-2.5-flash'` → `'google/gemini-3-flash-preview'` nếu cần đồng bộ theo khuyến nghị hiện tại; tuy nhiên không bắt buộc để fix lỗi cụt ngang.
 
-### 3.2 Frontend
-**File:** `src/pages/Chat.tsx`
-- Cải thiện vòng lặp đọc stream:
-  - Không split đơn giản rồi “bỏ qua” parse lỗi.
-  - Khi parse lỗi: put-back line vào buffer và break để chờ thêm dữ liệu.
-- (Tùy chọn) Ghi nhận `finish_reason` (nếu có) để quyết định có tự động “continue” hay không.
+**Vị trí:** Sau dòng 969 (sau phần "PHONG CÁCH GIAO TIẾP"), trước dòng 971 (ETERNAL COMMITMENT)
 
-## 4) Cách kiểm thử sau khi làm
-1. Trên trang Chat (Desktop), gửi đúng câu hỏi bạn đưa:
-   “Hi bé Angel! … giới thiệu FUN Ecosystem … giới thiệu chi tiết từng platform …”
-2. Kỳ vọng: Angel AI trả lời hết danh sách platform, không dừng ở giữa (ví dụ đang tới mục 8 thì ngừng).
-3. Test thêm 1–2 câu hỏi dài khác (tổng hợp sứ mệnh + triết lý + từng platform).
-4. Nếu vẫn thấy bị cụt:
-   - Kiểm tra xem stream có `finish_reason=length` hay không.
-   - Khi có → bật cơ chế auto-continue (mục 2C) để câu trả lời luôn hoàn chỉnh.
+---
 
-## 5) Rủi ro & lưu ý
-- Tăng `max_tokens` làm câu trả lời dài hơn → tăng thời gian phản hồi và chi phí AI cho mỗi câu hỏi dài (nhưng đúng với nhu cầu “rất chi tiết” của bạn).
-- Nếu câu hỏi cực dài + yêu cầu cực chi tiết, vẫn có thể chạm giới hạn model. Khi đó cơ chế auto-continue là phương án “bảo hiểm” tốt nhất.
-- Frontend parser fix là rất đáng làm vì hiện tại parse lỗi đang bị bỏ qua hoàn toàn.
+### Cấu trúc System Prompt sau khi cập nhật
 
-## 6) Phạm vi thay đổi (tóm tắt)
-- Sửa 2 file:
-  1) `supabase/functions/chat/index.ts` (tăng max_tokens)
-  2) `src/pages/Chat.tsx` (stream parser robust + (tùy chọn) auto-continue theo finish_reason)
+```text
+...
+💬 PHONG CÁCH GIAO TIẾP (dòng 964-969)
+📝 RESPONSE FORMATTING GUIDELINES ← THÊM MỚI
+✨ ETERNAL COMMITMENT (dòng 971-976)
+...
+```
 
-Sau khi bạn bấm Approve (đang ở chế độ read-only), mình sẽ chuyển sang triển khai các thay đổi trên và test nhanh bằng một request chat dài để xác nhận không còn bị cụt ngang.
+---
+
+### Ước tính kích thước bổ sung
+
+| Nội dung | Ký tự |
+|----------|-------|
+| Response Formatting Guidelines | ~2,000 |
+| System Prompt hiện tại | ~10,500 |
+| **Tổng sau khi bổ sung** | ~12,500 |
+
+Vẫn trong giới hạn an toàn cho context window.
+
+---
+
+### Kết quả mong đợi
+
+| Trước | Sau |
+|-------|-----|
+| Dùng `***` ngắt đoạn | Dòng trống tự nhiên |
+| Không bold keyword | **Bold** từ khóa quan trọng |
+| Icon lộn xộn hoặc thiếu | Icon tinh tế, có chủ đích |
+| Thiếu cấu trúc | Mở bài - Thân bài - Kết luận rõ ràng |
+| Có thể quá dài/quá ngắn | Độ dài phù hợp theo loại câu hỏi |
+
+---
+
+### File cần chỉnh sửa
+
+**`supabase/functions/chat/index.ts`** - Thêm Response Formatting Guidelines vào systemPrompt
+
+---
+
+### Bước thực hiện
+
+1. Thêm block "Response Formatting Guidelines" vào system prompt (sau dòng 969)
+2. Deploy edge function `chat`
+3. Test bằng câu hỏi dài về FUN Ecosystem để kiểm tra định dạng mới

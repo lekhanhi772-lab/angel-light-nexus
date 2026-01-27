@@ -524,27 +524,63 @@ const Chat = () => {
       if (done) break;
 
       buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
+      
+      // Process line-by-line as data arrives
+      let newlineIndex: number;
+      while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+        let line = buffer.slice(0, newlineIndex);
+        buffer = buffer.slice(newlineIndex + 1);
 
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === '[DONE]') continue;
-          
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) {
-              assistantContent += content;
-              setMessages(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
-                return updated;
-              });
-            }
-          } catch { /* ignore */ }
+        // Handle CRLF
+        if (line.endsWith('\r')) line = line.slice(0, -1);
+        
+        // Skip SSE comments and empty lines
+        if (line.startsWith(':') || line.trim() === '') continue;
+        if (!line.startsWith('data: ')) continue;
+
+        const jsonStr = line.slice(6).trim();
+        if (jsonStr === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const content = parsed.choices?.[0]?.delta?.content;
+          if (content) {
+            assistantContent += content;
+            setMessages(prev => {
+              const updated = [...prev];
+              updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
+              return updated;
+            });
+          }
+        } catch {
+          // Incomplete JSON split across chunks: put it back and wait for more data
+          buffer = line + '\n' + buffer;
+          break;
         }
+      }
+    }
+
+    // Final flush: process any remaining buffered lines
+    if (buffer.trim()) {
+      for (let raw of buffer.split('\n')) {
+        if (!raw) continue;
+        if (raw.endsWith('\r')) raw = raw.slice(0, -1);
+        if (raw.startsWith(':') || raw.trim() === '') continue;
+        if (!raw.startsWith('data: ')) continue;
+        const jsonStr = raw.slice(6).trim();
+        if (jsonStr === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const content = parsed.choices?.[0]?.delta?.content;
+          if (content) {
+            assistantContent += content;
+            setMessages(prev => {
+              const updated = [...prev];
+              updated[updated.length - 1] = { role: 'assistant', content: assistantContent };
+              return updated;
+            });
+          }
+        } catch { /* ignore final leftovers */ }
       }
     }
 

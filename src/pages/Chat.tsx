@@ -18,6 +18,8 @@ import { getSpeechCode, getEdgeVoice } from '@/i18n';
 import SuggestedPrompts from '@/components/SuggestedPrompts';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { ShareConversationDialog } from '@/components/ShareConversationDialog';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -1251,19 +1253,27 @@ const Chat = () => {
                           </div>
                         )}
                         
-                        <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                          {message.content}
-                          {isLoading && index === messages.length - 1 && message.role === 'assistant' && !message.content && (
-                            <span className="flex gap-1">
-                              <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '0ms' }} />
-                              <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#87CEEB', animationDelay: '150ms' }} />
-                              <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '300ms' }} />
-                            </span>
-                          )}
-                          {isLoading && index === messages.length - 1 && message.role === 'assistant' && message.content && !message.content.includes('Đang tạo') && (
-                            <span className="inline-block w-2 h-5 ml-1 animate-pulse" style={{ background: '#FFD700' }} />
-                          )}
-                        </p>
+                        {message.role === 'assistant' ? (
+                          <div className="prose prose-sm max-w-none prose-headings:text-[#B8860B] prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-2 prose-h2:text-lg prose-h3:text-base prose-strong:text-[#006666] prose-strong:font-semibold prose-p:text-[#006666] prose-p:leading-relaxed prose-p:mb-3 prose-p:mt-0 prose-ul:text-[#006666] prose-ul:my-2 prose-ol:text-[#006666] prose-ol:my-2 prose-li:text-[#006666] prose-li:my-0.5 prose-a:text-[#006666] prose-a:underline prose-blockquote:border-l-[#B8860B] prose-blockquote:bg-yellow-50/30 prose-blockquote:not-italic prose-blockquote:text-[#006666] prose-hr:hidden">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {message.content}
+                            </ReactMarkdown>
+                            {isLoading && index === messages.length - 1 && !message.content && (
+                              <span className="flex gap-1">
+                                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '0ms' }} />
+                                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#87CEEB', animationDelay: '150ms' }} />
+                                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: '#FFD700', animationDelay: '300ms' }} />
+                              </span>
+                            )}
+                            {isLoading && index === messages.length - 1 && message.content && !message.content.includes('Đang tạo') && (
+                              <span className="inline-block w-2 h-5 ml-1 animate-pulse" style={{ background: '#FFD700' }} />
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
+                            {message.content}
+                          </p>
+                        )}
                         {/* Action buttons for messages */}
                         {message.content && !isLoading && (
                           <div className="mt-2 flex justify-end gap-1 sm:gap-2">

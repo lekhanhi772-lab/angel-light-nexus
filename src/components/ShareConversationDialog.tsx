@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Share2, Link, MessageSquare, Copy, Check, Loader2 } from 'lucide-react';
+import { Share2, Link, MessageSquare, Copy, Check, Loader2, ClipboardCopy } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useShareConversation } from '@/hooks/useShareConversation';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface Message {
   id?: string;
@@ -29,6 +30,7 @@ interface ShareConversationDialogProps {
   userId: string;
   messages: Message[];
   defaultTitle?: string;
+  userName?: string;
 }
 
 export const ShareConversationDialog = ({
@@ -38,6 +40,7 @@ export const ShareConversationDialog = ({
   userId,
   messages,
   defaultTitle = '',
+  userName,
 }: ShareConversationDialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -46,7 +49,34 @@ export const ShareConversationDialog = ({
   const [title, setTitle] = useState(defaultTitle);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copiedConversation, setCopiedConversation] = useState(false);
   const [activeTab, setActiveTab] = useState('link');
+
+  const formatConversationForCopy = (): string => {
+    const displayName = userName || t('shareConversation.defaultUserName');
+    const header = `✨ ${t('shareConversation.conversationHeader')} ✨\n${title ? `📌 ${title}\n` : ''}\n`;
+    
+    const body = messages.map(msg => {
+      const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
+      return `${speaker}:\n${msg.content}`;
+    }).join('\n\n---\n\n');
+    
+    const footer = `\n\n---\n💛 ${t('shareConversation.sharedFrom')}`;
+    
+    return header + body + footer;
+  };
+
+  const handleCopyConversation = async () => {
+    const text = formatConversationForCopy();
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedConversation(true);
+      toast.success(t('shareConversation.conversationCopied'));
+      setTimeout(() => setCopiedConversation(false), 2000);
+    } catch {
+      toast.error(t('shareConversation.shareError'));
+    }
+  };
 
   const handleShareLink = async () => {
     const url = await shareViaLink(conversationId, userId, title || undefined);
@@ -79,6 +109,7 @@ export const ShareConversationDialog = ({
   const handleClose = () => {
     setShareUrl(null);
     setCopied(false);
+    setCopiedConversation(false);
     setTitle(defaultTitle);
     onOpenChange(false);
   };
@@ -121,20 +152,30 @@ export const ShareConversationDialog = ({
 
           {/* Share options tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-amber-100/50">
+            <TabsList className="grid w-full grid-cols-3 bg-amber-100/50">
               <TabsTrigger 
                 value="link" 
-                className="data-[state=active]:bg-amber-200 data-[state=active]:text-amber-900"
+                className="data-[state=active]:bg-amber-200 data-[state=active]:text-amber-900 text-xs sm:text-sm"
               >
-                <Link className="w-4 h-4 mr-2" />
-                {t('shareConversation.getLink')}
+                <Link className="w-4 h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">{t('shareConversation.getLink')}</span>
+                <span className="sm:hidden">Link</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="forum"
-                className="data-[state=active]:bg-amber-200 data-[state=active]:text-amber-900"
+                className="data-[state=active]:bg-amber-200 data-[state=active]:text-amber-900 text-xs sm:text-sm"
               >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                {t('shareConversation.postToForum')}
+                <MessageSquare className="w-4 h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">{t('shareConversation.postToForum')}</span>
+                <span className="sm:hidden">Forum</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="copy"
+                className="data-[state=active]:bg-amber-200 data-[state=active]:text-amber-900 text-xs sm:text-sm"
+              >
+                <ClipboardCopy className="w-4 h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">{t('shareConversation.copyTab')}</span>
+                <span className="sm:hidden">{t('shareConversation.copyTab')}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -211,6 +252,33 @@ export const ShareConversationDialog = ({
                   {t('shareConversation.titleRequired')}
                 </p>
               )}
+            </TabsContent>
+
+            <TabsContent value="copy" className="space-y-3 mt-4">
+              <p className="text-sm text-amber-700">
+                {t('shareConversation.copyDescription')}
+              </p>
+              <div className="bg-white/60 rounded-lg p-3 border border-amber-100 max-h-32 overflow-y-auto">
+                <p className="text-xs text-amber-600 font-mono whitespace-pre-wrap">
+                  {formatConversationForCopy().slice(0, 200)}...
+                </p>
+              </div>
+              <Button
+                onClick={handleCopyConversation}
+                className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white"
+              >
+                {copiedConversation ? (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    {t('chat.copied')}
+                  </>
+                ) : (
+                  <>
+                    <ClipboardCopy className="w-4 h-4 mr-2" />
+                    {t('shareConversation.copyButton')}
+                  </>
+                )}
+              </Button>
             </TabsContent>
           </Tabs>
         </div>

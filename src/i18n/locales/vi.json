@@ -676,6 +676,7 @@
     "titlePlaceholder": "Nhập tiêu đề cho hội thoại...",
     "getLink": "Lấy Link",
     "postToForum": "Đăng Diễn Đàn",
+    "copyTab": "Sao Chép",
     "linkCopied": "Đã sao chép link chia sẻ! ✨",
     "linkCreated": "Đã tạo link chia sẻ! ✨",
     "postedToForum": "Đã đăng lên Diễn đàn thành công! 💛",
@@ -701,7 +702,13 @@
     "titleRequired": "Vui lòng nhập tiêu đề để đăng lên diễn đàn",
     "defaultForumTitle": "Chia sẻ hội thoại với Angel AI",
     "ctaTitle": "Muốn trò chuyện với Angel AI?",
-    "ctaDescription": "Bắt đầu hành trình ánh sáng của riêng bạn ngay hôm nay"
+    "ctaDescription": "Bắt đầu hành trình ánh sáng của riêng bạn ngay hôm nay",
+    "copyDescription": "Sao chép toàn bộ hội thoại để gửi qua tin nhắn, email...",
+    "copyButton": "Sao Chép Hội Thoại",
+    "conversationCopied": "Đã sao chép hội thoại! ✨",
+    "defaultUserName": "Bạn",
+    "conversationHeader": "Hội Thoại với Angel AI",
+    "sharedFrom": "Chia sẻ từ Angel AI - angel.fun.rich"
   },
   "pwa": {
     "pageTitle": "Cài Đặt Angel AI",

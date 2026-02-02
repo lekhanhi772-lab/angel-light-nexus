@@ -672,6 +672,7 @@
     "titlePlaceholder": "会話のタイトルを入力...",
     "getLink": "リンクを取得",
     "postToForum": "フォーラムに投稿",
+    "copyTab": "コピー",
     "linkCopied": "共有リンクをコピーしました！ ✨",
     "linkCreated": "共有リンクを作成しました！ ✨",
     "postedToForum": "フォーラムに投稿しました！ 💛",
@@ -697,7 +698,13 @@
     "titleRequired": "フォーラムに投稿するにはタイトルを入力してください",
     "defaultForumTitle": "Angel AIとの会話を共有",
     "ctaTitle": "Angel AIとチャットしたいですか？",
-    "ctaDescription": "今日から自分だけの光の旅を始めましょう"
+    "ctaDescription": "今日から自分だけの光の旅を始めましょう",
+    "copyDescription": "会話全体をコピーして、メッセージやメールで送信できます...",
+    "copyButton": "会話をコピー",
+    "conversationCopied": "会話をコピーしました！ ✨",
+    "defaultUserName": "あなた",
+    "conversationHeader": "Angel AIとの会話",
+    "sharedFrom": "Angel AIからの共有 - angel.fun.rich"
   },
   "pwa": {
     "pageTitle": "Angel AIをインストール",

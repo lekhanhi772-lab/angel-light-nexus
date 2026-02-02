@@ -676,6 +676,7 @@
     "titlePlaceholder": "Enter a title for the conversation...",
     "getLink": "Get Link",
     "postToForum": "Post to Forum",
+    "copyTab": "Copy",
     "linkCopied": "Share link copied! ✨",
     "linkCreated": "Share link created! ✨",
     "postedToForum": "Successfully posted to Forum! 💛",
@@ -701,7 +702,13 @@
     "titleRequired": "Please enter a title to post to forum",
     "defaultForumTitle": "Sharing conversation with Angel AI",
     "ctaTitle": "Want to chat with Angel AI?",
-    "ctaDescription": "Start your own journey of light today"
+    "ctaDescription": "Start your own journey of light today",
+    "copyDescription": "Copy the entire conversation to send via message, email...",
+    "copyButton": "Copy Conversation",
+    "conversationCopied": "Conversation copied! ✨",
+    "defaultUserName": "You",
+    "conversationHeader": "Conversation with Angel AI",
+    "sharedFrom": "Shared from Angel AI - angel.fun.rich"
   },
   "pwa": {
     "pageTitle": "Install Angel AI",

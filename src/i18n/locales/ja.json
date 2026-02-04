@@ -710,7 +710,9 @@
     "conversationCopied": "会話をコピーしました！ ✨",
     "defaultUserName": "あなた",
     "conversationHeader": "Angel AIとの会話",
-    "sharedFrom": "Angel AIからの共有 - angel.fun.rich"
+    "sharedFrom": "Angel AIからの共有 - angelkhanhi.fun.rich",
+    "generatingTitle": "スマートタイトルを生成中...",
+    "autoTitle": "自動タイトル"
   },
   "pwa": {
     "pageTitle": "Angel AIをインストール",

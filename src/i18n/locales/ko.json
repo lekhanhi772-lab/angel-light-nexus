@@ -710,7 +710,9 @@
     "conversationCopied": "대화가 복사되었습니다! ✨",
     "defaultUserName": "당신",
     "conversationHeader": "Angel AI와의 대화",
-    "sharedFrom": "Angel AI에서 공유 - angel.fun.rich"
+    "sharedFrom": "Angel AI에서 공유 - angelkhanhi.fun.rich",
+    "generatingTitle": "스마트 제목 생성 중...",
+    "autoTitle": "자동 제목"
   },
   "pwa": {
     "pageTitle": "Angel AI 설치",

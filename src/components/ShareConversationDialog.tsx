@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Share2, Link, MessageSquare, Copy, Check, Loader2, ClipboardCopy } from 'lucide-react';
+import { Share2, Link, MessageSquare, Copy, Check, Loader2, ClipboardCopy, Sparkles } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -51,10 +51,84 @@ export const ShareConversationDialog = ({
   const [copied, setCopied] = useState(false);
   const [copiedConversation, setCopiedConversation] = useState(false);
   const [activeTab, setActiveTab] = useState('link');
+  
+  // 🏷️ AI-generated title states
+  const [generatedTitle, setGeneratedTitle] = useState<string>('');
+  const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
+
+  // 🏷️ Generate smart title when dialog opens
+  useEffect(() => {
+    if (open && messages.length > 0 && !generatedTitle && !title.trim()) {
+      generateSmartTitle();
+    }
+  }, [open, messages]);
+
+  // Reset states when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setGeneratedTitle('');
+      setIsGeneratingTitle(false);
+    }
+  }, [open]);
+
+  const generateSmartTitle = async () => {
+    if (messages.length === 0) return;
+    
+    setIsGeneratingTitle(true);
+    try {
+      // Tạo summary của hội thoại để gửi cho AI
+      const conversationSummary = messages.map(m => ({
+        role: m.role,
+        content: m.content.slice(0, 300) // Giới hạn để không quá nặng
+      }));
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      
+      const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          messages: conversationSummary,
+          generateTitle: true,
+          language: 'vi'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate title');
+      }
+
+      const data = await response.json();
+      const smartTitle = data?.title?.trim() || '';
+      
+      if (smartTitle) {
+        setGeneratedTitle(smartTitle);
+        console.log('🏷️ AI generated title:', smartTitle);
+      }
+    } catch (error) {
+      console.error('Error generating smart title:', error);
+      // Fallback: dùng tin nhắn đầu tiên của user
+      const firstUserMsg = messages.find(m => m.role === 'user');
+      if (firstUserMsg) {
+        const fallbackTitle = firstUserMsg.content.slice(0, 50).trim();
+        setGeneratedTitle(fallbackTitle.length > 47 ? fallbackTitle.slice(0, 47) + '...' : fallbackTitle);
+      }
+    } finally {
+      setIsGeneratingTitle(false);
+    }
+  };
 
   const formatConversationForCopy = (): string => {
     const displayName = userName || t('shareConversation.defaultUserName');
-    const header = `✨ ${t('shareConversation.conversationHeader')} ✨\n${title ? `📌 ${title}\n` : ''}\n`;
+    
+    // 🏷️ Sử dụng tiêu đề: User input > AI generated > Default
+    const finalTitle = title.trim() || generatedTitle || t('shareConversation.defaultForumTitle');
+    
+    const header = `✨ ${finalTitle} ✨\n\n`;
     
     const body = messages.map(msg => {
       const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
@@ -86,7 +160,7 @@ export const ShareConversationDialog = ({
   };
 
   const handleShareForum = async () => {
-    const forumTitle = title || t('shareConversation.defaultForumTitle');
+    const forumTitle = title || generatedTitle || t('shareConversation.defaultForumTitle');
     const postId = await shareToForum(conversationId, userId, messages, forumTitle);
     if (postId) {
       onOpenChange(false);
@@ -111,6 +185,7 @@ export const ShareConversationDialog = ({
     setCopied(false);
     setCopiedConversation(false);
     setTitle(defaultTitle);
+    setGeneratedTitle('');
     onOpenChange(false);
   };
 
@@ -137,9 +212,24 @@ export const ShareConversationDialog = ({
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder={t('shareConversation.titlePlaceholder')}
+              placeholder={generatedTitle || t('shareConversation.titlePlaceholder')}
               className="border-amber-200 focus:border-amber-400 bg-white/80"
             />
+            
+            {/* AI Generated Title Indicator */}
+            {isGeneratingTitle && (
+              <div className="flex items-center gap-2 text-amber-600 text-xs">
+                <Sparkles className="w-3 h-3 animate-pulse" />
+                {t('shareConversation.generatingTitle')}
+              </div>
+            )}
+            
+            {generatedTitle && !title.trim() && !isGeneratingTitle && (
+              <div className="flex items-center gap-2 text-amber-600 text-xs">
+                <Sparkles className="w-3 h-3" />
+                {t('shareConversation.autoTitle')}: <strong className="text-amber-800">{generatedTitle}</strong>
+              </div>
+            )}
           </div>
 
           {/* Preview */}
@@ -232,7 +322,7 @@ export const ShareConversationDialog = ({
               </p>
               <Button
                 onClick={handleShareForum}
-                disabled={isSharing || !title.trim()}
+                disabled={isSharing || (!title.trim() && !generatedTitle)}
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
               >
                 {isSharing ? (
@@ -247,7 +337,7 @@ export const ShareConversationDialog = ({
                   </>
                 )}
               </Button>
-              {!title.trim() && (
+              {!title.trim() && !generatedTitle && !isGeneratingTitle && (
                 <p className="text-xs text-red-500 text-center">
                   {t('shareConversation.titleRequired')}
                 </p>
@@ -265,6 +355,7 @@ export const ShareConversationDialog = ({
               </div>
               <Button
                 onClick={handleCopyConversation}
+                disabled={isGeneratingTitle}
                 className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white"
               >
                 {copiedConversation ? (

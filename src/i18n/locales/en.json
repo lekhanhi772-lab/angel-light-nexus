@@ -714,7 +714,9 @@
     "conversationCopied": "Conversation copied! ✨",
     "defaultUserName": "You",
     "conversationHeader": "Conversation with Angel AI",
-    "sharedFrom": "Shared from Angel AI - angel.fun.rich"
+    "sharedFrom": "Shared from Angel AI - angelkhanhi.fun.rich",
+    "generatingTitle": "Generating smart title...",
+    "autoTitle": "Auto title"
   },
   "pwa": {
     "pageTitle": "Install Angel AI",

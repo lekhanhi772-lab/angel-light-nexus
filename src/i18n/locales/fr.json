@@ -710,7 +710,9 @@
     "conversationCopied": "Conversation copiée ! ✨",
     "defaultUserName": "Vous",
     "conversationHeader": "Conversation avec Angel AI",
-    "sharedFrom": "Partagé depuis Angel AI - angel.fun.rich"
+    "sharedFrom": "Partagé depuis Angel AI - angelkhanhi.fun.rich",
+    "generatingTitle": "Création du titre intelligent...",
+    "autoTitle": "Titre automatique"
   },
   "pwa": {
     "pageTitle": "Installer Angel AI",

@@ -95,6 +95,12 @@
         "🎨 A little angel praying in the light",
         "🎨 Mysterious universe with sparkling stars"
       ]
+    },
+    "thinking": {
+      "analyzing": "Angel is analyzing your question...",
+      "connecting": "Connecting to cosmic light...",
+      "consulting": "Consulting the light documents...",
+      "crafting": "Crafting the best answer for you..."
     }
   },
   "theme": {

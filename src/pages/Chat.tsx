@@ -68,7 +68,30 @@ const Chat = () => {
   const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
+  const [thinkingText, setThinkingText] = useState('');
   const { isBookmarked, toggleBookmark } = useBookmarks();
+
+  // Thinking phrases for "Thinking Mode"
+  const thinkingPhrases = [
+    t('chat.thinking.analyzing'),
+    t('chat.thinking.connecting'),
+    t('chat.thinking.consulting'),
+    t('chat.thinking.crafting'),
+  ];
+
+  // Get thinking duration based on message complexity
+  const getThinkingDuration = (message: string): number => {
+    const wordCount = message.split(/\s+/).length;
+    if (wordCount < 5) return 1500;      // Short: 1.5s
+    if (wordCount < 15) return 2500;     // Medium: 2.5s
+    return 3000 + Math.random() * 1000;  // Long/Complex: 3-4s
+  };
+
+  // Get random thinking phrase
+  const getRandomThinkingPhrase = () => {
+    return thinkingPhrases[Math.floor(Math.random() * thinkingPhrases.length)];
+  };
 
   // Get current speech code and edge voice based on selected language
   const currentSpeechCode = getSpeechCode(i18n.language);
@@ -245,6 +268,13 @@ const Chat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Scroll to bottom when thinking starts
+  useEffect(() => {
+    if (isThinking) {
+      scrollToBottom();
+    }
+  }, [isThinking]);
 
   // Clear messages when switching modes (separate history)
   useEffect(() => {
@@ -499,6 +529,20 @@ const Chat = () => {
 
   const sendChatMessage = async (newMessages: Message[], conversationId: string | null) => {
     let assistantContent = '';
+
+    // Get the user's last message for thinking duration calculation
+    const lastUserMessage = newMessages.filter(m => m.role === 'user').pop();
+    const thinkingDuration = lastUserMessage ? getThinkingDuration(lastUserMessage.content) : 2000;
+
+    // Start Thinking Mode
+    setIsThinking(true);
+    setThinkingText(getRandomThinkingPhrase());
+
+    // Thinking delay - simulate deep analysis
+    await new Promise(resolve => setTimeout(resolve, thinkingDuration));
+
+    // End thinking, start streaming
+    setIsThinking(false);
 
     const response = await fetch(CHAT_URL, {
       method: 'POST',
@@ -1356,6 +1400,56 @@ const Chat = () => {
                   )}
                 </div>
               ))}
+              
+              {/* Thinking Indicator */}
+              {isThinking && (
+                <div className="flex gap-4 justify-start">
+                  <div 
+                    className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden"
+                    style={{
+                      border: '2px solid #FFD700',
+                      boxShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
+                    }}
+                  >
+                    <img src={angelAvatar} alt="Angel AI" className="w-full h-full object-cover" />
+                  </div>
+                  
+                  <div
+                    className="max-w-[75%] rounded-3xl px-5 py-4"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(135, 206, 235, 0.3) 100%)',
+                      border: '1px solid rgba(184, 134, 11, 0.3)',
+                      boxShadow: '0 4px 15px rgba(184, 134, 11, 0.15)',
+                      borderRadius: '24px 24px 24px 8px',
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Sparkles 
+                        className="w-5 h-5 animate-spin" 
+                        style={{ color: '#FFD700', animationDuration: '2s' }} 
+                      />
+                      <span style={{ color: '#006666' }} className="text-sm font-medium">
+                        {thinkingText}
+                      </span>
+                      <span className="flex gap-1">
+                        <span 
+                          className="w-2 h-2 rounded-full animate-bounce" 
+                          style={{ background: '#FFD700', animationDelay: '0ms' }} 
+                        />
+                        <span 
+                          className="w-2 h-2 rounded-full animate-bounce" 
+                          style={{ background: '#87CEEB', animationDelay: '150ms' }} 
+                        />
+                        <span 
+                          className="w-2 h-2 rounded-full animate-bounce" 
+                          style={{ background: '#FFD700', animationDelay: '300ms' }} 
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div ref={messagesEndRef} />
             </div>
           )}

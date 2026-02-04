@@ -1,33 +1,34 @@
 
 
-## Kế hoạch thêm "Thinking Mode" - Suy nghĩ trước khi trả lời
+## Kế hoạch nâng cấp: AI Tự Động Đặt Tiêu Đề Hội Thoại
 
 ### Mục tiêu
-Khi Angel AI nhận câu hỏi, thay vì trả lời ngay, sẽ hiển thị trạng thái **"Đang suy nghĩ..."** với animation, sau đó mới stream câu trả lời. Điều này tạo cảm giác AI đang phân tích sâu và đưa ra câu trả lời chất lượng.
+Khi user mở dialog Chia sẻ và chọn tab "Sao Chép", Angel AI sẽ tự động phân tích toàn bộ hội thoại và tạo ra một **tiêu đề ngắn gọn, súc tích** phản ánh nội dung chính của cuộc trò chuyện.
 
 ---
 
 ### Thiết kế tính năng
 
-#### Luồng hoạt động mới:
+#### Luồng hoạt động:
 
 ```
-User gửi tin nhắn
+User mở Share Dialog
     ↓
-Hiển thị "Thinking indicator" (3-5 giây)
-    ↓  
-Chuyển sang streaming câu trả lời
+Tự động gọi AI để phân tích messages
     ↓
-Hoàn thành response
+AI trả về tiêu đề phù hợp (10-50 ký tự)
+    ↓
+Hiển thị tiêu đề trong header đoạn copy
 ```
 
-#### UI Thinking Indicator:
+#### Ví dụ:
 
-Một khung message đặc biệt với:
-- Icon não/sparkle xoay
-- Text: "Bé Angel đang suy nghĩ..." (đa ngôn ngữ)
-- 3 dots animation nhấp nháy
-- Thời gian hiển thị: 2-4 giây (tùy độ phức tạp câu hỏi)
+| Nội dung hội thoại | Tiêu đề AI tạo ra |
+|-------------------|-------------------|
+| Hỏi về Tâm là gì, review tâm... | "Khám phá về Tâm và Review Tâm" |
+| Hỏi về FUN Ecosystem | "Giới thiệu FUN Ecosystem" |
+| Thảo luận về 8 câu thần chú | "8 Câu Thần Chú Ánh Sáng" |
+| Hỏi cách sống chân thật | "Hành trình Sống Chân Thật" |
 
 ---
 
@@ -35,239 +36,227 @@ Một khung message đặc biệt với:
 
 | File | Thay đổi |
 |------|----------|
-| `src/pages/Chat.tsx` | Thêm state `isThinking`, logic delay, thinking indicator UI |
-| `src/i18n/locales/vi.json` | Thêm các text thinking |
-| `src/i18n/locales/en.json` | Thêm translations tiếng Anh |
-| `src/i18n/locales/fr.json` | Thêm translations tiếng Pháp |
-| `src/i18n/locales/ja.json` | Thêm translations tiếng Nhật |
-| `src/i18n/locales/ko.json` | Thêm translations tiếng Hàn |
+| `src/components/ShareConversationDialog.tsx` | Thêm state + logic gọi AI tạo tiêu đề |
+| `supabase/functions/chat/index.ts` | Thêm endpoint/logic generate title (hoặc dùng endpoint mới) |
+| `src/i18n/locales/vi.json` | Sửa link `sharedFrom` + thêm text loading |
+| `src/i18n/locales/en.json` | Tương tự |
+| `src/i18n/locales/fr.json` | Tương tự |
+| `src/i18n/locales/ja.json` | Tương tự |
+| `src/i18n/locales/ko.json` | Tương tự |
 
 ---
 
 ### Chi tiết thay đổi
 
-#### 1. Chat.tsx - States và Logic
+#### 1. ShareConversationDialog.tsx - Logic AI tạo tiêu đề
 
-**Thêm state mới:**
+**Thêm states mới:**
 ```tsx
-const [isThinking, setIsThinking] = useState(false);
-const [thinkingText, setThinkingText] = useState('');
+const [generatedTitle, setGeneratedTitle] = useState<string>('');
+const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
 ```
 
-**Danh sách thinking phrases (đa dạng, ngẫu nhiên):**
+**Hàm gọi AI tạo tiêu đề:**
 ```tsx
-const thinkingPhrases = [
-  t('chat.thinking.analyzing'),    // "Đang phân tích câu hỏi..."
-  t('chat.thinking.connecting'),   // "Kết nối với ánh sáng vũ trụ..."
-  t('chat.thinking.consulting'),   // "Tra cứu tài liệu ánh sáng..."
-  t('chat.thinking.crafting'),     // "Đang soạn câu trả lời..."
-];
-```
-
-**Logic trong sendChatMessage:**
-```tsx
-const sendChatMessage = async (newMessages: Message[], conversationId: string | null) => {
-  // Bắt đầu Thinking Mode
-  setIsThinking(true);
+const generateSmartTitle = async () => {
+  if (messages.length === 0) return;
   
-  // Chọn thinking phrase ngẫu nhiên
-  const randomPhrase = thinkingPhrases[Math.floor(Math.random() * thinkingPhrases.length)];
-  setThinkingText(randomPhrase);
-  
-  // Delay 2-3 giây để tạo hiệu ứng "suy nghĩ"
-  await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
-  
-  // Kết thúc thinking, bắt đầu streaming
-  setIsThinking(false);
-  
-  // ... existing streaming logic
+  setIsGeneratingTitle(true);
+  try {
+    // Tạo prompt để AI phân tích và đặt tiêu đề
+    const conversationSummary = messages.map(m => 
+      `${m.role === 'user' ? 'User' : 'Angel'}: ${m.content.slice(0, 200)}`
+    ).join('\n');
+    
+    const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({
+        messages: [{
+          role: 'user',
+          content: `Phân tích hội thoại sau và đặt MỘT tiêu đề ngắn gọn (10-40 ký tự) phản ánh nội dung chính. CHỈ trả về tiêu đề, không giải thích:\n\n${conversationSummary}`
+        }],
+        generateTitle: true, // Flag đặc biệt
+        maxTokens: 50
+      }),
+    });
+    
+    // Parse response và lấy tiêu đề
+    const reader = response.body?.getReader();
+    let titleResult = '';
+    // ... đọc stream và lấy text
+    
+    setGeneratedTitle(titleResult.trim());
+  } catch (error) {
+    console.error('Error generating title:', error);
+    // Fallback: dùng tin nhắn đầu tiên của user
+    const firstUserMsg = messages.find(m => m.role === 'user');
+    setGeneratedTitle(firstUserMsg?.content.slice(0, 50) || '');
+  } finally {
+    setIsGeneratingTitle(false);
+  }
 };
 ```
 
-#### 2. Chat.tsx - UI Thinking Indicator
-
-**Vị trí:** Trong phần render messages, thêm khối thinking indicator:
-
+**useEffect để tự động generate khi mở dialog:**
 ```tsx
-{/* Thinking Indicator */}
-{isThinking && (
-  <div className="flex gap-4 justify-start">
-    <div 
-      className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden"
-      style={{
-        border: '2px solid #FFD700',
-        boxShadow: '0 0 15px rgba(255, 215, 0, 0.4)',
-      }}
-    >
-      <img src={angelAvatar} alt="Angel AI" className="w-full h-full object-cover" />
-    </div>
-    
-    <div
-      className="max-w-[75%] rounded-3xl px-5 py-4"
-      style={{
-        background: 'linear-gradient(135deg, rgba(255, 251, 230, 0.95) 0%, rgba(135, 206, 235, 0.3) 100%)',
-        border: '1px solid rgba(184, 134, 11, 0.3)',
-        boxShadow: '0 4px 15px rgba(184, 134, 11, 0.15)',
-        borderRadius: '24px 24px 24px 8px',
-      }}
-    >
-      <div className="flex items-center gap-3">
-        <Sparkles 
-          className="w-5 h-5 animate-spin" 
-          style={{ color: '#FFD700', animationDuration: '2s' }} 
-        />
-        <span style={{ color: '#006666' }} className="text-sm font-medium">
-          {thinkingText}
-        </span>
-        <span className="flex gap-1">
-          <span 
-            className="w-2 h-2 rounded-full animate-bounce" 
-            style={{ background: '#FFD700', animationDelay: '0ms' }} 
-          />
-          <span 
-            className="w-2 h-2 rounded-full animate-bounce" 
-            style={{ background: '#87CEEB', animationDelay: '150ms' }} 
-          />
-          <span 
-            className="w-2 h-2 rounded-full animate-bounce" 
-            style={{ background: '#FFD700', animationDelay: '300ms' }} 
-          />
-        </span>
-      </div>
-    </div>
+useEffect(() => {
+  if (open && messages.length > 0 && !generatedTitle) {
+    generateSmartTitle();
+  }
+}, [open, messages]);
+```
+
+**Cập nhật formatConversationForCopy:**
+```tsx
+const formatConversationForCopy = (): string => {
+  const displayName = userName || t('shareConversation.defaultUserName');
+  
+  // Sử dụng tiêu đề AI generate (hoặc title user nhập, hoặc fallback)
+  const finalTitle = title.trim() || generatedTitle || t('shareConversation.defaultForumTitle');
+  
+  const header = `✨ ${finalTitle} ✨\n\n`;
+  
+  const body = messages.map(msg => {
+    const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
+    return `${speaker}:\n${msg.content}`;
+  }).join('\n\n---\n\n');
+  
+  const footer = `\n\n---\n💛 ${t('shareConversation.sharedFrom')}`;
+  
+  return header + body + footer;
+};
+```
+
+#### 2. Cập nhật UI - Hiển thị trạng thái đang tạo tiêu đề
+
+**Trong tab "copy", thêm indicator:**
+```tsx
+{isGeneratingTitle && (
+  <div className="flex items-center gap-2 text-amber-600 text-sm">
+    <Loader2 className="w-4 h-4 animate-spin" />
+    {t('shareConversation.generatingTitle')}
+  </div>
+)}
+
+{generatedTitle && !title.trim() && (
+  <div className="text-xs text-amber-600">
+    {t('shareConversation.autoTitle')}: <strong>{generatedTitle}</strong>
   </div>
 )}
 ```
 
-#### 3. Translations (i18n)
+#### 3. Backend - Thêm mode generateTitle trong chat function
+
+**Trong `supabase/functions/chat/index.ts`:**
+
+Kiểm tra flag `generateTitle` và dùng prompt đơn giản hơn:
+```typescript
+if (body.generateTitle) {
+  // Mode đặc biệt: chỉ tạo tiêu đề, không cần RAG, không cần web search
+  const titlePrompt = `Bạn là AI đặt tiêu đề. Phân tích hội thoại và đặt MỘT tiêu đề tiếng Việt ngắn gọn (10-40 ký tự). CHỈ trả về tiêu đề, không emoji, không giải thích.`;
+  
+  // Gọi AI với prompt đơn giản
+  // Trả về tiêu đề
+}
+```
+
+#### 4. Translations - Cập nhật i18n
 
 **Vietnamese (vi.json):**
 ```json
-"chat": {
-  // ...existing keys
-  "thinking": {
-    "analyzing": "Bé Angel đang phân tích câu hỏi của bạn...",
-    "connecting": "Đang kết nối với ánh sáng vũ trụ...",
-    "consulting": "Đang tra cứu tài liệu ánh sáng...",
-    "crafting": "Đang soạn câu trả lời tốt nhất cho bạn..."
-  }
+"shareConversation": {
+  "sharedFrom": "Chia sẻ từ Angel AI - angelkhanhi.fun.rich",
+  "generatingTitle": "Đang tạo tiêu đề thông minh...",
+  "autoTitle": "Tiêu đề tự động"
 }
 ```
 
 **English (en.json):**
 ```json
-"chat": {
-  // ...existing keys
-  "thinking": {
-    "analyzing": "Angel is analyzing your question...",
-    "connecting": "Connecting to cosmic light...",
-    "consulting": "Consulting the light documents...",
-    "crafting": "Crafting the best answer for you..."
-  }
+"shareConversation": {
+  "sharedFrom": "Shared from Angel AI - angelkhanhi.fun.rich",
+  "generatingTitle": "Generating smart title...",
+  "autoTitle": "Auto title"
 }
 ```
 
 **French (fr.json):**
 ```json
-"chat": {
-  "thinking": {
-    "analyzing": "Angel analyse votre question...",
-    "connecting": "Connexion à la lumière cosmique...",
-    "consulting": "Consultation des documents de lumière...",
-    "crafting": "Préparation de la meilleure réponse..."
-  }
+"shareConversation": {
+  "sharedFrom": "Partagé depuis Angel AI - angelkhanhi.fun.rich",
+  "generatingTitle": "Création du titre intelligent...",
+  "autoTitle": "Titre automatique"
 }
 ```
 
 **Japanese (ja.json):**
 ```json
-"chat": {
-  "thinking": {
-    "analyzing": "エンジェルがあなたの質問を分析中...",
-    "connecting": "宇宙の光に接続中...",
-    "consulting": "光の文書を参照中...",
-    "crafting": "最高の回答を準備中..."
-  }
+"shareConversation": {
+  "sharedFrom": "Angel AIからの共有 - angelkhanhi.fun.rich",
+  "generatingTitle": "スマートタイトルを生成中...",
+  "autoTitle": "自動タイトル"
 }
 ```
 
 **Korean (ko.json):**
 ```json
-"chat": {
-  "thinking": {
-    "analyzing": "엔젤이 질문을 분석 중...",
-    "connecting": "우주의 빛에 연결 중...",
-    "consulting": "빛의 문서를 참조 중...",
-    "crafting": "최고의 답변을 준비 중..."
-  }
+"shareConversation": {
+  "sharedFrom": "Angel AI에서 공유 - angelkhanhi.fun.rich",
+  "generatingTitle": "스마트 제목 생성 중...",
+  "autoTitle": "자동 제목"
 }
 ```
 
 ---
 
-### Chi tiết kỹ thuật
+### Kết quả sau khi nâng cấp
 
-#### Thời gian thinking tùy độ phức tạp:
+**Trước:**
+```
+✨ Hội Thoại với Angel AI ✨
+📌 Hi bé Angel ạ! Bé Angel ơi, tâm là gì ạ?...
 
-```tsx
-const getThinkingDuration = (message: string): number => {
-  const wordCount = message.split(/\s+/).length;
-  
-  if (wordCount < 5) return 1500;      // Câu ngắn: 1.5s
-  if (wordCount < 15) return 2500;     // Câu trung bình: 2.5s
-  return 3000 + Math.random() * 1000;  // Câu dài/phức tạp: 3-4s
-};
+👤 Khả Nhi Lê:
+Hi bé Angel ạ!...
+
+---
+💛 Chia sẻ từ Angel AI - angel.fun.rich
 ```
 
-#### Scroll to thinking indicator:
+**Sau:**
+```
+✨ Khám Phá Về Tâm Và Review Tâm ✨
 
-```tsx
-// Khi bắt đầu thinking, scroll xuống để user thấy indicator
-useEffect(() => {
-  if (isThinking) {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }
-}, [isThinking]);
+👤 Khả Nhi Lê:
+Hi bé Angel ạ!...
+
+---
+💛 Chia sẻ từ Angel AI - angelkhanhi.fun.rich
 ```
 
 ---
 
-### Kết quả mong đợi
+### Ưu điểm của giải pháp
 
-| Trước | Sau |
-|-------|-----|
-| User gửi → AI trả lời ngay | User gửi → "Đang suy nghĩ..." 2-4s → AI trả lời |
-| Cảm giác máy móc | Cảm giác AI đang tư duy sâu |
-| Không có feedback | Animation đẹp, text đa dạng |
-
----
-
-### Ví dụ UI
-
-```
-┌─────────────────────────────────────────┐
-│ 👤 You:                                 │
-│    FUN Ecosystem là gì?                 │
-├─────────────────────────────────────────┤
-│ 👼 Angel AI:                            │
-│    ✨ Đang kết nối với ánh sáng vũ trụ. . . │
-│       (3 dots bouncing)                 │
-└─────────────────────────────────────────┘
-
-        ↓ Sau 2-3 giây ↓
-
-┌─────────────────────────────────────────┐
-│ 👼 Angel AI:                            │
-│    Chào bạn! 🌟 FUN Ecosystem là...     │
-│    (streaming response)                 │
-└─────────────────────────────────────────┘
-```
+| Aspect | Benefit |
+|--------|---------|
+| **Tiêu đề thông minh** | AI phân tích toàn bộ nội dung, không chỉ câu đầu |
+| **Ngắn gọn** | 10-40 ký tự, dễ đọc |
+| **Tự động** | User không cần tự đặt tiêu đề |
+| **Fallback** | Nếu AI lỗi, dùng tin nhắn đầu của user |
+| **Override** | User vẫn có thể tự nhập title nếu muốn |
 
 ---
 
 ### Bước thực hiện
 
-1. Cập nhật `Chat.tsx`: Thêm states, logic thinking delay, UI indicator
-2. Cập nhật 5 file i18n với thinking phrases
-3. Test: Gửi tin nhắn → verify thấy "Đang suy nghĩ" → verify stream bắt đầu sau đó
+1. Cập nhật `supabase/functions/chat/index.ts`: Thêm mode `generateTitle`
+2. Cập nhật `ShareConversationDialog.tsx`: Logic gọi AI + UI states
+3. Cập nhật 5 file i18n: Link mới + text loading
+4. Deploy edge function
+5. Test: Mở Share dialog → verify tiêu đề được AI tạo tự động
 

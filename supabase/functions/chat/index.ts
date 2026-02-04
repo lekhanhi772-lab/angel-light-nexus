@@ -738,21 +738,33 @@ serve(async (req) => {
     if (generateTitle) {
       console.log('🏷️ MODE: GENERATE TITLE - Creating smart conversation title');
       
-      const titlePrompt = `Bạn là AI đặt tiêu đề hội thoại. Phân tích nội dung hội thoại sau và đặt MỘT tiêu đề ngắn gọn (10-50 ký tự) phản ánh chủ đề chính.
+      const titlePrompt = `BẠN LÀ CÔNG CỤ TẠO TIÊU ĐỀ. NHIỆM VỤ DUY NHẤT: Tạo MỘT tiêu đề ngắn gọn (10-40 ký tự) tóm tắt CHỦ ĐỀ CHÍNH của hội thoại.
 
-QUY TẮC:
-- CHỈ trả về tiêu đề, KHÔNG giải thích, KHÔNG emoji, KHÔNG dấu ngoặc kép
-- Tiêu đề phải súc tích, dễ hiểu, phản ánh nội dung chính
-- Ngôn ngữ: Tiếng Việt
-- Nếu hội thoại về tâm linh → dùng từ như "Hành trình", "Khám phá", "Ánh sáng"...
-- Nếu hội thoại về thông tin → dùng từ mô tả cụ thể chủ đề
+⚠️ QUY TẮC BẮT BUỘC:
+1. CHỈ trả về tiêu đề - KHÔNG trả lời câu hỏi, KHÔNG giải thích
+2. KHÔNG bắt đầu bằng "Tiêu đề:", "Title:" hay bất kỳ prefix nào
+3. KHÔNG dùng emoji, dấu ngoặc kép, dấu gạch đầu dòng
+4. Tiêu đề phải là DANH TỪ hoặc CỤM DANH TỪ mô tả chủ đề
+5. Viết Hoa Chữ Cái Đầu Mỗi Từ
+6. KHÔNG kết thúc bằng dấu chấm
 
-VÍ DỤ TIÊU ĐỀ TỐT:
-- "Khám Phá Về Tâm Và Review Tâm"
-- "Hành Trình Sống Chân Thật"
-- "8 Câu Thần Chú Chữa Lành"
-- "Giới Thiệu FUN Ecosystem"
-- "Ý Nghĩa Của Lòng Biết Ơn"`;
+📝 VÍ DỤ ĐÚNG:
+- Hội thoại hỏi tâm là gì → Khám Phá Về Tâm
+- Hội thoại về review tâm → Hành Trình Review Tâm
+- Hội thoại về FUN Ecosystem → Giới Thiệu FUN Ecosystem
+- Hội thoại về 8 câu thần chú → 8 Câu Thần Chú Ánh Sáng
+- Hội thoại về lòng biết ơn → Sức Mạnh Của Lòng Biết Ơn
+
+❌ SAI (đây là câu trả lời, không phải tiêu đề):
+- "Việc này giúp bạn sống tỉnh thức"
+- "Tâm là trạng thái nội tại của bạn."
+
+PHÂN TÍCH HỘI THOẠI VÀ TRẢ VỀ TIÊU ĐỀ:`;
+
+      // Tạo tóm tắt nội dung hội thoại
+      const conversationContent = messages
+        .map((m: any) => `${m.role === 'user' ? 'Người dùng' : 'Angel'}: ${m.content.slice(0, 200)}`)
+        .join('\n');
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
@@ -764,11 +776,11 @@ VÍ DỤ TIÊU ĐỀ TỐT:
           model: 'google/gemini-3-flash-preview',
           messages: [
             { role: 'system', content: titlePrompt },
-            ...messages
+            { role: 'user', content: `HỘI THOẠI:\n${conversationContent}\n\nTIÊU ĐỀ:` }
           ],
           stream: false,
-          max_tokens: 100,
-          temperature: 0.5,
+          max_tokens: 50,
+          temperature: 0.3,
         }),
       });
 
@@ -780,7 +792,21 @@ VÍ DỤ TIÊU ĐỀ TỐT:
       }
 
       const data = await response.json();
-      const generatedTitle = data?.choices?.[0]?.message?.content?.trim() || '';
+      let generatedTitle = data?.choices?.[0]?.message?.content?.trim() || '';
+      
+      // Clean và validate title
+      generatedTitle = generatedTitle
+        .replace(/^(Tiêu đề:|Title:)\s*/i, '')
+        .replace(/^["']|["']$/g, '')
+        .replace(/\.+$/, '')
+        .trim();
+
+      // Validate: title không nên dài hơn 60 ký tự hoặc chứa nhiều câu
+      if (generatedTitle.length > 60 || generatedTitle.includes('. ') || generatedTitle.split(' ').length > 12) {
+        console.log('🏷️ Title invalid, using fallback...');
+        const firstUserMsg = messages.find((m: any) => m.role === 'user');
+        generatedTitle = firstUserMsg?.content?.slice(0, 40)?.trim() || '';
+      }
       
       console.log('🏷️ Generated title:', generatedTitle);
       

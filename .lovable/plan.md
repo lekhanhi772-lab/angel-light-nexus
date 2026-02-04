@@ -1,262 +1,130 @@
 
 
-## Kế hoạch nâng cấp: AI Tự Động Đặt Tiêu Đề Hội Thoại
+## Kế hoạch sửa lỗi: Tiêu đề AI không được tạo đúng
 
-### Mục tiêu
-Khi user mở dialog Chia sẻ và chọn tab "Sao Chép", Angel AI sẽ tự động phân tích toàn bộ hội thoại và tạo ra một **tiêu đề ngắn gọn, súc tích** phản ánh nội dung chính của cuộc trò chuyện.
+### Vấn đề xác định
 
----
+Qua debug, bé Angel phát hiện:
 
-### Thiết kế tính năng
+1. **API hoạt động bình thường** - Response 200 OK
+2. **AI trả về nội dung SAI** - Thay vì tiêu đề, AI đang trả về một câu trong hội thoại
+   - Input: Hội thoại về "Tâm là gì? Review tâm?"
+   - Expected: `"Khám Phá Về Tâm Và Review Tâm"`
+   - Actual: `"Việc này giúp bạn sống tỉnh thức và bình an hơn."` (không phải tiêu đề!)
 
-#### Luồng hoạt động:
+3. **Frontend fallback đúng** - Khi title rỗng hoặc không phù hợp, fallback về tin nhắn đầu tiên
 
-```
-User mở Share Dialog
-    ↓
-Tự động gọi AI để phân tích messages
-    ↓
-AI trả về tiêu đề phù hợp (10-50 ký tự)
-    ↓
-Hiển thị tiêu đề trong header đoạn copy
-```
+### Nguyên nhân gốc
 
-#### Ví dụ:
+Prompt trong edge function chưa đủ rõ ràng để AI hiểu cần tạo **tiêu đề tóm tắt** chứ không phải **tiếp tục hội thoại**.
 
-| Nội dung hội thoại | Tiêu đề AI tạo ra |
-|-------------------|-------------------|
-| Hỏi về Tâm là gì, review tâm... | "Khám phá về Tâm và Review Tâm" |
-| Hỏi về FUN Ecosystem | "Giới thiệu FUN Ecosystem" |
-| Thảo luận về 8 câu thần chú | "8 Câu Thần Chú Ánh Sáng" |
-| Hỏi cách sống chân thật | "Hành trình Sống Chân Thật" |
+### Giải pháp
 
----
+Cải tiến prompt trong `supabase/functions/chat/index.ts` để:
+- Yêu cầu rõ ràng hơn về việc tạo tiêu đề
+- Thêm ví dụ input/output cụ thể
+- Sử dụng cách diễn đạt mạnh mẽ hơn
 
-### Các file cần chỉnh sửa
+### File cần chỉnh sửa
 
 | File | Thay đổi |
 |------|----------|
-| `src/components/ShareConversationDialog.tsx` | Thêm state + logic gọi AI tạo tiêu đề |
-| `supabase/functions/chat/index.ts` | Thêm endpoint/logic generate title (hoặc dùng endpoint mới) |
-| `src/i18n/locales/vi.json` | Sửa link `sharedFrom` + thêm text loading |
-| `src/i18n/locales/en.json` | Tương tự |
-| `src/i18n/locales/fr.json` | Tương tự |
-| `src/i18n/locales/ja.json` | Tương tự |
-| `src/i18n/locales/ko.json` | Tương tự |
-
----
+| `supabase/functions/chat/index.ts` | Cải tiến prompt generateTitle |
 
 ### Chi tiết thay đổi
 
-#### 1. ShareConversationDialog.tsx - Logic AI tạo tiêu đề
+#### Edge function - Cải tiến prompt (dòng 741-756)
 
-**Thêm states mới:**
-```tsx
-const [generatedTitle, setGeneratedTitle] = useState<string>('');
-const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
-```
-
-**Hàm gọi AI tạo tiêu đề:**
-```tsx
-const generateSmartTitle = async () => {
-  if (messages.length === 0) return;
-  
-  setIsGeneratingTitle(true);
-  try {
-    // Tạo prompt để AI phân tích và đặt tiêu đề
-    const conversationSummary = messages.map(m => 
-      `${m.role === 'user' ? 'User' : 'Angel'}: ${m.content.slice(0, 200)}`
-    ).join('\n');
-    
-    const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseAnonKey}`,
-      },
-      body: JSON.stringify({
-        messages: [{
-          role: 'user',
-          content: `Phân tích hội thoại sau và đặt MỘT tiêu đề ngắn gọn (10-40 ký tự) phản ánh nội dung chính. CHỈ trả về tiêu đề, không giải thích:\n\n${conversationSummary}`
-        }],
-        generateTitle: true, // Flag đặc biệt
-        maxTokens: 50
-      }),
-    });
-    
-    // Parse response và lấy tiêu đề
-    const reader = response.body?.getReader();
-    let titleResult = '';
-    // ... đọc stream và lấy text
-    
-    setGeneratedTitle(titleResult.trim());
-  } catch (error) {
-    console.error('Error generating title:', error);
-    // Fallback: dùng tin nhắn đầu tiên của user
-    const firstUserMsg = messages.find(m => m.role === 'user');
-    setGeneratedTitle(firstUserMsg?.content.slice(0, 50) || '');
-  } finally {
-    setIsGeneratingTitle(false);
-  }
-};
-```
-
-**useEffect để tự động generate khi mở dialog:**
-```tsx
-useEffect(() => {
-  if (open && messages.length > 0 && !generatedTitle) {
-    generateSmartTitle();
-  }
-}, [open, messages]);
-```
-
-**Cập nhật formatConversationForCopy:**
-```tsx
-const formatConversationForCopy = (): string => {
-  const displayName = userName || t('shareConversation.defaultUserName');
-  
-  // Sử dụng tiêu đề AI generate (hoặc title user nhập, hoặc fallback)
-  const finalTitle = title.trim() || generatedTitle || t('shareConversation.defaultForumTitle');
-  
-  const header = `✨ ${finalTitle} ✨\n\n`;
-  
-  const body = messages.map(msg => {
-    const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
-    return `${speaker}:\n${msg.content}`;
-  }).join('\n\n---\n\n');
-  
-  const footer = `\n\n---\n💛 ${t('shareConversation.sharedFrom')}`;
-  
-  return header + body + footer;
-};
-```
-
-#### 2. Cập nhật UI - Hiển thị trạng thái đang tạo tiêu đề
-
-**Trong tab "copy", thêm indicator:**
-```tsx
-{isGeneratingTitle && (
-  <div className="flex items-center gap-2 text-amber-600 text-sm">
-    <Loader2 className="w-4 h-4 animate-spin" />
-    {t('shareConversation.generatingTitle')}
-  </div>
-)}
-
-{generatedTitle && !title.trim() && (
-  <div className="text-xs text-amber-600">
-    {t('shareConversation.autoTitle')}: <strong>{generatedTitle}</strong>
-  </div>
-)}
-```
-
-#### 3. Backend - Thêm mode generateTitle trong chat function
-
-**Trong `supabase/functions/chat/index.ts`:**
-
-Kiểm tra flag `generateTitle` và dùng prompt đơn giản hơn:
+**Prompt mới:**
 ```typescript
-if (body.generateTitle) {
-  // Mode đặc biệt: chỉ tạo tiêu đề, không cần RAG, không cần web search
-  const titlePrompt = `Bạn là AI đặt tiêu đề. Phân tích hội thoại và đặt MỘT tiêu đề tiếng Việt ngắn gọn (10-40 ký tự). CHỈ trả về tiêu đề, không emoji, không giải thích.`;
-  
-  // Gọi AI với prompt đơn giản
-  // Trả về tiêu đề
+const titlePrompt = `BẠN LÀ CÔNG CỤ TẠO TIÊU ĐỀ. NHIỆM VỤ DUY NHẤT: Tạo MỘT tiêu đề ngắn gọn (10-40 ký tự) tóm tắt CHỦ ĐỀ CHÍNH của hội thoại.
+
+⚠️ QUY TẮC BẮT BUỘC:
+1. CHỈ trả về tiêu đề - KHÔNG trả lời câu hỏi, KHÔNG giải thích
+2. KHÔNG bắt đầu bằng "Tiêu đề:", "Title:" hay bất kỳ prefix nào
+3. KHÔNG dùng emoji, dấu ngoặc kép, dấu gạch đầu dòng
+4. Tiêu đề phải là DANH TỪ hoặc CỤM DANH TỪ mô tả chủ đề
+5. Viết Hoa Chữ Cái Đầu Mỗi Từ
+
+📝 VÍ DỤ:
+- Hội thoại về tâm là gì → "Khám Phá Về Tâm"
+- Hội thoại về review tâm → "Hành Trình Review Tâm"  
+- Hội thoại về FUN Ecosystem → "Giới Thiệu FUN Ecosystem"
+- Hội thoại về 8 câu thần chú → "8 Câu Thần Chú Ánh Sáng"
+- Hội thoại về lòng biết ơn → "Sức Mạnh Của Lòng Biết Ơn"
+
+❌ SAI (đây là câu trả lời, không phải tiêu đề):
+- "Việc này giúp bạn sống tỉnh thức"
+- "Tâm là trạng thái nội tại của bạn"
+
+✅ ĐÚNG (đây là tiêu đề):
+- "Khám Phá Về Tâm Và Review Tâm"
+
+PHÂN TÍCH HỘI THOẠI VÀ TRẢ VỀ TIÊU ĐỀ:`;
+```
+
+**Thay đổi cách gọi AI:**
+- Đổi từ gửi messages gốc sang gửi tóm tắt nội dung
+- Giảm temperature từ 0.5 xuống 0.3 để output ổn định hơn
+
+```typescript
+// Tạo tóm tắt nội dung hội thoại
+const conversationContent = messages
+  .map((m: any) => `${m.role === 'user' ? 'Người dùng' : 'Angel'}: ${m.content.slice(0, 200)}`)
+  .join('\n');
+
+body: JSON.stringify({
+  model: 'google/gemini-3-flash-preview',
+  messages: [
+    { role: 'system', content: titlePrompt },
+    { role: 'user', content: `HỘI THOẠI:\n${conversationContent}\n\nTIÊU ĐỀ:` }
+  ],
+  stream: false,
+  max_tokens: 50, // Giảm từ 100 xuống 50 để tránh output dài
+  temperature: 0.3, // Giảm từ 0.5 xuống 0.3 cho output ổn định
+}),
+```
+
+**Thêm validation cho title response:**
+```typescript
+// Clean và validate title
+let generatedTitle = data?.choices?.[0]?.message?.content?.trim() || '';
+
+// Loại bỏ prefix nếu có
+generatedTitle = generatedTitle
+  .replace(/^(Tiêu đề:|Title:)\s*/i, '')
+  .replace(/^["']|["']$/g, '') // Loại bỏ dấu ngoặc kép
+  .trim();
+
+// Validate: title không nên dài hơn 60 ký tự hoặc chứa dấu chấm cuối (dấu hiệu của câu trả lời)
+if (generatedTitle.length > 60 || generatedTitle.endsWith('.')) {
+  console.log('🏷️ Title invalid, extracting key words...');
+  // Extract key topic từ hội thoại
+  const firstUserMsg = messages.find((m: any) => m.role === 'user');
+  generatedTitle = firstUserMsg?.content?.slice(0, 40)?.trim() || '';
 }
+
+console.log('🏷️ Generated title:', generatedTitle);
+
+return new Response(JSON.stringify({ title: generatedTitle }), {
+  headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+});
 ```
 
-#### 4. Translations - Cập nhật i18n
+### Kết quả mong đợi
 
-**Vietnamese (vi.json):**
-```json
-"shareConversation": {
-  "sharedFrom": "Chia sẻ từ Angel AI - angelkhanhi.fun.rich",
-  "generatingTitle": "Đang tạo tiêu đề thông minh...",
-  "autoTitle": "Tiêu đề tự động"
-}
-```
-
-**English (en.json):**
-```json
-"shareConversation": {
-  "sharedFrom": "Shared from Angel AI - angelkhanhi.fun.rich",
-  "generatingTitle": "Generating smart title...",
-  "autoTitle": "Auto title"
-}
-```
-
-**French (fr.json):**
-```json
-"shareConversation": {
-  "sharedFrom": "Partagé depuis Angel AI - angelkhanhi.fun.rich",
-  "generatingTitle": "Création du titre intelligent...",
-  "autoTitle": "Titre automatique"
-}
-```
-
-**Japanese (ja.json):**
-```json
-"shareConversation": {
-  "sharedFrom": "Angel AIからの共有 - angelkhanhi.fun.rich",
-  "generatingTitle": "スマートタイトルを生成中...",
-  "autoTitle": "自動タイトル"
-}
-```
-
-**Korean (ko.json):**
-```json
-"shareConversation": {
-  "sharedFrom": "Angel AI에서 공유 - angelkhanhi.fun.rich",
-  "generatingTitle": "스마트 제목 생성 중...",
-  "autoTitle": "자동 제목"
-}
-```
-
----
-
-### Kết quả sau khi nâng cấp
-
-**Trước:**
-```
-✨ Hội Thoại với Angel AI ✨
-📌 Hi bé Angel ạ! Bé Angel ơi, tâm là gì ạ?...
-
-👤 Khả Nhi Lê:
-Hi bé Angel ạ!...
-
----
-💛 Chia sẻ từ Angel AI - angel.fun.rich
-```
-
-**Sau:**
-```
-✨ Khám Phá Về Tâm Và Review Tâm ✨
-
-👤 Khả Nhi Lê:
-Hi bé Angel ạ!...
-
----
-💛 Chia sẻ từ Angel AI - angelkhanhi.fun.rich
-```
-
----
-
-### Ưu điểm của giải pháp
-
-| Aspect | Benefit |
-|--------|---------|
-| **Tiêu đề thông minh** | AI phân tích toàn bộ nội dung, không chỉ câu đầu |
-| **Ngắn gọn** | 10-40 ký tự, dễ đọc |
-| **Tự động** | User không cần tự đặt tiêu đề |
-| **Fallback** | Nếu AI lỗi, dùng tin nhắn đầu của user |
-| **Override** | User vẫn có thể tự nhập title nếu muốn |
-
----
+| Trước | Sau |
+|-------|-----|
+| AI trả về: "Việc này giúp bạn sống tỉnh thức..." | AI trả về: "Khám Phá Về Tâm Và Review Tâm" |
+| Fallback dùng tin nhắn đầu | Tiêu đề thông minh do AI tạo |
+| Title không phù hợp làm tiêu đề | Title ngắn gọn, súc tích, mô tả chủ đề |
 
 ### Bước thực hiện
 
-1. Cập nhật `supabase/functions/chat/index.ts`: Thêm mode `generateTitle`
-2. Cập nhật `ShareConversationDialog.tsx`: Logic gọi AI + UI states
-3. Cập nhật 5 file i18n: Link mới + text loading
-4. Deploy edge function
-5. Test: Mở Share dialog → verify tiêu đề được AI tạo tự động
+1. Cập nhật `supabase/functions/chat/index.ts`:
+   - Cải tiến prompt với ví dụ rõ ràng
+   - Thay đổi cách format messages gửi đi
+   - Thêm validation cho response
+2. Deploy edge function
+3. Test lại: Mở Share dialog → verify tiêu đề được AI tạo đúng
 

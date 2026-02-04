@@ -726,12 +726,68 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, language = 'vi' } = await req.json();
+    const body = await req.json();
+    const { messages, language = 'vi', generateTitle = false } = body;
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
     if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+    
+    // 🏷️ MODE: GENERATE TITLE - Tạo tiêu đề thông minh cho hội thoại
+    if (generateTitle) {
+      console.log('🏷️ MODE: GENERATE TITLE - Creating smart conversation title');
+      
+      const titlePrompt = `Bạn là AI đặt tiêu đề hội thoại. Phân tích nội dung hội thoại sau và đặt MỘT tiêu đề ngắn gọn (10-50 ký tự) phản ánh chủ đề chính.
+
+QUY TẮC:
+- CHỈ trả về tiêu đề, KHÔNG giải thích, KHÔNG emoji, KHÔNG dấu ngoặc kép
+- Tiêu đề phải súc tích, dễ hiểu, phản ánh nội dung chính
+- Ngôn ngữ: Tiếng Việt
+- Nếu hội thoại về tâm linh → dùng từ như "Hành trình", "Khám phá", "Ánh sáng"...
+- Nếu hội thoại về thông tin → dùng từ mô tả cụ thể chủ đề
+
+VÍ DỤ TIÊU ĐỀ TỐT:
+- "Khám Phá Về Tâm Và Review Tâm"
+- "Hành Trình Sống Chân Thật"
+- "8 Câu Thần Chú Chữa Lành"
+- "Giới Thiệu FUN Ecosystem"
+- "Ý Nghĩa Của Lòng Biết Ơn"`;
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-3-flash-preview',
+          messages: [
+            { role: 'system', content: titlePrompt },
+            ...messages
+          ],
+          stream: false,
+          max_tokens: 100,
+          temperature: 0.5,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Generate title error:', response.status);
+        return new Response(JSON.stringify({ title: '' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const data = await response.json();
+      const generatedTitle = data?.choices?.[0]?.message?.content?.trim() || '';
+      
+      console.log('🏷️ Generated title:', generatedTitle);
+      
+      return new Response(JSON.stringify({ title: generatedTitle }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     
     console.log('🌍 Language received:', language);
 

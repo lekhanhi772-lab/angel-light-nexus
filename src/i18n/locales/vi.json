@@ -714,7 +714,9 @@
     "conversationCopied": "Đã sao chép hội thoại! ✨",
     "defaultUserName": "Bạn",
     "conversationHeader": "Hội Thoại với Angel AI",
-    "sharedFrom": "Chia sẻ từ Angel AI - angel.fun.rich"
+    "sharedFrom": "Chia sẻ từ Angel AI - angelkhanhi.fun.rich",
+    "generatingTitle": "Đang tạo tiêu đề thông minh...",
+    "autoTitle": "Tiêu đề tự động"
   },
   "pwa": {
     "pageTitle": "Cài Đặt Angel AI",

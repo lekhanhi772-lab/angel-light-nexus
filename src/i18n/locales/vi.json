@@ -95,6 +95,12 @@
         "🎨 Thiên thần nhỏ đang cầu nguyện trong ánh sáng",
         "🎨 Vũ trụ huyền bí với các vì sao lấp lánh"
       ]
+    },
+    "thinking": {
+      "analyzing": "Bé Angel đang phân tích câu hỏi của bạn...",
+      "connecting": "Đang kết nối với ánh sáng vũ trụ...",
+      "consulting": "Đang tra cứu tài liệu ánh sáng...",
+      "crafting": "Đang soạn câu trả lời tốt nhất cho bạn..."
     }
   },
   "theme": {

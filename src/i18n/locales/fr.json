@@ -95,6 +95,12 @@
         "🎨 Un petit ange priant dans la lumière",
         "🎨 Univers mystérieux avec des étoiles scintillantes"
       ]
+    },
+    "thinking": {
+      "analyzing": "Angel analyse votre question...",
+      "connecting": "Connexion à la lumière cosmique...",
+      "consulting": "Consultation des documents de lumière...",
+      "crafting": "Préparation de la meilleure réponse..."
     }
   },
   "theme": {

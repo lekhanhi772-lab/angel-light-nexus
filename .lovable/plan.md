@@ -1,130 +1,91 @@
 
 
-## Kế hoạch sửa lỗi: Tiêu đề AI không được tạo đúng
+## Kế hoạch: Giữ nguyên định dạng in đậm khi sao chép hội thoại
 
-### Vấn đề xác định
+### Vấn đề hiện tại
 
-Qua debug, bé Angel phát hiện:
-
-1. **API hoạt động bình thường** - Response 200 OK
-2. **AI trả về nội dung SAI** - Thay vì tiêu đề, AI đang trả về một câu trong hội thoại
-   - Input: Hội thoại về "Tâm là gì? Review tâm?"
-   - Expected: `"Khám Phá Về Tâm Và Review Tâm"`
-   - Actual: `"Việc này giúp bạn sống tỉnh thức và bình an hơn."` (không phải tiêu đề!)
-
-3. **Frontend fallback đúng** - Khi title rỗng hoặc không phù hợp, fallback về tin nhắn đầu tiên
-
-### Nguyên nhân gốc
-
-Prompt trong edge function chưa đủ rõ ràng để AI hiểu cần tạo **tiêu đề tóm tắt** chứ không phải **tiếp tục hội thoại**.
+Hiện tại, khi sao chép hội thoại, hệ thống dùng `navigator.clipboard.writeText()` chỉ copy được **văn bản thuần** (plain text). Các từ in đậm trong phản hồi của Angel AI (ví dụ: `**Tăng tần số rung động:**`) sẽ hiển thị nguyên markdown syntax `**...**` thay vì giữ định dạng in đậm.
 
 ### Giải pháp
 
-Cải tiến prompt trong `supabase/functions/chat/index.ts` để:
-- Yêu cầu rõ ràng hơn về việc tạo tiêu đề
-- Thêm ví dụ input/output cụ thể
-- Sử dụng cách diễn đạt mạnh mẽ hơn
+Chuyển sang dùng `navigator.clipboard.write()` với **Clipboard API** để copy cả hai định dạng:
+- **text/html**: Chứa nội dung HTML với thẻ `<b>` cho chữ in đậm (dùng khi paste vào app hỗ trợ rich text như Word, Google Docs, Messenger, Zalo...)
+- **text/plain**: Chứa nội dung plain text bình thường (fallback khi paste vào nơi chỉ hỗ trợ text)
 
 ### File cần chỉnh sửa
 
 | File | Thay đổi |
 |------|----------|
-| `supabase/functions/chat/index.ts` | Cải tiến prompt generateTitle |
+| `src/components/ShareConversationDialog.tsx` | Thêm hàm convert markdown bold sang HTML + dùng Clipboard API mới |
 
 ### Chi tiết thay đổi
 
-#### Edge function - Cải tiến prompt (dòng 741-756)
+#### 1. Thêm hàm chuyển đổi markdown bold sang HTML
 
-**Prompt mới:**
 ```typescript
-const titlePrompt = `BẠN LÀ CÔNG CỤ TẠO TIÊU ĐỀ. NHIỆM VỤ DUY NHẤT: Tạo MỘT tiêu đề ngắn gọn (10-40 ký tự) tóm tắt CHỦ ĐỀ CHÍNH của hội thoại.
-
-⚠️ QUY TẮC BẮT BUỘC:
-1. CHỈ trả về tiêu đề - KHÔNG trả lời câu hỏi, KHÔNG giải thích
-2. KHÔNG bắt đầu bằng "Tiêu đề:", "Title:" hay bất kỳ prefix nào
-3. KHÔNG dùng emoji, dấu ngoặc kép, dấu gạch đầu dòng
-4. Tiêu đề phải là DANH TỪ hoặc CỤM DANH TỪ mô tả chủ đề
-5. Viết Hoa Chữ Cái Đầu Mỗi Từ
-
-📝 VÍ DỤ:
-- Hội thoại về tâm là gì → "Khám Phá Về Tâm"
-- Hội thoại về review tâm → "Hành Trình Review Tâm"  
-- Hội thoại về FUN Ecosystem → "Giới Thiệu FUN Ecosystem"
-- Hội thoại về 8 câu thần chú → "8 Câu Thần Chú Ánh Sáng"
-- Hội thoại về lòng biết ơn → "Sức Mạnh Của Lòng Biết Ơn"
-
-❌ SAI (đây là câu trả lời, không phải tiêu đề):
-- "Việc này giúp bạn sống tỉnh thức"
-- "Tâm là trạng thái nội tại của bạn"
-
-✅ ĐÚNG (đây là tiêu đề):
-- "Khám Phá Về Tâm Và Review Tâm"
-
-PHÂN TÍCH HỘI THOẠI VÀ TRẢ VỀ TIÊU ĐỀ:`;
+// Chuyển **text** thành <b>text</b> trong HTML
+const markdownToHtml = (text: string): string => {
+  return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+};
 ```
 
-**Thay đổi cách gọi AI:**
-- Đổi từ gửi messages gốc sang gửi tóm tắt nội dung
-- Giảm temperature từ 0.5 xuống 0.3 để output ổn định hơn
+#### 2. Thêm hàm format HTML cho clipboard
 
 ```typescript
-// Tạo tóm tắt nội dung hội thoại
-const conversationContent = messages
-  .map((m: any) => `${m.role === 'user' ? 'Người dùng' : 'Angel'}: ${m.content.slice(0, 200)}`)
-  .join('\n');
+const formatConversationForHtml = (): string => {
+  const displayName = userName || t('shareConversation.defaultUserName');
+  const finalTitle = title.trim() || generatedTitle || t('shareConversation.defaultForumTitle');
 
-body: JSON.stringify({
-  model: 'google/gemini-3-flash-preview',
-  messages: [
-    { role: 'system', content: titlePrompt },
-    { role: 'user', content: `HỘI THOẠI:\n${conversationContent}\n\nTIÊU ĐỀ:` }
-  ],
-  stream: false,
-  max_tokens: 50, // Giảm từ 100 xuống 50 để tránh output dài
-  temperature: 0.3, // Giảm từ 0.5 xuống 0.3 cho output ổn định
-}),
+  const header = `<div style="...">✨ ${finalTitle} ✨</div><br/>`;
+
+  const body = messages.map(msg => {
+    const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
+    const htmlContent = markdownToHtml(msg.content)
+      .replace(/\n/g, '<br/>'); // Giữ xuống dòng
+    return `<div><b>${speaker}:</b><br/>${htmlContent}</div>`;
+  }).join('<hr/>');
+
+  const footer = `<hr/><div>💛 ${t('shareConversation.sharedFrom')}</div>`;
+
+  return header + body + footer;
+};
 ```
 
-**Thêm validation cho title response:**
+#### 3. Cập nhật handleCopyConversation
+
 ```typescript
-// Clean và validate title
-let generatedTitle = data?.choices?.[0]?.message?.content?.trim() || '';
+const handleCopyConversation = async () => {
+  const plainText = formatConversationForCopy();
+  const htmlText = formatConversationForHtml();
 
-// Loại bỏ prefix nếu có
-generatedTitle = generatedTitle
-  .replace(/^(Tiêu đề:|Title:)\s*/i, '')
-  .replace(/^["']|["']$/g, '') // Loại bỏ dấu ngoặc kép
-  .trim();
-
-// Validate: title không nên dài hơn 60 ký tự hoặc chứa dấu chấm cuối (dấu hiệu của câu trả lời)
-if (generatedTitle.length > 60 || generatedTitle.endsWith('.')) {
-  console.log('🏷️ Title invalid, extracting key words...');
-  // Extract key topic từ hội thoại
-  const firstUserMsg = messages.find((m: any) => m.role === 'user');
-  generatedTitle = firstUserMsg?.content?.slice(0, 40)?.trim() || '';
-}
-
-console.log('🏷️ Generated title:', generatedTitle);
-
-return new Response(JSON.stringify({ title: generatedTitle }), {
-  headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-});
+  try {
+    // Thử copy với rich text (HTML) trước
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        'text/html': new Blob([htmlText], { type: 'text/html' }),
+        'text/plain': new Blob([plainText], { type: 'text/plain' }),
+      }),
+    ]);
+    // toast success...
+  } catch {
+    // Fallback: copy plain text nếu browser không hỗ trợ
+    await navigator.clipboard.writeText(plainText);
+  }
+};
 ```
 
 ### Kết quả mong đợi
 
-| Trước | Sau |
-|-------|-----|
-| AI trả về: "Việc này giúp bạn sống tỉnh thức..." | AI trả về: "Khám Phá Về Tâm Và Review Tâm" |
-| Fallback dùng tin nhắn đầu | Tiêu đề thông minh do AI tạo |
-| Title không phù hợp làm tiêu đề | Title ngắn gọn, súc tích, mô tả chủ đề |
+| Paste vào | Trước (plain text) | Sau (rich text) |
+|-----------|-------------------|-----------------|
+| Google Docs | `**Tăng tần số rung động:**` | **Tăng tần số rung động:** |
+| Messenger/Zalo | `**Ánh Sáng**` | **Ánh Sáng** |
+| Notepad | `**text**` (không đổi) | `**text**` (giữ nguyên plain text fallback) |
 
 ### Bước thực hiện
 
-1. Cập nhật `supabase/functions/chat/index.ts`:
-   - Cải tiến prompt với ví dụ rõ ràng
-   - Thay đổi cách format messages gửi đi
-   - Thêm validation cho response
-2. Deploy edge function
-3. Test lại: Mở Share dialog → verify tiêu đề được AI tạo đúng
+1. Thêm hàm `markdownToHtml` chuyển `**text**` thành `<b>text</b>`
+2. Thêm hàm `formatConversationForHtml` tạo nội dung HTML
+3. Cập nhật `handleCopyConversation` dùng `ClipboardItem` API
+4. Giữ nguyên `formatConversationForCopy` làm plain text fallback
 

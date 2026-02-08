@@ -75,14 +75,31 @@ const SharedConversation = () => {
     loadSharedConversation();
   }, [shareToken]);
 
+  const markdownToHtml = (text: string): string => {
+    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  };
+
   const handleCopy = async (text: string, id: string) => {
     try {
-      await navigator.clipboard.writeText(text);
+      const htmlText = markdownToHtml(text).replace(/\n/g, '<br/>');
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([htmlText], { type: 'text/html' }),
+          'text/plain': new Blob([text], { type: 'text/plain' }),
+        }),
+      ]);
       setCopiedId(id);
       toast.success(t('chat.copied'));
       setTimeout(() => setCopiedId(null), 2000);
     } catch {
-      toast.error('Copy failed');
+      try {
+        await navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        toast.success(t('chat.copied'));
+        setTimeout(() => setCopiedId(null), 2000);
+      } catch {
+        toast.error('Copy failed');
+      }
     }
   };
 

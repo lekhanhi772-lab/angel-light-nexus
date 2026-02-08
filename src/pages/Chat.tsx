@@ -153,15 +153,33 @@ const Chat = () => {
     }
   }, [voiceIO.isSpeaking, edgeTTS.isSpeaking]);
 
-  // Handle copy message
+  // Convert markdown bold to HTML bold
+  const markdownToHtml = (text: string): string => {
+    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  };
+
+  // Handle copy message with rich text support
   const handleCopyMessage = async (text: string, messageId: string) => {
     try {
-      await navigator.clipboard.writeText(text);
+      const htmlText = markdownToHtml(text).replace(/\n/g, '<br/>');
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([htmlText], { type: 'text/html' }),
+          'text/plain': new Blob([text], { type: 'text/plain' }),
+        }),
+      ]);
       setCopiedMessageId(messageId);
       toast.success(t('chat.copied'));
       setTimeout(() => setCopiedMessageId(null), 2000);
-    } catch (err) {
-      toast.error('Copy failed');
+    } catch {
+      try {
+        await navigator.clipboard.writeText(text);
+        setCopiedMessageId(messageId);
+        toast.success(t('chat.copied'));
+        setTimeout(() => setCopiedMessageId(null), 2000);
+      } catch {
+        toast.error('Copy failed');
+      }
     }
   };
 

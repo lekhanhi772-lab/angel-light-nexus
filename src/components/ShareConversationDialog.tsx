@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useShareConversation } from '@/hooks/useShareConversation';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { markdownToHtml } from '@/lib/utils';
 
 interface Message {
   id?: string;
@@ -122,10 +123,6 @@ export const ShareConversationDialog = ({
     }
   };
 
-  // Chuyển **text** thành <b>text</b> trong HTML
-  const markdownToHtml = (text: string): string => {
-    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-  };
 
   const formatConversationForCopy = (): string => {
     const displayName = userName || t('shareConversation.defaultUserName');

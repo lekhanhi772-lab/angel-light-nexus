@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Send, Sparkles, ArrowUp, Image, Loader2, Download, Home, Plus, MessageSquare, Trash2, Star, LogIn, ChevronLeft, ChevronRight, Menu, Mic, MicOff, Volume2, VolumeX, Copy, Check, X, Bookmark, BookmarkCheck, Share2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, markdownToHtml } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import angelAvatar from '@/assets/angel-avatar.png';
@@ -152,11 +152,6 @@ const Chat = () => {
       setCurrentSpeakingId(null);
     }
   }, [voiceIO.isSpeaking, edgeTTS.isSpeaking]);
-
-  // Convert markdown bold to HTML bold
-  const markdownToHtml = (text: string): string => {
-    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-  };
 
   // Handle copy message with rich text support
   const handleCopyMessage = async (text: string, messageId: string) => {

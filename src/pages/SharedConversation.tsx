@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageSquare, User, Sparkles, Calendar, ArrowRight, Home, Copy, Check, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import { cn, markdownToHtml } from '@/lib/utils';
 import { useShareConversation } from '@/hooks/useShareConversation';
 import { useEdgeTTS } from '@/hooks/useEdgeTTS';
 import { getSpeechCode, getEdgeVoice } from '@/i18n';
@@ -75,9 +75,6 @@ const SharedConversation = () => {
     loadSharedConversation();
   }, [shareToken]);
 
-  const markdownToHtml = (text: string): string => {
-    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-  };
 
   const handleCopy = async (text: string, id: string) => {
     try {

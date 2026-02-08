@@ -1,93 +1,68 @@
 
-## Kế hoạch: Giữ định dạng in đậm cho nút Copy từng tin nhắn
 
-### Vấn đề
+## Kế hoạch: Xử lý ký tự markdown (###, ---) khi copy tin nhắn
 
-Nút **Copy** trên từng tin nhắn trong trang Chat và SharedConversation vẫn dùng `navigator.clipboard.writeText()` (plain text), nên khi paste ra ngoài vẫn thấy dấu `**...**` thay vì chữ in đậm.
+### Vấn đề hiện tại
 
-### File cần chỉnh sửa
+Hàm `markdownToHtml` chỉ chuyển đổi `**bold**` sang `<b>`, nhưng chưa xử lý:
+- `### Tiêu đề` -- hiển thị nguyên ký tự `###` khi paste
+- `---` -- hiển thị nguyên dấu gạch ngang khi paste
+- Các heading khác: `#`, `##`, `####`
 
-| File | Vị trí | Thay đổi |
-|------|--------|----------|
-| `src/pages/Chat.tsx` | Dòng 156-166 (`handleCopyMessage`) | Chuyển sang Clipboard API rich text |
-| `src/pages/SharedConversation.tsx` | Dòng 78-84 (`handleCopy`) | Chuyển sang Clipboard API rich text |
+Ngoài ra, hàm này đang bị **trùng lặp ở 3 file** (Chat.tsx, SharedConversation.tsx, ShareConversationDialog.tsx).
 
-### Chi tiết thay đổi
+### Giải pháp
 
-#### 1. Chat.tsx - Cập nhật `handleCopyMessage`
+1. Tạo hàm tiện ích chung `markdownToHtml` trong `src/lib/utils.ts`
+2. Xử lý đầy đủ các cú pháp markdown phổ biến
+3. Cập nhật 3 file để dùng hàm chung
 
-**Trước:**
+### File cần thay đổi
+
+| File | Thay đổi |
+|------|----------|
+| `src/lib/utils.ts` | Thêm hàm `markdownToHtml` xử lý đầy đủ markdown |
+| `src/pages/Chat.tsx` | Import và dùng hàm chung, xóa hàm local |
+| `src/pages/SharedConversation.tsx` | Import và dùng hàm chung, xóa hàm local |
+| `src/components/ShareConversationDialog.tsx` | Import và dùng hàm chung, xóa hàm local |
+
+### Chi tiết kỹ thuật
+
+#### 1. Hàm `markdownToHtml` mới trong `src/lib/utils.ts`
+
 ```typescript
-const handleCopyMessage = async (text: string, messageId: string) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    setCopiedMessageId(messageId);
-    toast.success(t('chat.copied'));
-    setTimeout(() => setCopiedMessageId(null), 2000);
-  } catch (err) {
-    toast.error('Copy failed');
-  }
+export const markdownToHtml = (text: string): string => {
+  return text
+    // Heading ### / ## / # -> in đậm, viết hoa
+    .replace(/^#{1,4}\s+(.*?)$/gm, '<b>$1</b>')
+    // Dấu --- (horizontal rule) -> loại bỏ hoàn toàn
+    .replace(/^-{3,}$/gm, '')
+    // Bold **text** -> <b>text</b>
+    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
 };
 ```
 
-**Sau:**
-```typescript
-const markdownToHtml = (text: string): string => {
-  return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-};
+Bảng chuyển đổi:
 
-const handleCopyMessage = async (text: string, messageId: string) => {
-  try {
-    const htmlText = markdownToHtml(text).replace(/\n/g, '<br/>');
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        'text/html': new Blob([htmlText], { type: 'text/html' }),
-        'text/plain': new Blob([text], { type: 'text/plain' }),
-      }),
-    ]);
-    setCopiedMessageId(messageId);
-    toast.success(t('chat.copied'));
-    setTimeout(() => setCopiedMessageId(null), 2000);
-  } catch {
-    // Fallback cho browser khong ho tro ClipboardItem
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedMessageId(messageId);
-      toast.success(t('chat.copied'));
-      setTimeout(() => setCopiedMessageId(null), 2000);
-    } catch {
-      toast.error('Copy failed');
-    }
-  }
-};
-```
+| Markdown | HTML Output |
+|----------|-------------|
+| `### Tiêu đề` | `<b>Tiêu de</b>` |
+| `## Tiêu đề` | `<b>Tiêu de</b>` |
+| `---` | (bỏ trống - loại bỏ) |
+| `**chữ đậm**` | `<b>chữ đậm</b>` |
 
-#### 2. SharedConversation.tsx - Cập nhật `handleCopy`
+#### 2. Cập nhật 3 file
 
-Tuong tu, chuyen `handleCopy` sang dung `ClipboardItem` voi ca `text/html` va `text/plain`.
+Ở cả Chat.tsx, SharedConversation.tsx, ShareConversationDialog.tsx:
+- Thêm `import { markdownToHtml } from '@/lib/utils'`
+- Xóa hàm `markdownToHtml` local (đang khai báo riêng trong mỗi file)
+- Giữ nguyên logic copy clipboard (không thay đổi)
 
-### Logic hoat dong
+### Kết quả mong đợi
 
-```text
-User bam nut Copy tin nhan
-    |
-    v
-Chuyen markdown **text** thanh HTML <b>text</b>
-    |
-    v
-Copy vao clipboard voi 2 dinh dang:
-  - text/html: <b>text</b> (cho Word, Docs, Messenger...)
-  - text/plain: **text** giu nguyen (cho Notepad, terminal...)
-    |
-    v
-Khi paste vao app ho tro rich text -> hien thi in dam
-Khi paste vao plain text editor -> hien thi nguyen ban
-```
+| Paste vào Word | Truoc | Sau |
+|----------------|-------|-----|
+| `### Tiêu đề` | Hiện nguyên `###` | **Tiêu đề** (in đậm) |
+| `---` | Hiện dấu `---` | (không hiển thị gì) |
+| `**chữ đậm**` | **chữ đậm** | **chữ đậm** (giữ nguyên) |
 
-### Ket qua mong doi
-
-| Hanh dong | Truoc | Sau |
-|-----------|-------|-----|
-| Copy 1 tin nhan, paste vao Docs | `**Tang tan so:**` | **Tang tan so:** |
-| Copy 1 tin nhan, paste vao Messenger | `**Anh Sang**` | **Anh Sang** |
-| Copy 1 tin nhan, paste vao Notepad | `**text**` | `**text**` (giu nguyen) |

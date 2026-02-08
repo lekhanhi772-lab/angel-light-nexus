@@ -1,91 +1,93 @@
 
+## Kế hoạch: Giữ định dạng in đậm cho nút Copy từng tin nhắn
 
-## Kế hoạch: Giữ nguyên định dạng in đậm khi sao chép hội thoại
+### Vấn đề
 
-### Vấn đề hiện tại
-
-Hiện tại, khi sao chép hội thoại, hệ thống dùng `navigator.clipboard.writeText()` chỉ copy được **văn bản thuần** (plain text). Các từ in đậm trong phản hồi của Angel AI (ví dụ: `**Tăng tần số rung động:**`) sẽ hiển thị nguyên markdown syntax `**...**` thay vì giữ định dạng in đậm.
-
-### Giải pháp
-
-Chuyển sang dùng `navigator.clipboard.write()` với **Clipboard API** để copy cả hai định dạng:
-- **text/html**: Chứa nội dung HTML với thẻ `<b>` cho chữ in đậm (dùng khi paste vào app hỗ trợ rich text như Word, Google Docs, Messenger, Zalo...)
-- **text/plain**: Chứa nội dung plain text bình thường (fallback khi paste vào nơi chỉ hỗ trợ text)
+Nút **Copy** trên từng tin nhắn trong trang Chat và SharedConversation vẫn dùng `navigator.clipboard.writeText()` (plain text), nên khi paste ra ngoài vẫn thấy dấu `**...**` thay vì chữ in đậm.
 
 ### File cần chỉnh sửa
 
-| File | Thay đổi |
-|------|----------|
-| `src/components/ShareConversationDialog.tsx` | Thêm hàm convert markdown bold sang HTML + dùng Clipboard API mới |
+| File | Vị trí | Thay đổi |
+|------|--------|----------|
+| `src/pages/Chat.tsx` | Dòng 156-166 (`handleCopyMessage`) | Chuyển sang Clipboard API rich text |
+| `src/pages/SharedConversation.tsx` | Dòng 78-84 (`handleCopy`) | Chuyển sang Clipboard API rich text |
 
 ### Chi tiết thay đổi
 
-#### 1. Thêm hàm chuyển đổi markdown bold sang HTML
+#### 1. Chat.tsx - Cập nhật `handleCopyMessage`
 
+**Trước:**
 ```typescript
-// Chuyển **text** thành <b>text</b> trong HTML
-const markdownToHtml = (text: string): string => {
-  return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-};
-```
-
-#### 2. Thêm hàm format HTML cho clipboard
-
-```typescript
-const formatConversationForHtml = (): string => {
-  const displayName = userName || t('shareConversation.defaultUserName');
-  const finalTitle = title.trim() || generatedTitle || t('shareConversation.defaultForumTitle');
-
-  const header = `<div style="...">✨ ${finalTitle} ✨</div><br/>`;
-
-  const body = messages.map(msg => {
-    const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
-    const htmlContent = markdownToHtml(msg.content)
-      .replace(/\n/g, '<br/>'); // Giữ xuống dòng
-    return `<div><b>${speaker}:</b><br/>${htmlContent}</div>`;
-  }).join('<hr/>');
-
-  const footer = `<hr/><div>💛 ${t('shareConversation.sharedFrom')}</div>`;
-
-  return header + body + footer;
-};
-```
-
-#### 3. Cập nhật handleCopyConversation
-
-```typescript
-const handleCopyConversation = async () => {
-  const plainText = formatConversationForCopy();
-  const htmlText = formatConversationForHtml();
-
+const handleCopyMessage = async (text: string, messageId: string) => {
   try {
-    // Thử copy với rich text (HTML) trước
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        'text/html': new Blob([htmlText], { type: 'text/html' }),
-        'text/plain': new Blob([plainText], { type: 'text/plain' }),
-      }),
-    ]);
-    // toast success...
-  } catch {
-    // Fallback: copy plain text nếu browser không hỗ trợ
-    await navigator.clipboard.writeText(plainText);
+    await navigator.clipboard.writeText(text);
+    setCopiedMessageId(messageId);
+    toast.success(t('chat.copied'));
+    setTimeout(() => setCopiedMessageId(null), 2000);
+  } catch (err) {
+    toast.error('Copy failed');
   }
 };
 ```
 
-### Kết quả mong đợi
+**Sau:**
+```typescript
+const markdownToHtml = (text: string): string => {
+  return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+};
 
-| Paste vào | Trước (plain text) | Sau (rich text) |
-|-----------|-------------------|-----------------|
-| Google Docs | `**Tăng tần số rung động:**` | **Tăng tần số rung động:** |
-| Messenger/Zalo | `**Ánh Sáng**` | **Ánh Sáng** |
-| Notepad | `**text**` (không đổi) | `**text**` (giữ nguyên plain text fallback) |
+const handleCopyMessage = async (text: string, messageId: string) => {
+  try {
+    const htmlText = markdownToHtml(text).replace(/\n/g, '<br/>');
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        'text/html': new Blob([htmlText], { type: 'text/html' }),
+        'text/plain': new Blob([text], { type: 'text/plain' }),
+      }),
+    ]);
+    setCopiedMessageId(messageId);
+    toast.success(t('chat.copied'));
+    setTimeout(() => setCopiedMessageId(null), 2000);
+  } catch {
+    // Fallback cho browser khong ho tro ClipboardItem
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedMessageId(messageId);
+      toast.success(t('chat.copied'));
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch {
+      toast.error('Copy failed');
+    }
+  }
+};
+```
 
-### Bước thực hiện
+#### 2. SharedConversation.tsx - Cập nhật `handleCopy`
 
-1. Thêm hàm `markdownToHtml` chuyển `**text**` thành `<b>text</b>`
-2. Thêm hàm `formatConversationForHtml` tạo nội dung HTML
-3. Cập nhật `handleCopyConversation` dùng `ClipboardItem` API
-4. Giữ nguyên `formatConversationForCopy` làm plain text fallback
+Tuong tu, chuyen `handleCopy` sang dung `ClipboardItem` voi ca `text/html` va `text/plain`.
 
+### Logic hoat dong
+
+```text
+User bam nut Copy tin nhan
+    |
+    v
+Chuyen markdown **text** thanh HTML <b>text</b>
+    |
+    v
+Copy vao clipboard voi 2 dinh dang:
+  - text/html: <b>text</b> (cho Word, Docs, Messenger...)
+  - text/plain: **text** giu nguyen (cho Notepad, terminal...)
+    |
+    v
+Khi paste vao app ho tro rich text -> hien thi in dam
+Khi paste vao plain text editor -> hien thi nguyen ban
+```
+
+### Ket qua mong doi
+
+| Hanh dong | Truoc | Sau |
+|-----------|-------|-----|
+| Copy 1 tin nhan, paste vao Docs | `**Tang tan so:**` | **Tang tan so:** |
+| Copy 1 tin nhan, paste vao Messenger | `**Anh Sang**` | **Anh Sang** |
+| Copy 1 tin nhan, paste vao Notepad | `**text**` | `**text**` (giu nguyen) |

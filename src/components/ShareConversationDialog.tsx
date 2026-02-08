@@ -122,6 +122,11 @@ export const ShareConversationDialog = ({
     }
   };
 
+  // Chuyển **text** thành <b>text</b> trong HTML
+  const markdownToHtml = (text: string): string => {
+    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  };
+
   const formatConversationForCopy = (): string => {
     const displayName = userName || t('shareConversation.defaultUserName');
     
@@ -140,15 +145,46 @@ export const ShareConversationDialog = ({
     return header + body + footer;
   };
 
+  const formatConversationForHtml = (): string => {
+    const displayName = userName || t('shareConversation.defaultUserName');
+    const finalTitle = title.trim() || generatedTitle || t('shareConversation.defaultForumTitle');
+
+    const header = `<div style="font-size:18px;font-weight:bold;margin-bottom:12px;">✨ ${finalTitle} ✨</div>`;
+
+    const body = messages.map(msg => {
+      const speaker = msg.role === 'user' ? `👤 ${displayName}` : '🌟 Angel AI';
+      const htmlContent = markdownToHtml(msg.content).replace(/\n/g, '<br/>');
+      return `<div style="margin-bottom:12px;"><b>${speaker}:</b><br/>${htmlContent}</div>`;
+    }).join('<hr style="border:none;border-top:1px solid #e5e5e5;margin:8px 0;"/>');
+
+    const footer = `<hr style="border:none;border-top:1px solid #e5e5e5;margin:8px 0;"/><div>💛 ${t('shareConversation.sharedFrom')}</div>`;
+
+    return header + body + footer;
+  };
+
   const handleCopyConversation = async () => {
-    const text = formatConversationForCopy();
+    const plainText = formatConversationForCopy();
+    const htmlText = formatConversationForHtml();
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([htmlText], { type: 'text/html' }),
+          'text/plain': new Blob([plainText], { type: 'text/plain' }),
+        }),
+      ]);
       setCopiedConversation(true);
       toast.success(t('shareConversation.conversationCopied'));
       setTimeout(() => setCopiedConversation(false), 2000);
     } catch {
-      toast.error(t('shareConversation.shareError'));
+      // Fallback: copy plain text nếu browser không hỗ trợ ClipboardItem
+      try {
+        await navigator.clipboard.writeText(plainText);
+        setCopiedConversation(true);
+        toast.success(t('shareConversation.conversationCopied'));
+        setTimeout(() => setCopiedConversation(false), 2000);
+      } catch {
+        toast.error(t('shareConversation.shareError'));
+      }
     }
   };
 
